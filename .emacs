@@ -17,9 +17,26 @@
 (when (< emacs-major-version 24)
   ;; For important compatibility libraries like cl-lib
   (add-to-list 'package-archives '("gnu" . "https://elpa.gnu.org/packages/")))
+
 (package-initialize)
 
-(defvar local-packages '(flx-ido auto-complete epc slime rainbow-delimiters paredit ac-slime cyberpunk-theme dracula-theme dakrone-theme popup jedi docker-tramp dockerfile-mode pillar cmake-mode yaml-mode))
+(defvar local-packages '(flx-ido
+			 auto-complete
+			 epc
+			 slime
+			 rainbow-delimiters
+			 paredit
+			 ac-slime
+			 cyberpunk-theme
+			 dracula-theme
+			 dakrone-theme
+			 popup
+			 jedi
+			 docker-tramp
+			 dockerfile-mode
+			 pillar
+			 cmake-mode
+			 yaml-mode))
 
 
 (defun uninstalled-packages (packages)
@@ -55,9 +72,6 @@
 
 		  `(sbcl  (,(convert-standard-filename (concat (getenv "SBCL_HOME") "sbcl.exe"))
 			   "--noinform")))
-		 ;; ((eq system-type 'cygwin)
-		 ;;   `(sbcl  (,(cygwin-convert-file-name-from-windows (concat (getenv "SBCL_HOME") "sbcl.exe"))
-		 ;; 	    "--noinform")))
 		 (t nil)))
 	;; Add clisp on cygwin
 	,(when (and (eq system-type 'cygwin) (file-exists-p (convert-standard-filename "/usr/bin/clisp")))
@@ -66,8 +80,8 @@
 	,(when (file-exists-p  (convert-standard-filename "C:/Program Files/ABCL/abcl.jar"))
 	   `(abcl  ("java" "-jar" ,(convert-standard-filename "C:/Program Files/ABCL/abcl.jar"))))
 
-	 )
-)
+	 ))
+
 
 (setq common-lisp-hyperspec-root (concat (getenv "HOME") (convert-standard-filename  "/local-code-projects/static-resources/common-lisp/HyperSpec-7.0/HyperSpec/")))
 
@@ -182,17 +196,6 @@
 ;; Set standard opening directory
 
 (cd (concat (getenv "HOME") (convert-standard-filename  "/local-code-projects/my-code/common-lisp/local-projects/")))
-
-;; ;; Ansi color conversion
-
-;; (require 'ansi-color)
-;; (defun display-ansi-colors ()
-;;   (interactive)
-;;   (let ((inhibit-read-only t))
-;;     (ansi-color-apply-on-region (point-min) (point-max))))
-
-;; (add-to-list 'auto-mode-alist
-;; 	     '("\\.log\\'" . display-ansi-colors))
 
 
 (setenv  "PATH" (concat
