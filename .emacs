@@ -36,7 +36,8 @@
 			 dockerfile-mode
 			 pillar
 			 cmake-mode
-			 yaml-mode))
+			 yaml-mode
+			 magit))
 
 
 (defun uninstalled-packages (packages)
@@ -231,5 +232,8 @@
 ;;;; Remote printer
 
 (setq printer-name  "\\Canon TS6000 LPR")
+
+;; My key mappings
+(global-set-key (kbd "C-x g") 'magit-status)
 
   
