@@ -37,6 +37,7 @@
 			 pillar
 			 cmake-mode
 			 yaml-mode
+			 ess
 			 magit))
 
 
