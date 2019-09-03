@@ -17,3 +17,5 @@
 	path = C:/Program Files (x86)/KDiff3/kdiff3.exe
 [i18n]
 	filesEncoding = utf-8
+[core]
+	editor = \"C:/Program Files (x86)/GitExtensions/GitExtensions.exe\" fileeditor
