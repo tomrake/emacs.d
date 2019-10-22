@@ -1,4 +1,10 @@
+;;;; File: ~/.emacs
+
+;;;; Allow system wide customoization from Public user
+
 (load "C:/Users/Public/Documents/emacs/.emacs")
+
+;;;; Below is changed by Emacs Customization options
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
