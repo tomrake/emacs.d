@@ -5,5 +5,14 @@
                        "local-code-projects/my-code/common-lisp/setup.lisp"
                        (user-homedir-pathname))))
   (when (probe-file quicklisp-init)
-    (load quicklisp-init)))
+    (load quicklisp-init))
+  (print "loading Quicklisp"))
+ 
+ 
+
+#+quicklisp
+(let ((paths '(#P"C:/Users/zzzap/local-code-projects/my-code/common-lisp/local-attic/")))
+   (dolist (p paths) (when (and p (probe-file p) (not (member p ql:*local-project-directories*)))
+                        (setf ql:*local-project-directories* (cons p ql:*local-project-directories*)))))
+
 
