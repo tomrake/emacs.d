@@ -1,8 +1,20 @@
 ;;;; File: ~/.emacs
+(fset 'convert-windows-filename
+      (if (fboundp 'cygwin-convert-file-name-from-windows)
 
-;;;; Allow system wide customoization from Public user
+	  'cygwin-convert-file-name-from-windows
 
-(load "C:/Users/Public/Documents/emacs/.emacs")
+	'convert-standard-filename))
+
+
+(load (convert-windows-filename "C:/Users/Public/Documents/emacs/.emacs"))
+
+;; ;;;; Allow system wide customoization from Public user
+;; (cond ((file-exists-p (convert-standard-filename "C:/Users/Public/Documents/emacs/.emacs"))
+;;        (load (convert-standard-filename "C:/Users/Public/Documents/emacs/.emacs")))
+;;       ((file-exists-p (convert-standard-filename "/c/Users/Public/Documents/emacs/.emacs"))
+;;        (load (convert-standard-filename "/c/Users/Public/Documents/emacs/.emacs")))
+;;       (t (error "Can't load public .emacs file")))
 
 ;;;; Below is changed by Emacs Customization options
 (custom-set-variables
