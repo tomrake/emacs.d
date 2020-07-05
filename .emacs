@@ -33,7 +33,8 @@
  '(fci-rule-color "#383838")
  '(package-selected-packages
    (quote
-    (dakrone-theme dockerfile-mode docker-tramp anaconda-mode popup cyberpunk-theme ac-slime paredit rainbow-delimiters slime epc auto-complete flx-ido))))
+    (dakrone-theme dockerfile-mode docker-tramp anaconda-mode popup cyberpunk-theme ac-slime paredit rainbow-delimiters slime epc auto-complete flx-ido)))
+ '(safe-local-variable-values (quote ((org-use-property-inheritance . t)))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
