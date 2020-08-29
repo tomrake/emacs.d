@@ -5,7 +5,7 @@
 	  'cygwin-convert-file-name-from-windows
 
 	'convert-standard-filename))
-
+(setq user/org-files "~/org/")
 
 (load (convert-windows-filename "C:/Users/Public/Documents/emacs/.emacs"))
 

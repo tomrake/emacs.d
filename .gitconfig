@@ -3,8 +3,10 @@
 	name = Tom Rake
 [merge]
 	tool = kdiff3
+	guitool = kdiff3
 [mergetool "kdiff3"]
 	path = C:/Program Files (x86)/KDiff3/kdiff3.exe
+	cmd = \"C:/Program Files (x86)/KDiff3/kdiff3.exe\" \"$BASE\" \"$LOCAL\" \"$REMOTE\" -o \"$MERGED\"
 [pull]
 	rebase = false
 [fetch]
@@ -15,6 +17,7 @@
 	guitool = kdiff3
 [difftool "kdiff3"]
 	path = C:/Program Files (x86)/KDiff3/kdiff3.exe
+	cmd = \"C:/Program Files (x86)/KDiff3/kdiff3.exe\" \"$LOCAL\" \"$REMOTE\"
 [i18n]
 	filesEncoding = utf-8
 [core]
