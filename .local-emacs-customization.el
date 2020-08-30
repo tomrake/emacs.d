@@ -5,6 +5,8 @@
 ;;;; Change to my work directory
 (cd "~/local-code-projects/my-code/common-lisp/local-projects/")
 
+(setq org-agenda-files `(,user/org-agenda-files))
+
 (find-file (concat user/org-agenda-files "gtd.org"))
 
 
