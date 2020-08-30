@@ -5,6 +5,8 @@
 ;;;; Change to my work directory
 (cd "~/local-code-projects/my-code/common-lisp/local-projects/")
 
+(find-file (concat user/org-files "gtd.org"))
+
 
 ;;; See: http://cachestocaches.com/2016/9/my-workflow-org-agenda/
 (setq org-capture-templates

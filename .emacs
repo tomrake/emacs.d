@@ -1,4 +1,7 @@
 ;;;; File: ~/.emacs
+;; load time metrics
+(setq  *emacs-load-start* (current-time))
+;;
 (fset 'convert-windows-filename
       (if (fboundp 'cygwin-convert-file-name-from-windows)
 
@@ -49,3 +52,7 @@
  '(rainbow-delimiters-depth-6-face ((t (:foreground "orchid"))))
  '(rainbow-delimiters-depth-7-face ((t (:foreground "spring green"))))
  '(rainbow-delimiters-depth-8-face ((t (:foreground "sienna1")))))
+
+;; Load time metrics
+(setq *emacs-load-end* (current-time))
+(message "My .emacs loaded in %s " (float-time (time-subtract *emacs-load-end* *emacs-load-start*)))
