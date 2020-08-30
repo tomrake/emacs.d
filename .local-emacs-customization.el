@@ -5,22 +5,22 @@
 ;;;; Change to my work directory
 (cd "~/local-code-projects/my-code/common-lisp/local-projects/")
 
-(find-file (concat user/org-files "gtd.org"))
+(find-file (concat user/org-agenda-files "gtd.org"))
 
 
 ;;; See: http://cachestocaches.com/2016/9/my-workflow-org-agenda/
 (setq org-capture-templates
-      `(("t" "todo" entry (file ,(concat user/org-files "gtd.org"))
+      `(("t" "todo" entry (file ,(concat user/org-agenda-files "gtd.org"))
 	 "* TODO %?\n%U\n%a\n" :clock-in t :clock-resume t)
-	("n" "note" entry (file ,(concat user/org-files  "gtd.org"))
+	("n" "note" entry (file ,(concat user/org-agenda-files  "gtd.org"))
 	 "* %? :NOTE:\n%U\n%a\n" :clock-in t :clock-resume t)
-	("m" "Meeting" entry (file  ,(concat user/org-files "gtd.org"))
+	("m" "Meeting" entry (file  ,(concat user/org-agenda-files "gtd.org"))
 	 "* MEETING with %? :MEETING:\n%t" :clock-in t :clock-resume t)
-	("i" "Idea" entry (file ,(concat user/org-files "gtd.org"))
+	("i" "Idea" entry (file ,(concat user/org-agenda-files "gtd.org"))
 	 "* %? :IDEA: \n%t" :clock-in t :clock-resume t)
 	("d" "Journal" entry (file+datetree ,(concat user/org-files "diary.org"))
 	 "* %U %^{Title}\n%?" :clock-in t :clock-resume t)
-	("n" "Next Task" entry (file+headline  ,(concat user/org-files "tasks"))
+	("n" "Next Task" entry (file+headline  ,(concat user/org-agenda-files "tasks"))
 	 "** NEXT %? \nDEADLINE: %t")))
 
 ;;;; Allow access to org agenda files
