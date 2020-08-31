@@ -9,6 +9,17 @@
 
 (find-file (concat user/org-agenda-files "gtd.org"))
 
+(defun morning-checklist-writer()
+  (format "* Morning Checklist
+  - [ ] Morning Tray for Mom [/]
+    - [ ] Morning Medications
+    - [ ] Breakfast
+      - [ ] Cereal 4oz milk
+    - [ ] 4oz water 1/2 TSP metamucil
+    - [ ] Spoon
+  - [ ] Feed Cat
+  - [ ] Eat YOUR Breakfast
+" nil))
 
 ;;; See: http://cachestocaches.com/2016/9/my-workflow-org-agenda/
 (setq org-capture-templates
@@ -16,16 +27,40 @@
 	 "* TODO %?\n%U\n%a\n" :clock-in t :clock-resume t)
 	("n" "note" entry (file ,(concat user/org-agenda-files  "gtd.org"))
 	 "* %? :NOTE:\n%U\n%a\n" :clock-in t :clock-resume t)
-	("m" "Meeting" entry (file  ,(concat user/org-agenda-files "gtd.org"))
-	 "* MEETING with %? :MEETING:\n%t" :clock-in t :clock-resume t)
+;; Medical Appointments
+;; Medical Appointment  (m) Medical template
+   ("m" "MEDICAL   (m) Medical" entry (file ,(concat user/org-agenda-files "gtd.org"))
+    "* Medical %^{Who} %?
+  CLOSED: %^U
+  :PROPERTIES:
+  :Attend:   Tom Rake
+  :Location:
+  :Via:
+  :Note:
+  :END:
+  :LOGBOOK:
+  - State \"MEETING\"    from \"\"           %U
+  :END:
+  %^T--%^T" :empty-lines 1)
+;; Historic Meeting Template
+;; ("m" "Meeting" entry (file  ,(concat user/org-agenda-files "gtd.org"))
+;;  "* MEETING with %^{Meeting with:} %?" :clock-in t :clock-resume t)
+
+;; Shoppping Items
+   ("s" "Shopping List - Needed (s)" entry (file ,(concat user/org-agenda-files "gtd.org"))
+    "* Shopping Item %^{Needed Item} %?
+  CLOSED: %U
+  :PROPERTIES:
+  :URGENCY: %^{Urgency?|Regular Trip|ASAP|Next Day}
+  :END:
+")
 	("i" "Idea" entry (file ,(concat user/org-agenda-files "gtd.org"))
 	 "* %? :IDEA: \n%t" :clock-in t :clock-resume t)
-	("d" "Journal" entry (file+datetree ,(concat user/org-files "diary.org"))
-	 "* %U %^{Title}\n%?" :clock-in t :clock-resume t)
+	("j" "Journal" entry (file+datetree ,(concat user/org-files "diary.org"))
+	 "* %U %^{Title}\n  -%?" :clock-in t :clock-resume t)
 	("n" "Next Task" entry (file+headline  ,(concat user/org-agenda-files "tasks"))
 	 "** NEXT %? \nDEADLINE: %t")))
 
 ;;;; Allow access to org agenda files
 
-(setq org-refile-targets (quote ((nil :maxlevel . 9)
-                                 (org-agenda-files :maxlevel . 9))))
+(setq org-refile-targets '((org-agenda-files :maxlevel . 9)))
