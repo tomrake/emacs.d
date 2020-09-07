@@ -69,128 +69,149 @@
   )
 #+END_SRC
 
-* Org-Mode
-#+BEGIN_SRC emacs-lisp
-;;;; Org Mode key bindings.
-(global-set-key (kbd "C-c l") 'org-store-link)
-(global-set-key (kbd "C-c a") 'org-agenda)
-(global-set-key (kbd "C-c c") 'org-capture)
-(global-set-key (kbd "C-c b") 'org-switchb)
-
-(org-babel-do-load-languages
- 'org-babel-load-languages
- '((lisp . t)
-   (emacs-lisp . t)))
-
-
-(setq org-modules '(org-habit org-checklist))
-
-(setq org-habit-graph-column 50)
-
-(setq org-link-abbrev-alist
-      '(("bugzilla" . "http://192.168.1.50/bugzilla/show_bug.cgi?id=")
-	("bugzilla-comp" . "http://192.168.1.50/bugzilla/describecomponents.cgi?product=")))
-
-;; Each user has a org directory in ~/org ensure it exists
-(unless (file-directory-p "~/org")
-  (make-directory  "~/org"))
-
-(setq org-default-notes-file "~/org/notes.org")
-
-
-;(require 'org-checklist)
-
-;;;; Add MikTex executables to path
-;(add-to-list 'exec-path "/c/Users/zzzap/AppData/Local/Programs/MiKTeX/miktex/bin/x64")
-
-;;;; Change to my work directory
-(cd "~/local-code-projects/my-code/common-lisp/local-projects/")
-
-;; My org files
-(setq user/org-files "~/org/")
-(setq user/org-agenda-files "~/org/agenda/")
-
-(setq org-agenda-files `(,user/org-agenda-files))
-
-(find-file (concat user/org-agenda-files "gtd.org"))
-
-(defun morning-checklist-writer()
-  (format "* Morning Checklist
-  - [ ] Morning Tray for Mom [/]
-    - [ ] Morning Medications
-    - [ ] Breakfast
-      - [ ] Cereal 4oz milk
-    - [ ] 4oz water 1/2 TSP metamucil
-    - [ ] Spoon
-  - [ ] Feed Cat
-  - [ ] Eat YOUR Breakfast
-" nil))
-
-(defun monthly-tasks-for-james-seese ()
-  (format "* Monthly Tasks: James Seese
-  - [ ] Process all inbound mail.
-  - [ ] Separate mail by entity
-  - [ ] list all oustanding bills
-  - [ ] list all oustanding deposits
-  - [ ] Make deposit list
-    - [ ] vendor
-    - [ ] amount
-  - [ ] Make check list
-    - [ ] Vendor
-    - [ ] Amount
-  - [ ] Write and mail checks" nil))
-
-;;; See: http://cachestocaches.com/2016/9/my-workflow-org-agenda/
-(setq org-capture-templates
-      `(("t" "todo" entry (file ,(concat user/org-agenda-files "gtd.org"))
-	 "* TODO %?\n%U\n%a\n" :clock-in t :clock-resume t)
-	("n" "note" entry (file ,(concat user/org-agenda-files  "gtd.org"))
-	 "* %? :NOTE:\n%U\n%a\n" :clock-in t :clock-resume t)
-;; Medical Appointments
-;; Medical Appointment  (m) Medical template
-   ("m" "MEDICAL   (m) Medical" entry (file ,(concat user/org-agenda-files "gtd.org"))
-    "* Medical %^{Who} %?
-  CLOSED: %^U
-  :PROPERTIES:
-  :Attend:   Tom Rake
-  :Location:
-  :Via:
-  :Note:
-  :END:
-  :LOGBOOK:
-  - State \"MEETING\"    from \"\"           %U
-  :END:
-  %^T--%^T" :empty-lines 1)
-;; Historic Meeting Template
-;; ("m" "Meeting" entry (file  ,(concat user/org-agenda-files "gtd.org"))
-;;  "* MEETING with %^{Meeting with:} %?" :clock-in t :clock-resume t)
-
-;; Shoppping Items
-   ("s" "Shopping List - Needed (s)" entry (file ,(concat user/org-agenda-files "gtd.org"))
-    "* Shopping Item %^{Needed Item} %?
-  CLOSED: %U
-  :PROPERTIES:
-  :URGENCY: %^{Urgency?|Regular Trip|ASAP|Next Day}
-  :END:
-")
-	("i" "Idea" entry (file ,(concat user/org-agenda-files "gtd.org"))
-	 "* %? :IDEA: \n%t" :clock-in t :clock-resume t)
-	("j" "Journal" entry (file+datetree ,(concat user/org-files "diary.org"))
-	 "* %U %^{Title}\n  -%?" :clock-in t :clock-resume t)
-	("n" "Next Task" entry (file+headline  ,(concat user/org-agenda-files "tasks"))
-	 "** NEXT %? \nDEADLINE: %t")))
-
-;;;; Allow access to org agenda files
-
-(setq org-refile-targets '((org-agenda-files :maxlevel . 9)))
+* Ord Mode Customizations
+** Org Key Binding
+ #+BEGIN_SRC emacs-lisp
+ ;;;; Org Mode key bindings.
+ (global-set-key (kbd "C-c l") 'org-store-link)
+ (global-set-key (kbd "C-c a") 'org-agenda)
+ (global-set-key (kbd "C-c c") 'org-capture)
+ (global-set-key (kbd "C-c b") 'org-switchb)
+ #+END_SRC
+** Configure BABEL languages
+ #+BEGIN_SRC emacs-lisp
+ (org-babel-do-load-languages
+  'org-babel-load-languages
+  '((lisp . t)
+    (emacs-lisp . t)))
+ #+END_SRC
+** org modules needed
+ #+BEGIN_SRC emacs-lisp
+ (setq org-modules '(org-habit org-checklist))
+ #+END_SRC
+** Configure habit (do not remember why)
+ #+BEGIN_SRC emacs-lisp
+ (setq org-habit-graph-column 50)
+ #+END_SRC
+** Org link abbreviations
+ #+BEGIN_SRC emacs-lisp
+ (setq org-link-abbrev-alist
+       '(("bugzilla" . "http://192.168.1.50/bugzilla/show_bug.cgi?id=")
+	 ("bugzilla-comp" . "http://192.168.1.50/bugzilla/describecomponents.cgi?product=")))
+ #+END_SRC
+** Ensure there are stadard ~/org directories
+ #+BEGIN_SRC emacs-lisp
+ ;; Each user has a org directory in ~/org ensure it exists
+ (unless (file-directory-p "~/org")
+   (make-directory  "~/org"))
+ #+END_SRC
+ #+BEGIN_SRC emacs-lisp
+ (setq org-default-notes-file "~/org/notes.org")
 
 
-#+END_SRC
+ ;(require 'org-checklist)
+
+ ;;;; Add MikTex executables to path
+ ;(add-to-list 'exec-path "/c/Users/zzzap/AppData/Local/Programs/MiKTeX/miktex/bin/x64")
+ #+END_SRC
+** Standard work directory
+ #+BEGIN_SRC emacs-lisp
+ ;;;; Change to my work directory
+ (cd "~/local-code-projects/my-code/common-lisp/local-projects/")
+ #+END_SRC
+** Standard org and org-agenda files
+ #+BEGIN_SRC emacs-lisp
+ ;; My org files
+ (setq user/org-files "~/org/")
+ (setq user/org-agenda-files "~/org/agenda/")
+
+ (setq org-agenda-files `(,user/org-agenda-files))
+ #+END_SRC
+** Always present the gtd.org file
+ #+BEGIN_SRC emacs-lisp
+ (find-file (concat user/org-agenda-files "gtd.org"))
+ #+END_SRC
+** A few custom checklists
+ #+BEGIN_SRC emacs-lisp
+ (defun morning-checklist-writer()
+   (format "* Morning Checklist
+   - [ ] Morning Tray for Mom [/]
+     - [ ] Morning Medications
+     - [ ] Breakfast
+       - [ ] Cereal 4oz milk
+     - [ ] 4oz water 1/2 TSP metamucil
+     - [ ] Spoon
+   - [ ] Feed Cat
+   - [ ] Eat YOUR Breakfast
+ " nil))
+
+ (defun monthly-tasks-for-james-seese ()
+   (format "* Monthly Tasks: James Seese
+   - [ ] Process all inbound mail.
+   - [ ] Separate mail by entity
+   - [ ] list all oustanding bills
+   - [ ] list all oustanding deposits
+   - [ ] Make deposit list
+     - [ ] vendor
+     - [ ] amount
+   - [ ] Make check list
+     - [ ] Vendor
+     - [ ] Amount
+   - [ ] Write and mail checks" nil))
+ #+END_SRC
+** Capture Templates
+ #+BEGIN_SRC emacs-lisp
+ ;;; See: http://cachestocaches.com/2016/9/my-workflow-org-agenda/
+ (setq org-capture-templates
+       `(("t" "todo" entry (file ,(concat user/org-agenda-files "gtd.org"))
+	  "* TODO %?\n%U\n%a\n" :clock-in t :clock-resume t)
+	 ("n" "note" entry (file ,(concat user/org-agenda-files  "gtd.org"))
+	  "* %? :NOTE:\n%U\n%a\n" :clock-in t :clock-resume t)
+ ;; Medical Appointments
+ ;; Medical Appointment  (m) Medical template
+    ("m" "MEDICAL   (m) Medical" entry (file ,(concat user/org-agenda-files "gtd.org"))
+     "* Medical %^{Who} %?
+   CLOSED: %^U
+   :PROPERTIES:
+   :Attend:   Tom Rake
+   :Location:
+   :Via:
+   :Note:
+   :END:
+   :LOGBOOK:
+   - State \"MEETING\"    from \"\"           %U
+   :END:
+   %^T--%^T" :empty-lines 1)
+ ;; Historic Meeting Template
+ ;; ("m" "Meeting" entry (file  ,(concat user/org-agenda-files "gtd.org"))
+ ;;  "* MEETING with %^{Meeting with:} %?" :clock-in t :clock-resume t)
+
+ ;; Shoppping Items
+    ("s" "Shopping List - Needed (s)" entry (file ,(concat user/org-agenda-files "gtd.org"))
+     "* Shopping Item %^{Needed Item} %?
+   CLOSED: %U
+   :PROPERTIES:
+   :URGENCY: %^{Urgency?|Regular Trip|ASAP|Next Day}
+   :END:
+ ")
+	 ("i" "Idea" entry (file ,(concat user/org-agenda-files "gtd.org"))
+	  "* %? :IDEA: \n%t" :clock-in t :clock-resume t)
+	 ("j" "Journal" entry (file+datetree ,(concat user/org-files "diary.org"))
+	  "* %U %^{Title}\n  -%?" :clock-in t :clock-resume t)
+	 ("n" "Next Task" entry (file+headline  ,(concat user/org-agenda-files "tasks"))
+	  "** NEXT %? \nDEADLINE: %t")))
+
+ ;;;; Allow access to org agenda files
+ #+END_SRC
+** Refile configuration
+ #+BEGIN_SRC emacs-lisp
+ (setq org-refile-targets '((org-agenda-files :maxlevel . 9)))
+
+
+ #+END_SRC
 * Report the time metrics
 #+BEGIN_SRC emacs-lisp
 (setq *emacs-load-end* (current-time))
 (message "My .emacs loaded in %s " (float-time (time-subtract *emacs-load-end* *emacs-load-start*)))
 #+END_SRC
-
-* org-mode
 
