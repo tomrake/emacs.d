@@ -1,16 +1,15 @@
 ;;;; File: ~/.emacs
 ;; load time metrics
 (setq  *emacs-load-start* (current-time))
+
+
 ;;
 (fset 'convert-windows-filename
       (if (fboundp 'cygwin-convert-file-name-from-windows)
-
 	  'cygwin-convert-file-name-from-windows
-
 	  'convert-standard-filename))
-;; My org files
-(setq user/org-files "~/org/")
-(setq user/org-agenda-files "~/org/agenda/")
+
+
 
 (load (convert-windows-filename "C:/Users/Public/Documents/emacs/.emacs"))
 

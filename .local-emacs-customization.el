@@ -5,6 +5,10 @@
 ;;;; Change to my work directory
 (cd "~/local-code-projects/my-code/common-lisp/local-projects/")
 
+;; My org files
+(setq user/org-files "~/org/")
+(setq user/org-agenda-files "~/org/agenda/")
+
 (setq org-agenda-files `(,user/org-agenda-files))
 
 (find-file (concat user/org-agenda-files "gtd.org"))
@@ -20,6 +24,20 @@
   - [ ] Feed Cat
   - [ ] Eat YOUR Breakfast
 " nil))
+
+(defun monthly-tasks-for-james-seese ()
+  (format "* Monthly Tasks: James Seese
+  - [ ] Process all inbound mail.
+  - [ ] Separate mail by entity
+  - [ ] list all oustanding bills
+  - [ ] list all oustanding deposits
+  - [ ] Make deposit list
+    - [ ] vendor
+    - [ ] amount
+  - [ ] Make check list
+    - [ ] Vendor
+    - [ ] Amount
+  - [ ] Write and mail checks" nil))
 
 ;;; See: http://cachestocaches.com/2016/9/my-workflow-org-agenda/
 (setq org-capture-templates
