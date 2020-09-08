@@ -210,9 +210,27 @@
 #+BEGIN_SRC emacs-lisp
 (add-hook 'prog-mode-hook #'rainbow-delimiters-mode)
 #+END_SRC
-* HEADER
+* Pascal Setup                                                       :review:
 #+BEGIN_SRC emacs-lisp
+(add-hook 'pascal-mode-hook
+	  (lambda ()
+	    (set (make-local-variable 'compile-command)
+		 (concat "fpc " (file-name-nondirectory (buffer-file-name)))
+		 )
+	    )
+	  t)
 
+(setq auto-mode-alist
+      (append '((".*\\.pas\\'" . pascal-mode))
+	      auto-mode-alist))
+
+(setq auto-mode-alist
+      (append '((".*\\.pp\\'" . pascal-mode))
+	      auto-mode-alist))
+
+(setq auto-mode-alist
+      (append '((".*\\.yml\\'" . yaml-mode))
+	      auto-mode-alist))
 #+END_SRC
 * HEADER
 #+BEGIN_SRC emacs-lisp
