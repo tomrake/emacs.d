@@ -38,9 +38,8 @@
 #+BEGIN_SRC emacs-lisp
 ;;;  Now rebuild path based on exec-path
 (setenv "PATH" (mapconcat #'identity exec-path path-separator))
-
 #+END_SRC
-* Package loading mechanism needs review
+* Package loading mechanism needs review                             :review:
 #+BEGIN_SRC emacs-lisp
 ;;;; Download packages from MELPA
 
@@ -103,7 +102,116 @@
 	(package-install p)))))
 
 #+END_SRC
+* Common Lisp, SLIME and AUTO-COMPLETE                               :review:
+#+BEGIN_SRC emacs-lisp
+(require 'auto-complete-config)
+(ac-config-default)
 
+;;;; Slime Setup
+
+(setq SBCL_HOME_SAVE (getenv "SBCL_HOME"))
+
+(setq PATH_SAVE (getenv "PATH"))
+
+(setq +msys64-base-path+ "C:/devel/msys64/")
+
+
+(defun lisp-mingw64-implementation (tag)
+  `(,tag (,(concat +msys64-base-path+ "usr/bin/env.exe") "MSYSTEM=MINGW64"
+	  ,(concat +msys64-base-path+ "usr/bin/bash.exe") "-l" "-c" "/usr/local/bin/sbcl --noinform")))
+
+(setq SBCL_BASE "C:/devel/SBCL_2_0_0-bin")
+
+(setq slime-lisp-implementations
+      `(
+
+	,(when (file-exists-p (concat +msys64-base-path+ "/usr/local/bin/sbcl.exe"))
+	   (lisp-mingw64-implementation 'mingw64-sbcl))	
+	,(when (boundp 'SBCL_BASE) 
+	   (cond  
+		 ((string= SBCL_BASE "C:/devel/SBCL_2_0_2")
+		  (progn
+		    (unless (boundp 'SBCL-IN-PATH)
+		      (setenv "PATH"
+			      (concat
+			       SBCL_BASE
+			       "/bin/"
+			       ";"
+			       (getenv "PATH")))
+		      (setenv "SBCL_HOME"
+			      (concat
+			       SBCL_BASE
+			       "/lib/sbcl"))
+		      (setq SBCL-IN-PATH t))
+		    `(sbcl  (,(concat SBCL_BASE "/bin/" "sbcl.exe")
+			     "--noinform"))))
+		 ((string= SBCL_BASE "C:/devel/SBCL_2_0_0-bin")
+		  (progn
+		    (unless (boundp 'SBCL-IN-PATH)
+		      (setenv "PATH"
+			      (concat
+			       SBCL_BASE
+			       "/bin/"
+			       ";"
+			       (getenv "PATH")))
+		       (setenv "SBCL_HOME" SBCL_BASE)
+		       (setq SBCL-IN-PATH t))
+		    `(sbcl  (,(concat SBCL_BASE "/" "sbcl.exe")
+			     "--noinform"))))))
+      (clisp ("clisp" "-K" "full" "-I"))
+      ,(when (and (eq system-type 'winodows-nt))
+	 `(clisp ("clisp" "-K" "full" "-I")))
+      ,(when (and (eq system-type 'cygwin) (file-exists-p (convert-standard-filename "/usr/bin/clisp"))) ;; Add clisp on cygwin
+	   `(clisp (,(convert-standard-filename "/usr/bin/clisp" ))))
+      ,(when (file-exists-p  (convert-standard-filename "C:/Program Files/ABCL/abcl.jar")) 	;; Add ABCL if present
+	   `(abcl  ("java" "-jar" ,(convert-standard-filename "C:/Program Files/ABCL/abcl.jar"))))))
+
+;;;; Allow Root of HyperSped to be set from (env "HyperSpec")
+
+(setq common-lisp-hyperspec-root (convert-standard-filename (getenv "HyperSpec")))
+
+(setq slime-contribs '(slime-fancy))
+
+(global-set-key "\C-cs" 'slime-selector)
+
+;;;; Slime Autocomplete
+
+(require 'ac-slime)
+(add-hook 'slime-mode-hook 'set-up-slime-ac)
+(add-hook 'slime-repl-mode-hook 'set-up-slime-ac)
+(eval-after-load "auto-complete"
+  '(add-to-list 'ac-modes 'slime-repl-mode))
+
+;;;; Paredit Mode
+
+(add-hook 'lisp-mode-hook #'paredit-mode)
+
+;;;; Auto-complete for lisp
+
+(add-hook 'lisp-mode-hook #'auto-complete-mode)
+
+;;;; Auto-modes for .cl and .asd
+
+(setq auto-mode-alist
+      (append '((".*\\.asd\\'" . lisp-mode))
+	      auto-mode-alist))
+
+(setq auto-mode-alist
+      (append '((".*\\.cl\\'" . lisp-mode))
+	      auto-mode-alist))
+#+END_SRC
+* HEADER
+#+BEGIN_SRC emacs-lisp
+
+#+END_SRC
+* HEADER
+#+BEGIN_SRC emacs-lisp
+
+#+END_SRC
+* HEADER
+#+BEGIN_SRC emacs-lisp
+
+#+END_SRC
 * Load all the Public Emacs files
 #+BEGIN_SRC emacs-lisp
 (load (convert-windows-filename "C:/Users/Public/Documents/emacs/.emacs"))
