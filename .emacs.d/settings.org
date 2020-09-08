@@ -280,14 +280,18 @@
        ;; (shell)
        )
 #+END_SRC
-* HEADER
+* Tramp                                                              :review:
 #+BEGIN_SRC emacs-lisp
-
+(require 'tramp)
+;(setq tramp-default-method "plink")
+(setq tramp-verbose 10)
 #+END_SRC
 * HEADER
 #+BEGIN_SRC emacs-lisp
 
 #+END_SRC
+* HEADER
+* HEADER
 * Load all the Public Emacs files
 #+BEGIN_SRC emacs-lisp
 (load (convert-windows-filename "C:/Users/Public/Documents/emacs/.emacs"))
