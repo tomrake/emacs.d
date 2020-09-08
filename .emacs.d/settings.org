@@ -200,9 +200,15 @@
       (append '((".*\\.cl\\'" . lisp-mode))
 	      auto-mode-alist))
 #+END_SRC
-* HEADER
+* Emacs Theme                                                        :review:
 #+BEGIN_SRC emacs-lisp
+(load-theme 'manoj-dark)
+(set-face-attribute 'default nil :height 120)
+#+END_SRC
 
+* Rainbow Delimeters
+#+BEGIN_SRC emacs-lisp
+(add-hook 'prog-mode-hook #'rainbow-delimiters-mode)
 #+END_SRC
 * HEADER
 #+BEGIN_SRC emacs-lisp
