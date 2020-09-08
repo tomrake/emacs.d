@@ -232,6 +232,58 @@
       (append '((".*\\.yml\\'" . yaml-mode))
 	      auto-mode-alist))
 #+END_SRC
+* Shells                                                             :review:
+#+BEGIN_SRC emacs-lisp
+;; (setenv  "PATH" (concat
+;; 		 "C:\\devel\\msys64\\usr\\bin" ";"
+;; 		 (getenv "PATH")))
+
+(setq win-shell-implementaions
+      `((cmd (shell))
+	(ming64 (
+		      (defun my-shell-setup ()
+       "For Cygwin bash under Emacs 20"
+       (setq comint-scroll-show-maximum-output 'this)
+       (make-variable-buffer-local 'comint-completion-addsuffix))
+       (setq comint-completion-addsuffix t)
+       ;; (setq comint-process-echoes t) ;; reported that this is no longer needed
+       (setq comint-eol-on-send t)
+       (setq w32-quote-process-args ?\")
+     
+     (add-hook 'shell-mode-hook 'my-shell-setup)
+		 ))))
+	
+(defun win-shell ())
+  
+;; The MSYS-SHELL
+
+(defun msys-shell () 
+  (interactive)
+  (let ((explicit-shell-file-name (convert-standard-filename "c:/devel/msys64/usr/bin/bash.exe"))
+	(shell-file-name "bash")
+	(explicit-bash.exe-args '("--noediting" "--login" "-i"))) 
+    (setenv "SHELL" shell-file-name)
+    (add-hook 'comint-output-filter-functions 'comint-strip-ctrl-m)
+    (shell)))
+
+;; The MINGW64-SHELL
+
+(defun mingw64-shell () 
+       (interactive)
+       (let (( explicit-shell-file-name (convert-standard-filename  "c:/devel/msys64/mingw64/bin/bash.exe")))
+	 (shell "*bash*")
+	     (call-interactively 'shell))
+       ;; (setq shell-file-name "bash")
+       ;; (setq explicit-bash.exe-args '("--login" "-i")) 
+       ;; (setenv "SHELL" shell-file-name)
+       ;; (add-hook 'comint-output-filter-functions 'comint-strip-ctrl-m)
+       ;; (shell)
+       )
+#+END_SRC
+* HEADER
+#+BEGIN_SRC emacs-lisp
+
+#+END_SRC
 * HEADER
 #+BEGIN_SRC emacs-lisp
 
