@@ -300,6 +300,10 @@
 (put 'do 'lisp-indent-function 2)
 (put 'do* 'lisp-indent-function 2)
 #+END_SRC
+* Magit                                                              :review:
+#+BEGIN_SRC emacs-lisp
+(global-set-key (kbd "C-x g") 'magit-status)
+#+END_SRC
 * IDO                                                                :review:
 #+BEGIN_SRC emacs-lisp
 
@@ -309,6 +313,7 @@
 #+BEGIN_SRC emacs-lisp
 
 #+END_SRC
+
 
 * Load all the Public Emacs files
 #+BEGIN_SRC emacs-lisp
