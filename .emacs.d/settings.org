@@ -286,10 +286,13 @@
 ;(setq tramp-default-method "plink")
 (setq tramp-verbose 10)
 #+END_SRC
-* HEADER
+* IDO                                                                :review:
 #+BEGIN_SRC emacs-lisp
-
+(require 'ido)
+(ido-mode t)
 #+END_SRC
+* HEADER
+* HEADER
 * HEADER
 * HEADER
 * Load all the Public Emacs files
