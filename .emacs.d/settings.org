@@ -304,14 +304,9 @@
 #+BEGIN_SRC emacs-lisp
 (global-set-key (kbd "C-x g") 'magit-status)
 #+END_SRC
-* IDO                                                                :review:
+* Printing                                                           :review:
 #+BEGIN_SRC emacs-lisp
-
-#+END_SRC
-
-* IDO                                                                :review:
-#+BEGIN_SRC emacs-lisp
-
+(setq printer-name "lpr://192.168.1.39")
 #+END_SRC
 
 
