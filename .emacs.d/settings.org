@@ -291,10 +291,25 @@
 (require 'ido)
 (ido-mode t)
 #+END_SRC
-* HEADER
-* HEADER
-* HEADER
-* HEADER
+* Indent                                                             :review:
+  - Leftover from  parsing experiment???
+#+BEGIN_SRC emacs-lisp
+(put 'if 'lisp-indent-function nil)
+(put 'when 'lisp-indent-function 1)
+(put 'unless 'lisp-indent-function 1)
+(put 'do 'lisp-indent-function 2)
+(put 'do* 'lisp-indent-function 2)
+#+END_SRC
+* IDO                                                                :review:
+#+BEGIN_SRC emacs-lisp
+
+#+END_SRC
+
+* IDO                                                                :review:
+#+BEGIN_SRC emacs-lisp
+
+#+END_SRC
+
 * Load all the Public Emacs files
 #+BEGIN_SRC emacs-lisp
 (load (convert-windows-filename "C:/Users/Public/Documents/emacs/.emacs"))
