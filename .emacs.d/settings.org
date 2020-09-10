@@ -1,28 +1,99 @@
 #+EXPORT-FILENAME init.el
+* Start up
+** Add Edit original warning.
+ #+BEGIN_SRC emacs-lisp
+ ;;;; This file had been generated from settings.org
+ #+END_SRC
+** A measure the load time
+ #+BEGIN_SRC emacs-lisp
+ ;; load time metrics
+ (setq  *emacs-load-start* (current-time))
+ #+END_SRC
+** Package loading mechanism needs review                            :review:
+ #+BEGIN_SRC emacs-lisp
+ (require 'package)
+ (add-to-list 'package-archives
+              '("melpa" . "https://melpa.org/packages/")
+	      t)
+ (add-to-list 'package-archives
+	      '("elpa" . "https://elpa.gnu.org/packages/")
+	      t)
 
-* A measure the load time
-#+BEGIN_SRC emacs-lisp
-;; load time metrics
-(setq  *emacs-load-start* (current-time))
-#+END_SRC
+ (when (< emacs-major-version 24)
+   ;; For important compatibility libraries like cl-lib
+   (add-to-list 'package-archives '("gnu" . "https://elpa.gnu.org/packages/")))
+
+ (package-initialize)
+
+
+ ;;;; These are the packages needed
+
+ (defvar local-packages '(flx-ido
+			  auto-complete
+			  epc
+			  slime
+			  rainbow-delimiters
+			  paredit
+			  ac-slime
+			  cyberpunk-theme
+			  dracula-theme
+			  dakrone-theme
+			  popup
+			  jedi
+			  docker-tramp
+			  dockerfile-mode
+			  pillar
+			  cmake-mode
+			  yaml-mode
+			  ess
+			  deft
+			  magit
+			  htmlize))
+
+
+ ;;;; Find any unistalled package
+
+ (defun uninstalled-packages (packages)
+   (delq nil
+	 (mapcar (lambda (p)
+		   (if (package-installed-p p nil) nil p))
+		 packages)))
+
+ ;;;; Install any uninsalled packages
+
+ (let ((need-to-install
+	(uninstalled-packages local-packages)))
+   (message "Checking for unistalled  packages: %s." need-to-install)
+   (when need-to-install
+     (progn
+       (package-refresh-contents)
+       (dolist (p need-to-install)
+         (message "Downloading %s." p)
+	 (package-install p)))))
+	 
+(setq *emacs-download* (current-time))
+
+ #+END_SRC
+** Basic Look and feel
+I don't like the a messy startup screen.
+
+ #+BEGIN_SRC emacs-lisp
+ (setq inhibit-startup-screen t)
+ (setq visible-bell 1)
+ #+END_SRC
+** Crossplatform filename
+ I like to specify filenames so conversion to the running platform is easy
+ #+BEGIN_SRC emacs-lisp
+ (fset 'convert-windows-filename
+       (if (fboundp 'cygwin-convert-file-name-from-windows)
+	   'cygwin-convert-file-name-from-windows
+	   'convert-standard-filename))
+ #+END_SRC
 
 * Save the emacs customization to a file.
 #+BEGIN_SRC emacs-lisp
 (setq custom-file "~/.emacs-custom.el")
 (load custom-file)
-#+END_SRC
-* An attempt at crossplatform filename
-#+BEGIN_SRC emacs-lisp
-;;
-(fset 'convert-windows-filename
-      (if (fboundp 'cygwin-convert-file-name-from-windows)
-	  'cygwin-convert-file-name-from-windows
-	  'convert-standard-filename))
-#+END_SRC
-* Startup
-#+BEGIN_SRC emacs-lisp
-(setq inhibit-startup-screen t)
-(setq visible-bell 1)
 #+END_SRC
 * MSYS2/MINGW64 Path elements
 #+BEGIN_SRC emacs-lisp
@@ -38,69 +109,6 @@
 #+BEGIN_SRC emacs-lisp
 ;;;  Now rebuild path based on exec-path
 (setenv "PATH" (mapconcat #'identity exec-path path-separator))
-#+END_SRC
-* Package loading mechanism needs review                             :review:
-#+BEGIN_SRC emacs-lisp
-;;;; Download packages from MELPA
-
-(require 'package)
-(add-to-list 'package-archives
-             '("melpa" . "https://melpa.org/packages/")
-	     t)
-(add-to-list 'package-archives
-	     '("elpa" . "https://elpa.gnu.org/packages/")
-	     t)
-
-(when (< emacs-major-version 24)
-  ;; For important compatibility libraries like cl-lib
-  (add-to-list 'package-archives '("gnu" . "https://elpa.gnu.org/packages/")))
-
-(package-initialize)
-
-
-;;;; These are the packages needed
-
-(defvar local-packages '(flx-ido
-			 auto-complete
-			 epc
-			 slime
-			 rainbow-delimiters
-			 paredit
-			 ac-slime
-			 cyberpunk-theme
-			 dracula-theme
-			 dakrone-theme
-			 popup
-			 jedi
-			 docker-tramp
-			 dockerfile-mode
-			 pillar
-			 cmake-mode
-			 yaml-mode
-			 ess
-			 deft
-			 magit
-			 htmlize))
-
-
-;;;; Find any unistalled package
-
-(defun uninstalled-packages (packages)
-  (delq nil
-	(mapcar (lambda (p)
-		  (if (package-installed-p p nil) nil p))
-		packages)))
-
-;;;; Install any uninsalled packages
-
-(let ((need-to-install
-       (uninstalled-packages local-packages)))
-  (when need-to-install
-    (progn
-      (package-refresh-contents)
-      (dolist (p need-to-install)
-	(package-install p)))))
-
 #+END_SRC
 * Common Lisp, SLIME and AUTO-COMPLETE                               :review:
 #+BEGIN_SRC emacs-lisp
@@ -354,23 +362,6 @@
  ;;;; Add MikTex executables to path
  ;(add-to-list 'exec-path "/c/Users/zzzap/AppData/Local/Programs/MiKTeX/miktex/bin/x64")
  #+END_SRC
-** Standard work directory
- #+BEGIN_SRC emacs-lisp
- ;;;; Change to my work directory
- (cd "~/local-code-projects/my-code/common-lisp/local-projects/")
- #+END_SRC
-** Standard org and org-agenda files
- #+BEGIN_SRC emacs-lisp
- ;; My org files
- (setq user/org-files "~/org/")
- (setq user/org-agenda-files "~/org/agenda/")
-
- (setq org-agenda-files `(,user/org-agenda-files))
- #+END_SRC
-** Always present the gtd.org file
- #+BEGIN_SRC emacs-lisp
- (find-file (concat user/org-agenda-files "gtd.org"))
- #+END_SRC
 ** A few custom checklists
  #+BEGIN_SRC emacs-lisp
  (defun morning-checklist-writer()
@@ -399,6 +390,19 @@
      - [ ] Amount
    - [ ] Write and mail checks" nil))
  #+END_SRC
+** Standard org and org-agenda directories
+  - I have a common place for org and org agenda files
+ #+BEGIN_SRC emacs-lisp
+ ;; My org files
+ (setq user/org-files "~/org/")
+ (setq user/org-agenda-files "~/org/agenda/")
+ (setq org-agenda-files  `(,user/org-agenda-files))
+  #+END_SRC
+  - The following may be defined with the above values
+** Agenda configuration
+#+BEGIN-SRC emacs-lisp
+ (setq org-agenda-files `(,user/org-agenda-files))
+#+END_SRC
 ** Capture Templates
  #+BEGIN_SRC emacs-lisp
  ;;; See: http://cachestocaches.com/2016/9/my-workflow-org-agenda/
@@ -449,9 +453,22 @@
 
 
  #+END_SRC
+** Always present the gtd.org file
+ #+BEGIN_SRC emacs-lisp
+ (find-file (concat user/org-agenda-files "gtd.org"))
+ #+END_SRC
+* Final Presenation to the user.
+** My default coding location
+ #+BEGIN_SRC emacs-lisp
+ ;;;; Change to my work directory
+ (cd "~/local-code-projects/my-code/common-lisp/local-projects/")
+ #+END_SRC
+
 * Report the time metrics
 #+BEGIN_SRC emacs-lisp
 (setq *emacs-load-end* (current-time))
-(message "My .emacs loaded in %s " (float-time (time-subtract *emacs-load-end* *emacs-load-start*)))
+(message "Time for .emacs downloading: %s loading %s " 
+(float-time (time-subtract *emacs-load-end* *emacs-download*))
+(float-time (time-subtract *emacs-download* *emacs-load-start*)))
 #+END_SRC
 
