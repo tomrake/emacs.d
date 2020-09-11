@@ -9,7 +9,7 @@
  ;; load time metrics
  (setq  *emacs-load-start* (current-time))
  #+END_SRC
-** Package loading mechanism needs review                            :review:
+** Package Archives distros                                          :review:
  #+BEGIN_SRC emacs-lisp
  (require 'package)
  (add-to-list 'package-archives
@@ -24,7 +24,9 @@
    (add-to-list 'package-archives '("gnu" . "https://elpa.gnu.org/packages/")))
 
  (package-initialize)
-
+ #+END_SRC
+** Package loading mechanism needs review                   :review:
+ #+BEGIN_SRC emacs-lisp :tangle no
 
  ;;;; These are the packages needed
 
@@ -70,9 +72,10 @@
        (dolist (p need-to-install)
          (message "Downloading %s." p)
 	 (package-install p)))))
-	 
-(setq *emacs-download* (current-time))
-
+ #+END_SRC
+** Download Timing
+ #+BEGIN_SRC emacs-lisp
+ (setq *emacs-download* (current-time))
  #+END_SRC
 ** Basic Look and feel
 I don't like the a messy startup screen.
