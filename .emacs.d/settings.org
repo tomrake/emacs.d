@@ -396,8 +396,13 @@ I don't like the a messy startup screen.
  ;; My org files
  (setq user/org-files "~/org/")
  (setq user/org-agenda-files "~/org/agenda/")
+ #+END_SRC
+** Task agenda context
+ - This starts an adenda context
+ #+BEGIN_SRC emacs-lisp
  (setq org-agenda-files  `(,user/org-agenda-files))
-  #+END_SRC
+ (setq org-agenda-skip-scheduled-if-done t)
+ #+END_SRC
   - The following may be defined with the above values
 ** Agenda configuration
 #+BEGIN-SRC emacs-lisp
