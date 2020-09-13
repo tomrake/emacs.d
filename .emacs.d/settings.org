@@ -4,11 +4,13 @@
  #+BEGIN_SRC emacs-lisp
  ;;;; This file had been generated from settings.org
  #+END_SRC
+
 ** A measure the load time
  #+BEGIN_SRC emacs-lisp
  ;; load time metrics
  (setq  *emacs-load-start* (current-time))
  #+END_SRC
+
 ** Package Archives distros                                          :review:
  #+BEGIN_SRC emacs-lisp
  (require 'package)
@@ -25,6 +27,7 @@
 
  (package-initialize)
  #+END_SRC
+
 ** Package loading mechanism needs review                   :review:
  #+BEGIN_SRC emacs-lisp :tangle no
 
@@ -73,10 +76,12 @@
          (message "Downloading %s." p)
 	 (package-install p)))))
  #+END_SRC
+
 ** Download Timing
  #+BEGIN_SRC emacs-lisp
  (setq *emacs-download* (current-time))
  #+END_SRC
+
 ** Basic Look and feel
 I don't like the a messy startup screen.
 
@@ -84,6 +89,7 @@ I don't like the a messy startup screen.
  (setq inhibit-startup-screen t)
  (setq visible-bell 1)
  #+END_SRC
+
 ** Crossplatform filename
  I like to specify filenames so conversion to the running platform is easy
  #+BEGIN_SRC emacs-lisp
@@ -93,11 +99,13 @@ I don't like the a messy startup screen.
 	   'convert-standard-filename))
  #+END_SRC
 
+
 * Save the emacs customization to a file.
 #+BEGIN_SRC emacs-lisp
 (setq custom-file "~/.emacs-custom.el")
 (load custom-file)
 #+END_SRC
+
 * MSYS2/MINGW64 Path elements
 #+BEGIN_SRC emacs-lisp
 (let ((mingw64-root-mount "C:/devel/msys64")
@@ -108,31 +116,41 @@ I don't like the a messy startup screen.
 (add-to-list 'exec-path (concat mingw64-root-mount "/usr/bin"))
 (add-to-list 'exec-path mingw64-bin-mount))
 #+END_SRC
+
 * Rebuild PATH based on current exec-path
 #+BEGIN_SRC emacs-lisp
 ;;;  Now rebuild path based on exec-path
 (setenv "PATH" (mapconcat #'identity exec-path path-separator))
 #+END_SRC
-* Common Lisp, SLIME and AUTO-COMPLETE                               :review:
+
+* Setup SBCL                               
+#+BEGIN_SRC emacs-lisp
+(setq SBCL_HOME_SAVE (getenv "SBCL_HOME"))
+(setq SBCL_BASE "C:/devel/SBCL_2_0_0-bin")
+#+END_SRC
+
+* Configure Autocomplete
 #+BEGIN_SRC emacs-lisp
 (require 'auto-complete-config)
 (ac-config-default)
+#+END_SRC
 
-;;;; Slime Setup
-
-(setq SBCL_HOME_SAVE (getenv "SBCL_HOME"))
-
+* Copy OS PATH to emacs path
+#+BEGIN_SRC emacs-lisp
 (setq PATH_SAVE (getenv "PATH"))
+#+END_SRC
 
+* MINGW64 definitions
+#+BEGIN_SRC emacs-lisp
 (setq +msys64-base-path+ "C:/devel/msys64/")
-
-
 (defun lisp-mingw64-implementation (tag)
   `(,tag (,(concat +msys64-base-path+ "usr/bin/env.exe") "MSYSTEM=MINGW64"
 	  ,(concat +msys64-base-path+ "usr/bin/bash.exe") "-l" "-c" "/usr/local/bin/sbcl --noinform")))
 
-(setq SBCL_BASE "C:/devel/SBCL_2_0_0-bin")
+#+END_SRC
 
+* SLIME
+#+BEGIN_SRC emacs-lisp
 (setq slime-lisp-implementations
       `(
 
@@ -176,33 +194,41 @@ I don't like the a messy startup screen.
 	   `(clisp (,(convert-standard-filename "/usr/bin/clisp" ))))
       ,(when (file-exists-p  (convert-standard-filename "C:/Program Files/ABCL/abcl.jar")) 	;; Add ABCL if present
 	   `(abcl  ("java" "-jar" ,(convert-standard-filename "C:/Program Files/ABCL/abcl.jar"))))))
+#+END_SRC
 
-;;;; Allow Root of HyperSped to be set from (env "HyperSpec")
-
+* Common Lisp HyperSpec
+I use my local clone of the Hyperspec
+#+BEGIN_SRC emacs-lisp
 (setq common-lisp-hyperspec-root (convert-standard-filename (getenv "HyperSpec")))
+#+END_SRC
 
+* Option  for SLIME
+#+BEGIN_SRC emacs-lisp
 (setq slime-contribs '(slime-fancy))
-
 (global-set-key "\C-cs" 'slime-selector)
+#+END_SRC
 
-;;;; Slime Autocomplete
-
+* Slime Autocomplete
+#+BEGIN_SRC emacs-lisp
 (require 'ac-slime)
 (add-hook 'slime-mode-hook 'set-up-slime-ac)
 (add-hook 'slime-repl-mode-hook 'set-up-slime-ac)
 (eval-after-load "auto-complete"
   '(add-to-list 'ac-modes 'slime-repl-mode))
+#+END_SRC
 
-;;;; Paredit Mode
-
+* Paredit mode
+#+BEGIN_SRC emacs-lisp
 (add-hook 'lisp-mode-hook #'paredit-mode)
+#+END_SRC
 
-;;;; Auto-complete for lisp
-
+* Auto complete mode for LISP
+#+BEGIN_SRC emacs-lisp
 (add-hook 'lisp-mode-hook #'auto-complete-mode)
+#+END_SRC
 
-;;;; Auto-modes for .cl and .asd
-
+* Enable lisp-mode .lisp and .asd files
+#+BEGIN_SRC emacs-lisp
 (setq auto-mode-alist
       (append '((".*\\.asd\\'" . lisp-mode))
 	      auto-mode-alist))
@@ -211,6 +237,7 @@ I don't like the a messy startup screen.
       (append '((".*\\.cl\\'" . lisp-mode))
 	      auto-mode-alist))
 #+END_SRC
+
 * Emacs Theme                                                        :review:
 #+BEGIN_SRC emacs-lisp
 (load-theme 'manoj-dark)
@@ -221,6 +248,7 @@ I don't like the a messy startup screen.
 #+BEGIN_SRC emacs-lisp
 (add-hook 'prog-mode-hook #'rainbow-delimiters-mode)
 #+END_SRC
+
 * Pascal Setup                                                       :review:
 #+BEGIN_SRC emacs-lisp
 (add-hook 'pascal-mode-hook
@@ -243,6 +271,7 @@ I don't like the a messy startup screen.
       (append '((".*\\.yml\\'" . yaml-mode))
 	      auto-mode-alist))
 #+END_SRC
+
 * Shells                                                             :review:
 #+BEGIN_SRC emacs-lisp
 ;; (setenv  "PATH" (concat
@@ -291,17 +320,20 @@ I don't like the a messy startup screen.
        ;; (shell)
        )
 #+END_SRC
+
 * Tramp                                                              :review:
 #+BEGIN_SRC emacs-lisp
 (require 'tramp)
 ;(setq tramp-default-method "plink")
 (setq tramp-verbose 10)
 #+END_SRC
+
 * IDO                                                                :review:
 #+BEGIN_SRC emacs-lisp
 (require 'ido)
 (ido-mode t)
 #+END_SRC
+
 * Indent                                                             :review:
   - Leftover from  parsing experiment???
 #+BEGIN_SRC emacs-lisp
@@ -311,16 +343,19 @@ I don't like the a messy startup screen.
 (put 'do 'lisp-indent-function 2)
 (put 'do* 'lisp-indent-function 2)
 #+END_SRC
+
 * Magit                                                              :review:
 #+BEGIN_SRC emacs-lisp
 (global-set-key (kbd "C-x g") 'magit-status)
 #+END_SRC
+
 * Printing                                                           :review:
 #+BEGIN_SRC emacs-lisp
 (setq printer-name "lpr://192.168.1.39")
 #+END_SRC
 
 * Ord Mode Customizations
+
 ** Org Key Binding
  #+BEGIN_SRC emacs-lisp
  ;;;; Org Mode key bindings.
@@ -329,6 +364,7 @@ I don't like the a messy startup screen.
  (global-set-key (kbd "C-c c") 'org-capture)
  (global-set-key (kbd "C-c b") 'org-switchb)
  #+END_SRC
+
 ** Configure BABEL languages
  #+BEGIN_SRC emacs-lisp
  (org-babel-do-load-languages
@@ -336,20 +372,24 @@ I don't like the a messy startup screen.
   '((lisp . t)
     (emacs-lisp . t)))
  #+END_SRC
+
 ** org modules needed
  #+BEGIN_SRC emacs-lisp
  (setq org-modules '(org-habit org-checklist))
  #+END_SRC
+
 ** Configure habit (do not remember why)
  #+BEGIN_SRC emacs-lisp
  (setq org-habit-graph-column 50)
  #+END_SRC
+
 ** Org link abbreviations
  #+BEGIN_SRC emacs-lisp
  (setq org-link-abbrev-alist
        '(("bugzilla" . "http://192.168.1.50/bugzilla/show_bug.cgi?id=")
 	 ("bugzilla-comp" . "http://192.168.1.50/bugzilla/describecomponents.cgi?product=")))
  #+END_SRC
+
 ** Ensure there are stadard ~/org directories
  #+BEGIN_SRC emacs-lisp
  ;; Each user has a org directory in ~/org ensure it exists
@@ -365,6 +405,7 @@ I don't like the a messy startup screen.
  ;;;; Add MikTex executables to path
  ;(add-to-list 'exec-path "/c/Users/zzzap/AppData/Local/Programs/MiKTeX/miktex/bin/x64")
  #+END_SRC
+
 ** A few custom checklists
  #+BEGIN_SRC emacs-lisp
  (defun morning-checklist-writer()
@@ -393,6 +434,7 @@ I don't like the a messy startup screen.
      - [ ] Amount
    - [ ] Write and mail checks" nil))
  #+END_SRC
+
 ** Standard org and org-agenda directories
   - I have a common place for org and org agenda files
  #+BEGIN_SRC emacs-lisp
@@ -400,6 +442,7 @@ I don't like the a messy startup screen.
  (setq user/org-files "~/org/")
  (setq user/org-agenda-files "~/org/agenda/")
  #+END_SRC
+
 ** Task agenda context
  - This starts an adenda context
  #+BEGIN_SRC emacs-lisp
@@ -407,10 +450,12 @@ I don't like the a messy startup screen.
  (setq org-agenda-skip-scheduled-if-done t)
  #+END_SRC
   - The following may be defined with the above values
+
 ** Agenda configuration
 #+BEGIN-SRC emacs-lisp
  (setq org-agenda-files `(,user/org-agenda-files))
 #+END_SRC
+
 ** Capture Templates
  #+BEGIN_SRC emacs-lisp
  ;;; See: http://cachestocaches.com/2016/9/my-workflow-org-agenda/
@@ -455,22 +500,27 @@ I don't like the a messy startup screen.
 
  ;;;; Allow access to org agenda files
  #+END_SRC
+
 ** Refile configuration
  #+BEGIN_SRC emacs-lisp
  (setq org-refile-targets '((org-agenda-files :maxlevel . 9)))
 
 
  #+END_SRC
+
 ** Always present the gtd.org file
  #+BEGIN_SRC emacs-lisp
  (find-file (concat user/org-agenda-files "gtd.org"))
  #+END_SRC
+
 * Final Presenation to the user.
+
 ** My default coding location
  #+BEGIN_SRC emacs-lisp
  ;;;; Change to my work directory
  (cd "~/local-code-projects/my-code/common-lisp/local-projects/")
  #+END_SRC
+
 
 * Report the time metrics
 #+BEGIN_SRC emacs-lisp
