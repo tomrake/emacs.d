@@ -107,7 +107,10 @@ I don't like the a messy startup screen.
 #+END_SRC
 
 * MSYS2/MINGW64 Path elements
+  - Mingw requires careful crafting of  paths and emulation of mount points.
+  - Any LISP built under mingw has an assumed environment of the build.
 #+BEGIN_SRC emacs-lisp
+;;; Add path elements to exec path
 (let ((mingw64-root-mount "C:/devel/msys64")
       (mingw64-bin-mount "C:/devel/msys64/usr/bin"))
   
@@ -146,51 +149,66 @@ I don't like the a messy startup screen.
 (setq PATH_SAVE (getenv "PATH"))
 #+END_SRC
 
-* SLIME
+* Provision user compiled SBCL
 #+BEGIN_SRC emacs-lisp
-(setq slime-lisp-implementations
-      `(
+(defmacro user-compiled-mingw64-sbcl ()
+  `(when  (file-exists-p (concat +msys64-base-path+ "/usr/local/bin/sbcl.exe"))
+      (lisp-mingw64-implementation 'mingw64-sbcl)))
+#+END_SRC
 
-	,(when (file-exists-p (concat +msys64-base-path+ "/usr/local/bin/sbcl.exe"))
-	   (lisp-mingw64-implementation 'mingw64-sbcl))	
-	,(when (boundp 'SBCL_BASE) 
-	   (cond  
-		 ((string= SBCL_BASE "C:/devel/SBCL_2_0_2")
-		  (progn
-		    (unless (boundp 'SBCL-IN-PATH)
-		      (setenv "PATH"
-			      (concat
-			       SBCL_BASE
-			       "/bin/"
-			       ";"
-			       (getenv "PATH")))
-		      (setenv "SBCL_HOME"
-			      (concat
-			       SBCL_BASE
-			       "/lib/sbcl"))
-		      (setq SBCL-IN-PATH t))
-		    `(sbcl  (,(concat SBCL_BASE "/bin/" "sbcl.exe")
-			     "--noinform"))))
-		 ((string= SBCL_BASE "C:/devel/SBCL_2_0_0-bin")
-		  (progn
-		    (unless (boundp 'SBCL-IN-PATH)
-		      (setenv "PATH"
-			      (concat
-			       SBCL_BASE
-			       "/bin/"
-			       ";"
-			       (getenv "PATH")))
-		       (setenv "SBCL_HOME" SBCL_BASE)
-		       (setq SBCL-IN-PATH t))
-		    `(sbcl  (,(concat SBCL_BASE "/" "sbcl.exe")
-			     "--noinform"))))))
-      (clisp ("clisp" "-K" "full" "-I"))
-      ,(when (and (eq system-type 'winodows-nt))
-	 `(clisp ("clisp" "-K" "full" "-I")))
-      ,(when (and (eq system-type 'cygwin) (file-exists-p (convert-standard-filename "/usr/bin/clisp"))) ;; Add clisp on cygwin
-	   `(clisp (,(convert-standard-filename "/usr/bin/clisp" ))))
-      ,(when (file-exists-p  (convert-standard-filename "C:/Program Files/ABCL/abcl.jar")) 	;; Add ABCL if present
-	   `(abcl  ("java" "-jar" ,(convert-standard-filename "C:/Program Files/ABCL/abcl.jar"))))))
+* SLIME
+  - There are a number of defunct implemnations in this list:
+    - SBCL_2_0_@
+    - SBCL_2_0_0-bin
+    - Both clisp need review.
+  - Refactor
+    - each entry in the slime-lisp-implemenation should be:
+      - ,(provision-user-compiled-mingw)
+      - if that privision returns nil there is no entry.
+#+BEGIN_SRC emacs-lisp
+  (setq slime-lisp-implementations
+	`(
+	  ,(user-compiled-mingw64-sbcl)
+	  ;; ,(when (file-exists-p (concat +msys64-base-path+ "/usr/local/bin/sbcl.exe"))
+	  ;;    (lisp-mingw64-implementation 'mingw64-sbcl))	
+	  ,(when (boundp 'SBCL_BASE) 
+	     (cond  
+		   ((string= SBCL_BASE "C:/devel/SBCL_2_0_2")
+		    (progn
+		      (unless (boundp 'SBCL-IN-PATH)
+			(setenv "PATH"
+				(concat
+				 SBCL_BASE
+				 "/bin/"
+				 ";"
+				 (getenv "PATH")))
+			(setenv "SBCL_HOME"
+				(concat
+				 SBCL_BASE
+				 "/lib/sbcl"))
+			(setq SBCL-IN-PATH t))
+		      `(sbcl  (,(concat SBCL_BASE "/bin/" "sbcl.exe")
+			       "--noinform"))))
+		   ((string= SBCL_BASE "C:/devel/SBCL_2_0_0-bin")
+		    (progn
+		      (unless (boundp 'SBCL-IN-PATH)
+			(setenv "PATH"
+				(concat
+				 SBCL_BASE
+				 "/bin/"
+				 ";"
+				 (getenv "PATH")))
+			 (setenv "SBCL_HOME" SBCL_BASE)
+			 (setq SBCL-IN-PATH t))
+		      `(sbcl  (,(concat SBCL_BASE "/" "sbcl.exe")
+			       "--noinform"))))))
+	(clisp ("clisp" "-K" "full" "-I"))
+	,(when (and (eq system-type 'winodows-nt))
+	   `(clisp ("clisp" "-K" "full" "-I")))
+	,(when (and (eq system-type 'cygwin) (file-exists-p (convert-standard-filename "/usr/bin/clisp"))) ;; Add clisp on cygwin
+	     `(clisp (,(convert-standard-filename "/usr/bin/clisp" ))))
+	,(when (file-exists-p  (convert-standard-filename "C:/Program Files/ABCL/abcl.jar")) 	;; Add ABCL if present
+	     `(abcl  ("java" "-jar" ,(convert-standard-filename "C:/Program Files/ABCL/abcl.jar"))))))
 #+END_SRC
 
 * Common Lisp HyperSpec
