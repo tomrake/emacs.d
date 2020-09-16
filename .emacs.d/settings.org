@@ -115,6 +115,12 @@ I don't like the a messy startup screen.
 (add-to-list 'exec-path (concat mingw64-root-mount "/usr/local/bin"))
 (add-to-list 'exec-path (concat mingw64-root-mount "/usr/bin"))
 (add-to-list 'exec-path mingw64-bin-mount))
+(setq +msys64-base-path+ "C:/devel/msys64/")
+(defun lisp-mingw64-implementation (tag)
+  "Create a slime implemenation in the local mingw64 system naned tag."
+  `(,tag (,(concat +msys64-base-path+ "usr/bin/env.exe") "MSYSTEM=MINGW64"
+	  ,(concat +msys64-base-path+ "usr/bin/bash.exe") "-l" "-c" "/usr/local/bin/sbcl --noinform")))
+
 #+END_SRC
 
 * Rebuild PATH based on current exec-path
@@ -138,15 +144,6 @@ I don't like the a messy startup screen.
 * Copy OS PATH to emacs path
 #+BEGIN_SRC emacs-lisp
 (setq PATH_SAVE (getenv "PATH"))
-#+END_SRC
-
-* MINGW64 definitions
-#+BEGIN_SRC emacs-lisp
-(setq +msys64-base-path+ "C:/devel/msys64/")
-(defun lisp-mingw64-implementation (tag)
-  `(,tag (,(concat +msys64-base-path+ "usr/bin/env.exe") "MSYSTEM=MINGW64"
-	  ,(concat +msys64-base-path+ "usr/bin/bash.exe") "-l" "-c" "/usr/local/bin/sbcl --noinform")))
-
 #+END_SRC
 
 * SLIME
@@ -274,10 +271,6 @@ I use my local clone of the Hyperspec
 
 * Shells                                                             :review:
 #+BEGIN_SRC emacs-lisp
-;; (setenv  "PATH" (concat
-;; 		 "C:\\devel\\msys64\\usr\\bin" ";"
-;; 		 (getenv "PATH")))
-
 (setq win-shell-implementaions
       `((cmd (shell))
 	(ming64 (
@@ -350,7 +343,7 @@ I use my local clone of the Hyperspec
 #+END_SRC
 
 * Printing                                                           :review:
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp :tangle no
 (setq printer-name "lpr://192.168.1.39")
 #+END_SRC
 
