@@ -156,23 +156,35 @@ I don't like the a messy startup screen.
       (lisp-mingw64-implementation 'mingw64-sbcl)))
 #+END_SRC
 
-* SLIME
-  - There are a number of defunct implemnations in this list:
-    - SBCL_2_0_@
-    - SBCL_2_0_0-bin
-    - Both clisp need review.
-  - Refactor
-    - each entry in the slime-lisp-implemenation should be:
-      - ,(provision-user-compiled-mingw)
-      - if that privision returns nil there is no entry.
-#+BEGIN_SRC emacs-lisp
-  (setq slime-lisp-implementations
-	`(
-	  ,(user-compiled-mingw64-sbcl)
-	  ;; ,(when (file-exists-p (concat +msys64-base-path+ "/usr/local/bin/sbcl.exe"))
-	  ;;    (lisp-mingw64-implementation 'mingw64-sbcl))	
-	  ,(when (boundp 'SBCL_BASE) 
+* Provions binary SBCL 2.0.0
+This is assumed to be broken.
+#+BEGIN_SRC emacs-lisp :tangle no
+(defmacro binary-supplied-sbcl-2-0-0 ()
+  (when (boundp 'SBCL_BASE) 
 	     (cond  
+		   
+		   ((string= SBCL_BASE "C:/devel/SBCL_2_0_0-bin")
+		    (progn
+		      (unless (boundp 'SBCL-IN-PATH)
+			(setenv "PATH"
+				(concat
+				 SBCL_BASE
+				 "/bin/"
+				 ";"
+				 (getenv "PATH")))
+			 (setenv "SBCL_HOME" SBCL_BASE)
+			 (setq SBCL-IN-PATH t))
+		      `(`sbcl  (,(concat SBCL_BASE "/" "sbcl.exe")
+			       "--noinform"))))))
+)
+#+END_SRC
+
+* Provions binary SBCL 2.0.2
+This is assumed to be broken.
+#+BEGIN_SRC emacs-lisp :tangle no
+(defmacro binary-compiled-sbcl-2-0-2()
+(when (boundp 'SBCL_BASE) 
+         (cond  
 		   ((string= SBCL_BASE "C:/devel/SBCL_2_0_2")
 		    (progn
 		      (unless (boundp 'SBCL-IN-PATH)
@@ -200,6 +212,26 @@ I don't like the a messy startup screen.
 				 (getenv "PATH")))
 			 (setenv "SBCL_HOME" SBCL_BASE)
 			 (setq SBCL-IN-PATH t))
+		      `(`sbcl  (,(concat SBCL_BASE "/" "sbcl.exe")
+			       "--noinform"))))))
+)
+#+END_SRC
+
+* SLIME
+  - There are a number of defunct implemnations in this list:
+    - SBCL_2_0_@
+    - SBCL_2_0_0-bin
+    - Both clisp need review.
+  - Refactor
+    - each entry in the slime-lisp-implemenation should be:
+      - ,(provision-user-compiled-mingw)
+      - if that privision returns nil there is no entry.
+#+BEGIN_SRC emacs-lisp
+  (setq slime-lisp-implementations
+	`(
+	  ,(user-compiled-mingw64-sbcl)
+;	  ,(binary-supplied-sbcl-2-0-0)
+;	  ,(binary-compiled-sbcl-2-0-2)
 		      `(sbcl  (,(concat SBCL_BASE "/" "sbcl.exe")
 			       "--noinform"))))))
 	(clisp ("clisp" "-K" "full" "-I"))
