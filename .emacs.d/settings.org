@@ -441,14 +441,10 @@ I use my local clone of the Hyperspec
  (unless (file-directory-p "~/org")
    (make-directory  "~/org"))
  #+END_SRC
+
+** Standard Notes file
  #+BEGIN_SRC emacs-lisp
  (setq org-default-notes-file "~/org/notes.org")
-
-
- ;(require 'org-checklist)
-
- ;;;; Add MikTex executables to path
- ;(add-to-list 'exec-path "/c/Users/zzzap/AppData/Local/Programs/MiKTeX/miktex/bin/x64")
  #+END_SRC
 
 ** A few custom checklists
@@ -549,8 +545,6 @@ I use my local clone of the Hyperspec
 ** Refile configuration
  #+BEGIN_SRC emacs-lisp
  (setq org-refile-targets '((org-agenda-files :maxlevel . 9)))
-
-
  #+END_SRC
 
 ** Always present the gtd.org file
