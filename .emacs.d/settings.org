@@ -217,6 +217,13 @@ This is assumed to be broken.
 )
 #+END_SRC
 
+* Provision ABCL
+#+BEGIN_SRC emacs-lisp
+(defmacro provision-abcl()
+  `(when (and (file-exists-p  (convert-standard-filename "C:/Program Files/ABCL/abcl.jar")))
+	`(abcl  ("java" "-jar" ,(convert-standard-filename "C:/Program Files/ABCL/abcl.jar")))))
+#+END_SRC
+
 * SLIME
   - There are a number of defunct implemnations in this list:
     - SBCL_2_0_@
@@ -228,19 +235,14 @@ This is assumed to be broken.
       - if that privision returns nil there is no entry.
 #+BEGIN_SRC emacs-lisp
   (setq slime-lisp-implementations
-	`(
-	  ,(user-compiled-mingw64-sbcl)
+	`(,(user-compiled-mingw64-sbcl)
+          ,(provision-abcl)
 ;	  ,(binary-supplied-sbcl-2-0-0)
 ;	  ,(binary-compiled-sbcl-2-0-2)
-		      `(sbcl  (,(concat SBCL_BASE "/" "sbcl.exe")
-			       "--noinform"))))))
-	(clisp ("clisp" "-K" "full" "-I"))
 	,(when (and (eq system-type 'winodows-nt))
-	   `(clisp ("clisp" "-K" "full" "-I")))
-	,(when (and (eq system-type 'cygwin) (file-exists-p (convert-standard-filename "/usr/bin/clisp"))) ;; Add clisp on cygwin
-	     `(clisp (,(convert-standard-filename "/usr/bin/clisp" ))))
-	,(when (file-exists-p  (convert-standard-filename "C:/Program Files/ABCL/abcl.jar")) 	;; Add ABCL if present
-	     `(abcl  ("java" "-jar" ,(convert-standard-filename "C:/Program Files/ABCL/abcl.jar"))))))
+	   `(clisp-win ("clisp" "-K" "full" "-I")))
+	,(when (and (eq system-type 'cygwin) (file-exists-p (convert-standard-filename "/usr/bin/clisp")))
+	    `(clisp-cyg (,(convert-standard-filename "/usr/bin/clisp" ))))))
 #+END_SRC
 
 * Common Lisp HyperSpec
