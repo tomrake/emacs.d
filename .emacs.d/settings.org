@@ -402,7 +402,15 @@ I use my local clone of the Hyperspec
 #+END_SRC
 
 * Ord Mode Customizations
-
+** site-lisp  and org-checklist.el
+   - https://www.gnu.org/software/emacs/manual/html_node/elisp/Library-Search.html
+   - I want add org-checklist.el so I will add it to site-lisp
+   - "/usr/local/share/emacs/site-lisp" per manual where
+     - replace /usr/local with the installation prefix appropriate for your Emacs.
+     - Current value: file:\\C:\ProgramData\chocolatey\lib\Emacs\tools
+#+BEGIN_SRC emacs-lisp
+;;; org-checklist.el location is in <emacs-install>/share/emacs/site-lisp/
+#+END_SRC
 ** Org Key Binding
  #+BEGIN_SRC emacs-lisp
  ;;;; Org Mode key bindings.
