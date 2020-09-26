@@ -102,6 +102,11 @@ I don't like the a messy startup screen.
 	   'convert-standard-filename))
  #+END_SRC
 
+
+* Debug On Error
+#+BEGIN_SRC emacs-lisp
+(setq debug-on-error t)
+#+END_SRC
 * Save the emacs customization to a file.
 #+BEGIN_SRC emacs-lisp
 (setq custom-file "~/.emacs-custom.el")
@@ -140,7 +145,8 @@ I don't like the a messy startup screen.
 (setq SBCL_BASE "C:/devel/SBCL_2_0_0-bin")
 #+END_SRC
 
-* Configure Autocomplete
+* Configure Autoc
+omplete
 #+BEGIN_SRC emacs-lisp
 (require 'auto-complete-config)
 (ac-config-default)
@@ -501,11 +507,6 @@ I use my local clone of the Hyperspec
  (setq org-agenda-skip-scheduled-if-done t)
  #+END_SRC
   - The following may be defined with the above values
-
-** Agenda configuration
-#+BEGIN-SRC emacs-lisp
- (setq org-agenda-files `(,user/org-agenda-files))
-#+END_SRC
 
 ** Capture Templates
  #+BEGIN_SRC emacs-lisp
