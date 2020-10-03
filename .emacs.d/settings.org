@@ -451,31 +451,41 @@ I use my local clone of the Hyperspec
        '(("bugzilla" . "http://192.168.1.50/bugzilla/show_bug.cgi?id=")
 	 ("bugzilla-comp" . "http://192.168.1.50/bugzilla/describecomponents.cgi?product=")))
  #+END_SRC
+** Customize by Environemt
+*** Ensure there are standard user ~/org directories
+ How to define the standard HOME org directory.
+ Under windows and linux this is ~/org 
+  #+BEGIN_SRC emacs-lisp
+  ;; The standard user directory is org  in the HOME directory.
+  ;; This directory can be set by the environment var ORG-USER-DIR.
+  (setf org-user-dir (if (getenv "ORG-USER-DIR") 
+			(getenv "ORG-USER-DIR")
+			(concat (getenv "HOME") "/org")))
+  (unless (file-directory-p org-user-dir)
+    (make-directory  org-user-dir))
+  #+END_SRC
 
-** Ensure there are standard user ~/org directories
-How to define the standard HOME org directory.
-Under windows and linux this is ~/org 
- #+BEGIN_SRC emacs-lisp
- ;; The standard user directory is org  in the HOME directory.
- ;; This directory can be set by the environment var ORG-USER-DIR.
- (setf org-user-dir (if (getenv "ORG-USER-DIR") 
-                       (getenv "ORG-USER-DIR")
-                       (concat (getenv "HOME") "/org")))
- (unless (file-directory-p org-user-dir)
-   (make-directory  org-user-dir))
- #+END_SRC
+*** Standard Notes file
+ This is a standard per User notes file.
+ Unser windows and linux this ~/org/notes/notes.org
+  #+BEGIN_SRC emacs-lisp
+  ;; The Standard org note file is ~/org/notes/notes.
+  ;; This can be set by the environment variable ORG-NOTES-FILE
+  (setq org-notes-file (if (getenv "ORG-NOTES-FILE")
+                          (getenv "ORG-NOTES-FILE")
+                          (concat org-user-dir "/notes/notes.org")))
+  (setq org-default-notes-file org-notes-file)
+  #+END_SRC
 
-** Standard Notes file
-This is a standard per User notes file.
-Unser windows and linux this ~/org/notes/notes.org
- #+BEGIN_SRC emacs-lisp
- ;; The Standard org note file is ~/org/notes/notes.
- ;; This can be set by the environment variable ORG-NOTES-FILE
- (setq org-notes-file (if (getenv "ORG-NOTES-FILE")
-                         (getenv "ORG-NOTES-FILE")
-                         (concat org-user-dir "/notes/notes.org")))
- (setq org-default-notes-file org-notes-file)
- #+END_SRC
+*** Standard org and org-agenda directories
+   - I have a common place for org and org agenda files
+  #+BEGIN_SRC emacs-lisp
+  ;; My org agenda dir are files in ~/org/agenda
+  ;; The the agenda directory can be changed by env ORG-AGENDA-DIR
+  (setq org-agenda-dir (if (getenv "ORG-AGENDA-DIR")
+                          (genenv "ORG-AGENDA-DIR")
+                          (concat org-user-dir "/agenda/")))
+  #+END_SRC
 
 ** A few custom checklists
  #+BEGIN_SRC emacs-lisp
@@ -504,16 +514,6 @@ Unser windows and linux this ~/org/notes/notes.org
      - [ ] Vendor
      - [ ] Amount
    - [ ] Write and mail checks" nil))
- #+END_SRC
-
-** Standard org and org-agenda directories
-  - I have a common place for org and org agenda files
- #+BEGIN_SRC emacs-lisp
- ;; My org agenda dir are files in ~/org/agenda
- ;; The the agenda directory can be changed by env ORG-AGENDA-DIR
- (setq org-agenda-dir (if (getenv "ORG-AGENDA-DIR")
-                         (genenv "ORG-AGENDA-DIR")
-                         (concat org-user-dir "/agenda/")))
  #+END_SRC
 
 ** Task agenda context
