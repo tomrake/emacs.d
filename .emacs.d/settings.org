@@ -3,6 +3,7 @@
 ** Add Edit original warning.
  #+BEGIN_SRC emacs-lisp
  ;;;; This file had been generated from settings.org
+ ;;;;  Customization by enviroment variables
  #+END_SRC
 
 ** A measure the load time
@@ -451,20 +452,29 @@ I use my local clone of the Hyperspec
 	 ("bugzilla-comp" . "http://192.168.1.50/bugzilla/describecomponents.cgi?product=")))
  #+END_SRC
 
-** Ensure there are stadard ~/org directories
+** Ensure there are standard user ~/org directories
 How to define the standard HOME org directory.
 Under windows and linux this is ~/org 
  #+BEGIN_SRC emacs-lisp
- ;; Each user has a org directory in ~/org ensure it exists
- (unless (file-directory-p "~/org")
-   (make-directory  "~/org"))
+ ;; The standard user directory is org  in the HOME directory.
+ ;; This directory can be set by the environment var ORG-USER-DIR.
+ (setf org-user-dir (if (getenv "ORG-USER-DIR") 
+                       (getenv "ORG-USER-DIR")
+                       (concat (getenv "HOME") "/org")))
+ (unless (file-directory-p org-user-dir)
+   (make-directory  org-user-dir))
  #+END_SRC
 
 ** Standard Notes file
 This is a standard per User notes file.
 Unser windows and linux this ~/org/notes/notes.org
  #+BEGIN_SRC emacs-lisp
- (setq org-default-notes-file "~/org/notes.org")
+ ;; The Standard org note file is ~/org/notes/notes.
+ ;; This can be set by the environment variable ORG-NOTES-FILE
+ (setq org-notes-file (if (getenv "ORG-NOTES-FILE")
+                         (getenv "ORG-NOTES-FILE")
+                         (concat org-user-dir "/notes/notes.org")))
+ (setq org-default-notes-file org-notes-file)
  #+END_SRC
 
 ** A few custom checklists
@@ -499,15 +509,17 @@ Unser windows and linux this ~/org/notes/notes.org
 ** Standard org and org-agenda directories
   - I have a common place for org and org agenda files
  #+BEGIN_SRC emacs-lisp
- ;; My org files
- (setq user/org-files "~/org/")
- (setq user/org-agenda-files "~/org/agenda/")
+ ;; My org agenda dir are files in ~/org/agenda
+ ;; The the agenda directory can be changed by env ORG-AGENDA-DIR
+ (setq org-agenda-dir (if (getenv "ORG-AGENDA-DIR")
+                         (genenv "ORG-AGENDA-DIR")
+                         (concat org-user-dir "/agenda/")))
  #+END_SRC
 
 ** Task agenda context
  - This starts an adenda context
  #+BEGIN_SRC emacs-lisp
- (setq org-agenda-files  `(,user/org-agenda-files))
+ (setq org-agenda-files  `(,org-agenda-dir))
  (setq org-agenda-skip-scheduled-if-done t)
  #+END_SRC
   - The following may be defined with the above values
@@ -516,13 +528,13 @@ Unser windows and linux this ~/org/notes/notes.org
  #+BEGIN_SRC emacs-lisp
  ;;; See: http://cachestocaches.com/2016/9/my-workflow-org-agenda/
  (setq org-capture-templates
-       `(("t" "todo" entry (file ,(concat user/org-agenda-files "gtd.org"))
+       `(("t" "todo" entry (file ,(concat org-agenda-dir "gtd.org"))
 	  "* TODO %?\n%U\n%a\n" :clock-in t :clock-resume t)
-	 ("n" "note" entry (file ,(concat user/org-agenda-files  "gtd.org"))
+	 ("n" "note" entry (file ,(concat org-agenda-dir  "gtd.org"))
 	  "* %? :NOTE:\n%U\n%a\n" :clock-in t :clock-resume t)
  ;; Medical Appointments
  ;; Medical Appointment  (m) Medical template
-    ("m" "MEDICAL   (m) Medical" entry (file ,(concat user/org-agenda-files "gtd.org"))
+    ("m" "MEDICAL   (m) Medical" entry (file ,(concat org-agenda-dir "gtd.org"))
      "* Medical %^{Who} %?
    CLOSED: %^U
    :PROPERTIES:
@@ -536,22 +548,22 @@ Unser windows and linux this ~/org/notes/notes.org
    :END:
    %^T--%^T" :empty-lines 1)
  ;; Historic Meeting Template
- ;; ("m" "Meeting" entry (file  ,(concat user/org-agenda-files "gtd.org"))
+ ;; ("m" "Meeting" entry (file  ,(concat org-agenda-dir "gtd.org"))
  ;;  "* MEETING with %^{Meeting with:} %?" :clock-in t :clock-resume t)
 
  ;; Shoppping Items
-    ("s" "Shopping List - Needed (s)" entry (file ,(concat user/org-agenda-files "gtd.org"))
+    ("s" "Shopping List - Needed (s)" entry (file ,(concat org-agenda-dir "gtd.org"))
      "* Shopping Item %^{Needed Item} %?
    CLOSED: %U
    :PROPERTIES:
    :URGENCY: %^{Urgency?|Regular Trip|ASAP|Next Day}
    :END:
  ")
-	 ("i" "Idea" entry (file ,(concat user/org-agenda-files "gtd.org"))
+	 ("i" "Idea" entry (file ,(concat org-agenda-dir "gtd.org"))
 	  "* %? :IDEA: \n%t" :clock-in t :clock-resume t)
-	 ("j" "Journal" entry (file+datetree ,(concat user/org-files "diary.org"))
+	 ("j" "Journal" entry (file+datetree ,(concat org-user-dir "diary.org"))
 	  "* %U %^{Title}\n  -%?" :clock-in t :clock-resume t)
-	 ("n" "Next Task" entry (file+headline  ,(concat user/org-agenda-files "tasks"))
+	 ("n" "Next Task" entry (file+headline  ,(concat org-agenda-dir "tasks"))
 	  "** NEXT %? \nDEADLINE: %t")))
  #+END_SRC
 
@@ -563,7 +575,7 @@ Unser windows and linux this ~/org/notes/notes.org
 ** Always present the gtd.org file
 Customize  this default by environment variable USER_REOPEN_FILES
  #+BEGIN_SRC emacs-lisp
- (find-file (concat user/org-agenda-files "gtd.org"))
+ (find-file (concat org-agenda-dir "gtd.org"))
  #+END_SRC
 
 * Final Presenation to the user.
