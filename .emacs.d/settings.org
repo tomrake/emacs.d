@@ -105,7 +105,7 @@ I don't like the a messy startup screen.
 
 * Debug On Error
 #+BEGIN_SRC emacs-lisp
-(setq debug-on-error t)
+;(setq debug-on-error t)
 #+END_SRC
 * Save the emacs customization to a file.
 #+BEGIN_SRC emacs-lisp
@@ -452,6 +452,8 @@ I use my local clone of the Hyperspec
  #+END_SRC
 
 ** Ensure there are stadard ~/org directories
+How to define the standard HOME org directory.
+Under windows and linux this is ~/org 
  #+BEGIN_SRC emacs-lisp
  ;; Each user has a org directory in ~/org ensure it exists
  (unless (file-directory-p "~/org")
@@ -459,6 +461,8 @@ I use my local clone of the Hyperspec
  #+END_SRC
 
 ** Standard Notes file
+This is a standard per User notes file.
+Unser windows and linux this ~/org/notes/notes.org
  #+BEGIN_SRC emacs-lisp
  (setq org-default-notes-file "~/org/notes.org")
  #+END_SRC
@@ -549,8 +553,6 @@ I use my local clone of the Hyperspec
 	  "* %U %^{Title}\n  -%?" :clock-in t :clock-resume t)
 	 ("n" "Next Task" entry (file+headline  ,(concat user/org-agenda-files "tasks"))
 	  "** NEXT %? \nDEADLINE: %t")))
-
- ;;;; Allow access to org agenda files
  #+END_SRC
 
 ** Refile configuration
@@ -559,6 +561,7 @@ I use my local clone of the Hyperspec
  #+END_SRC
 
 ** Always present the gtd.org file
+Customize  this default by environment variable USER_REOPEN_FILES
  #+BEGIN_SRC emacs-lisp
  (find-file (concat user/org-agenda-files "gtd.org"))
  #+END_SRC
@@ -566,6 +569,7 @@ I use my local clone of the Hyperspec
 * Final Presenation to the user.
 
 ** My default coding location
+Customize this default by envrinment variable USER_PROJECTS.
  #+BEGIN_SRC emacs-lisp
  ;;;; Change to my work directory
  (cd "~/local-code-projects/my-code/common-lisp/local-projects/")

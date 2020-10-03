@@ -15,7 +15,7 @@
  '(fci-rule-color "#383838")
  '(package-selected-packages
    (quote
-    (dakrone-theme dockerfile-mode docker-tramp anaconda-mode popup cyberpunk-theme ac-slime paredit rainbow-delimiters slime epc auto-complete flx-ido)))
+    (magit dakrone-theme dockerfile-mode docker-tramp anaconda-mode popup cyberpunk-theme ac-slime paredit rainbow-delimiters slime epc auto-complete flx-ido)))
  '(safe-local-variable-values (quote ((org-use-property-inheritance . t)))))
 
 
