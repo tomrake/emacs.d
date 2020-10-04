@@ -584,8 +584,9 @@ Customize  this default by environment variable USER_REOPEN_FILES
 Customize this default by envrinment variable USER_PROJECTS.
  #+BEGIN_SRC emacs-lisp
  ;;;; Change to my work directory
- (cd "~/local-code-projects/my-code/common-lisp/local-projects/")
- #+END_SRC
+ (if (getenv "CODE-REPO")
+      (cd (getenv "CODE-REPO")))
+  #+END_SRC
 
 
 * Report the time metrics
