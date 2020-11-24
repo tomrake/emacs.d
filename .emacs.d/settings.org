@@ -535,13 +535,12 @@ I use my local clone of the Hyperspec
  ;; Medical Appointments
  ;; Medical Appointment  (m) Medical template
     ("m" "MEDICAL   (m) Medical" entry (file ,(concat org-agenda-dir "gtd.org"))
-     "* Medical %^{Who} %?
+     "* TODO Medical %^{Who} %?
    CLOSED: %^U
    :PROPERTIES:
-   :Attend:   Tom Rake
-   :Location:
-   :Via:
-   :Note:
+   :INVITEE:
+   :DOCTOR:
+   :PRETESTING: nil
    :END:
    :LOGBOOK:
    - State \"MEETING\"    from \"\"           %U
