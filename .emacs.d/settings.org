@@ -463,6 +463,12 @@ I use my local clone of the Hyperspec
 			(concat (getenv "HOME") "/org")))
   (unless (file-directory-p org-user-dir)
     (make-directory  org-user-dir))
+  ;; Define a global org directory
+  (setf org-public-dir 
+    (if (getenv "ORG-PUBLIC-DIR")
+        (getenv "ORG-PUBLIC-DIR")
+        "c:/Users/Public/Documents/org"))
+  
   #+END_SRC
 
 *** Standard Notes file
@@ -485,6 +491,9 @@ I use my local clone of the Hyperspec
   (setq org-agenda-dir (if (getenv "ORG-AGENDA-DIR")
                           (genenv "ORG-AGENDA-DIR")
                           (concat org-user-dir "/agenda/")))
+  (setq org-public-agenda-dir (if (getenv "ORG-PUBLIC-AGENDA-DIR")
+                                (genenv "ORG-PUBLIC-AGENDA-DIR")
+                                (concat org-public-dir "/agenda/")))
   #+END_SRC
 
 ** A few custom checklists
@@ -517,9 +526,9 @@ I use my local clone of the Hyperspec
  #+END_SRC
 
 ** Task agenda context
- - This starts an adenda context
+ - This starts an agenda context
  #+BEGIN_SRC emacs-lisp
- (setq org-agenda-files  `(,org-agenda-dir))
+ (setq org-agenda-files  `(,org-agenda-dir ,org-public-agenda-dir))
  (setq org-agenda-skip-scheduled-if-done t)
  #+END_SRC
   - The following may be defined with the above values
@@ -535,17 +544,17 @@ I use my local clone of the Hyperspec
  ;; Medical Appointments
  ;; Medical Appointment  (m) Medical template
     ("m" "MEDICAL   (m) Medical" entry (file ,(concat org-agenda-dir "gtd.org"))
-     "* TODO Medical %^{Who} %?
-   CLOSED: %^U
+     "* TODO Medical Appointment %^{Patient} with %^{Doctor} %?
+   CLOSED: %^T
    :PROPERTIES:
-   :INVITEE:
-   :DOCTOR:
-   :PRETESTING: nil
+   :INVITEE: %\1
+   :DOCTOR: %\2
+   :PRETESTING: %^{Testing|No|Yes}
    :END:
    :LOGBOOK:
-   - State \"MEETING\"    from \"\"           %U
+   - State \"CREATED\"    from \"\"           %U
    :END:
-   %^T--%^T" :empty-lines 1)
+   %^T--%^T" :empty-lines 1 :time-prompt)
  ;; Historic Meeting Template
  ;; ("m" "Meeting" entry (file  ,(concat org-agenda-dir "gtd.org"))
  ;;  "* MEETING with %^{Meeting with:} %?" :clock-in t :clock-resume t)
