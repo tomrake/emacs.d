@@ -140,7 +140,7 @@ I don't like the a messy startup screen.
 (setenv "PATH" (mapconcat #'identity exec-path path-separator))
 #+END_SRC
 
-* Setup SBCL                               
+* Setup SBCL
 #+BEGIN_SRC emacs-lisp
 (setq SBCL_HOME_SAVE (getenv "SBCL_HOME"))
 (setq SBCL_BASE "C:/devel/SBCL_2_0_0-bin")
