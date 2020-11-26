@@ -535,43 +535,50 @@ I use my local clone of the Hyperspec
 
 ** Capture Templates
  #+BEGIN_SRC emacs-lisp
+ ;;; Define user and public template directories
+  (setq org-template-dir (if (getenv "ORG-TEMPLATE-DIR")
+                          (genenv "ORG-TEMPLATE-DIR")
+                          (concat org-user-dir "/template/")))
+  (setq org-public-template-dir (if (getenv "ORG-PUBLIC-TEMPLATE-DIR")
+                                (genenv "ORG-PUBLIC-TEMPLATE-DIR")
+                                (concat org-public-dir "/template/")))
+
  ;;; See: http://cachestocaches.com/2016/9/my-workflow-org-agenda/
  (setq org-capture-templates
-       `(("t" "todo" entry (file ,(concat org-agenda-dir "gtd.org"))
+       `(("t" "todo" entry (file ,(concat org-public-agenda-dir "gtd.org"))
 	  "* TODO %?\n%U\n%a\n" :clock-in t :clock-resume t)
-	 ("n" "note" entry (file ,(concat org-agenda-dir  "gtd.org"))
+	 ("n" "note" entry (file ,(concat org-public-agenda-dir  "gtd.org"))
 	  "* %? :NOTE:\n%U\n%a\n" :clock-in t :clock-resume t)
  ;; Medical Appointments
  ;; Medical Appointment  (m) Medical template
-    ("m" "MEDICAL   (m) Medical" entry (file ,(concat org-agenda-dir "gtd.org"))
+    ("m" "MEDICAL   (m) Medical" entry (file+headline ,(concat org-public-agenda-dir "gtd.org") "Medical Appointments")
      "* TODO Medical Appointment %^{Patient} with %^{Doctor} %?
-   CLOSED: %^T
+   SCHEDULED: %^T
    :PROPERTIES:
-   :INVITEE: %\1
-   :DOCTOR: %\2
+   :INVITEE: %\\1
+   :DOCTOR: %\\2
    :PRETESTING: %^{Testing|No|Yes}
    :END:
    :LOGBOOK:
    - State \"CREATED\"    from \"\"           %U
-   :END:
-   %^T--%^T" :empty-lines 1 :time-prompt)
+   :END:" :empty-lines 1 :time-prompt t)
  ;; Historic Meeting Template
- ;; ("m" "Meeting" entry (file  ,(concat org-agenda-dir "gtd.org"))
+ ;; ("m" "Meeting" entry (file  ,(concat org-public-agenda-dir "gtd.org"))
  ;;  "* MEETING with %^{Meeting with:} %?" :clock-in t :clock-resume t)
 
  ;; Shoppping Items
-    ("s" "Shopping List - Needed (s)" entry (file ,(concat org-agenda-dir "gtd.org"))
+    ("s" "Shopping List - Needed (s)" entry (file ,(concat org-public-agenda-dir "gtd.org"))
      "* Shopping Item %^{Needed Item} %?
    CLOSED: %U
    :PROPERTIES:
    :URGENCY: %^{Urgency?|Regular Trip|ASAP|Next Day}
    :END:
  ")
-	 ("i" "Idea" entry (file ,(concat org-agenda-dir "gtd.org"))
+	 ("i" "Idea" entry (file ,(concat org-public-agenda-dir "gtd.org"))
 	  "* %? :IDEA: \n%t" :clock-in t :clock-resume t)
 	 ("j" "Journal" entry (file+datetree ,(concat org-user-dir "diary.org"))
 	  "* %U %^{Title}\n  -%?" :clock-in t :clock-resume t)
-	 ("n" "Next Task" entry (file+headline  ,(concat org-agenda-dir "tasks"))
+	 ("n" "Next Task" entry (file+headline  ,(concat org-public-agenda-dir "tasks"))
 	  "** NEXT %? \nDEADLINE: %t")))
  #+END_SRC
 
@@ -583,7 +590,7 @@ I use my local clone of the Hyperspec
 ** Always present the gtd.org file
 Customize  this default by environment variable USER_REOPEN_FILES
  #+BEGIN_SRC emacs-lisp
- (find-file (concat org-agenda-dir "gtd.org"))
+ (find-file (concat org-public-agenda-dir "gtd.org"))
  #+END_SRC
 
 * Final Presenation to the user.
