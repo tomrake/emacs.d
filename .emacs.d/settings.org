@@ -584,7 +584,7 @@ I use my local clone of the Hyperspec
 
 ** Refile configuration
  #+BEGIN_SRC emacs-lisp
- (setq org-refile-targets '((org-agenda-files :maxlevel . 9)))
+ (setq org-refile-targets '((org-agenda-files :maxlevel . 3)))
  #+END_SRC
 
 ** Always present the gtd.org file
