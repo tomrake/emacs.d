@@ -530,6 +530,7 @@ I use my local clone of the Hyperspec
  #+BEGIN_SRC emacs-lisp
  (setq org-agenda-files  `(,org-agenda-dir ,org-public-agenda-dir))
  (setq org-agenda-skip-scheduled-if-done t)
+ (setq org-agenda-todo-list-sublevels t)
  #+END_SRC
   - The following may be defined with the above values
 
@@ -552,34 +553,28 @@ I use my local clone of the Hyperspec
  ;; Medical Appointments
  ;; Medical Appointment  (m) Medical template
     ("m" "MEDICAL   (m) Medical" entry (file+headline ,(concat org-public-agenda-dir "gtd.org") "Medical Appointments")
-     "* TODO Medical Appointment %^{Patient} with %^{Doctor} %?
-   SCHEDULED: %^T
-   :PROPERTIES:
-   :INVITEE: %\\1
-   :DOCTOR: %\\2
-   :PRETESTING: %^{Testing|No|Yes}
-   :END:
-   :LOGBOOK:
-   - State \"CREATED\"    from \"\"           %U
-   :END:" :empty-lines 1 :time-prompt t)
+     (file ,(concat org-public-template-dir "Medical-Appointment.txt")) :empty-lines 1 :time-prompt t)
  ;; Historic Meeting Template
  ;; ("m" "Meeting" entry (file  ,(concat org-public-agenda-dir "gtd.org"))
  ;;  "* MEETING with %^{Meeting with:} %?" :clock-in t :clock-resume t)
 
+ ;; Health Data Capture
+    ("h" "Health Data Capture (h)")
+
+    ("hb" "Blood Pressure (b)" table-line (file+headline ,(concat org-public-dir "/notes/Medical-Data.org") "Blood Pressure")
+      "|%^{Person|TOM|JOANNE|SONYA}|%U|%^{Systtolic}|%^{Diastolic}|%^{Pulse}|")
+
+    ("ht" "Temperature (t)" table-line (file+headline ,(concat org-public-dir "/notes/Medical-Data.org") "Temperature")
+     "|%^{Person|TOM|JOANNE|SONYA}|%U|%^{Temperature}|")
  ;; Shoppping Items
-    ("s" "Shopping List - Needed (s)" entry (file ,(concat org-public-agenda-dir "gtd.org"))
-     "* Shopping Item %^{Needed Item} %?
-   CLOSED: %U
-   :PROPERTIES:
-   :URGENCY: %^{Urgency?|Regular Trip|ASAP|Next Day}
-   :END:
- ")
-	 ("i" "Idea" entry (file ,(concat org-public-agenda-dir "gtd.org"))
-	  "* %? :IDEA: \n%t" :clock-in t :clock-resume t)
-	 ("j" "Journal" entry (file+datetree ,(concat org-user-dir "diary.org"))
-	  "* %U %^{Title}\n  -%?" :clock-in t :clock-resume t)
-	 ("n" "Next Task" entry (file+headline  ,(concat org-public-agenda-dir "tasks"))
-	  "** NEXT %? \nDEADLINE: %t")))
+    ("s" "Shopping Request (s)" table-line (file+headline ,(concat org-public-dir "/notes/Shopping-Requests.org") "Requests")
+     "|%U|%^{Needed Item}|")
+    ("i" "Idea" entry (file ,(concat org-public-agenda-dir "gtd.org"))
+     "* %? :IDEA: \n%t" :clock-in t :clock-resume t)
+    ("j" "Journal" entry (file+datetree ,(concat org-user-dir "diary.org"))
+     "* %U %^{Title}\n  -%?" :clock-in t :clock-resume t)
+    ("n" "Next Task" entry (file+headline  ,(concat org-public-agenda-dir "tasks"))
+     "** NEXT %? \nDEADLINE: %t")))
  #+END_SRC
 
 ** Refile configuration
