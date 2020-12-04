@@ -546,17 +546,12 @@ I use my local clone of the Hyperspec
 
  ;;; See: http://cachestocaches.com/2016/9/my-workflow-org-agenda/
  (setq org-capture-templates
-       `(("t" "todo" entry (file ,(concat org-public-agenda-dir "gtd.org"))
-	  "* TODO %?\n%U\n%a\n" :clock-in t :clock-resume t)
-	 ("n" "note" entry (file ,(concat org-public-agenda-dir  "gtd.org"))
-	  "* %? :NOTE:\n%U\n%a\n" :clock-in t :clock-resume t)
+  `(("n" "note" entry (file ,(concat org-public-agenda-dir  "gtd.org"))
+     "* %? :NOTE:\n%U\n%a\n" :clock-in t :clock-resume t)
  ;; Medical Appointments
  ;; Medical Appointment  (m) Medical template
     ("m" "MEDICAL   (m) Medical" entry (file+headline ,(concat org-public-agenda-dir "gtd.org") "Medical Appointments")
      (file ,(concat org-public-template-dir "Medical-Appointment.txt")) :empty-lines 1 :time-prompt t)
- ;; Historic Meeting Template
- ;; ("m" "Meeting" entry (file  ,(concat org-public-agenda-dir "gtd.org"))
- ;;  "* MEETING with %^{Meeting with:} %?" :clock-in t :clock-resume t)
 
  ;; Health Data Capture
     ("h" "Health Data Capture (h)")
@@ -569,12 +564,16 @@ I use my local clone of the Hyperspec
  ;; Shoppping Items
     ("s" "Shopping Request (s)" table-line (file+headline ,(concat org-public-dir "/notes/Shopping-Requests.org") "Requests")
      "|%U|%^{Needed Item}|")
-    ("i" "Idea" entry (file ,(concat org-public-agenda-dir "gtd.org"))
-     "* %? :IDEA: \n%t" :clock-in t :clock-resume t)
+ ;; List of Goals
+    ("g" "Set a goal (g)")
+    ("gd" "Daily Goal TODO (d)"  entry (file+headline ,(concat org-public-agenda-dir "gtd.org") "Daily Goals")
+      "*** TODO [#C] %^{Description}
+      SCHEDULED: %t")
+    ("gw" "Weekly Goal TODO (w)"  entry (file+headline ,(concat org-public-agenda-dir "gtd.org") "Weekly Goals")
+      "*** TODO [#C] %^{Description}
+      SCHEDULED: %t")
     ("j" "Journal" entry (file+datetree ,(concat org-user-dir "diary.org"))
-     "* %U %^{Title}\n  -%?" :clock-in t :clock-resume t)
-    ("n" "Next Task" entry (file+headline  ,(concat org-public-agenda-dir "tasks"))
-     "** NEXT %? \nDEADLINE: %t")))
+     "* %U %^{Title}\n  -%?" :clock-in t :clock-resume t)))
  #+END_SRC
 
 ** Refile configuration
