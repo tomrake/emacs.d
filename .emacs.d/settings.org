@@ -573,7 +573,33 @@ I use my local clone of the Hyperspec
       "*** TODO [#C] %^{Description}
       SCHEDULED: %t")
     ("j" "Journal" entry (file+datetree ,(concat org-user-dir "diary.org"))
-     "* %U %^{Title}\n  -%?" :clock-in t :clock-resume t)))
+     "* %U %^{Title}\n  -%?" :clock-in t :clock-resume t)
+;; Oil measurements
+    ("o" "Oil Level Mointor (o)")
+
+    ("oe" "Extension Tank (e)")
+    ("oel" "Oil Level in the Extention Tank (l)"  table-line 
+      (file+headline ,(concat org-public-dir "/notes/Heat-Data.org") "Extension")
+     "|%U|%^{Oil Clock}|%^{Remote}|%^{Tank Guage}|" )
+    ("oef" "Oil Fill in the Extention Tank (f)"  table-line 
+      (file+headline ,(concat org-public-dir "/notes/Heat-Data.org") "Extension Fill")
+     "|%U|%^{Gallons}|")
+    ("oed" "Oil Empty in the Extention Tank (d)"  table-line 
+      (file+headline ,(concat org-public-dir "/notes/Heat-Data.org") "Extension Empty")
+     "|%U|")
+
+
+    ("om" "Main Tank (m)")
+    ("oml" "Oil Level in the Main Tank (l)"  table-line (file+headline ,(concat org-public-dir "/notes/Heat-Data.org") "Main")
+     "|%U|%^{Tank Guage}|")
+    ("omf" "Oil Fill in the Extention Tank (f)"  table-line 
+      (file+headline ,(concat org-public-dir "/notes/Heat-Data.org") "Main Fill")
+     "|%U|%^{Gallons}|")
+    ("omd" "Oil Empty in the Extention Tank (d)"  table-line 
+      (file+headline ,(concat org-public-dir "/notes/Heat-Data.org") "Main Empty")
+     "|%U|")
+
+     ))
  #+END_SRC
 
 ** Refile configuration
