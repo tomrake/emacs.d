@@ -1,3 +1,4 @@
+
 #+EXPORT-FILENAME init.el
 * Start up
 ** Add Edit original warning.
@@ -483,17 +484,29 @@ I use my local clone of the Hyperspec
   (setq org-default-notes-file org-notes-file)
   #+END_SRC
 
+*** customization macros
+#+BEGIN_SRC emacs-lisp
+  (defmacro default-or-environment (emacs-var base new-path-string env-string) 
+    `(setq ,emacs-var (if (getenv ,env-string)
+                          (getenv ,env-string)
+                          (concat ,base ,new-path-string))))
+#+END_SRC
+
 *** Standard org and org-agenda directories
    - I have a common place for org and org agenda files
   #+BEGIN_SRC emacs-lisp
-  ;; My org agenda dir are files in ~/org/agenda
-  ;; The the agenda directory can be changed by env ORG-AGENDA-DIR
-  (setq org-agenda-dir (if (getenv "ORG-AGENDA-DIR")
-                          (genenv "ORG-AGENDA-DIR")
-                          (concat org-user-dir "/agenda/")))
-  (setq org-public-agenda-dir (if (getenv "ORG-PUBLIC-AGENDA-DIR")
-                                (genenv "ORG-PUBLIC-AGENDA-DIR")
-                                (concat org-public-dir "/agenda/")))
+    ;; My org agenda dir are files in ~/org/agenda
+    ;; The the agenda directory can be changed by env ORG-AGENDA-DIR
+    (default-or-environment org-agenda-dir org-user-dir "/agenda/" "ORG_AGENDA-DIR")
+    ;; (setq org-agenda-dir (if (getenv "ORG-AGENDA-DIR")
+    ;;                         (genenv "ORG-AGENDA-DIR")
+    ;;                         (concat org-user-dir "/agenda/")))
+
+    (default-or-environment org-public-agenda-dir org-public-dir "/agenda/" "ORG-PUBLIC-AGENDA-DIR")
+    ;; (setq org-public-agenda-dir (if (getenv "ORG-PUBLIC-AGENDA-DIR")
+    ;; 			      (genenv "ORG-PUBLIC-AGENDA-DIR")
+    ;; 			      (concat org-public-dir "/agenda/")
+
   #+END_SRC
 
 ** A few custom checklists
@@ -536,70 +549,72 @@ I use my local clone of the Hyperspec
 
 ** Capture Templates
  #+BEGIN_SRC emacs-lisp
- ;;; Define user and public template directories
-  (setq org-template-dir (if (getenv "ORG-TEMPLATE-DIR")
-                          (genenv "ORG-TEMPLATE-DIR")
-                          (concat org-user-dir "/template/")))
-  (setq org-public-template-dir (if (getenv "ORG-PUBLIC-TEMPLATE-DIR")
-                                (genenv "ORG-PUBLIC-TEMPLATE-DIR")
-                                (concat org-public-dir "/template/")))
+    ;;; Define user and public template directories
+     (default-or-environment org-template-dir org-user-dir "/template/" "ORG-TEMPLATE-DIR")
+     ;; (setq org-template-dir (if (getenv "ORG-TEMPLATE-DIR")
+     ;;                         (genenv "ORG-TEMPLATE-DIR")
+     ;;                         (concat org-user-dir "/template/")))
+     (default-or-environment org-public-template-dir org-public-dir "/template/" "ORG-PUBLIC-TEMPLATE-DIR")
+    ;;  (setq org-public-template-dir (if (getenv "ORG-PUBLIC-TEMPLATE-DIR")
+    ;; 				(genenv "ORG-PUBLIC-TEMPLATE-DIR")
+    ;; 				(concat org-public-dir "/template/")))
 
- ;;; See: http://cachestocaches.com/2016/9/my-workflow-org-agenda/
- (setq org-capture-templates
-  `(("n" "note" entry (file ,(concat org-public-agenda-dir  "gtd.org"))
-     "* %? :NOTE:\n%U\n%a\n" :clock-in t :clock-resume t)
- ;; Medical Appointments
- ;; Medical Appointment  (m) Medical template
-    ("m" "MEDICAL   (m) Medical" entry (file+headline ,(concat org-public-agenda-dir "gtd.org") "Medical Appointments")
-     (file ,(concat org-public-template-dir "Medical-Appointment.txt")) :empty-lines 1 :time-prompt t)
+    ;; ;;; See: http://cachestocaches.com/2016/9/my-workflow-org-agenda/
+    (setq org-capture-templates
+     `(("n" "note" entry (file ,(concat org-public-agenda-dir  "gtd.org"))
+	"* %? :NOTE:\n%U\n%a\n" :clock-in t :clock-resume t)
+    ;; Medical Appointments
+    ;; Medical Appointment  (m) Medical template
+       ("m" "MEDICAL   (m) Medical" entry (file+headline ,(concat org-public-agenda-dir "gtd.org") "Medical Appointments")
+	(file ,(concat org-public-template-dir "Medical-Appointment.txt")) :empty-lines 1 :time-prompt t)
 
- ;; Health Data Capture
-    ("h" "Health Data Capture (h)")
+    ;; Health Data Capture
+       ("h" "Health Data Capture (h)")
 
-    ("hb" "Blood Pressure (b)" table-line (file+headline ,(concat org-public-dir "/notes/Medical-Data.org") "Blood Pressure")
-      "|%^{Person|TOM|JOANNE|SONYA}|%U|%^{Systtolic}|%^{Diastolic}|%^{Pulse}|")
+       ("hb" "Blood Pressure (b)" table-line (file+headline ,(concat org-public-dir "/notes/Medical-Data.org") "Blood Pressure")
+	 "|%^{Person|TOM|JOANNE|SONYA}|%U|%^{Systtolic}|%^{Diastolic}|%^{Pulse}|")
 
-    ("ht" "Temperature (t)" table-line (file+headline ,(concat org-public-dir "/notes/Medical-Data.org") "Temperature")
-     "|%^{Person|TOM|JOANNE|SONYA}|%U|%^{Temperature}|")
- ;; Shoppping Items
-    ("s" "Shopping Request (s)" table-line (file+headline ,(concat org-public-dir "/notes/Shopping-Requests.org") "Requests")
-     "|%U|%^{Needed Item}|")
- ;; List of Goals
-    ("g" "Set a goal (g)")
-    ("gd" "Daily Goal TODO (d)"  entry (file+headline ,(concat org-public-agenda-dir "gtd.org") "Daily Goals")
-      "*** TODO [#C] %^{Description}
-      SCHEDULED: %t")
-    ("gw" "Weekly Goal TODO (w)"  entry (file+headline ,(concat org-public-agenda-dir "gtd.org") "Weekly Goals")
-      "*** TODO [#C] %^{Description}
-      SCHEDULED: %t")
-    ("j" "Journal" entry (file+datetree ,(concat org-user-dir "diary.org"))
-     "* %U %^{Title}\n  -%?" :clock-in t :clock-resume t)
-;; Oil measurements
-    ("o" "Oil Level Mointor (o)")
+       ("ht" "Temperature (t)" table-line (file+headline ,(concat org-public-dir "/notes/Medical-Data.org") "Temperature")
+	"|%^{Person|TOM|JOANNE|SONYA}|%U|%^{Temperature}|")
+    ;; Shoppping Items
+       ("s" "Shopping Request (s)" table-line (file+headline ,(concat org-public-dir "/notes/Shopping-Requests.org") "Requests")
+	"|%U|%^{Needed Item}|")
+    ;; List of Goals
+       ("g" "Set a goal (g)")
+       ("gd" "Daily Goal TODO (d)"  entry (file+headline ,(concat org-public-agenda-dir "gtd.org") "Daily Goals")
+	 "*** TODO [#C] %^{Description}
+	 SCHEDULED: %t")
+       ("gw" "Weekly Goal TODO (w)"  entry (file+headline ,(concat org-public-agenda-dir "gtd.org") "Weekly Goals")
+	 "*** TODO [#C] %^{Description}
+	 SCHEDULED: %t")
+       ("j" "Journal" entry (file+datetree ,(concat org-user-dir "/diary.org"))
+	"* %U %^{Title}\n  -%?" :clock-in t :clock-resume t)
+   ;; Oil measurements
+       ("o" "Oil Level Mointor (o)")
 
-    ("oe" "Extension Tank (e)")
-    ("oel" "Oil Level in the Extention Tank (l)"  table-line 
-      (file+headline ,(concat org-public-dir "/notes/Heat-Data.org") "Extension")
-     "|%U|%^{Oil Clock}|%^{Remote}|%^{Tank Guage}|" )
-    ("oef" "Oil Fill in the Extention Tank (f)"  table-line 
-      (file+headline ,(concat org-public-dir "/notes/Heat-Data.org") "Extension Fill")
-     "|%U|%^{Gallons}|")
-    ("oed" "Oil Empty in the Extention Tank (d)"  table-line 
-      (file+headline ,(concat org-public-dir "/notes/Heat-Data.org") "Extension Empty")
-     "|%U|")
+       ("oe" "Extension Tank (e)")
+       ("oel" "Oil Level in the Extention Tank (l)"  table-line 
+	 (file+headline ,(concat org-public-dir "/notes/Heat-Data.org") "Extension")
+	"|%U|%^{Oil Clock}|%^{Remote}|%^{Tank Guage}|" )
+       ("oef" "Oil Fill in the Extention Tank (f)"  table-line 
+	 (file+headline ,(concat org-public-dir "/notes/Heat-Data.org") "Extension Fill")
+	"|%U|%^{Gallons}|")
+       ("oed" "Oil Empty in the Extention Tank (d)"  table-line 
+	 (file+headline ,(concat org-public-dir "/notes/Heat-Data.org") "Extension Empty")
+	"|%U|")
 
 
-    ("om" "Main Tank (m)")
-    ("oml" "Oil Level in the Main Tank (l)"  table-line (file+headline ,(concat org-public-dir "/notes/Heat-Data.org") "Main")
-     "|%U|%^{Tank Guage}|")
-    ("omf" "Oil Fill in the Extention Tank (f)"  table-line 
-      (file+headline ,(concat org-public-dir "/notes/Heat-Data.org") "Main Fill")
-     "|%U|%^{Gallons}|")
-    ("omd" "Oil Empty in the Extention Tank (d)"  table-line 
-      (file+headline ,(concat org-public-dir "/notes/Heat-Data.org") "Main Empty")
-     "|%U|")
+       ("om" "Main Tank (m)")
+       ("oml" "Oil Level in the Main Tank (l)"  table-line (file+headline ,(concat org-public-dir "/notes/Heat-Data.org") "Main")
+	"|%U|%^{Tank Guage}|")
+       ("omf" "Oil Fill in the Extention Tank (f)"  table-line 
+	 (file+headline ,(concat org-public-dir "/notes/Heat-Data.org") "Main Fill")
+	"|%U|%^{Gallons}|")
+       ("omd" "Oil Empty in the Extention Tank (d)"  table-line 
+	 (file+headline ,(concat org-public-dir "/notes/Heat-Data.org") "Main Empty")
+	"|%U|")
 
-     ))
+	))
  #+END_SRC
 
 ** Refile configuration
