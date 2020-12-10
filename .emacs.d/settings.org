@@ -628,6 +628,7 @@ Customize  this default by environment variable USER_REOPEN_FILES
  (find-file (concat org-public-agenda-dir "gtd.org"))
  #+END_SRC
 
+
 * Final Presenation to the user.
 
 ** My default coding location
@@ -637,7 +638,16 @@ Customize this default by envrinment variable USER_PROJECTS.
  (if (getenv "CODE-REPO")
       (cd (getenv "CODE-REPO")))
   #+END_SRC
-
+** load per user settings
+ #+BEGIN_SRC emacs-lisp
+ ;;;; load per user settings file
+ ;;;; finding local  init directory from https://emacs.stackexchange.com/questions/52434/how-to-access-the-directory-of-the-init-el-file-from-elisp
+ (message "local settings start")
+ (when (file-exists-p (concat (file-name-directory (or load-file-name (buffer-file-name))) "/local-settings.org"))
+         (print "Starting to load")
+         (org-babel-load-file (expand-file-name "local-settings.org" (file-name-directory (or load-file-name (buffer-file-name))))))
+ (message "local settings end")
+ #+END_SRC
 
 * Report the time metrics
 #+BEGIN_SRC emacs-lisp
