@@ -1,93 +1,104 @@
 
 #+EXPORT-FILENAME init.el
-* Start up
-** Add Edit original warning.
- #+BEGIN_SRC emacs-lisp
- ;;;; This file had been generated from settings.org
- ;;;;  Customization by enviroment variables
- #+END_SRC
+* Generated File Warning
+Add a warning to init.el that it is
+#+BEGIN_SRC emacs-lisp
+;;;; This file had been generated from settings.org
+#+END_SRC
 
-** A measure the load time
- #+BEGIN_SRC emacs-lisp
- ;; load time metrics
- (setq  *emacs-load-start* (current-time))
- #+END_SRC
+* Debug On Error
 
-** Package Archives distros                                          :review:
- #+BEGIN_SRC emacs-lisp
- (require 'package)
- (add-to-list 'package-archives
-              '("melpa" . "https://melpa.org/packages/")
-	      t)
- (add-to-list 'package-archives
-	      '("elpa" . "https://elpa.gnu.org/packages/")
-	      t)
- (add-to-list 'package-archives
-              '("org" . "https://orgmode.org/elpa/")
-               t)
+Enable debugging.
 
- (when (< emacs-major-version 24)
-   ;; For important compatibility libraries like cl-lib
-   (add-to-list 'package-archives '("gnu" . "https://elpa.gnu.org/packages/")))
+#+BEGIN_SRC emacs-lisp
+;(setq debug-on-error t)
+#+END_SRC
 
- (package-initialize)
- #+END_SRC
+* Load time metrics
+Mark the begining time of execution of init.el so we can compare and report
+at the end.
+#+BEGIN_SRC emacs-lisp
+;; load time metrics
+(setq  *emacs-load-start* (current-time))
+#+END_SRC
 
-** Package loading mechanism needs review                   :review:
- #+BEGIN_SRC emacs-lisp :tangle no
+* Package Archives distros                                           :review:
+Which online distros we use to get packages.
+Much of this is legacy code and needs review.
+#+BEGIN_SRC emacs-lisp
+(require 'package)
+(add-to-list 'package-archives
+             '("melpa" . "https://melpa.org/packages/")
+	     t)
+(add-to-list 'package-archives
+	     '("elpa" . "https://elpa.gnu.org/packages/")
+	     t)
+(add-to-list 'package-archives
+             '("org" . "https://orgmode.org/elpa/")
+              t)
+(when (< emacs-major-version 24)
+  ;; For important compatibility libraries like cl-lib
+  (add-to-list 'package-archives '("gnu" . "https://elpa.gnu.org/packages/")))
+(package-initialize)
+#+END_SRC
 
- ;;;; These are the packages needed
+* Package loading mechanism needs review                             :review:
+This revinvent the wheel mechanism is deprecated.
+#+BEGIN_SRC emacs-lisp :tangle no
 
- (defvar local-packages '(flx-ido
-			  auto-complete
-			  epc
-			  slime
-			  rainbow-delimiters
-			  paredit
-			  ac-slime
-			  cyberpunk-theme
-			  dracula-theme
-			  dakrone-theme
-			  popup
-			  jedi
-			  docker-tramp
-			  dockerfile-mode
-			  pillar
-			  cmake-mode
-			  yaml-mode
-			  ess
-			  deft
-			  magit
-			  htmlize))
+;;;; These are the packages needed
+
+(defvar local-packages '(flx-ido
+			 auto-complete
+			 epc
+			 slime
+			 rainbow-delimiters
+			 paredit
+			 ac-slime
+			 cyberpunk-theme
+			 dracula-theme
+			 dakrone-theme
+			 popup
+			 jedi
+			 docker-tramp
+			 dockerfile-mode
+			 pillar
+			 cmake-mode
+			 yaml-mode
+			 ess
+			 deft
+			 magit
+			 htmlize))
 
 
- ;;;; Find any unistalled package
+;;;; Find any unistalled package
 
- (defun uninstalled-packages (packages)
-   (delq nil
-	 (mapcar (lambda (p)
-		   (if (package-installed-p p nil) nil p))
-		 packages)))
+(defun uninstalled-packages (packages)
+  (delq nil
+	(mapcar (lambda (p)
+		  (if (package-installed-p p nil) nil p))
+		packages)))
 
- ;;;; Install any uninsalled packages
+;;;; Install any uninsalled packages
 
- (let ((need-to-install
-	(uninstalled-packages local-packages)))
-   (message "Checking for unistalled  packages: %s." need-to-install)
-   (when need-to-install
-     (progn
-       (package-refresh-contents)
-       (dolist (p need-to-install)
-         (message "Downloading %s." p)
-	 (package-install p)))))
- #+END_SRC
+(let ((need-to-install
+       (uninstalled-packages local-packages)))
+  (message "Checking for unistalled  packages: %s." need-to-install)
+  (when need-to-install
+    (progn
+      (package-refresh-contents)
+      (dolist (p need-to-install)
+        (message "Downloading %s." p)
+	(package-install p)))))
+#+END_SRC
 
-** Download Timing
- #+BEGIN_SRC emacs-lisp
- (setq *emacs-download* (current-time))
- #+END_SRC
+* Download Timing
+This download timing mechanism is likely deprecated also.
+#+BEGIN_SRC emacs-lisp
+(setq *emacs-download* (current-time))
+#+END_SRC
 
-** Basic Look and feel
+* Basic Look and feel
 I don't like the a messy startup screen.
 
  #+BEGIN_SRC emacs-lisp
@@ -95,31 +106,36 @@ I don't like the a messy startup screen.
  (setq visible-bell 1)
  #+END_SRC
 
-** Crossplatform filename
- I like to specify filenames so conversion to the running platform is easy
+* Fix Windows 10 cursor problem
  #+BEGIN_SRC emacs-lisp
- (fset 'convert-windows-filename
-       (if (fboundp 'cygwin-convert-file-name-from-windows)
-	   'cygwin-convert-file-name-from-windows
-	   'convert-standard-filename))
+ (setq w32-use-visible-system-caret nil)
  #+END_SRC
 
+* Crossplatform filename
+Attempt specifiy filepaths in a cross platform way.
 
-* Debug On Error
+Another strategy would be specify classes of base paths in one place and
+specify specific crossplatform functions and macros for path construction.
 #+BEGIN_SRC emacs-lisp
-;(setq debug-on-error t)
+(fset 'convert-windows-filename
+      (if (fboundp 'cygwin-convert-file-name-from-windows)
+	  'cygwin-convert-file-name-from-windows
+	  'convert-standard-filename))
 #+END_SRC
+
+
 * Save the emacs customization to a file.
+These are settings from the Emacs Customization Mechanism.
 #+BEGIN_SRC emacs-lisp
 (setq custom-file "~/.emacs-custom.el")
 (load custom-file)
 #+END_SRC
 
 * MSYS2/MINGW64 Path elements
-  - Mingw requires careful crafting of  paths and emulation of mount points.
-  - Any LISP built under mingw has an assumed environment of the build.
+Mingw requires careful crafting of  paths and emulation of mount points.
+Any LISP built under mingw has an assumed environment of the build.
 #+BEGIN_SRC emacs-lisp
-;;; Add path elements to exec path
+;;; Add mingw path elements to exec path
 (let ((mingw64-root-mount "C:/devel/msys64")
       (mingw64-bin-mount "C:/devel/msys64/usr/bin"))
   
@@ -132,107 +148,106 @@ I don't like the a messy startup screen.
   "Create a slime implemenation in the local mingw64 system naned tag."
   `(,tag (,(concat +msys64-base-path+ "usr/bin/env.exe") "MSYSTEM=MINGW64"
 	  ,(concat +msys64-base-path+ "usr/bin/bash.exe") "-l" "-c" "/usr/local/bin/sbcl --noinform")))
-
-#+END_SRC
-
-* Rebuild PATH based on current exec-path
-#+BEGIN_SRC emacs-lisp
-;;;  Now rebuild path based on exec-path
+;;;  Now rebuild path environment variable based on exec-path
 (setenv "PATH" (mapconcat #'identity exec-path path-separator))
 #+END_SRC
 
 * Setup SBCL
+This is where I keep my quirky self compiled SBCL compiled under msys2
 #+BEGIN_SRC emacs-lisp
 (setq SBCL_HOME_SAVE (getenv "SBCL_HOME"))
 (setq SBCL_BASE "C:/devel/SBCL_2_0_0-bin")
 #+END_SRC
 
-* Configure Autoc
-omplete
+* Configure Autocomplete
+Need to consider using HELM here
 #+BEGIN_SRC emacs-lisp
 (require 'auto-complete-config)
 (ac-config-default)
 #+END_SRC
 
 * Copy OS PATH to emacs path
+This seems unused.
 #+BEGIN_SRC emacs-lisp
 (setq PATH_SAVE (getenv "PATH"))
 #+END_SRC
 
-* Provision user compiled SBCL
-#+BEGIN_SRC emacs-lisp
-(defmacro user-compiled-mingw64-sbcl ()
-  `(when  (file-exists-p (concat +msys64-base-path+ "/usr/local/bin/sbcl.exe"))
-      (lisp-mingw64-implementation 'mingw64-sbcl)))
-#+END_SRC
+* Provision Various Common LISPs
 
-* Provions binary SBCL 2.0.0
-This is assumed to be broken.
-#+BEGIN_SRC emacs-lisp :tangle no
-(defmacro binary-supplied-sbcl-2-0-0 ()
-  (when (boundp 'SBCL_BASE) 
-	     (cond  
+** Provision user compiled SBCL
+ #+BEGIN_SRC emacs-lisp
+ (defmacro user-compiled-mingw64-sbcl ()
+   `(when  (file-exists-p (concat +msys64-base-path+ "/usr/local/bin/sbcl.exe"))
+       (lisp-mingw64-implementation 'mingw64-sbcl)))
+ #+END_SRC
+
+** Provions binary SBCL 2.0.0
+ This is assumed to be broken.
+ #+BEGIN_SRC emacs-lisp :tangle no
+ (defmacro binary-supplied-sbcl-2-0-0 ()
+   (when (boundp 'SBCL_BASE) 
+	      (cond  
 		   
-		   ((string= SBCL_BASE "C:/devel/SBCL_2_0_0-bin")
-		    (progn
-		      (unless (boundp 'SBCL-IN-PATH)
-			(setenv "PATH"
-				(concat
-				 SBCL_BASE
-				 "/bin/"
-				 ";"
-				 (getenv "PATH")))
-			 (setenv "SBCL_HOME" SBCL_BASE)
-			 (setq SBCL-IN-PATH t))
-		      `(`sbcl  (,(concat SBCL_BASE "/" "sbcl.exe")
-			       "--noinform"))))))
-)
-#+END_SRC
+		    ((string= SBCL_BASE "C:/devel/SBCL_2_0_0-bin")
+		     (progn
+		       (unless (boundp 'SBCL-IN-PATH)
+			 (setenv "PATH"
+				 (concat
+				  SBCL_BASE
+				  "/bin/"
+				  ";"
+				  (getenv "PATH")))
+			  (setenv "SBCL_HOME" SBCL_BASE)
+			  (setq SBCL-IN-PATH t))
+		       `(`sbcl  (,(concat SBCL_BASE "/" "sbcl.exe")
+				"--noinform"))))))
+ )
+ #+END_SRC
 
-* Provions binary SBCL 2.0.2
-This is assumed to be broken.
-#+BEGIN_SRC emacs-lisp :tangle no
-(defmacro binary-compiled-sbcl-2-0-2()
-(when (boundp 'SBCL_BASE) 
-         (cond  
-		   ((string= SBCL_BASE "C:/devel/SBCL_2_0_2")
-		    (progn
-		      (unless (boundp 'SBCL-IN-PATH)
-			(setenv "PATH"
-				(concat
-				 SBCL_BASE
-				 "/bin/"
-				 ";"
-				 (getenv "PATH")))
-			(setenv "SBCL_HOME"
-				(concat
-				 SBCL_BASE
-				 "/lib/sbcl"))
-			(setq SBCL-IN-PATH t))
-		      `(sbcl  (,(concat SBCL_BASE "/bin/" "sbcl.exe")
-			       "--noinform"))))
-		   ((string= SBCL_BASE "C:/devel/SBCL_2_0_0-bin")
-		    (progn
-		      (unless (boundp 'SBCL-IN-PATH)
-			(setenv "PATH"
-				(concat
-				 SBCL_BASE
-				 "/bin/"
-				 ";"
-				 (getenv "PATH")))
-			 (setenv "SBCL_HOME" SBCL_BASE)
+** Provions binary SBCL 2.0.2
+ This is assumed to be broken.
+ #+BEGIN_SRC emacs-lisp :tangle no
+ (defmacro binary-compiled-sbcl-2-0-2()
+ (when (boundp 'SBCL_BASE) 
+          (cond  
+		    ((string= SBCL_BASE "C:/devel/SBCL_2_0_2")
+		     (progn
+		       (unless (boundp 'SBCL-IN-PATH)
+			 (setenv "PATH"
+				 (concat
+				  SBCL_BASE
+				  "/bin/"
+				  ";"
+				  (getenv "PATH")))
+			 (setenv "SBCL_HOME"
+				 (concat
+				  SBCL_BASE
+				  "/lib/sbcl"))
 			 (setq SBCL-IN-PATH t))
-		      `(`sbcl  (,(concat SBCL_BASE "/" "sbcl.exe")
-			       "--noinform"))))))
-)
-#+END_SRC
+		       `(sbcl  (,(concat SBCL_BASE "/bin/" "sbcl.exe")
+				"--noinform"))))
+		    ((string= SBCL_BASE "C:/devel/SBCL_2_0_0-bin")
+		     (progn
+		       (unless (boundp 'SBCL-IN-PATH)
+			 (setenv "PATH"
+				 (concat
+				  SBCL_BASE
+				  "/bin/"
+				  ";"
+				  (getenv "PATH")))
+			  (setenv "SBCL_HOME" SBCL_BASE)
+			  (setq SBCL-IN-PATH t))
+		       `(`sbcl  (,(concat SBCL_BASE "/" "sbcl.exe")
+				"--noinform"))))))
+ )
+ #+END_SRC
 
-* Provision ABCL
-#+BEGIN_SRC emacs-lisp
-(defmacro provision-abcl()
-  `(when (and (file-exists-p  (convert-standard-filename "C:/Program Files/ABCL/abcl.jar")))
-	`(abcl  ("java" "-jar" ,(convert-standard-filename "C:/Program Files/ABCL/abcl.jar")))))
-#+END_SRC
+** Provision ABCL
+ #+BEGIN_SRC emacs-lisp
+ (defmacro provision-abcl()
+   `(when (and (file-exists-p  (convert-standard-filename "C:/Program Files/ABCL/abcl.jar")))
+	 `(abcl  ("java" "-jar" ,(convert-standard-filename "C:/Program Files/ABCL/abcl.jar")))))
+ #+END_SRC
 
 * SLIME
   - There are a number of defunct implemnations in this list:
