@@ -468,37 +468,6 @@ I use my local clone of the Hyperspec
 	 ("bugzilla-comp" . "http://192.168.1.50/bugzilla/describecomponents.cgi?product=")))
  #+END_SRC
 ** Customize by Environemt
-*** Ensure there are standard user ~/org directories
- How to define the standard HOME org directory.
- Under windows and linux this is ~/org 
-  #+BEGIN_SRC emacs-lisp
-  ;; The standard user directory is org  in the HOME directory.
-  ;; This directory can be set by the environment var ORG-USER-DIR.
-  (setf org-user-dir (if (getenv "ORG-USER-DIR") 
-			(getenv "ORG-USER-DIR")
-			(concat (getenv "HOME") "/org")))
-  (unless (file-directory-p org-user-dir)
-    (make-directory  org-user-dir))
-  ;; Define a global org directory
-  (setf org-public-dir 
-    (if (getenv "ORG-PUBLIC-DIR")
-        (getenv "ORG-PUBLIC-DIR")
-        "c:/Users/Public/Documents/org"))
-  
-  #+END_SRC
-
-*** Standard Notes file
- This is a standard per User notes file.
- Unser windows and linux this ~/org/notes/notes.org
-  #+BEGIN_SRC emacs-lisp
-  ;; The Standard org note file is ~/org/notes/notes.
-  ;; This can be set by the environment variable ORG-NOTES-FILE
-  (setq org-notes-file (if (getenv "ORG-NOTES-FILE")
-                          (getenv "ORG-NOTES-FILE")
-                          (concat org-user-dir "/notes/notes.org")))
-  (setq org-default-notes-file org-notes-file)
-  #+END_SRC
-
 *** customization macros
 #+BEGIN_SRC emacs-lisp
   (defmacro default-or-environment (emacs-var base new-path-string env-string) 
@@ -507,21 +476,36 @@ I use my local clone of the Hyperspec
                           (concat ,base ,new-path-string))))
 #+END_SRC
 
+*** Ensure there are standard user ~/org directories
+ How to define the standard HOME org directory.
+ Under windows and linux this is ~/org 
+  #+BEGIN_SRC emacs-lisp
+  ;; The standard user directory is org  in the HOME directory.
+  ;; This directory can be set by the environment var ORG-USER-DIR.
+  (default-or-environment org-user-dir (getenv "HOME") "/org" "ORG-USER-DIR")
+  (unless (file-directory-p org-user-dir)
+    (make-directory  org-user-dir))
+  ;; Define a global org directory
+  (default-or-environment org-public-dir "c:/Users/Public/Documents" "/org" "ORG-PUBLIC-DIR")  
+  #+END_SRC
+
+*** Standard Notes file
+ This is a standard per User notes file.
+ Unser windows and linux this ~/org/notes/notes.org
+  #+BEGIN_SRC emacs-lisp
+  ;; The Standard org note file is ~/org/notes/notes.
+  ;; This can be set by the environment variable ORG-NOTES-FILE
+  (default-or-environment org-notes-file org-user-dir "/nodes/notes.org" "ORG-NOTES-FILE")
+  (setq org-default-notes-file org-notes-file)
+  #+END_SRC
+
 *** Standard org and org-agenda directories
    - I have a common place for org and org agenda files
   #+BEGIN_SRC emacs-lisp
     ;; My org agenda dir are files in ~/org/agenda
     ;; The the agenda directory can be changed by env ORG-AGENDA-DIR
     (default-or-environment org-agenda-dir org-user-dir "/agenda/" "ORG_AGENDA-DIR")
-    ;; (setq org-agenda-dir (if (getenv "ORG-AGENDA-DIR")
-    ;;                         (genenv "ORG-AGENDA-DIR")
-    ;;                         (concat org-user-dir "/agenda/")))
-
     (default-or-environment org-public-agenda-dir org-public-dir "/agenda/" "ORG-PUBLIC-AGENDA-DIR")
-    ;; (setq org-public-agenda-dir (if (getenv "ORG-PUBLIC-AGENDA-DIR")
-    ;; 			      (genenv "ORG-PUBLIC-AGENDA-DIR")
-    ;; 			      (concat org-public-dir "/agenda/")
-
   #+END_SRC
 
 ** A few custom checklists
@@ -566,13 +550,7 @@ I use my local clone of the Hyperspec
  #+BEGIN_SRC emacs-lisp
     ;;; Define user and public template directories
      (default-or-environment org-template-dir org-user-dir "/template/" "ORG-TEMPLATE-DIR")
-     ;; (setq org-template-dir (if (getenv "ORG-TEMPLATE-DIR")
-     ;;                         (genenv "ORG-TEMPLATE-DIR")
-     ;;                         (concat org-user-dir "/template/")))
      (default-or-environment org-public-template-dir org-public-dir "/template/" "ORG-PUBLIC-TEMPLATE-DIR")
-    ;;  (setq org-public-template-dir (if (getenv "ORG-PUBLIC-TEMPLATE-DIR")
-    ;; 				(genenv "ORG-PUBLIC-TEMPLATE-DIR")
-    ;; 				(concat org-public-dir "/template/")))
 
     ;; ;;; See: http://cachestocaches.com/2016/9/my-workflow-org-agenda/
     (setq org-capture-templates
