@@ -15,7 +15,7 @@ Shared configuration across many user is done by files in the public user.
 These files are referenced by each user configuration file, see the org configuration in this file for en example.
 The Public user contains a copy of the primary template for emacs settings in a git repo.
 
-** Issues with .sbclrc 
+** How SBCL user customization is handled
 I generally use SBCL and I use quicklisp.
 
 The following is by main .sbclrc file which is a per user file.
@@ -32,14 +32,23 @@ The following is by main .sbclrc file which is a per user file.
     (load quicklisp-init))
   (print "loading Quicklisp"))
   
-;;; Add additional repository directories by Thomas Rake
+;;; Standard site directoires Thomas Rake
 #+quicklisp
-(let ((paths '(#P"C:/Users/zzzap/local-code-projects/my-code/common-lisp/local-attic/" ; very old code
-               #P"C:/Users/Public/Documents/repos/")))                                 ; Public code repos
-   (dolist (p paths) (when (and p (probe-file p) (not (member p ql:*local-project-directories*)))
-                        (print (format t "Adding ~A to quicklisp local projects directory." p))
-                        (setf ql:*local-project-directories* (cons p ql:*local-project-directories*)))))
-
+(let* ((user (first (last (pathname-directory (user-homedir-pathname)))))
+       (shared-code #+win32 #P"C:/Users/Public/Documents/repos/") ; could add unix defaults
+       (standard-lisp-home #+win32 (pathname (concatenate 'string "C:/Users/" user "/common-lisp/"))) ; count add unix defaults
+       (paths))
+;;;; Create path defaults based on the user
+  (cond ((equalp user "zzzap")
+	 (setf paths `(#P"C:/Users/zzzap/local-code-projects/my-code/common-lisp/local-attic/" ; very old code
+		       ,standard-lisp-home
+		       ,shared-code)))
+        (t `(,standard-lisp-home ,shared-code)))
+;;;; Add those paths that exist to quicklisp project directories.
+  (dolist (p paths)
+    (when (and p (probe-file p) (not (member p ql:*local-project-directories*)))
+      (print (format t "Adding ~A to quicklisp local projects directory." p))
+      (setf ql:*local-project-directories* (cons p ql:*local-project-directories*)))))
 #+END_SRC
 
 The variable path could be constructed based on the user executiong the .sbclrc file. This would make
