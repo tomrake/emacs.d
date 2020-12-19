@@ -11,9 +11,16 @@
   
 ;;; Add additional repository directories by Thomas Rake
 #+quicklisp
-(let ((paths '(#P"C:/Users/zzzap/local-code-projects/my-code/common-lisp/local-attic/" ; very old code
-               #P"C:/Users/Public/Documents/repos/")))                                 ; Public code repos
-   (dolist (p paths) (when (and p (probe-file p) (not (member p ql:*local-project-directories*)))
+(let* ((user (first (last (pathname-directory (user-homedir-pathname)))))
+       (shared-code #+win32 #P"C:/Users/Public/Documents/repos/")
+       (standard-lisp-home #+win32 (pathname (concatenate 'string "C:/Users/" user "/common-lisp/")))
+       (paths))
+  (cond ((equalp user "zzzap")
+	 (setf paths `(#P"C:/Users/zzzap/local-code-projects/my-code/common-lisp/local-attic/" ; very old code
+		       ,shared-code
+		       ,standard-lisp-home)))
+        (t `(,standard-lisp-home ,shared-code)))
+    (dolist (p paths) (when (and p (probe-file p) (not (member p ql:*local-project-directories*)))
                         (print (format t "Adding ~A to quicklisp local projects directory." p))
                         (setf ql:*local-project-directories* (cons p ql:*local-project-directories*)))))
 
