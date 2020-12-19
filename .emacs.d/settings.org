@@ -1,5 +1,54 @@
 
 #+EXPORT-FILENAME init.el
+* README
+** READ NOTES MESSAGE
+#+BEGIN_SRC emacs-lisp
+;;;; See the README in ~/emacs.d/settings.org has documentation on emacs, common-lisp setup.
+#+END_SRC
+** Each User has a role
+I have different roles on my PC. And each role had different sharing requirements.
+Each role has different setup files.
+Each role is represented by a specific user on my PC.
+
+** The public user is a common shared user
+Shared configuration across many user is done by files in the public user.
+These files are referenced by each user configuration file, see the org configuration in this file for en example.
+The Public user contains a copy of the primary template for emacs settings in a git repo.
+
+** Issues with .sbclrc 
+I generally use SBCL and I use quicklisp.
+
+The following is by main .sbclrc file which is a per user file.
+
+#+BEGIN_SRC lisp
+;;;;          -*-  mode: lisp;  -*-
+
+;;; The following lines added by ql:add-to-init-file:
+#-quicklisp
+(let ((quicklisp-init (merge-pathnames
+                       "local-code-projects/my-code/common-lisp/setup.lisp"
+                       (user-homedir-pathname))))
+  (when (probe-file quicklisp-init)
+    (load quicklisp-init))
+  (print "loading Quicklisp"))
+  
+;;; Add additional repository directories by Thomas Rake
+#+quicklisp
+(let ((paths '(#P"C:/Users/zzzap/local-code-projects/my-code/common-lisp/local-attic/" ; very old code
+               #P"C:/Users/Public/Documents/repos/")))                                 ; Public code repos
+   (dolist (p paths) (when (and p (probe-file p) (not (member p ql:*local-project-directories*)))
+                        (print (format t "Adding ~A to quicklisp local projects directory." p))
+                        (setf ql:*local-project-directories* (cons p ql:*local-project-directories*)))))
+
+#+END_SRC
+
+The variable path could be constructed based on the user executiong the .sbclrc file. This would make
+the .sbclrc file universal.
+
+** WIP Stash of resources
+https://dev.to/fedekau/automatically-managing-personal-and-work-git-configurations-27ad
+https://www.wyeworks.com/blog/2018/01/03/using-git-hooks-to-improve-your-day-to-day-workflow/
+
 * Generated File Warning
 Add a warning to init.el that it is
 #+BEGIN_SRC emacs-lisp
