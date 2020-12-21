@@ -20,7 +20,7 @@
 	 (setf paths `(#P"C:/Users/zzzap/local-code-projects/my-code/common-lisp/local-attic/" ; very old code
 		       ,standard-lisp-home
 		       ,shared-code)))
-        (t `(,standard-lisp-home ,shared-code)))
+        (t (setf paths `(,standard-lisp-home ,shared-code))))
 ;;;; Add those paths that exist to quicklisp project directories.
   (dolist (p paths)
     (when (and p (probe-file p) (not (member p ql:*local-project-directories*)))
