@@ -1,14 +1,12 @@
 ;;;;          -*-  mode: lisp;  -*-
-
 ;;; The following lines added by ql:add-to-init-file:
 #-quicklisp
-(let ((quicklisp-init (merge-pathnames
-                       "local-code-projects/my-code/common-lisp/setup.lisp"
-                       (user-homedir-pathname))))
+(let ((quicklisp-init (merge-pathnames "quicklisp/setup.lisp"
+                                       (user-homedir-pathname))))
   (when (probe-file quicklisp-init)
-    (load quicklisp-init))
-  (print "loading Quicklisp"))
-  
+    (load quicklisp-init)))
+
+
 ;;; Standard site directoires Thomas Rake
 #+quicklisp
 (let* ((user (first (last (pathname-directory (user-homedir-pathname)))))
@@ -26,6 +24,7 @@
     (when (and p (probe-file p) (not (member p ql:*local-project-directories*)))
       (print (format t "Adding ~A to quicklisp local projects directory." p))
       (setf ql:*local-project-directories* (cons p ql:*local-project-directories*)))))
+
 
 
 

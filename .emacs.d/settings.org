@@ -5,6 +5,11 @@
 The assumption that .sbclrc could just load quicklisp is faulty.
 quicklisp assumes a initialization in CL init files.
 I missed this aspect in my .sbclrc update for multi user type startup.
+** quicklisp settup
+The assumed quicklisp setup is in ~/quicklisp with local-projects in
+~/quicklisp/local-projects.
+
+asdf system search is configured in ~/.config/common-lisp/source-registry.conf.d
 ** READ NOTES MESSAGE
 #+BEGIN_SRC emacs-lisp
 ;;;; See the README in ~/emacs.d/settings.org has documentation on emacs, common-lisp setup.
