@@ -1,6 +1,22 @@
 
 #+EXPORT-FILENAME init.el
 * README
+** Standard LISP setup
+
+quicklisp is installed at ~/quicklisp
+
+
+The base configuration searches for systems in the following directories:
+   - ~/common-lisp/
+   - ~/quicklisp/local-packages/
+   - c:/Users/Public/Documents/repos/
+
+~/.quicklisp-user.lisp 
+Is a straight common lisp file used to add the above directories for then system
+The base configuration is done for all users except for user zzzap, which has a special legacy configuration.
+
+~/.config/common-lisp/source-registry.conf.d contains equivalent search directories
+
 ** READ NOTES MESSAGE
 #+BEGIN_SRC emacs-lisp
 ;;;; See the README in ~/emacs.d/settings.org has documentation on emacs, common-lisp setup.
