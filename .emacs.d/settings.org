@@ -17,6 +17,19 @@ The base configuration is done for all users except for user zzzap, which has a 
 
 ~/.config/common-lisp/source-registry.conf.d contains equivalent search directories
 
+NONSTANDARD legacy behaviour in zzzap
+
+zzzap has a non-standard/legacy quicklisp setup.lisp location of ~/local-code-projects/my-code/common-lisp/setup.lisp
+
+The Best solution would to convert and test all legacy code in the standard locations.
+
+*** Mitigration Strategy for zzzap
+
+1. Make effort to find hard coded User/zzzap/ strings in lisp code.
+2. Do fixup of those strings test and certify  code
+3. Create ~/quickisp ~/common-lisp distro for zzzzp 
+4. mv selected items from legacy locations to new locations.
+
 ** READ NOTES MESSAGE
 #+BEGIN_SRC emacs-lisp
 ;;;; See the README in ~/emacs.d/settings.org has documentation on emacs, common-lisp setup.
