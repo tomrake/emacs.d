@@ -22,5 +22,5 @@
 [i18n]
 	filesEncoding = utf-8
 [core]
-	editor = C:/ProgramData/chocolatey/lib/Emacs/tools/emacs/bin/emacs.exe  fileeditor
+	editor = nano
 	autocrlf = true

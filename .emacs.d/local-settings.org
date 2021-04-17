@@ -1,3 +1,7 @@
-#+BEGIN_SRC emacs-lisp
-(message "Hello from  user settings")
-#+END_SRC
+* My default coding location
+Customize this default by envrinment variable USER_PROJECTS.
+ #+BEGIN_SRC emacs-lisp
+ ;;;; Change to my work directory
+ (if (getenv "CODE-REPO")
+      (cd (getenv "CODE-REPO")))
+ #+END_SRC

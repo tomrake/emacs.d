@@ -109,6 +109,22 @@ at the end.
 (setq  *emacs-load-start* (current-time))
 #+END_SRC
 
+* Initial Frame Size
+Fix initial window position.
+  #+BEGIN_SRC emacs-lisp
+  ;; Set initial frame size and position
+  (defun my/set-initial-frame ()
+    (let* ((base-factor 0.70)
+          (a-width (* (display-pixel-width) base-factor))
+          (a-height (* (display-pixel-height) base-factor))
+          (a-left (truncate (/ (- (display-pixel-width) a-width) 2)))
+          (a-top (truncate (/ (- (display-pixel-height) a-height) 2))))
+      (set-frame-position (selected-frame) a-left a-top)
+      (set-frame-size (selected-frame) (truncate a-width)  (truncate a-height) t)))
+  (setq frame-resize-pixelwise t)
+  (my/set-initial-frame)
+  #+END_SRC
+
 * Package Archives distros                                           :review:
 Which online distros we use to get packages.
 Much of this is legacy code and needs review.
@@ -192,7 +208,6 @@ I don't like the a messy startup screen.
  (setq inhibit-startup-screen t)
  (setq visible-bell 1)
  #+END_SRC
-
 * Fix Windows 10 cursor problem
  #+BEGIN_SRC emacs-lisp
  (setq w32-use-visible-system-caret nil)
@@ -635,66 +650,45 @@ I use my local clone of the Hyperspec
 
 ** Capture Templates
  #+BEGIN_SRC emacs-lisp
-    ;;; Define user and public template directories
-     (default-or-environment org-template-dir org-user-dir "/template/" "ORG-TEMPLATE-DIR")
-     (default-or-environment org-public-template-dir org-public-dir "/template/" "ORG-PUBLIC-TEMPLATE-DIR")
+      ;;; Define user and public template directories
+       (default-or-environment org-template-dir org-user-dir "/template/" "ORG-TEMPLATE-DIR")
+       (default-or-environment org-public-template-dir org-public-dir "/template/" "ORG-PUBLIC-TEMPLATE-DIR")
 
-    ;; ;;; See: http://cachestocaches.com/2016/9/my-workflow-org-agenda/
-    (setq org-capture-templates
-     `(("n" "note" entry (file ,(concat org-public-agenda-dir  "gtd.org"))
-	"* %? :NOTE:\n%U\n%a\n" :clock-in t :clock-resume t)
-    ;; Medical Appointments
-    ;; Medical Appointment  (m) Medical template
-       ("m" "MEDICAL   (m) Medical" entry (file+headline ,(concat org-public-agenda-dir "gtd.org") "Medical Appointments")
-	(file ,(concat org-public-template-dir "Medical-Appointment.txt")) :empty-lines 1 :time-prompt t)
+      ;; ;;; See: http://cachestocaches.com/2016/9/my-workflow-org-agenda/
+      (setq org-capture-templates
+       `(("n" "note" entry (file ,(concat org-public-agenda-dir  "gtd.org"))
+	  "* %? :NOTE:\n%U\n%a\n" :clock-in t :clock-resume t)
+      ;; Medical Appointments
+      ;; Medical Appointment  (m) Medical template
+	 ("m" "MEDICAL   (m) Medical" entry (file+headline ,(concat org-public-agenda-dir "gtd.org") "Medical Appointments")
+	  (file ,(concat org-public-template-dir "Medical-Appointment.txt")) :empty-lines 1 :time-prompt t)
 
-    ;; Health Data Capture
-       ("h" "Health Data Capture (h)")
+      ;; Health Data Capture
+	 ("h" "Health Data Capture (h)")
 
-       ("hb" "Blood Pressure (b)" table-line (file+headline ,(concat org-public-dir "/notes/Medical-Data.org") "Blood Pressure")
-	 "|%^{Person|TOM|JOANNE|SONYA}|%U|%^{Systtolic}|%^{Diastolic}|%^{Pulse}|")
+	 ("hb" "Blood Pressure (b)" table-line (file+headline ,(concat org-public-dir "/notes/Medical-Data.org") "Blood Pressure")
+	   "|%^{Person|TOM|JOANNE|SONYA}|%U|%^{Systtolic}|%^{Diastolic}|%^{Pulse}|")
 
-       ("ht" "Temperature (t)" table-line (file+headline ,(concat org-public-dir "/notes/Medical-Data.org") "Temperature")
-	"|%^{Person|TOM|JOANNE|SONYA}|%U|%^{Temperature}|")
-    ;; Shoppping Items
-       ("s" "Shopping Request (s)" table-line (file+headline ,(concat org-public-dir "/notes/Shopping-Requests.org") "Requests")
-	"|%U|%^{Needed Item}|")
-    ;; List of Goals
-       ("g" "Set a goal (g)")
-       ("gd" "Daily Goal TODO (d)"  entry (file+headline ,(concat org-public-agenda-dir "gtd.org") "Daily Goals")
-	 "*** TODO [#C] %^{Description}
-	 SCHEDULED: %t")
-       ("gw" "Weekly Goal TODO (w)"  entry (file+headline ,(concat org-public-agenda-dir "gtd.org") "Weekly Goals")
-	 "*** TODO [#C] %^{Description}
-	 SCHEDULED: %t")
-       ("j" "Journal" entry (file+datetree ,(concat org-user-dir "/diary.org"))
-	"* %U %^{Title}\n  -%?" :clock-in t :clock-resume t)
-   ;; Oil measurements
-       ("o" "Oil Level Mointor (o)")
+	 ("ht" "Temperature (t)" table-line (file+headline ,(concat org-public-dir "/notes/Medical-Data.org") "Temperature")
+	  "|%^{Person|TOM|JOANNE|SONYA}|%U|%^{Temperature}|")
+      ;; Shoppping Items
+	 ("s" "Shopping Request (s)" table-line (file+headline ,(concat org-public-dir "/notes/Shopping-Requests.org") "Requests")
+	  "|%U|%^{Needed Item}|")
+      ;; Shoppping Items
+	 ("e" "Fetch from Extension at Southfork Requests (e)" table-line
+   (file+headline ,(concat org-public-dir "/notes/Fetching-Requests.org") "Fetch Requests") "|%U|%^{Needed Item}|")
+      ;; List of Goals
+	 ("g" "Set a goal (g)")
+	 ("gd" "Daily Goal TODO (d)"  entry (file+headline ,(concat org-public-agenda-dir "gtd.org") "Daily Goals")
+	   "*** TODO [#C] %^{Description}
+	   SCHEDULED: %t")
+	 ("gw" "Weekly Goal TODO (w)"  entry (file+headline ,(concat org-public-agenda-dir "gtd.org") "Weekly Goals")
+	   "*** TODO [#C] %^{Description}
+	   SCHEDULED: %t")
+	 ("j" "Journal" entry (file+datetree ,(concat org-user-dir "/diary.org"))
+	  "* %U %^{Title}\n  -%?" :clock-in t :clock-resume t)
 
-       ("oe" "Extension Tank (e)")
-       ("oel" "Oil Level in the Extention Tank (l)"  table-line 
-	 (file+headline ,(concat org-public-dir "/notes/Heat-Data.org") "Extension")
-	"|%U|%^{Oil Clock}|%^{Remote}|%^{Tank Guage}|" )
-       ("oef" "Oil Fill in the Extention Tank (f)"  table-line 
-	 (file+headline ,(concat org-public-dir "/notes/Heat-Data.org") "Extension Fill")
-	"|%U|%^{Gallons}|")
-       ("oed" "Oil Empty in the Extention Tank (d)"  table-line 
-	 (file+headline ,(concat org-public-dir "/notes/Heat-Data.org") "Extension Empty")
-	"|%U|")
-
-
-       ("om" "Main Tank (m)")
-       ("oml" "Oil Level in the Main Tank (l)"  table-line (file+headline ,(concat org-public-dir "/notes/Heat-Data.org") "Main")
-	"|%U|%^{Tank Guage}|")
-       ("omf" "Oil Fill in the Extention Tank (f)"  table-line 
-	 (file+headline ,(concat org-public-dir "/notes/Heat-Data.org") "Main Fill")
-	"|%U|%^{Gallons}|")
-       ("omd" "Oil Empty in the Extention Tank (d)"  table-line 
-	 (file+headline ,(concat org-public-dir "/notes/Heat-Data.org") "Main Empty")
-	"|%U|")
-
-	))
+	  ))
  #+END_SRC
 
 ** Refile configuration
@@ -711,13 +705,6 @@ Customize  this default by environment variable USER_REOPEN_FILES
 
 * Final Presenation to the user.
 
-** My default coding location
-Customize this default by envrinment variable USER_PROJECTS.
- #+BEGIN_SRC emacs-lisp
- ;;;; Change to my work directory
- (if (getenv "CODE-REPO")
-      (cd (getenv "CODE-REPO")))
-  #+END_SRC
 ** load per user settings
  #+BEGIN_SRC emacs-lisp
  ;;;; load per user settings file
