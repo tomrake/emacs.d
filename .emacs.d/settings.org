@@ -671,12 +671,17 @@ I use my local clone of the Hyperspec
 
 	 ("ht" "Temperature (t)" table-line (file+headline ,(concat org-public-dir "/notes/Medical-Data.org") "Temperature")
 	  "|%^{Person|TOM|JOANNE|SONYA}|%U|%^{Temperature}|")
+      ;; Small Items
+         ("i" "Small Items")
       ;; Shoppping Items
-	 ("s" "Shopping Request (s)" table-line (file+headline ,(concat org-public-dir "/notes/Shopping-Requests.org") "Requests")
+	 ("is" "Shopping Request (s)" table-line (file+headline ,(concat org-public-dir "/notes/Shopping-Requests.org") "Requests")
 	  "|%U|%^{Needed Item}|")
       ;; Shoppping Items
-	 ("e" "Fetch from Extension at Southfork Requests (e)" table-line
+	 ("ie" "Fetch from Extension at Southfork Requests (e)" table-line
    (file+headline ,(concat org-public-dir "/notes/Fetching-Requests.org") "Fetch Requests") "|%U|%^{Needed Item}|")
+      ;; Items for James O. Seese
+         ("ij" "Item for James O Seese (j)" table-line
+   (file+headline ,(concat org-user-dir "/agenda/JOS-POA.org") "Review Items") "|%U|%^{Needed Item}|")
       ;; List of Goals
 	 ("g" "Set a goal (g)")
 	 ("gd" "Daily Goal TODO (d)"  entry (file+headline ,(concat org-public-agenda-dir "gtd.org") "Daily Goals")

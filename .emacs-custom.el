@@ -12,6 +12,8 @@
  '(custom-safe-themes
    '("e269026ce4bbd5b236e1c2e27b0ca1b37f3d8a97f8a5a66c4da0c647826a6664" "e9460a84d876da407d9e6accf9ceba453e2f86f8b86076f37c08ad155de8223c" "ff7625ad8aa2615eae96d6b4469fcc7d3d20b2e1ebc63b761a349bebbb9d23cb" "d6922c974e8a78378eacb01414183ce32bc8dbf2de78aabcc6ad8172547cb074" "38e64ea9b3a5e512ae9547063ee491c20bd717fe59d9c12219a0b1050b439cdd" "561ba4316ba42fe75bc07a907647caa55fc883749ee4f8f280a29516525fc9e8" default))
  '(fci-rule-color "#383838")
+ '(org-agenda-files
+   '("c:/Users/Public/Documents/org/notes/Car-Replacement-Strategy.org" "c:/Users/zzzap/org/agenda/JOS-POA.org" "c:/Users/zzzap/org/agenda/SPP.org" "c:/Users/zzzap/org/agenda/daily-review.org" "c:/Users/Public/Documents/org/agenda/Code.org" "c:/Users/Public/Documents/org/agenda/Fragments.org" "c:/Users/Public/Documents/org/agenda/Projects.org" "c:/Users/Public/Documents/org/agenda/gtd.org" "c:/Users/Public/Documents/org/agenda/pantry.org"))
  '(package-selected-packages
    '(tramp magit dakrone-theme dockerfile-mode docker-tramp anaconda-mode popup cyberpunk-theme ac-slime paredit rainbow-delimiters slime epc auto-complete flx-ido))
  '(safe-local-variable-values '((org-use-property-inheritance . t))))
