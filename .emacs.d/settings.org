@@ -494,15 +494,19 @@ I use my local clone of the Hyperspec
 #+END_SRC
 
 * Tramp                                                              :review:
-Attempt to customize tramp to connect to cisco a rasberry pi.
-Attempt to use connection-local-variables.
-[[https://www.gnu.org/software/emacs/manual/html_node/elisp/Connection-Local-Variables.html]]
+** The default connection method is plink
 #+BEGIN_SRC emacs-lisp
 (require 'tramp)
-;(setq tramp-default-method "plink")
-(setq tramp-verbose 10)
+(setq tramp-default-method "plink")
+;(setq tramp-verbose 10)
 #+END_SRC
-
+** Remote shell to cisco
+#+BEGIN_SRC emacs-lisp
+(defun cisco-remote-shell ()
+  (interactive)
+  (let ((default-directory "/plink:osmc@192.168.1.43:"))
+     (shell)))
+#+END_SRC
 * IDO                                                                :review:
 #+BEGIN_SRC emacs-lisp
 (require 'ido)
