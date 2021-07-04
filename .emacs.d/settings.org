@@ -225,7 +225,20 @@ specify specific crossplatform functions and macros for path construction.
 	  'convert-standard-filename))
 #+END_SRC
 
-
+* Copy Filename to Buffer
+#+BEGIN_SRC emacs-lisp
+(defun my-put-file-name-on-clipboard ()
+  "Put the current file name on the clipboard"
+  (interactive)
+  (let ((filename (if (equal major-mode 'dired-mode)
+                      default-directory
+                    (buffer-file-name))))
+    (when filename
+      (with-temp-buffer
+        (insert filename)
+        (clipboard-kill-region (point-min) (point-max)))
+      (message filename))))
+#+END_SRC
 * Save the emacs customization to a file.
 These are settings from the Emacs Customization Mechanism.
 #+BEGIN_SRC emacs-lisp
