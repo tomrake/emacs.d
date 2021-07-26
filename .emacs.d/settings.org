@@ -267,6 +267,9 @@ Any LISP built under mingw has an assumed environment of the build.
 (setenv "PATH" (mapconcat #'identity exec-path path-separator))
 #+END_SRC
 
+  (setq  ispell-program-name "aspell")
+  (setq  ispell-dictionary-alist '((master . en_US)))
+  (require 'ispell)
 * Setup SBCL
 This is where I keep my quirky self compiled SBCL compiled under msys2
 #+BEGIN_SRC emacs-lisp
@@ -592,6 +595,7 @@ I use my local clone of the Hyperspec
 ** Customize by Environemt
 *** customization macros
 #+BEGIN_SRC emacs-lisp
+  ;;; Specify a emacs variable from an environment variable env-string or  base,new-path-string
   (defmacro default-or-environment (emacs-var base new-path-string env-string) 
     `(setq ,emacs-var (if (getenv ,env-string)
                           (getenv ,env-string)
@@ -600,15 +604,20 @@ I use my local clone of the Hyperspec
 
 *** Ensure there are standard user ~/org directories
  How to define the standard HOME org directory.
- Under windows and linux this is ~/org 
+ Under windows and linux this is ~/org.
+ 
+ Define a 
   #+BEGIN_SRC emacs-lisp
-  ;; The standard user directory is org  in the HOME directory.
-  ;; This directory can be set by the environment var ORG-USER-DIR.
+  ;; Create stadard org directories if not already present.
+  ;; The standard user directory is ~/org in the HOME directory.
+  ;; Override with the var ORG-USER-DIR.
   (default-or-environment org-user-dir (getenv "HOME") "/org" "ORG-USER-DIR")
   (unless (file-directory-p org-user-dir)
     (make-directory  org-user-dir))
   ;; Define a global org directory
-  (default-or-environment org-public-dir "c:/Users/Public/Documents" "/org" "ORG-PUBLIC-DIR")  
+  (default-or-environment org-public-dir "c:/Users/Public/Documents" "/org" "ORG-PUBLIC-DIR")
+  (unless (file-directory-p org-public-dir)
+    (make-directory org-public-dir))  
   #+END_SRC
 
 *** Standard Notes file
@@ -629,35 +638,6 @@ I use my local clone of the Hyperspec
     (default-or-environment org-agenda-dir org-user-dir "/agenda/" "ORG_AGENDA-DIR")
     (default-or-environment org-public-agenda-dir org-public-dir "/agenda/" "ORG-PUBLIC-AGENDA-DIR")
   #+END_SRC
-
-** A few custom checklists
- #+BEGIN_SRC emacs-lisp
- (defun morning-checklist-writer()
-   (format "* Morning Checklist
-   - [ ] Morning Tray for Mom [/]
-     - [ ] Morning Medications
-     - [ ] Breakfast
-       - [ ] Cereal 4oz milk
-     - [ ] 4oz water 1/2 TSP metamucil
-     - [ ] Spoon
-   - [ ] Feed Cat
-   - [ ] Eat YOUR Breakfast
- " nil))
-
- (defun monthly-tasks-for-james-seese ()
-   (format "* Monthly Tasks: James Seese
-   - [ ] Process all inbound mail.
-   - [ ] Separate mail by entity
-   - [ ] list all oustanding bills
-   - [ ] list all oustanding deposits
-   - [ ] Make deposit list
-     - [ ] vendor
-     - [ ] amount
-   - [ ] Make check list
-     - [ ] Vendor
-     - [ ] Amount
-   - [ ] Write and mail checks" nil))
- #+END_SRC
 
 ** Task agenda context
  - This starts an agenda context
