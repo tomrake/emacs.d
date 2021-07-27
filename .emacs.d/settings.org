@@ -1,6 +1,25 @@
 
 #+EXPORT-FILENAME init.el
 * README
+** Task-Agenda Modifications
+I have too many tasks for my agenda.
+I need to evaluation the common public agenda strategy I developed.
+The Task-Agenda flow concentrates the agenda view to short term tasks,
+items that can be done in a day.
+Longer term items are projects which are reviewed on a weekly basis.
+A task can be created without a project.
+
+Idea that are neither tasks or projects are created as dream items are are reviews on a monthly basis.
+This makes agenda items only sub day items.
+
+How should the public/per user be changed to just per user.
+The current agenda items should be placed in legacy.
+
+Essential to this process is mastering refile.
+
+Entering of new tasks is by Remember mode.
+
+
 ** Standard LISP setup
 
 quicklisp is installed at ~/quicklisp
@@ -446,9 +465,7 @@ I use my local clone of the Hyperspec
 (add-hook 'pascal-mode-hook
 	  (lambda ()
 	    (set (make-local-variable 'compile-command)
-		 (concat "fpc " (file-name-nondirectory (buffer-file-name)))
-		 )
-	    )
+		 (concat "fpc " (file-name-nondirectory (buffer-file-name)))))
 	  t)
 
 (setq auto-mode-alist
@@ -468,22 +485,20 @@ I use my local clone of the Hyperspec
 #+BEGIN_SRC emacs-lisp
 (setq win-shell-implementaions
       `((cmd (shell))
-	(ming64 (
-		      (defun my-shell-setup ()
+	(ming64 ((defun my-shell-setup ()
        "For Cygwin bash under Emacs 20"
-       (setq comint-scroll-show-maximum-output 'this)
-       (make-variable-buffer-local 'comint-completion-addsuffix))
-       (setq comint-completion-addsuffix t)
-       ;; (setq comint-process-echoes t) ;; reported that this is no longer needed
-       (setq comint-eol-on-send t)
-       (setq w32-quote-process-args ?\")
-     
-     (add-hook 'shell-mode-hook 'my-shell-setup)
-		 ))))
+
+         (setq comint-scroll-show-maximum-output 'this)
+         (make-variable-buffer-local 'comint-completion-addsuffix))
+           (setq comint-completion-addsuffix t)
+           ;; (setq comint-process-echoes t) ;; reported that this is no longer needed
+           (setq comint-eol-on-send t)
+           (setq w32-quote-process-args ?\")
+           (add-hook 'shell-mode-hook 'my-shell-setup)))))
 	
 (defun win-shell ())
   
-;; The MSYS-SHELL
+;;; The MSYS-SHELL
 
 (defun msys-shell () 
   (interactive)
@@ -494,21 +509,14 @@ I use my local clone of the Hyperspec
     (add-hook 'comint-output-filter-functions 'comint-strip-ctrl-m)
     (shell)))
 
-;; The MINGW64-SHELL
+;;; The MINGW64-SHELL
 
 (defun mingw64-shell () 
        (interactive)
        (let (( explicit-shell-file-name (convert-standard-filename  "c:/devel/msys64/mingw64/bin/bash.exe")))
 	 (shell "*bash*")
-	     (call-interactively 'shell))
-       ;; (setq shell-file-name "bash")
-       ;; (setq explicit-bash.exe-args '("--login" "-i")) 
-       ;; (setenv "SHELL" shell-file-name)
-       ;; (add-hook 'comint-output-filter-functions 'comint-strip-ctrl-m)
-       ;; (shell)
-       )
+	     (call-interactively 'shell)))
 #+END_SRC
-
 * Tramp                                                              :review:
 ** The default connection method is plink
 #+BEGIN_SRC emacs-lisp
@@ -606,7 +614,6 @@ I use my local clone of the Hyperspec
  How to define the standard HOME org directory.
  Under windows and linux this is ~/org.
  
- Define a 
   #+BEGIN_SRC emacs-lisp
   ;; Create stadard org directories if not already present.
   ;; The standard user directory is ~/org in the HOME directory.
