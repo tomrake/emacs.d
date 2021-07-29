@@ -17,7 +17,7 @@ The current agenda items should be placed in legacy.
 
 Essential to this process is mastering refile.
 
-Entering of new tasks is by Remember mode.
+The tutorial refers to remember mode which is largely superceeded by org capture.
 
 
 ** Standard LISP setup
@@ -558,6 +558,16 @@ I use my local clone of the Hyperspec
 #+END_SRC
 
 * Ord Mode Customizations
+The newest redesign of org mode gtd is to use a per user setup with no public shared data.
+All the newest stuff will be in ~/org/gtd/
+** org mode location
+#+BEGIN_SRC emacs-lisp
+(setf org-mode-base-dir "~/org/")
+#+END_SRC
+** gtd location
+#+BEGIN_SRC emacs-lisp
+(setf org-gtd-dir (concat org-mode-base-dir "gtd/"))
+#+END_SRC
 ** site-lisp  and org-checklist.el
    - https://www.gnu.org/software/emacs/manual/html_node/elisp/Library-Search.html
    - I want add org-checklist.el so I will add it to site-lisp
@@ -618,13 +628,13 @@ I use my local clone of the Hyperspec
   ;; Create stadard org directories if not already present.
   ;; The standard user directory is ~/org in the HOME directory.
   ;; Override with the var ORG-USER-DIR.
+  ;; The org-public-dir is a legacy model for shared tasks across all users.
+  ;; The public shared model is to be deprecated in the light of the task-agenda model.
   (default-or-environment org-user-dir (getenv "HOME") "/org" "ORG-USER-DIR")
   (unless (file-directory-p org-user-dir)
     (make-directory  org-user-dir))
   ;; Define a global org directory
   (default-or-environment org-public-dir "c:/Users/Public/Documents" "/org" "ORG-PUBLIC-DIR")
-  (unless (file-directory-p org-public-dir)
-    (make-directory org-public-dir))  
   #+END_SRC
 
 *** Standard Notes file
@@ -638,7 +648,8 @@ I use my local clone of the Hyperspec
   #+END_SRC
 
 *** Standard org and org-agenda directories
-   - I have a common place for org and org agenda files
+   The all files in a directory model is being deprecated.
+
   #+BEGIN_SRC emacs-lisp
     ;; My org agenda dir are files in ~/org/agenda
     ;; The the agenda directory can be changed by env ORG-AGENDA-DIR
@@ -658,8 +669,8 @@ I use my local clone of the Hyperspec
 ** Capture Templates
  #+BEGIN_SRC emacs-lisp
       ;;; Define user and public template directories
-       (default-or-environment org-template-dir org-user-dir "/template/" "ORG-TEMPLATE-DIR")
-       (default-or-environment org-public-template-dir org-public-dir "/template/" "ORG-PUBLIC-TEMPLATE-DIR")
+       (default-or-environment gtd-template-dir org-gtd-dir "/template/" "ORG-TEMPLATE-DIR")
+      ; (default-or-environment org-public-template-dir org-public-dir "/template/" "ORG-PUBLIC-TEMPLATE-DIR")
 
       ;; ;;; See: http://cachestocaches.com/2016/9/my-workflow-org-agenda/
       (setq org-capture-templates
@@ -667,38 +678,22 @@ I use my local clone of the Hyperspec
 	  "* %? :NOTE:\n%U\n%a\n" :clock-in t :clock-resume t)
       ;; Medical Appointments
       ;; Medical Appointment  (m) Medical template
-	 ("m" "MEDICAL   (m) Medical" entry (file+headline ,(concat org-public-agenda-dir "gtd.org") "Medical Appointments")
-	  (file ,(concat org-public-template-dir "Medical-Appointment.txt")) :empty-lines 1 :time-prompt t)
+	 ("m" "MEDICAL   (m) Medical" entry (file+headline ,(concat org-gtd-dir "new-gtd.org") "Medical Appointments")
+	  (file ,(concat gtd-template-dir "Medical-Appointment.txt")) :empty-lines 1 :time-prompt t)
 
       ;; Health Data Capture
 	 ("h" "Health Data Capture (h)")
 
-	 ("hb" "Blood Pressure (b)" table-line (file+headline ,(concat org-public-dir "/notes/Medical-Data.org") "Blood Pressure")
-	   "|%^{Person|TOM|JOANNE|SONYA}|%U|%^{Systtolic}|%^{Diastolic}|%^{Pulse}|")
+	 ("hb" "Blood Pressure (b)" table-line (file+headline ,(concat org-gtd-dir "Medical-Data.org") "Blood Pressure")
+	   "|%^{Person|TOM|JOANNE}|%U|%^{Systtolic}|%^{Diastolic}|%^{Pulse}|")
 
-	 ("ht" "Temperature (t)" table-line (file+headline ,(concat org-public-dir "/notes/Medical-Data.org") "Temperature")
-	  "|%^{Person|TOM|JOANNE|SONYA}|%U|%^{Temperature}|")
-      ;; Small Items
-         ("i" "Small Items")
+	 ("ht" "Temperature (t)" table-line (file+headline ,(concat org-gtd-dir "Medical-Data.org") "Temperature")
+	  "|%^{Person|TOM|JOANNE}|%U|%^{Temperature}|")
+
       ;; Shoppping Items
-	 ("is" "Shopping Request (s)" table-line (file+headline ,(concat org-public-dir "/notes/Shopping-Requests.org") "Requests")
+	 ("s" "Shopping Request (s)" table-line (file+headline ,(concat org-gtd-dir "Shopping-Requests.org") "Requests")
 	  "|%U|%^{Needed Item}|")
-      ;; Shoppping Items
-	 ("ie" "Fetch from Extension at Southfork Requests (e)" table-line
-   (file+headline ,(concat org-public-dir "/notes/Fetching-Requests.org") "Fetch Requests") "|%U|%^{Needed Item}|")
-      ;; Items for James O. Seese
-         ("ij" "Item for James O Seese (j)" table-line
-   (file+headline ,(concat org-user-dir "/agenda/JOS-POA.org") "Review Items") "|%U|%^{Needed Item}|")
-      ;; List of Goals
-	 ("g" "Set a goal (g)")
-	 ("gd" "Daily Goal TODO (d)"  entry (file+headline ,(concat org-public-agenda-dir "gtd.org") "Daily Goals")
-	   "*** TODO [#C] %^{Description}
-	   SCHEDULED: %t")
-	 ("gw" "Weekly Goal TODO (w)"  entry (file+headline ,(concat org-public-agenda-dir "gtd.org") "Weekly Goals")
-	   "*** TODO [#C] %^{Description}
-	   SCHEDULED: %t")
-	 ("j" "Journal" entry (file+datetree ,(concat org-user-dir "/diary.org"))
-	  "* %U %^{Title}\n  -%?" :clock-in t :clock-resume t)
+ 
 
 	  ))
  #+END_SRC
@@ -713,7 +708,7 @@ Customize  this default by environment variable USER_REOPEN_FILES
  #+BEGIN_SRC emacs-lisp
  (find-file (concat org-public-agenda-dir "gtd.org"))
  #+END_SRC
-
+ 
 
 * Final Presenation to the user.
 
