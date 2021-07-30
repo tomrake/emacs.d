@@ -3,9 +3,9 @@
 * README
 
 ** Next Stage
-*** TODO Make gtd/newgtd.org the main agenda file
-*** TODO Ensure Capture updates newgtd.org
-
+*** DONE Make gtd/newgtd.org the main agenda file
+*** DONE Ensure Capture updates new-gtd.org
+*** TODO Add Journal and Journal Capture
 ** Task-Agenda Modifications
 I have too many tasks for my agenda.
 I need to evaluation the common public agenda strategy I developed.
@@ -652,20 +652,12 @@ All the newest stuff will be in ~/org/gtd/
   (setq org-default-notes-file org-notes-file)
   #+END_SRC
 
-*** Standard org and org-agenda directories
-   The all files in a directory model is being deprecated.
 
-  #+BEGIN_SRC emacs-lisp
-    ;; My org agenda dir are files in ~/org/agenda
-    ;; The the agenda directory can be changed by env ORG-AGENDA-DIR
-    (default-or-environment org-agenda-dir org-user-dir "/agenda/" "ORG_AGENDA-DIR")
-    (default-or-environment org-public-agenda-dir org-public-dir "/agenda/" "ORG-PUBLIC-AGENDA-DIR")
-  #+END_SRC
 
 ** Task agenda context
  - This starts an agenda context
  #+BEGIN_SRC emacs-lisp
- (setq org-agenda-files  `(,org-agenda-dir ,org-public-agenda-dir))
+ (setq org-agenda-files (list (concat org-gtd-dir "new-gtd.org")))
  (setq org-agenda-skip-scheduled-if-done t)
  (setq org-agenda-todo-list-sublevels t)
  #+END_SRC
@@ -673,13 +665,12 @@ All the newest stuff will be in ~/org/gtd/
 
 ** Capture Templates
  #+BEGIN_SRC emacs-lisp
-      ;;; Define user and public template directories
+      ;;; Define ord-gtd template directories
        (default-or-environment gtd-template-dir org-gtd-dir "/template/" "ORG-TEMPLATE-DIR")
-      ; (default-or-environment org-public-template-dir org-public-dir "/template/" "ORG-PUBLIC-TEMPLATE-DIR")
 
       ;; ;;; See: http://cachestocaches.com/2016/9/my-workflow-org-agenda/
       (setq org-capture-templates
-       `(("n" "note" entry (file ,(concat org-public-agenda-dir  "gtd.org"))
+       `(("n" "note" entry (file ,(concat org-gtd-dir  "new-gtd.org"))
 	  "* %? :NOTE:\n%U\n%a\n" :clock-in t :clock-resume t)
       ;; Medical Appointments
       ;; Medical Appointment  (m) Medical template
@@ -708,10 +699,10 @@ All the newest stuff will be in ~/org/gtd/
  (setq org-refile-targets '((org-agenda-files :maxlevel . 3)))
  #+END_SRC
 
-** Always present the gtd.org file
+** Always present the new-gtd.org file
 Customize  this default by environment variable USER_REOPEN_FILES
  #+BEGIN_SRC emacs-lisp
- (find-file (concat org-public-agenda-dir "gtd.org"))
+ (find-file (concat org-gtd-dir "new-gtd.org"))
  #+END_SRC
  
 
