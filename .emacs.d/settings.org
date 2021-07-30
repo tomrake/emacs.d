@@ -7,7 +7,7 @@
 *** DONE Ensure Capture updates new-gtd.org
 *** DONE Add Journal and Journal Capture
     - This still needs a little fixup/customization see the Journal entries.
-*** TODO Ensure correct refile targets.
+*** DONE Ensure correct refile targets.
 *** TODO Ensure Task Capture
 ** Task-Agenda Modifications
 I have too many tasks for my agenda.
@@ -702,7 +702,8 @@ All the newest stuff will be in ~/org/gtd/
 
 ** Refile configuration
  #+BEGIN_SRC emacs-lisp
- (setq org-refile-targets '((org-agenda-files :maxlevel . 3)))
+ (setq org-refile-targets `( (,(concat org-gtd-dir "new-gtd.org") :maxlevel . 1)
+                             (,(concat org-gtd-dir "Someday.org") :maxlevel . 2)))
  #+END_SRC
 
 ** Always present the new-gtd.org file
