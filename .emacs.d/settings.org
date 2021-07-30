@@ -1,6 +1,11 @@
 
 #+EXPORT-FILENAME init.el
 * README
+
+** Next Stage
+*** TODO Make gtd/newgtd.org the main agenda file
+*** TODO Ensure Capture updates newgtd.org
+
 ** Task-Agenda Modifications
 I have too many tasks for my agenda.
 I need to evaluation the common public agenda strategy I developed.
