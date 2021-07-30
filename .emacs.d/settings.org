@@ -8,7 +8,8 @@
 *** DONE Add Journal and Journal Capture
     - This still needs a little fixup/customization see the Journal entries.
 *** DONE Ensure correct refile targets.
-*** TODO Ensure Task Capture
+*** DONE Ensure Task Capture
+*** TODO Prepare custom agenda views    
 ** Task-Agenda Modifications
 I have too many tasks for my agenda.
 I need to evaluation the common public agenda strategy I developed.
@@ -668,36 +669,38 @@ All the newest stuff will be in ~/org/gtd/
 
 ** Capture Templates
  #+BEGIN_SRC emacs-lisp
-      ;;; Define ord-gtd template directories
-       (default-or-environment gtd-template-dir org-gtd-dir "/template/" "ORG-TEMPLATE-DIR")
+   ;;; Define ord-gtd template directories
+    (default-or-environment gtd-template-dir org-gtd-dir "/template/" "ORG-TEMPLATE-DIR")
 
-      ;; ;;; See: http://cachestocaches.com/2016/9/my-workflow-org-agenda/
-      (setq org-capture-templates
-       `(("n" "note" entry (file ,(concat org-gtd-dir  "new-gtd.org"))
-	  "* %? :NOTE:\n%U\n%a\n" :clock-in t :clock-resume t)
-      ;; Journal Capture
-         ("j" "Journal" entry (file+datetree ,(concat org-gtd-dir "Journal.org") )
-            "* %?\nEntered on %U\n  %i\n  %a")
-      ;; Medical Appointments
-      ;; Medical Appointment  (m) Medical template
-	 ("m" "MEDICAL   (m) Medical" entry (file+headline ,(concat org-gtd-dir "new-gtd.org") "Medical Appointments")
-	  (file ,(concat gtd-template-dir "Medical-Appointment.txt")) :empty-lines 1 :time-prompt t)
+   ;; ;;; See: http://cachestocaches.com/2016/9/my-workflow-org-agenda/
+   (setq org-capture-templates
+    `(
+   ;; Todo
+      ("t" "Todo" entry (file+headline ,(concat org-gtd-dir "new-gtd.org") "Tasks")
+       "* TODO %^{Brief Description} %^g\nAdded: %U")
+   ;; Journal Capture
+      ("j" "Journal" entry (file+datetree ,(concat org-gtd-dir "Journal.org") )
+	 "* %?\nEntered on %U\n  %i\n  %a")
+   ;; Medical Appointments
+   ;; Medical Appointment  (m) Medical template
+      ("m" "MEDICAL   (m) Medical" entry (file+headline ,(concat org-gtd-dir "new-gtd.org") "Medical Appointments")
+       (file ,(concat gtd-template-dir "Medical-Appointment.txt")) :empty-lines 1 :time-prompt t)
 
-      ;; Health Data Capture
-	 ("h" "Health Data Capture (h)")
+   ;; Health Data Capture
+      ("h" "Health Data Capture (h)")
 
-	 ("hb" "Blood Pressure (b)" table-line (file+headline ,(concat org-gtd-dir "Medical-Data.org") "Blood Pressure")
-	   "|%^{Person|TOM|JOANNE}|%U|%^{Systtolic}|%^{Diastolic}|%^{Pulse}|")
+      ("hb" "Blood Pressure (b)" table-line (file+headline ,(concat org-gtd-dir "Medical-Data.org") "Blood Pressure")
+	"|%^{Person|TOM|JOANNE}|%U|%^{Systtolic}|%^{Diastolic}|%^{Pulse}|")
 
-	 ("ht" "Temperature (t)" table-line (file+headline ,(concat org-gtd-dir "Medical-Data.org") "Temperature")
-	  "|%^{Person|TOM|JOANNE}|%U|%^{Temperature}|")
+      ("ht" "Temperature (t)" table-line (file+headline ,(concat org-gtd-dir "Medical-Data.org") "Temperature")
+       "|%^{Person|TOM|JOANNE}|%U|%^{Temperature}|")
 
-      ;; Shoppping Items
-	 ("s" "Shopping Request (s)" table-line (file+headline ,(concat org-gtd-dir "Shopping-Requests.org") "Requests")
-	  "|%U|%^{Needed Item}|")
- 
+   ;; Shoppping Items
+      ("s" "Shopping Request (s)" table-line (file+headline ,(concat org-gtd-dir "Shopping-Requests.org") "Requests")
+       "|%U|%^{Needed Item}|")
 
-	  ))
+
+       ))
  #+END_SRC
 
 ** Refile configuration
