@@ -5,7 +5,10 @@
 ** Next Stage
 *** DONE Make gtd/newgtd.org the main agenda file
 *** DONE Ensure Capture updates new-gtd.org
-*** TODO Add Journal and Journal Capture
+*** DONE Add Journal and Journal Capture
+    - This still needs a little fixup/customization see the Journal entries.
+*** TODO Ensure correct refile targets.
+*** TODO Ensure Task Capture
 ** Task-Agenda Modifications
 I have too many tasks for my agenda.
 I need to evaluation the common public agenda strategy I developed.
@@ -672,6 +675,9 @@ All the newest stuff will be in ~/org/gtd/
       (setq org-capture-templates
        `(("n" "note" entry (file ,(concat org-gtd-dir  "new-gtd.org"))
 	  "* %? :NOTE:\n%U\n%a\n" :clock-in t :clock-resume t)
+      ;; Journal Capture
+         ("j" "Journal" entry (file+datetree ,(concat org-gtd-dir "Journal.org") )
+            "* %?\nEntered on %U\n  %i\n  %a")
       ;; Medical Appointments
       ;; Medical Appointment  (m) Medical template
 	 ("m" "MEDICAL   (m) Medical" entry (file+headline ,(concat org-gtd-dir "new-gtd.org") "Medical Appointments")
