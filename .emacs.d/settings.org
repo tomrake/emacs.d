@@ -9,7 +9,11 @@
     - This still needs a little fixup/customization see the Journal entries.
 *** DONE Ensure correct refile targets.
 *** DONE Ensure Task Capture
-*** TODO Prepare custom agenda views    
+*** DONE Prepare custom agenda views [2/2]
+    - [X] Begining of the Day - H
+    - [X] Daily Action List - D
+*** TODO Review and fix column view data
+*** TODO Create Stub base data files
 ** Task-Agenda Modifications
 I have too many tasks for my agenda.
 I need to evaluation the common public agenda strategy I developed.
@@ -664,6 +668,22 @@ All the newest stuff will be in ~/org/gtd/
  (setq org-agenda-files (list (concat org-gtd-dir "new-gtd.org")))
  (setq org-agenda-skip-scheduled-if-done t)
  (setq org-agenda-todo-list-sublevels t)
+ ;;; Define Custom Agenda views
+ (setq org-agenda-custom-commands
+   `(("H" "All Contexts"
+       ((agenda)
+        (tags-todo "HOME")
+        (tags-todo "MOBILE")
+        (tags-todo "OUTSIDE")
+        (tags-todo "COMPUTER")))
+         
+       
+     ("D" "Daily Action List"
+       ((agenda "" ((org-agenda-ndays 1)
+                    (org-agenda-sorting-strategy
+                      `((agenda time-up priority-down tag-up)))
+                    (org-deadline-waring-days 0)))))
+     ))
  #+END_SRC
   - The following may be defined with the above values
 
