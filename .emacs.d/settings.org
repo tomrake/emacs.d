@@ -1,7 +1,7 @@
 
 #+EXPORT-FILENAME init.el
 * README
-
+** TODO Integrate emacs-custom.el
 ** Next Stage
 *** DONE Make gtd/newgtd.org the main agenda file
 *** DONE Ensure Capture updates new-gtd.org
@@ -12,7 +12,20 @@
 *** DONE Prepare custom agenda views [2/2]
     - [X] Begining of the Day - H
     - [X] Daily Action List - D
-*** TODO Review and fix column view data
+*** TODO Consider adding issue/error tracking in emacs [/]
+     - [ ] Reseach error issue tracking in org-mode/emacs
+     - [ ] Next create action plan or defer
+*** TODO Review and fix column view data [/]
+    - [ ] Find recommened COLUMNS line
+    - [ ] Hunt down COLUMN items in :PROPERTIES: drawers.
+    - [ ] Fix Font size issue
+      - Column view screws up the font sizing.
+*** TODO Consider the .emacs-custom.el as a defect [/]
+    This is likely the core of the Column mode font size problem.
+    I suspect this is a theme related issue.
+    To debug that I need to version .emacs-custom.el so it should be integrated into settings.org.
+    Or else there will by sync problems.
+    - [ ] Plan how to correct the defect 
 *** TODO Create Stub base data files
 ** Task-Agenda Modifications
 I have too many tasks for my agenda.
@@ -274,7 +287,7 @@ specify specific crossplatform functions and macros for path construction.
 * Save the emacs customization to a file.
 These are settings from the Emacs Customization Mechanism.
 #+BEGIN_SRC emacs-lisp
-(setq custom-file "~/.emacs-custom.el")
+(setq custom-file "~/.config/emacs/.emacs-custom.el")
 (load custom-file)
 #+END_SRC
 
