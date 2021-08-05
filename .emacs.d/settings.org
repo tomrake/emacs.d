@@ -736,6 +736,7 @@ All the newest stuff will be in ~/org/gtd/
        ))
  #+END_SRC
 
+   The FileHistory method of ba
 ** Refile configuration
  #+BEGIN_SRC emacs-lisp
  (setq org-refile-targets `( (,(concat org-gtd-dir "new-gtd.org") :maxlevel . 1)
@@ -748,7 +749,17 @@ Customize  this default by environment variable USER_REOPEN_FILES
  (find-file (concat org-gtd-dir "new-gtd.org"))
  #+END_SRC
  
-
+** Fix for cmdproxy
+See https://emacs.stackexchange.com/questions/19037/org-babel-invoking-cmd-exe
+#+BEGIN_SRC emacs-lisp
+(require 'ob-shell)
+(defadvice org-babel-sh-evaluate (around set-shell activate)
+  "Add header argument :shcmd that determines the shell to be called."
+  (defvar org-babel-sh-command)
+  (let* ((org-babel-sh-command (or (cdr (assoc :shcmd params)) org-babel-sh-command)))
+    ad-do-it
+    ))
+#+END_SRC
 * Final Presenation to the user.
 
 ** load per user settings
