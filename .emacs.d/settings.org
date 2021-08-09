@@ -1,4 +1,4 @@
-
+#+STARTUP: overview
 #+EXPORT-FILENAME init.el
 * README
 ** TODO Integrate emacs-custom.el
@@ -190,55 +190,8 @@ Much of this is legacy code and needs review.
 (package-initialize)
 #+END_SRC
 
-* Package loading mechanism needs review                             :review:
-This revinvent the wheel mechanism is deprecated.
-#+BEGIN_SRC emacs-lisp :tangle no
-
-;;;; These are the packages needed
-
-(defvar local-packages '(flx-ido
-			 auto-complete
-			 epc
-			 slime
-			 rainbow-delimiters
-			 paredit
-			 ac-slime
-			 cyberpunk-theme
-			 dracula-theme
-			 dakrone-theme
-			 popup
-			 jedi
-			 docker-tramp
-			 dockerfile-mode
-			 pillar
-			 cmake-mode
-			 yaml-mode
-			 ess
-			 deft
-			 magit
-			 htmlize))
-
-
-;;;; Find any unistalled package
-
-(defun uninstalled-packages (packages)
-  (delq nil
-	(mapcar (lambda (p)
-		  (if (package-installed-p p nil) nil p))
-		packages)))
-
-;;;; Install any uninsalled packages
-
-(let ((need-to-install
-       (uninstalled-packages local-packages)))
-  (message "Checking for unistalled  packages: %s." need-to-install)
-  (when need-to-install
-    (progn
-      (package-refresh-contents)
-      (dolist (p need-to-install)
-        (message "Downloading %s." p)
-	(package-install p)))))
-#+END_SRC
+* Initialize uss-package
+  [TBD]
 
 * Download Timing
 This download timing mechanism is likely deprecated also.
@@ -250,8 +203,9 @@ This download timing mechanism is likely deprecated also.
 I don't like the a messy startup screen.
 
  #+BEGIN_SRC emacs-lisp
- (setq inhibit-startup-screen t)
- (setq visible-bell 1)
+   (setq inhibit-startup-screen t)
+   (setq visible-bell 1)
+   ;;(load-theme 'vs-dark-theme)
  #+END_SRC
 * Fix Windows 10 cursor problem
  #+BEGIN_SRC emacs-lisp
@@ -686,9 +640,10 @@ All the newest stuff will be in ~/org/gtd/
    `(("H" "All Contexts"
        ((agenda)
         (tags-todo "HOME")
+        (tags-todo "COMPUTER")
         (tags-todo "MOBILE")
         (tags-todo "OUTSIDE")
-        (tags-todo "COMPUTER")))
+        (tags-todo "PROJECT")))
          
        
      ("D" "Daily Action List"
