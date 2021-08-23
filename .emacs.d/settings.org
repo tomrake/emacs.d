@@ -250,8 +250,10 @@ These are settings from the Emacs Customization Mechanism.
 #+END_SRC
 
 * MSYS2/MINGW64 Path elements
-Mingw requires careful crafting of  paths and emulation of mount points.
+Mingw requires careful crafting of paths and emulation of mount points.
 Any LISP built under mingw has an assumed environment of the build.
+
+This needs a basic provision code to use various compiled lisps.
 #+BEGIN_SRC emacs-lisp
 ;;; Add mingw path elements to exec path
 (let ((mingw64-root-mount "C:/devel/msys64")
@@ -262,10 +264,10 @@ Any LISP built under mingw has an assumed environment of the build.
 (add-to-list 'exec-path (concat mingw64-root-mount "/usr/bin"))
 (add-to-list 'exec-path mingw64-bin-mount))
 (setq +msys64-base-path+ "C:/devel/msys64/")
-(defun lisp-mingw64-implementation (tag)
-  "Create a slime implemenation in the local mingw64 system naned tag."
+(defun lisp-mingw64-implementation (tag mingw64-exec-path)
+  "Create a slime implemenation in the local mingw64 system naned tag and executeable of mingw64-exec-path."
   `(,tag (,(concat +msys64-base-path+ "usr/bin/env.exe") "MSYSTEM=MINGW64"
-	  ,(concat +msys64-base-path+ "usr/bin/bash.exe") "-l" "-c" "/usr/local/bin/sbcl --noinform")))
+	  ,(concat +msys64-base-path+ "usr/bin/bash.exe") "-l" "-c" ,(concat mingw64-exec-path " --noinform"))))
 ;;;  Now rebuild path environment variable based on exec-path
 (setenv "PATH" (mapconcat #'identity exec-path path-separator))
 #+END_SRC
@@ -297,9 +299,9 @@ This seems unused.
 
 ** Provision user compiled SBCL
  #+BEGIN_SRC emacs-lisp
- (defmacro user-compiled-mingw64-sbcl ()
-   `(when  (file-exists-p (concat +msys64-base-path+ "/usr/local/bin/sbcl.exe"))
-       (lisp-mingw64-implementation 'mingw64-sbcl)))
+ (defmacro user-compiled-mingw64-sbcl (path)
+   `(when  (file-exists-p (concat +msys64-base-path+ ,path))
+       (lisp-mingw64-implementation 'mingw64-sbcl ,path)))
  #+END_SRC
 
 ** Provions binary SBCL 2.0.0
@@ -381,7 +383,7 @@ This seems unused.
       - if that privision returns nil there is no entry.
 #+BEGIN_SRC emacs-lisp
   (setq slime-lisp-implementations
-	`(,(user-compiled-mingw64-sbcl)
+	`(,(user-compiled-mingw64-sbcl "/usr/local/bin/sbcl.exe")
           ,(provision-abcl)
 ;	  ,(binary-supplied-sbcl-2-0-0)
 ;	  ,(binary-compiled-sbcl-2-0-2)
