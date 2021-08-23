@@ -1,3 +1,4 @@
+
 #+STARTUP: overview
 #+EXPORT-FILENAME init.el
 * README
@@ -474,40 +475,69 @@ I use my local clone of the Hyperspec
 #+END_SRC
 
 * Shells                                                             :review:
+  I am attempting to use the friendly-shell infrastructure.
+
+  shell/git-bash works but has prompt problems.
 #+BEGIN_SRC emacs-lisp
-(setq win-shell-implementaions
-      `((cmd (shell))
-	(ming64 ((defun my-shell-setup ()
-       "For Cygwin bash under Emacs 20"
+      (use-package friendly-shell
+	:ensure t
+	:config   
+	  (defun shell/git-bash (&optional path)
+	     (interactive)
+	     (friendly-shell :path path
+			     :interpreter "C:/Program Files/Git/bin/bash.exe"
+			     ;;:interpreter-args '("-l")
+			     )))
 
-         (setq comint-scroll-show-maximum-output 'this)
-         (make-variable-buffer-local 'comint-completion-addsuffix))
-           (setq comint-completion-addsuffix t)
-           ;; (setq comint-process-echoes t) ;; reported that this is no longer needed
-           (setq comint-eol-on-send t)
-           (setq w32-quote-process-args ?\")
-           (add-hook 'shell-mode-hook 'my-shell-setup)))))
-	
-(defun win-shell ())
-  
-;;; The MSYS-SHELL
 
-(defun msys-shell () 
-  (interactive)
-  (let ((explicit-shell-file-name (convert-standard-filename "c:/devel/msys64/usr/bin/bash.exe"))
-	(shell-file-name "bash")
-	(explicit-bash.exe-args '("--noediting" "--login" "-i"))) 
-    (setenv "SHELL" shell-file-name)
-    (add-hook 'comint-output-filter-functions 'comint-strip-ctrl-m)
-    (shell)))
+      (use-package friendly-remote-shell
+	:ensure t
+	:config
+	   (defun shell/cisco (&optional path)
+	     (interactive)
+	     (with-shell-interpreter-connection-local-vars
+	       (friendly-remote-shell :path path))))
 
-;;; The MINGW64-SHELL
 
-(defun mingw64-shell () 
-       (interactive)
-       (let (( explicit-shell-file-name (convert-standard-filename  "c:/devel/msys64/mingw64/bin/bash.exe")))
-	 (shell "*bash*")
-	     (call-interactively 'shell)))
+
+	  ;; (setq win-shell-implementaions
+		    ;;       `((cmd (shell))
+		    ;; 	(ming64 ((defun my-shell-setup ()
+		    ;;        "For Cygwin bash under Emacs 20"
+
+		    ;;          (setq comint-scroll-show-maximum-output 'this)
+		    ;;          (make-variable-buffer-local 'comint-completion-addsuffix))
+		    ;;            (setq comint-completion-addsuffix t)
+		    ;;            ;; (setq comint-process-echoes t) ;; reported that this is no longer needed
+		    ;;            (setq comint-eol-on-send t)
+		    ;;            (setq w32-quote-process-args ?\")
+		    ;;            (add-hook 'shell-mode-hook 'my-shell-setup)))))
+
+		    ;; (defun win-shell ())
+
+		    ;; ;;; The MSYS-SHELL
+
+		    ;; (defun msys-shell () 
+		    ;;   (interactive)
+		    ;;   (let ((explicit-shell-file-name (convert-standard-filename "c:/devel/msys64/usr/bin/bash.exe"))
+		    ;; 	(shell-file-name "bash")
+		    ;; 	(explicit-bash.exe-args '("--noediting" "--login" "-i"))) 
+		    ;;     (setenv "SHELL" shell-file-name)
+		    ;;     (add-hook 'comint-output-filter-functions 'comint-strip-ctrl-m)
+		    ;;     (shell)))
+
+		    ;; ;;; The MINGW64-SHELL
+
+		    ;; (defun mingw64-shell () 
+		    ;;        (interactive)
+		    ;;        (let (( explicit-shell-file-name (convert-standard-filename  "c:/devel/msys64/mingw64/bin/bash.exe")))
+		    ;; 	 (shell "*bash*")
+		    ;; 	     (call-interactively 'shell)))
+#+END_SRC
+** Add shell extensions
+#+BEGIN_SRC emacs-lisp
+(use-package shx
+  :ensure t)
 #+END_SRC
 * Tramp                                                              :review:
 ** The default connection method is plink
@@ -520,7 +550,7 @@ I use my local clone of the Hyperspec
 #+BEGIN_SRC emacs-lisp
 (defun cisco-remote-shell ()
   (interactive)
-  (let ((default-directory "/plink:osmc@192.168.1.43:"))
+  (let ((default-directory "/plink:osmc@192.168.1.43:~"))
      (shell)))
 #+END_SRC
 * IDO                                                                :review:
