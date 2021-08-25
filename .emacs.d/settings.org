@@ -255,21 +255,32 @@ Any LISP built under mingw has an assumed environment of the build.
 
 This needs a basic provision code to use various compiled lisps.
 #+BEGIN_SRC emacs-lisp
-;;; Add mingw path elements to exec path
-(let ((mingw64-root-mount "C:/devel/msys64")
-      (mingw64-bin-mount "C:/devel/msys64/usr/bin"))
-  
-(add-to-list 'exec-path (concat mingw64-root-mount "/mingw64/bin"))
-(add-to-list 'exec-path (concat mingw64-root-mount "/usr/local/bin"))
-(add-to-list 'exec-path (concat mingw64-root-mount "/usr/bin"))
-(add-to-list 'exec-path mingw64-bin-mount))
-(setq +msys64-base-path+ "C:/devel/msys64/")
-(defun lisp-mingw64-implementation (tag mingw64-exec-path)
-  "Create a slime implemenation in the local mingw64 system naned tag and executeable of mingw64-exec-path."
-  `(,tag (,(concat +msys64-base-path+ "usr/bin/env.exe") "MSYSTEM=MINGW64"
-	  ,(concat +msys64-base-path+ "usr/bin/bash.exe") "-l" "-c" ,(concat mingw64-exec-path " --noinform"))))
-;;;  Now rebuild path environment variable based on exec-path
-(setenv "PATH" (mapconcat #'identity exec-path path-separator))
+  ;;; Add mingw path elements to exec path
+  (let ((mingw64-root-mount "C:/devel/msys64")
+	(mingw64-bin-mount "C:/devel/msys64/usr/bin"))
+
+  (add-to-list 'exec-path (concat mingw64-root-mount "/mingw64/bin"))
+  (add-to-list 'exec-path (concat mingw64-root-mount "/usr/local/bin"))
+  (add-to-list 'exec-path (concat mingw64-root-mount "/usr/bin"))
+  (add-to-list 'exec-path mingw64-bin-mount))
+  (setq +msys64-base-path+ "C:/devel/msys64/")
+
+  (defun msys64-file-exists-p (file)
+    (file-exists-p (concat +msys64-base-path+ file)))
+
+#+END_SRC
+* Bash and Launching under Bash
+#+BEGIN_SRC emacs-lisp
+  (defun start-under-bash-login-shell (exec-path)
+    `(,(concat +msys64-base-path+ "usr/bin/env.exe") "MSYSTEM=MINGW64"
+      ,(concat +msys64-base-path+ "usr/bin/bash.exe") "-l" "-c" ,exec-path))
+
+  (defun lisp-mingw64-implementation (tag mingw64-exec-path)
+    "Create a slime implemenation in the local mingw64 system naned tag and executeable of mingw64-exec-path."
+    `(,tag (,(concat +msys64-base-path+ "usr/bin/env.exe") "MSYSTEM=MINGW64"
+	    ,(concat +msys64-base-path+ "usr/bin/bash.exe") "-l" "-c" ,(concat mingw64-exec-path " --noinform"))))
+  ;;;  Now rebuild path environment variable based on exec-path
+  (setenv "PATH" (mapconcat #'identity exec-path path-separator))
 #+END_SRC
 
   (setq  ispell-program-name "aspell")
@@ -382,15 +393,19 @@ This seems unused.
       - ,(provision-user-compiled-mingw)
       - if that privision returns nil there is no entry.
 #+BEGIN_SRC emacs-lisp
-  (setq slime-lisp-implementations
-	`(,(user-compiled-mingw64-sbcl "/usr/local/bin/sbcl.exe")
-          ,(provision-abcl)
-;	  ,(binary-supplied-sbcl-2-0-0)
-;	  ,(binary-compiled-sbcl-2-0-2)
-	,(when (and (eq system-type 'winodows-nt))
-	   `(clisp-win ("clisp" "-K" "full" "-I")))
-	,(when (and (eq system-type 'cygwin) (file-exists-p (convert-standard-filename "/usr/bin/clisp")))
-	    `(clisp-cyg (,(convert-standard-filename "/usr/bin/clisp" ))))))
+    (defun conditional-msys2-slime-implementation (tag exec-path )
+      (when (msys64-file-exists-p exec-path)
+       `(tag ,(start-under-bash-login-shell (concat exec-path " --noinform")))))
+
+    (setq slime-lisp-implementations
+	  `(,(conditional-msys2-slime-implementation 'user-compiled-mingw64-sbcl "/usr/local/bin/sbcl.exe")
+	    ,(provision-abcl)
+  ;	  ,(binary-supplied-sbcl-2-0-0)
+  ;	  ,(binary-compiled-sbcl-2-0-2)
+	  ,(when (and (eq system-type 'winodows-nt))
+	     `(clisp-win ("clisp" "-K" "full" "-I")))
+	  ,(when (and (eq system-type 'cygwin) (file-exists-p (convert-standard-filename "/usr/bin/clisp")))
+	      `(clisp-cyg (,(convert-standard-filename "/usr/bin/clisp" ))))))
 #+END_SRC
 
 * Common Lisp HyperSpec
