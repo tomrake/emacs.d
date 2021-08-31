@@ -211,6 +211,10 @@ I don't like the a messy startup screen.
    ;;(load-theme 'vs-dark-theme)
 
  #+END_SRC
+* Magit                                                              :review:
+#+BEGIN_SRC emacs-lisp
+(global-set-key (kbd "C-x g") 'magit-status)
+#+END_SRC
 * Fix Windows 10 cursor problem
  #+BEGIN_SRC emacs-lisp
  (setq w32-use-visible-system-caret nil)
@@ -584,11 +588,6 @@ I use my local clone of the Hyperspec
 (put 'unless 'lisp-indent-function 1)
 (put 'do 'lisp-indent-function 2)
 (put 'do* 'lisp-indent-function 2)
-#+END_SRC
-
-* Magit                                                              :review:
-#+BEGIN_SRC emacs-lisp
-(global-set-key (kbd "C-x g") 'magit-status)
 #+END_SRC
 
 * Printing                                                           :review:
