@@ -697,6 +697,7 @@ All the newest stuff will be in ~/org/gtd/
  (setq org-agenda-custom-commands
    `(("H" "All Contexts"
        ((agenda)
+        (tags-todo "ATTIC")
         (tags-todo "HOME")
         (tags-todo "COMPUTER")
         (tags-todo "MOBILE")
