@@ -399,7 +399,7 @@ This seems unused.
 #+BEGIN_SRC emacs-lisp
     (defun conditional-msys2-slime-implementation (tag exec-path )
       (when (msys64-file-exists-p exec-path)
-       `(tag ,(start-under-bash-login-shell (concat exec-path " --noinform")))))
+       `(,tag ,(start-under-bash-login-shell (concat exec-path " --noinform")))))
 
     (setq slime-lisp-implementations
 	  `(,(conditional-msys2-slime-implementation 'user-compiled-mingw64-sbcl "/usr/local/bin/sbcl.exe")
