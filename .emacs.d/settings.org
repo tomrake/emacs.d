@@ -742,6 +742,8 @@ All the newest stuff will be in ~/org/gtd/
       ("ht" "Temperature (t)" table-line (file+headline ,(concat org-gtd-dir "Medical-Data.org") "Temperature")
        "|%^{Person|TOM|JOANNE}|%U|%^{Temperature}|")
 
+      ("hw" "Weight (w)" table-line (file+headline ,(concat org-gtd-dir "Medical-Data.org") "Weight")
+       "|%^{Person|TOM|JOANNE}|%U|%^{Weight}|")
    ;; Shoppping Items
       ("s" "Shopping Request (s)" table-line (file+headline ,(concat org-gtd-dir "Shopping-Requests.org") "Requests")
        "|%U|%^{Needed Item}|")
