@@ -386,6 +386,11 @@ This seems unused.
    `(when (and (file-exists-p  (convert-standard-filename "C:/Program Files/ABCL/abcl.jar")))
 	 `(abcl  ("java" "-jar" ,(convert-standard-filename "C:/Program Files/ABCL/abcl.jar")))))
  #+END_SRC
+** Provision CCL
+   #+BEGIN_SRC emacs-lisp
+     (defmacro provision-ccl ()
+       `(ccl-64 ("C:/Users/zzzap/quicklisp/local-projects/ccl/wx86ccl64.exe")))
+   #+END_SRC
 
 * SLIME
   - There are a number of defunct implemnations in this list:
@@ -404,6 +409,8 @@ This seems unused.
     (setq slime-lisp-implementations
 	  `(,(conditional-msys2-slime-implementation 'user-compiled-mingw64-sbcl "/usr/local/bin/sbcl.exe")
 	    ,(provision-abcl)
+	    ,(provision-ccl)
+
   ;	  ,(binary-supplied-sbcl-2-0-0)
   ;	  ,(binary-compiled-sbcl-2-0-2)
 	  ,(when (and (eq system-type 'winodows-nt))
@@ -690,27 +697,28 @@ All the newest stuff will be in ~/org/gtd/
 ** Task agenda context
  - This starts an agenda context
  #+BEGIN_SRC emacs-lisp
- (setq org-agenda-files (list (concat org-gtd-dir "new-gtd.org")))
- (setq org-agenda-skip-scheduled-if-done t)
- (setq org-agenda-todo-list-sublevels t)
- ;;; Define Custom Agenda views
- (setq org-agenda-custom-commands
-   `(("H" "All Contexts"
-       ((agenda)
-        (tags-todo "ATTIC")
-        (tags-todo "HOME")
-        (tags-todo "COMPUTER")
-        (tags-todo "MOBILE")
-        (tags-todo "OUTSIDE")
-        (tags-todo "PROJECT")))
-         
+   (setq org-agenda-files (list (concat org-gtd-dir "new-gtd.org")))
+   (setq org-agenda-skip-scheduled-if-done t)
+   (setq org-agenda-todo-list-sublevels t)
+   ;;; Define Custom Agenda views
+   (setq org-agenda-custom-commands
+     `(("H" "All Contexts"
+	 ((agenda)
+	  (tags-todo "ATTIC")
+	  (tags-todo "HOME")
+	  (tags-todo "COMPUTER")
+	  (tags-todo "MOBILE")
+	  (tags-todo "OUTSIDE")
+	  (tags-todo "PROJECT")
+	  (tags-todo "FINANCIAL")))
+
+
+       ("D" "Daily Action List"
+	 ((agenda "" ((org-agenda-ndays 1)
+		      (org-agenda-sorting-strategy
+			`((agenda time-up priority-down tag-up)))
+		      (org-deadline-waring-days 0)))))))
        
-     ("D" "Daily Action List"
-       ((agenda "" ((org-agenda-ndays 1)
-                    (org-agenda-sorting-strategy
-                      `((agenda time-up priority-down tag-up)))
-                    (org-deadline-waring-days 0)))))
-     ))
  #+END_SRC
   - The following may be defined with the above values
 
