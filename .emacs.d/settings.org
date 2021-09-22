@@ -312,13 +312,20 @@ This seems unused.
 
 * Provision Various Common LISPs
 
-** Provision user compiled SBCL
- #+BEGIN_SRC emacs-lisp
- (defun user-compiled-mingw64-sbcl (path)
-   `(when  (file-exists-p (concat +msys64-base-path+ ,path))
-       (lisp-mingw64-implementation 'mingw64-sbcl ,path)))
- #+END_SRC
+** Provision standard SBCL
+This section was removed because this is being done else where.
+#+BEGIN_SRC emacs-lisp
+  (defun msys2-slime-implementation-p (tag exec-path)
+  "When a msys2 binary exists create a slime and and excution line."
+    (when (msys64-file-exists-p exec-path)
+       `(,tag ,(start-under-bash-login-shell (concat exec-path " --noinform")))))
 
+  (defun working-sbcl ()
+   "Set the standard working SBCL implmenation of LISP"
+     (msys2-slime-implementation-p 'sbcl "/usr/local/bin/sbcl.exe"))
+  
+
+#+END_SRC
 ** Provions binary SBCL 2.0.0
  This is assumed to be broken.
  #+BEGIN_SRC emacs-lisp :tangle no
@@ -404,12 +411,11 @@ This seems unused.
       - ,(provision-user-compiled-mingw)
       - if that privision returns nil there is no entry.
 #+BEGIN_SRC emacs-lisp
-    (defun conditional-msys2-slime-implementation (tag exec-path )
-      (when (msys64-file-exists-p exec-path)
-       `(,tag ,(start-under-bash-login-shell (concat exec-path " --noinform")))))
+
 
     (setq slime-lisp-implementations
-	  `(,(conditional-msys2-slime-implementation 'user-compiled-mingw64-sbcl "/usr/local/bin/sbcl.exe")
+	  `(;,(conditional-msys2-slime-implementation 'user-compiled-mingw64-sbcl "/usr/local/bin/sbcl.exe")
+	    ,(working-sbcl)
 	    ,(provision-abcl)
 	    ,(provision-ccl)
 
