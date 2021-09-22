@@ -389,7 +389,9 @@ This seems unused.
 ** Provision CCL
    #+BEGIN_SRC emacs-lisp
      (defun provision-ccl ()
-       `(ccl-64 ("C:/Users/zzzap/quicklisp/local-projects/ccl/wx86cl64.exe")))
+       (let ((ccl "C:/Users/zzzap/quicklisp/local-projects/ccl/wx86cl64.exe"))
+         (when (file-exists-p ccl)
+           `(ccl-64 (,ccl)))))
    #+END_SRC
 
 * SLIME
