@@ -314,7 +314,7 @@ This seems unused.
 
 ** Provision user compiled SBCL
  #+BEGIN_SRC emacs-lisp
- (defmacro user-compiled-mingw64-sbcl (path)
+ (defun user-compiled-mingw64-sbcl (path)
    `(when  (file-exists-p (concat +msys64-base-path+ ,path))
        (lisp-mingw64-implementation 'mingw64-sbcl ,path)))
  #+END_SRC
