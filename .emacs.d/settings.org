@@ -388,8 +388,8 @@ This seems unused.
  #+END_SRC
 ** Provision CCL
    #+BEGIN_SRC emacs-lisp
-     (defmacro provision-ccl ()
-       `(ccl-64 ("C:/Users/zzzap/quicklisp/local-projects/ccl/wx86ccl64.exe")))
+     (defun provision-ccl ()
+       `(ccl-64 ("C:/Users/zzzap/quicklisp/local-projects/ccl/wx86cl64.exe")))
    #+END_SRC
 
 * SLIME
