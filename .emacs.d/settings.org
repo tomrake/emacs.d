@@ -1,142 +1,54 @@
-
 #+STARTUP: overview
 #+EXPORT-FILENAME init.el
 * README
-** TODO Integrate emacs-custom.el
-** Next Stage
-*** DONE Make gtd/newgtd.org the main agenda file
-*** DONE Ensure Capture updates new-gtd.org
-*** DONE Add Journal and Journal Capture
-    - This still needs a little fixup/customization see the Journal entries.
-*** DONE Ensure correct refile targets.
-*** DONE Ensure Task Capture
-*** DONE Prepare custom agenda views [2/2]
-    - [X] Begining of the Day - H
-    - [X] Daily Action List - D
+** Add Header Notes to settings.el
+#+BEGIN_SRC emacs-lisp
+  ;;;; NOTE: This file had been generated from ~/.emacs.d/settings.org
+  ;;;; Emacs customization is done in ~/.emacs.d/settings.org
+  ;;;; ~/.emacs.d/init.el will load ~/.emacs.d/settings.el
+  ;;;; ~/.emacs.d/settings.org is created and updated by *tangle* of code blocks from  settings.org
+#+END_SRC
+[[file:~/.emacs.d/init.el]]
+[[file:~/.emacs.d/settings.el]]
+[[file:~/.emacs.d/settings.org]]
+[[file:~/.emacs.d/README.org]]
+** Maintenance Notes
+*** Emacs organization
+    Per user customization should be done by this settings.org file.
+*** org-mode customization
+    This should fall under the above Emacs organization.
+    org-publication is being handled by code within the Publishing.org file.
+**** TODO Review and fix column view data [/]
+     - [ ] Find recommened COLUMNS line
+     - [ ] Hunt down COLUMN items in :PROPERTIES: drawers.
+     - [ ] Fix Font size issue
+       - Column view screws up the font sizing.
+**** TODO  Consider capture mode to publishing notes perhaps publish the Journel
+     - How to handle a publishing a  date tree?
+    Current defects
+      - There is face style problems when agenda views go into column view mode.
+*** GTD organization - Review
+    I used an older GTD example that was developed before org-capture.
+    Current defects
+      - The custom agenda views need to be reconsidered for my taste
+      - I have been using tasks to write notes about my process
+	- org publication is now being used to document task acitivity
+	  this should lead to removal of "documentation tasks"
+	- documenation task should be a capture item to be published.
 *** TODO Consider adding issue/error tracking in emacs [/]
      - [ ] Reseach error issue tracking in org-mode/emacs
      - [ ] Next create action plan or defer
-*** TODO Review and fix column view data [/]
-    - [ ] Find recommened COLUMNS line
-    - [ ] Hunt down COLUMN items in :PROPERTIES: drawers.
-    - [ ] Fix Font size issue
-      - Column view screws up the font sizing.
-*** TODO Consider the .emacs-custom.el as a defect [/]
-    This is likely the core of the Column mode font size problem.
-    I suspect this is a theme related issue.
-    To debug that I need to version .emacs-custom.el so it should be integrated into settings.org.
-    Or else there will by sync problems.
-    - [ ] Plan how to correct the defect 
-*** TODO Create Stub base data files
-** Task-Agenda Modifications
-I have too many tasks for my agenda.
-I need to evaluation the common public agenda strategy I developed.
-The Task-Agenda flow concentrates the agenda view to short term tasks,
-items that can be done in a day.
-Longer term items are projects which are reviewed on a weekly basis.
-A task can be created without a project.
 
-Idea that are neither tasks or projects are created as dream items are are reviews on a monthly basis.
-This makes agenda items only sub day items.
-
-How should the public/per user be changed to just per user.
-The current agenda items should be placed in legacy.
-
-Essential to this process is mastering refile.
-
-The tutorial refers to remember mode which is largely superceeded by org capture.
-
-
-** Standard LISP setup
-
-quicklisp is installed at ~/quicklisp
-
-
-The base configuration searches for systems in the following directories:
-   - ~/common-lisp/
-   - ~/quicklisp/local-packages/
-   - c:/Users/Public/Documents/repos/
-
-~/.quicklisp-user.lisp 
-Is a straight common lisp file used to add the above directories for then system
-The base configuration is done for all users except for user zzzap, which has a special legacy configuration.
-
-~/.config/common-lisp/source-registry.conf.d contains equivalent search directories
-
-NONSTANDARD legacy behaviour in zzzap
-
-zzzap has a non-standard/legacy quicklisp setup.lisp location of ~/local-code-projects/my-code/common-lisp/setup.lisp
-
-The Best solution would to convert and test all legacy code in the standard locations.
-
-*** Mitigration Strategy for zzzap
-
-1. Make effort to find hard coded User/zzzap/ strings in lisp code.
-2. Do fixup of those strings test and certify  code
-3. Create ~/quickisp ~/common-lisp distro for zzzzp 
-4. mv selected items from legacy locations to new locations.
-
-** READ NOTES MESSAGE
-#+BEGIN_SRC emacs-lisp
-;;;; See the README in ~/emacs.d/settings.org has documentation on emacs, common-lisp setup.
-#+END_SRC
-** Each User has a role
-I have different roles on my PC. And each role had different sharing requirements.
-Each role has different setup files.
-Each role is represented by a specific user on my PC.
-
-** The public user is a common shared user
-Shared configuration across many user is done by files in the public user.
-These files are referenced by each user configuration file, see the org configuration in this file for en example.
-The Public user contains a copy of the primary template for emacs settings in a git repo.
-
-** How SBCL user customization is handled
-I generally use SBCL and I use quicklisp.
-
-The following is by main .sbclrc file which is a per user file.
-
-#+BEGIN_SRC lisp
-;;;;          -*-  mode: lisp;  -*-
-
-;;; The following lines added by ql:add-to-init-file:
-#-quicklisp
-(let ((quicklisp-init (merge-pathnames
-                       "local-code-projects/my-code/common-lisp/setup.lisp"
-                       (user-homedir-pathname))))
-  (when (probe-file quicklisp-init)
-    (load quicklisp-init))
-  (print "loading Quicklisp"))
-  
-;;; Standard site directoires Thomas Rake
-#+quicklisp
-(let* ((user (first (last (pathname-directory (user-homedir-pathname)))))
-       (shared-code #+win32 #P"C:/Users/Public/Documents/repos/") ; could add unix defaults
-       (standard-lisp-home #+win32 (pathname (concatenate 'string "C:/Users/" user "/common-lisp/"))) ; count add unix defaults
-       (paths))
-;;;; Create path defaults based on the user
-  (cond ((equalp user "zzzap")
-	 (setf paths `(#P"C:/Users/zzzap/local-code-projects/my-code/common-lisp/local-attic/" ; very old code
-		       ,standard-lisp-home
-		       ,shared-code)))
-        (t `(,standard-lisp-home ,shared-code)))
-;;;; Add those paths that exist to quicklisp project directories.
-  (dolist (p paths)
-    (when (and p (probe-file p) (not (member p ql:*local-project-directories*)))
-      (print (format t "Adding ~A to quicklisp local projects directory." p))
-      (setf ql:*local-project-directories* (cons p ql:*local-project-directories*)))))
-#+END_SRC
-
-The variable path could be constructed based on the user executiong the .sbclrc file. This would make
-the .sbclrc file universal.
-
-** WIP Stash of resources
-https://dev.to/fedekau/automatically-managing-personal-and-work-git-configurations-27ad
-https://www.wyeworks.com/blog/2018/01/03/using-git-hooks-to-improve-your-day-to-day-workflow/
+** Standard coding setup
+*** emacs
+The source of Emacs startup code is largely controlled by .emacs/setting.org
+*** General
+All programming code is located in ~/quicklisp/local-projects/
 
 * Generated File Warning
 Add a warning to init.el that it is
 #+BEGIN_SRC emacs-lisp
-;;;; This file had been generated from settings.org
+
 #+END_SRC
 
 * Debug On Error
@@ -733,7 +645,7 @@ All the newest stuff will be in ~/org/gtd/
 	  (tags-todo "HOME")
 	  (tags-todo "COMPUTER")
 	  (tags-todo "MOBILE")
-	  (tags-todo "OUTSIDE")
+	  (tags-todo "OUTDOOR")
 	  (tags-todo "PROJECT")
 	  (tags-todo "FINANCIAL")))
 
