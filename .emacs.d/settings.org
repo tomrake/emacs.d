@@ -127,6 +127,28 @@ I don't like the a messy startup screen.
 #+BEGIN_SRC emacs-lisp
 (global-set-key (kbd "C-x g") 'magit-status)
 #+END_SRC
+* org-roam
+  I am setting up org-roam
+#+BEGIN_SRC emacs-lisp
+  (use-package org-roam
+    :ensure t
+    :init
+    (setq org-roam-v2-ack t)
+    :custom
+    (org-roam-directory (file-truename "~/org/roam/"))
+    :bind (("C-c n l" . org-roam-buffer-toggle)
+	   ("C-c n f" . org-roam-node-find)
+	   ("C-c n g" . org-roam-graph)
+	   ("C-c n i" . org-roam-node-insert)
+	   ("C-c n c" . org-roam-capture)
+	   ;; Dailies
+	   ("C-c n j" . org-roam-dailies-capture-today))
+    :config
+    (org-roam-db-autosync-mode)
+    ;; If using org-roam-protocol
+    (require 'org-roam-protocol))
+#+END_SRC
+
 * Fix Windows 10 cursor problem
  #+BEGIN_SRC emacs-lisp
  (setq w32-use-visible-system-caret nil)
