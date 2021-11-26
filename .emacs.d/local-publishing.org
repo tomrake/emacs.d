@@ -1,63 +1,64 @@
 * org-publish
   This file is to be included when .emacs.d/settings.org is loaded.
 #+BEGIN_SRC emacs-lisp
-    (require 'ox-publish)
-    (defmacro publish-project (name srcdir webdir)
-      "Create  publication name generated from srcdir and browseable at webdir.
-       This publication has two components -notes and -static.
-       the -notes part is indexed."
-     (let ((name% (gensym))
-	   (webdir% (gensym))
-	   (srcdir% (gensym))
-	   (notes-part% (gensym))
-	   (static-part% (gensym)))
-     `(let* ((,name% ,name)
-	    (,srcdir% ,srcdir)
-	    (,webdir% ,webdir)
-	    (,notes-part% (concat ,name% "-notes"))
-	    (,static-part% (concat ,name% "-static")))
-	    (message "name: %s" ,name%)
-	    (message "notes-part %s" ,notes-part%)
-	    (message "static-part %s" ,static-part%)
-	    (list `(,,notes-part%
-	     :base-directory ,,srcdir%
-	     :base-extension "org"
-	     :publishing-directory ,,webdir%
-	     :recursive t
-	     :exclude ".*/\.git/.*"
-	     :publishing-function org-html-publish-to-html
-	     :headline-levels 4             ; Just the default for this project.
-	     :auto-preamble t
-	     :with-sub-superscript nil
-	     :section-numbers nil
-	     :auto-sitemap t
-	     :makeindex t)
-	    `(,,static-part%
-	     :base-directory ,,srcdir%
-	     :base-extension "css\\|js\\|png\\|jpg\\|gif\\|pdf\\|mp3\\|ogg\\|swf"
-	     :publishing-directory ,,webdir%
-	     :recursive t
-	     :exclude ".*/\.git/.*"
-	     :publishing-function org-publish-attachment)
-	    `(,,name% :components (,,notes-part% ,,static-part%))))))
+  (require 'ox-publish)
+  (defmacro publish-project (name srcdir webdir)
+    "Create  publication name generated from srcdir and browseable at webdir.
+     This publication has two components -notes and -static.
+     the -notes part is indexed."
+   (let ((name% (gensym))
+	 (webdir% (gensym))
+	 (srcdir% (gensym))
+	 (notes-part% (gensym))
+	 (static-part% (gensym)))
+   `(let* ((,name% ,name)
+	  (,srcdir% ,srcdir)
+	  (,webdir% ,webdir)
+	  (,notes-part% (concat ,name% "-notes"))
+	  (,static-part% (concat ,name% "-static")))
+	  (message "name: %s" ,name%)
+	  (message "notes-part %s" ,notes-part%)
+	  (message "static-part %s" ,static-part%)
+	  (list `(,,notes-part%
+	   :base-directory ,,srcdir%
+	   :base-extension "org"
+	   :publishing-directory ,,webdir%
+	   :recursive t
+	   :exclude ".*/\.git/.*|*~"
+	   :publishing-function org-html-publish-to-html
+	   :headline-levels 4             ; Just the default for this project.
+	   :auto-preamble t
+	   :with-sub-superscript nil
+	   :section-numbers nil
+	   :auto-sitemap t
+	   :makeindex t)
+	  `(,,static-part%
+	   :base-directory ,,srcdir%
+	   :base-extension "css\\|js\\|png\\|jpg\\|gif\\|pdf\\|mp3\\|ogg\\|swf"
+	   :publishing-directory ,,webdir%
+	   :recursive t
+	   :exclude ".*/\.git/.*|*~"
+	   :publishing-function org-publish-attachment)
+	  `(,,name% :components (,,notes-part% ,,static-part%))))))
 
 
-    (setq org-publish-project-alist
-	  `(
-	    ("org"
-	     :base-directory "~/org/org-web/source/front"
-	     :base-extension "org"
-	     :publishing-directory "c:/Users/Public/org-web"
-	     :recursive nil
-	     :publishing-function org-html-publish-to-html
-	     :headline-levels 4             ; Just the default for this project.
-	     :auto-preamble t)
-	    ,@(publish-project "projects" "~/org/org-web/source/projects" "c:/Users/Public/org-web/projects")
-	    ,@(publish-project "howto" "~/org/org-web/source/howto" "c:/Users/Public/org-web/howto")
-	    ,@(publish-project "sonya" "~/org/org-web/source/sonya" "c:/Users/Public/org-web/sonya")
-	    ,@(publish-project "james" "~/org/org-web/source/james" "c:/Users/Public/org-web/james")
-	    ,@(publish-project "code-projects" "~/quicklisp/local-projects" "c:/Users/Public/org-web/code-projects")
-            ,@(publish-project "family" "~/org/org-web/source/family" "c:/Users/Public/org-web/family")
-	    ("org-web" :components ("org" "projects" "howto" "code-projects" "family"))))
+  (setq org-publish-project-alist
+	`(
+	  ("org"
+	   :base-directory "~/org/org-web/source/front"
+	   :base-extension "org"
+	   :publishing-directory "c:/Users/Public/org-web"
+	   :recursive nil
+	   :publishing-function org-html-publish-to-html
+	   :headline-levels 4             ; Just the default for this project.
+	   :auto-preamble t)
+	  ,@(publish-project "projects" "~/org/org-web/source/projects" "c:/Users/Public/org-web/projects")
+	  ,@(publish-project "howto" "~/org/org-web/source/howto" "c:/Users/Public/org-web/howto")
+	  ,@(publish-project "sonya" "~/org/org-web/source/sonya" "c:/Users/Public/org-web/sonya")
+	  ,@(publish-project "james" "~/org/org-web/source/james" "c:/Users/Public/org-web/james")
+	  ,@(publish-project "code-projects" "~/quicklisp/local-projects" "c:/Users/Public/org-web/code-projects")
+	  ,@(publish-project "family" "~/org/org-web/source/family" "c:/Users/Public/org-web/family")
+	  ,@(publish-project "recipes" "~/org/org-web/source/recipes" "c:/Users/Public/org-web/recipes")
+	  ("org-web" :components ("org" "projects" "howto" "code-projects" "family" "recipes"))))
 #+END_SRC  
 
