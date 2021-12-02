@@ -24,7 +24,7 @@
 	   :base-extension "org"
 	   :publishing-directory ,,webdir%
 	   :recursive t
-	   :exclude ".*/\.git/.*|*~"
+	   :exclude ".*/\.git/.*|.*/.*~"
 	   :publishing-function org-html-publish-to-html
 	   :headline-levels 4             ; Just the default for this project.
 	   :auto-preamble t
@@ -37,7 +37,7 @@
 	   :base-extension "css\\|js\\|png\\|jpg\\|gif\\|pdf\\|mp3\\|ogg\\|swf"
 	   :publishing-directory ,,webdir%
 	   :recursive t
-	   :exclude ".*/\.git/.*|*~"
+	   :exclude ".*/\.git/.*|.*/.*~"
 	   :publishing-function org-publish-attachment)
 	  `(,,name% :components (,,notes-part% ,,static-part%))))))
 

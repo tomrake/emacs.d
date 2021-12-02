@@ -1,0 +1,10 @@
+* TODO Medical Testing Appointment %^{Patient|TOM|JAMES|JOANNE|OTHER} with %^{Location} :%\1: %?
+   SCHEDULED: %^T
+   :PROPERTIES:
+   :INVITEE: %\1
+   :LOCATION: %\2
+   :PRETESTING: No
+   :END:
+   :LOGBOOK:
+   - State "CREATED"    from ""           %U
+   :END:

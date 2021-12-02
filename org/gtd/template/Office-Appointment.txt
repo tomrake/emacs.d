@@ -1,0 +1,10 @@
+* TODO Medical Office Appointment %^{Patient|TOM|JAMES|JOANNE|OTHER} with %^{Doctor} :%\1: %?
+   SCHEDULED: %^T
+   :PROPERTIES:
+   :INVITEE: %\1
+   :DOCTOR: %\2
+   :PRETESTING: %^{For Testing|No|Yes}
+   :END:
+   :LOGBOOK:
+   - State "CREATED"    from ""           %U
+   :END:
