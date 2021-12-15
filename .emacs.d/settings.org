@@ -812,7 +812,7 @@ All the newest stuff will be in ~/org/gtd/
 	      ("pa" "A items" tags-todo "+PRIORITY=\"A\"")
 	      ("pb" "B items" tags-todo "+PRIORITY=\"B\"")
 	      ("pc" "C items" tags-todo "+PRIORITY=\"C\"")
-
+              ("y" agenda*)
               ("c" "Weekly schedule" agenda ""
                 ((org-agenda-span 7)           ;; agenda will start in week view
                  (org-agenda-repeating-timestamp-show-all t)   ;; ensures that repeating events appear on all relevant dates
@@ -832,7 +832,7 @@ All the newest stuff will be in ~/org/gtd/
     `(
    ;; Todo
       ("t" "Todo" entry (file+headline ,(concat org-gtd-dir "new-gtd.org") "Tasks")
-       "* TODO %^{Brief Description} %^g\nAdded: %U")
+       "* TODO %^{Brief Description} %^g\n  OPENED: %U")
    ;; Journal Capture
       ("j" "Journal" entry (file+datetree ,(concat org-gtd-dir "Journal.org") )
 	 "* %?\nEntered on %U\n  %i\n  %a")

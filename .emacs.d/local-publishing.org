@@ -1,3 +1,4 @@
+
 * org-publish
   This file is to be included when .emacs.d/settings.org is loaded.
 #+BEGIN_SRC emacs-lisp
@@ -53,12 +54,13 @@
 	   :headline-levels 4             ; Just the default for this project.
 	   :auto-preamble t)
 	  ,@(publish-project "projects" "~/org/org-web/source/projects" "c:/Users/Public/org-web/projects")
+	  ,@(publish-project "hacking" "~/org/org-web/source/hacking" "c:/Users/Public/org-web/hacking")	
 	  ,@(publish-project "howto" "~/org/org-web/source/howto" "c:/Users/Public/org-web/howto")
 	  ,@(publish-project "sonya" "~/org/org-web/source/sonya" "c:/Users/Public/org-web/sonya")
 	  ,@(publish-project "james" "~/org/org-web/source/james" "c:/Users/Public/org-web/james")
 	  ,@(publish-project "code-projects" "~/quicklisp/local-projects" "c:/Users/Public/org-web/code-projects")
 	  ,@(publish-project "family" "~/org/org-web/source/family" "c:/Users/Public/org-web/family")
 	  ,@(publish-project "recipes" "~/org/org-web/source/recipes" "c:/Users/Public/org-web/recipes")
-	  ("org-web" :components ("org" "projects" "howto" "code-projects" "family" "recipes"))))
+	  ("org-web" :components ("org" "projects" "hacking" "howto" "code-projects" "family" "recipes"))))
 #+END_SRC  
 
