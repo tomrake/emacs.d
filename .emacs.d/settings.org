@@ -885,7 +885,7 @@ See https://emacs.stackexchange.com/questions/19037/org-babel-invoking-cmd-exe
     ad-do-it
     ))
 #+END_SRC
-* org-publish
+** org-publish
 #+BEGIN_SRC emacs-lisp
 (require 'org)
 (org-babel-load-file
