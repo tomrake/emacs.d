@@ -792,14 +792,12 @@ All the newest stuff will be in ~/org/gtd/
 		(tags-todo "OUTDOOR")
 		(tags-todo "PROJECT")
 		(tags-todo "FINANCIAL")))
-
-
 	     ("D" "Daily Action List"
 	       ((agenda "" ((org-agenda-ndays 1)
 			    (org-agenda-sorting-strategy
 			      `((agenda time-up priority-down tag-up)))
 			    (org-deadline-waring-days 0)))))
-	      ("g" . "GTD contexts")
+	     ("g" . "GTD contexts")
 	      ("ga" "Attic" tags-todo "ATTIC")
 	      ("gh" "Home" tags-todo "HOME")
 	      ("gc" "Computer" tags-todo "COMPUTER")
@@ -808,12 +806,12 @@ All the newest stuff will be in ~/org/gtd/
 	      ("gp" "Projects" tags-todo "PROJECTS")
 	      ("gf" "Financial" tags-todo "FINANCIAL")
 
-	      ("p" . "Priorities")
+	     ("p" . "Priorities")
 	      ("pa" "A items" tags-todo "+PRIORITY=\"A\"")
 	      ("pb" "B items" tags-todo "+PRIORITY=\"B\"")
 	      ("pc" "C items" tags-todo "+PRIORITY=\"C\"")
-              ("y" agenda*)
-              ("c" "Weekly schedule" agenda ""
+             ("y" agenda*)
+             ("c" "Weekly schedule" agenda ""
                 ((org-agenda-span 7)           ;; agenda will start in week view
                  (org-agenda-repeating-timestamp-show-all t)   ;; ensures that repeating events appear on all relevant dates
                  (org-agenda-skip-function '(org-agenda-skip-entry-if 'deadline 'scheduled))))  
