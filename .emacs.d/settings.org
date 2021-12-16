@@ -12,12 +12,26 @@
 [[file:~/.emacs.d/settings.el]]
 [[file:~/.emacs.d/settings.org]]
 [[file:~/.emacs.d/README.org]]
-** Maintenance Notes
+** Design Notes
 *** Emacs organization
-    Per user customization should be done by this settings.org file.
-*** org-mode customization
-    This should fall under the above Emacs organization.
-    org-publication is being handled by code within the Publishing.org file.
+    This file .emacs.d/settings.org is ment to have common setup for all my use cases.
+    Other files in .emacs.d/ are used for per user customization.
+*** Custom settings macro.
+    per load user .org settings
+    This macro loads per user customizations.
+#+BEGIN_SRC emacs-lisp
+  ;;;; Macro to load user customizations from .emacs.d
+	    (defmacro local-custom-file (file description)
+	      `(progn
+		 (require 'org)
+		 (message (concat "Looking for " ,description " file: " ,file ))
+		 (let ((file-and-path (expand-file-name ,file user-emacs-directory)))
+			 (if (file-exists-p file-and-path)
+			   (progn (message (concat "org-babel-load of " file-and-path))
+				(org-babel-load-file file-and-path))
+			   (message (concat "Custom file is missing " file-and-path))))))
+#+END_SRC
+
 **** TODO Review and fix column view data [/]
      - [ ] Find recommened COLUMNS line
      - [ ] Hunt down COLUMN items in :PROPERTIES: drawers.
@@ -25,19 +39,19 @@
        - Column view screws up the font sizing.
 **** TODO  Consider capture mode to publishing notes perhaps publish the Journel
      - How to handle a publishing a  date tree?
-    Current defects
-      - There is face style problems when agenda views go into column view mode.
+     Current defects
+     - There is face style problems when agenda views go into column view mode.
 *** GTD organization - Review
     I used an older GTD example that was developed before org-capture.
     Current defects
-      - The custom agenda views need to be reconsidered for my taste
-      - I have been using tasks to write notes about my process
-	- org publication is now being used to document task acitivity
-	  this should lead to removal of "documentation tasks"
-	- documenation task should be a capture item to be published.
+    - The custom agenda views need to be reconsidered for my taste
+    - I have been using tasks to write notes about my process
+      - org publication is now being used to document task acitivity
+	this should lead to removal of "documentation tasks"
+      - documenation task should be a capture item to be published.
 *** TODO Consider adding issue/error tracking in emacs [/]
-     - [ ] Reseach error issue tracking in org-mode/emacs
-     - [ ] Next create action plan or defer
+    - [ ] Reseach error issue tracking in org-mode/emacs
+    - [ ] Next create action plan or defer
 
 ** Standard coding setup
 *** emacs
@@ -885,23 +899,16 @@ See https://emacs.stackexchange.com/questions/19037/org-babel-invoking-cmd-exe
 #+END_SRC
 ** org-publish
 #+BEGIN_SRC emacs-lisp
-(require 'org)
-(org-babel-load-file
- (expand-file-name "local-publishing.org"
-		   user-emacs-directory))
+;;;; org-publishing is a local configuration.
+(local-custom-file "local-publishing.org" "Configuration of org-publishing")
 #+END_SRC  
 
 * Final Presenation to the user.
 
 ** load per user settings
  #+BEGIN_SRC emacs-lisp
- ;;;; load per user settings file
- ;;;; finding local  init directory from https://emacs.stackexchange.com/questions/52434/how-to-access-the-directory-of-the-init-el-file-from-elisp
- (message "local settings start")
- (when (file-exists-p (concat (file-name-directory (or load-file-name (buffer-file-name))) "/local-settings.org"))
-         (print "Starting to load")
-         (org-babel-load-file (expand-file-name "local-settings.org" (file-name-directory (or load-file-name (buffer-file-name))))))
- (message "local settings end")
+;;;; Various user settings is a local configuration.
+ (local-custom-file "local-settings.org" "Final user settings")
  #+END_SRC
 
 * Report the time metrics
