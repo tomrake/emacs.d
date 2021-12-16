@@ -1,0 +1,40 @@
+** Capture Templates
+ #+BEGIN_SRC emacs-lisp
+   ;;; Define ord-gtd template directories
+    (default-or-environment gtd-template-dir org-gtd-dir "/template/" "ORG-TEMPLATE-DIR")
+
+   ;; ;;; See: http://cachestocaches.com/2016/9/my-workflow-org-agenda/
+   (setq org-capture-templates
+    `(
+   ;; Todo
+      ("t" "Todo" entry (file+headline ,(concat org-gtd-dir "new-gtd.org") "Tasks")
+       "* TODO %^{Brief Description} %^g\n  OPENED: %U")
+   ;; Journal Capture
+      ("j" "Journal" entry (file+datetree ,(concat org-gtd-dir "Journal.org") )
+	 "* %?\nEntered on %U\n  %i\n  %a")
+   ;; Medical Appointments  (m) Medical template
+      ("m" "Medical Appointments")
+      ("mo" "(o) Office Appointent" entry (file+headline ,(concat org-gtd-dir "new-gtd.org") "Medical Appointments")
+       (file ,(concat gtd-template-dir "Office-Appointment.txt")) :empty-lines 1 :time-prompt t)
+      ("mt" "(t) Testing Appointent" entry (file+headline ,(concat org-gtd-dir "new-gtd.org") "Medical Appointments")
+       (file ,(concat gtd-template-dir "Testing-Appointment.txt")) :empty-lines 1 :time-prompt t)
+   ;; Health Data Capture
+      ("h" "Health Data Capture (h)")
+
+      ("hb" "Blood Pressure (b)" table-line (file+headline ,(concat org-gtd-dir "Medical-Data.org") "Blood Pressure")
+	"|%^{Person|TOM|JOANNE}|%U|%^{Systtolic}|%^{Diastolic}|%^{Pulse}|")
+
+      ("ht" "Temperature (t)" table-line (file+headline ,(concat org-gtd-dir "Medical-Data.org") "Temperature")
+       "|%^{Person|TOM|JOANNE}|%U|%^{Temperature}|")
+
+      ("hw" "Weight (w)" table-line (file+headline ,(concat org-gtd-dir "Medical-Data.org") "Weight")
+       "|%^{Person|TOM|JOANNE}|%U|%^{Weight}|")
+   ;; Shoppping Items
+      ("s" "Shopping Request (s)" table-line (file+headline ,(concat org-gtd-dir "Shopping-Requests.org") "Requests")
+       "|%U|%^{Needed Item}|")
+
+
+       ))
+ #+END_SRC
+
+   The FileHistory method of ba
