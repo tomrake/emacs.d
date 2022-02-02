@@ -320,9 +320,11 @@ These are settings from the Emacs Customization Mechanism.
 (load custom-file)
 #+END_SRC
 
-* MSYS2/MINGW64 Path elements
+* MSYS2/MINGW64 Emulation
+** Path Emulatiion
+Emulate paths and mingw64 bash startuup.
 Mingw requires careful crafting of paths and emulation of mount points.
-Any LISP built under mingw has an assumed environment of the build.
+Any LISP built under mingw64 has an assumed environment of the build.
 
 This needs a basic provision code to use various compiled lisps.
 #+BEGIN_SRC emacs-lisp
@@ -336,9 +338,19 @@ This needs a basic provision code to use various compiled lisps.
   (add-to-list 'exec-path mingw64-bin-mount))
   (setq +msys64-base-path+ "C:/devel/msys64/")
 
+   ;;; Emulate file-exists-p under mingw64 path translation. 
   (defun msys64-file-exists-p (file)
     (file-exists-p (concat +msys64-base-path+ file)))
 
+#+END_SRC
+** Command Line Construction
+#+BEGIN_SRC emacs-lisp
+  (defun msys2-command (cmd)
+    (concat +msys64-base-path+ "usr/bin/" cmd ".exe"))
+
+  (defmacro msys2-env-command (cmd params)
+    `(msys2-command ,cmd ,@params))
+ 
 #+END_SRC
 * Cygwin Path Elements
 #+BEGIN_SRC emacs-lisp
@@ -492,6 +504,10 @@ This seems unused.
     `(clisp-cygwin64 ())))
 #+END_SRC
 * SLIME
+  - On a new version of SBCL it is time for a review
+    - Modified the slime-lisp-implementation construction to use (list ..)
+    - Current Issue is that the sbcl startup needs correct SBCL_HOME set.
+      - Try to inject this at the bash env init phase.
   - There are a number of defunct implemnations in this list:
     - SBCL_2_0_@
     - SBCL_2_0_0-bin
@@ -501,17 +517,17 @@ This seems unused.
       - ,(provision-user-compiled-mingw)
       - if that privision returns nil there is no entry.
 #+BEGIN_SRC emacs-lisp
-  ;;;; Various lisp implemenation are added to the slime list
-  ;;;; Each potential provision can return nil and will be removed.
+  ;;;; Build the implemenation lisp dynamically.
+  ;;;; Remove all nil items from the list.
     (setq slime-lisp-implementations
 	  (seq-filter (lambda (e) e)
-	    `(
-	      ,(sbcl-2-2-1-msys)
-	      ,(sbcl-2-0-0-msys)
-	      ,(provision-ccl)
-	      ,(provision-clisp-msys64)
-	      ,(provision-clisp-cygwin64))))
-	     ; ,(provision-abcl)
+	    (list
+	      (sbcl-2-2-1-msys)
+	      (sbcl-2-0-0-msys)
+	      (provision-ccl)
+	      (provision-clisp-msys64)
+	      (provision-clisp-cygwin64))))
+	     ; (provision-abcl)
 
     ;;	,(when (and (eq system-type 'winodows-nt))
     ;;	   `(clisp-win ("clisp" "-K" "full" "-I")))
