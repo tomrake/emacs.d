@@ -74,6 +74,7 @@
 	    ,@(publish-project "family" "~/org/org-web/source/family" "c:/Users/Public/org-web/family")
 	    ,@(publish-project "recipes" "~/org/org-web/source/recipes" "c:/Users/Public/org-web/recipes")
 	    ,@(publish-project "political" "~/org/org-web/source/political" "c:/Users/Public/org-web/political")
-	    ("org-web" :components ("org" "technical" "code-projects" "family" "recipes" "political"))))
+	    ,@(publish-project "administration" "~/org/org-web/source/administration" "c:/Users/Public/org-web/administration")
+	    ("org-web" :components ("org" "technical" "code-projects" "family" "recipes" "political" "administration"))))
 #+END_SRC  
 

@@ -395,11 +395,15 @@ This seems unused.
     (when (msys64-file-exists-p exec-path)
        `(,tag ,(start-under-bash-login-shell (concat exec-path " --noinform")))))
 
-  (defun working-sbcl ()
-   "Set the standard working SBCL implmenation of LISP"
-     (msys2-slime-implementation-p 'sbcl "/usr/local/bin/sbcl.exe"))
-  
+  ;; (defun working-sbcl ()
+  ;;  "Set the standard working SBCL implmenation of LISP"
+  ;;    (msys2-slime-implementation-p 'sbcl "/usr/local/bin/sbcl.exe"))
 
+  (defun sbcl-2-0-0-msys ()
+    (msys2-slime-implementation-p 'sbcl-2_0_0 "/usr/local/sbcl-2.0.0/bin/sbcl.exe"))
+
+  (defun sbcl-2-2-1-msys ()
+    (msys2-slime-implementation-p 'sbcl-2_2_1 "/usr/local/sbcl-2.2.1/bin/sbcl.exe"))
 #+END_SRC
 *** Binary from SBCL 2.0.0 MSYS unknown.
  This is assumed to be broken.
@@ -502,11 +506,12 @@ This seems unused.
     (setq slime-lisp-implementations
 	  (seq-filter (lambda (e) e)
 	    `(
-	      ,(working-sbcl)
-	      ,(provision-abcl)
+	      ,(sbcl-2-2-1-msys)
+	      ,(sbcl-2-0-0-msys)
 	      ,(provision-ccl)
 	      ,(provision-clisp-msys64)
 	      ,(provision-clisp-cygwin64))))
+	     ; ,(provision-abcl)
 
     ;;	,(when (and (eq system-type 'winodows-nt))
     ;;	   `(clisp-win ("clisp" "-K" "full" "-I")))

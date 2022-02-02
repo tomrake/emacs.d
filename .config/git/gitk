@@ -5,7 +5,7 @@ set tabstop 8
 set findmergefiles 0
 set maxgraphpct 50
 set maxwidth 16
-set cmitmode patch
+set cmitmode tree
 set wrapcomment none
 set autoselect 1
 set autosellen 40
@@ -51,12 +51,14 @@ set indexcirclecolor #00ff00
 set circlecolors {white blue gray blue blue}
 set linkfgcolor blue
 set circleoutlinecolor SystemWindowText
-set geometry(main) 1262x729+-73+59
+set diffbgcolors {"#fff3f3" "#f0fff0"}
+set web_browser {cmd /c start}
+set geometry(main) 1262x681+2+0
 set geometry(state) normal
 set geometry(topwidth) 1262
 set geometry(topheight) 225
 set geometry(pwsash0) "440 1"
 set geometry(pwsash1) "660 1"
 set geometry(botwidth) 550
-set geometry(botheight) 499
+set geometry(botheight) 451
 set permviews {}
