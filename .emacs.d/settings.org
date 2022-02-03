@@ -425,20 +425,29 @@ Universal Startup Code should be here.
 *** On MSYS64
  [TBD] Split the startup check and parameter additions to sbcl in two parts.
 #+BEGIN_SRC emacs-lisp
-  (defun msys2-slime-implementation-p (tag exec-path)
-  "When a msys2 binary exists create a slime and and excution line."
-    (when (msys64-file-exists-p exec-path)
-       (list tag (start-under-bash-login-shell (join-with-spaces (list exec-path (join-with-spaces (double-quote-list (standard-sbcl-options)))))))))
+		(defun msys2-slime-implementation-p (tag exec-path env)
+		"When a msys2 binary exists create a slime and and excution line."
+		  (when (msys64-file-exists-p exec-path)
+		     (list tag
+			   (start-under-bash-login-shell
+			    (join-with-spaces
+				 (list exec-path (join-with-spaces
+						  (double-quote-list (standard-sbcl-options))))))
+			   :env
+			   env)))
 
-  ;; (defun working-sbcl ()
-  ;;  "Set the standard working SBCL implmenation of LISP"
-  ;;    (msys2-slime-implementation-p 'sbcl "/usr/local/bin/sbcl.exe"))
+		;; (defun working-sbcl ()
+		;;  "Set the standard working SBCL implmenation of LISP"
+		;;    (msys2-slime-implementation-p 'sbcl "/usr/local/bin/sbcl.exe"))
 
-  (defun sbcl-2-0-0-msys ()
-    (msys2-slime-implementation-p 'sbcl-2_0_0 "/usr/local/sbcl-2.0.0/bin/sbcl.exe"))
+		(defun sbcl-2-0-0-msys ()
+		  (msys2-slime-implementation-p 'sbcl-2_0_0 "/usr/local/sbcl-2.0.0/bin/sbcl.exe"
+						(list "SBCL_HOME=C:/devel/msys64/usr/local/sbcl-2.0.0/lib/sbcl")))
 
-  (defun sbcl-2-2-1-msys ()
-    (msys2-slime-implementation-p 'sbcl-2_2_1 "/usr/local/sbcl-2.2.1/bin/sbcl.exe"))
+		(defun sbcl-2-2-1-msys ()
+		  (msys2-slime-implementation-p 'sbcl-2_2_1 "/usr/local/sbcl-2.2.1/bin/sbcl.exe"
+							    (list "SBCL_HOME=C:/devel/msys64/usr/local/sbcl-2.2.1/lib/sbcl")))
+				
 #+END_SRC
 ** Provision ABCL
  #+BEGIN_SRC emacs-lisp
