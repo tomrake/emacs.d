@@ -344,29 +344,41 @@ This needs a basic provision code to use various compiled lisps.
 
 #+END_SRC
 ** Command Line Construction
+   There are two types of composition
+   - elisp object - make lists with cons and others.
+   - strings - concat strings to gether.
 #+BEGIN_SRC emacs-lisp
-  (defun msys2-command-string (cmd)
-    (concat +msys64-base-path+ "usr/bin/" cmd ".exe"))
+  ;;; add string quotes
 
   (defun double-quote-string(s)
      (concat "\"" s "\""))
 
-  (defun double-quote-list (l)
-    (mapconcat 'double-quote-string l " "))
-
-  (defun single-quote-list (l)
-    (mapconcat 'single-quote-string l " "))
-
   (defun single-quote-string (s)
      (concat "\'" s "\'"))
 
+  ;;; These are the object compositors
+  (defun double-quote-list (l)
+    (mapcar 'double-quote-string l))
+
+  (defun single-quote-list (l)
+    (mapcar 'single-quote-string l))
+
+
+   ;;; These are the string  compositors
+  (defun msys2-command-string (cmd)
+    (concat +msys64-base-path+ "usr/bin/" cmd ".exe"))
+
+
    ;; return a string of the args separated by a space.
-  (defun args-string (args)
+  (defun join-with-spaces (args)
      (mapconcat 'identity args " "))
+
+  (defun msys2-command (cmd params)
+     (join-with-spaces (cons (msys2-command-string cmd) params)))
 
    ;; Add parameters
   (defun msys2-env-command (params)
-    (concat (msys2-command-string "env") " " (args-string params)))
+    (join-with-spaces (cons (msys2-command-string "env") params)))
 #+END_SRC
 * Cygwin Path Elements
 #+BEGIN_SRC emacs-lisp
