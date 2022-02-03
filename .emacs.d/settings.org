@@ -394,8 +394,10 @@ This needs a basic provision code to use various compiled lisps.
   "Excute a msys2-command under a msys2-64 bash login shell"
     `(,(concat +msys64-base-path+ "usr/bin/env.exe") "MSYSTEM=MINGW64"
       ,(concat +msys64-base-path+ "usr/bin/bash.exe") "-l" "-c" ,msys2-command))
-
-
+#+END_SRC
+* Export emacs path changes to environment
+  [TBD] Why do I do this? This likely only affects any sub tasks spawned by emacs.
+#+BEGIN_SRC emacs-lisp
   ;;;  Now rebuild path environment variable based on exec-path
   (setenv "PATH" (mapconcat #'identity exec-path path-separator))
 #+END_SRC
