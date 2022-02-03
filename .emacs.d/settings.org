@@ -1,5 +1,7 @@
 #+STARTUP: overview
 #+EXPORT-FILENAME init.el
+* HACKING - READ AND REMOVE WHEN DONE
+  I am planning on removing old SBCL SLIME cruff the sections will be marked with [CRUFF]
 * README
 ** Add Header Notes to settings.el
 #+BEGIN_SRC emacs-lisp
@@ -387,11 +389,13 @@ This needs a basic provision code to use various compiled lisps.
     (file-exists-p (concat +cygwin64-base-path+ file)))
 #+END_SRC
 * Bash and Launching under Bash
+  Use  Command Line construction to rewrite these:
 #+BEGIN_SRC emacs-lisp
   (defun start-under-bash-login-shell (msys2-command)
   "Excute a msys2-command under a msys2-64 bash login shell"
     `(,(concat +msys64-base-path+ "usr/bin/env.exe") "MSYSTEM=MINGW64"
       ,(concat +msys64-base-path+ "usr/bin/bash.exe") "-l" "-c" ,msys2-command))
+
 
   ;;;  Now rebuild path environment variable based on exec-path
   (setenv "PATH" (mapconcat #'identity exec-path path-separator))
@@ -403,8 +407,9 @@ This code was not included??
   (setq  ispell-dictionary-alist '((master . en_US)))
   (require 'ispell)
 #+END_SRC
-* Setup SBCL
+* Setup SBCL [CRUFF]
 This is where I keep my quirky self compiled SBCL compiled under msys2
+[TBD] This entire piece should be removed? or moved to Provisioning.
 #+BEGIN_SRC emacs-lisp
 (setq SBCL_HOME_SAVE (getenv "SBCL_HOME"))
 (setq SBCL_BASE "C:/devel/SBCL_2_0_0-bin")
@@ -417,14 +422,14 @@ Need to consider using HELM here
 (ac-config-default)
 #+END_SRC
 
-* Copy OS PATH to emacs path
+* Copy OS PATH to emacs path [CRUFF]
 This seems unused.
 #+BEGIN_SRC emacs-lisp
 (setq PATH_SAVE (getenv "PATH"))
 #+END_SRC
 
 * Provision Various Common LISPs
-
+Universal Startup Code should be here.
 ** Provision standard SBCL
   
 *** On MSYS64
@@ -445,7 +450,7 @@ This seems unused.
   (defun sbcl-2-2-1-msys ()
     (msys2-slime-implementation-p 'sbcl-2_2_1 "/usr/local/sbcl-2.2.1/bin/sbcl.exe"))
 #+END_SRC
-*** Binary from SBCL 2.0.0 MSYS unknown.
+*** Binary from SBCL 2.0.0 MSYS unknown. [CRUFF]
  This is assumed to be broken.
  #+BEGIN_SRC emacs-lisp :tangle no
  (defmacro binary-supplied-sbcl-2-0-0 ()
@@ -467,7 +472,7 @@ This seems unused.
 				"--noinform")))))))
  #+END_SRC
 
-*** Binary from 2.0.2 MSYS64 Unknown.
+*** Binary from 2.0.2 MSYS64 Unknown. [CRUFF]
  This is assumed to be broken.
  #+BEGIN_SRC emacs-lisp :tangle no
  (defmacro binary-compiled-sbcl-2-0-2()
@@ -556,7 +561,7 @@ This seems unused.
 	      (provision-clisp-msys64)
 	      (provision-clisp-cygwin64))))
 	     ; (provision-abcl)
-
+    ;; [CRUFF] to the end
     ;;	,(when (and (eq system-type 'winodows-nt))
     ;;	   `(clisp-win ("clisp" "-K" "full" "-I")))
     ;;	,(when (and (eq system-type 'cygwin) (file-exists-p (convert-standard-filename "/usr/bin/clisp")))
