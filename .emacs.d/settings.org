@@ -425,7 +425,7 @@ Universal Startup Code should be here.
   (defun msys2-slime-implementation-p (tag exec-path)
   "When a msys2 binary exists create a slime and and excution line."
     (when (msys64-file-exists-p exec-path)
-       `(,tag ,(start-under-bash-login-shell (concat exec-path " --noinform")))))
+       (list tag (start-under-bash-login-shell (concat exec-path " --noinform")))))
 
   ;; (defun working-sbcl ()
   ;;  "Set the standard working SBCL implmenation of LISP"
