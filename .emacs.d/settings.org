@@ -345,12 +345,28 @@ This needs a basic provision code to use various compiled lisps.
 #+END_SRC
 ** Command Line Construction
 #+BEGIN_SRC emacs-lisp
-  (defun msys2-command (cmd)
+  (defun msys2-command-string (cmd)
     (concat +msys64-base-path+ "usr/bin/" cmd ".exe"))
 
-  (defmacro msys2-env-command (cmd params)
-    `(msys2-command ,cmd ,@params))
- 
+  (defun double-quote-string(s)
+     (concat "\"" s "\""))
+
+  (defun double-quote-list (l)
+    (mapconcat 'double-quote-string l " "))
+
+  (defun single-quote-list (l)
+    (mapconcat 'single-quote-string l " "))
+
+  (defun single-quote-string (s)
+     (concat "\'" s "\'"))
+
+   ;; return a string of the args separated by a space.
+  (defun args-string (args)
+     (mapconcat 'identity args " "))
+
+   ;; Add parameters
+  (defun msys2-env-command (params)
+    (concat (msys2-command-string "env") " " (args-string params)))
 #+END_SRC
 * Cygwin Path Elements
 #+BEGIN_SRC emacs-lisp
