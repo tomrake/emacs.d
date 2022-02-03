@@ -1,7 +1,6 @@
 #+STARTUP: overview
 #+EXPORT-FILENAME init.el
-* HACKING - READ AND REMOVE WHEN DONE
-  I am planning on removing old SBCL SLIME cruff the sections will be marked with [CRUFF]
+* HACKING - REBUILD SBCL MSYS2 START
 * README
 ** Add Header Notes to settings.el
 #+BEGIN_SRC emacs-lisp
@@ -407,25 +406,11 @@ This code was not included??
   (setq  ispell-dictionary-alist '((master . en_US)))
   (require 'ispell)
 #+END_SRC
-* Setup SBCL [CRUFF]
-This is where I keep my quirky self compiled SBCL compiled under msys2
-[TBD] This entire piece should be removed? or moved to Provisioning.
-#+BEGIN_SRC emacs-lisp
-(setq SBCL_HOME_SAVE (getenv "SBCL_HOME"))
-(setq SBCL_BASE "C:/devel/SBCL_2_0_0-bin")
-#+END_SRC
-
 * Configure Autocomplete
 Need to consider using HELM here
 #+BEGIN_SRC emacs-lisp
 (require 'auto-complete-config)
 (ac-config-default)
-#+END_SRC
-
-* Copy OS PATH to emacs path [CRUFF]
-This seems unused.
-#+BEGIN_SRC emacs-lisp
-(setq PATH_SAVE (getenv "PATH"))
 #+END_SRC
 
 * Provision Various Common LISPs
@@ -450,65 +435,6 @@ Universal Startup Code should be here.
   (defun sbcl-2-2-1-msys ()
     (msys2-slime-implementation-p 'sbcl-2_2_1 "/usr/local/sbcl-2.2.1/bin/sbcl.exe"))
 #+END_SRC
-*** Binary from SBCL 2.0.0 MSYS unknown. [CRUFF]
- This is assumed to be broken.
- #+BEGIN_SRC emacs-lisp :tangle no
- (defmacro binary-supplied-sbcl-2-0-0 ()
-   (when (boundp 'SBCL_BASE) 
-	      (cond  
-		   
-		    ((string= SBCL_BASE "C:/devel/SBCL_2_0_0-bin")
-		     (progn
-		       (unless (boundp 'SBCL-IN-PATH)
-			 (setenv "PATH"
-				 (concat
-				  SBCL_BASE
-				  "/bin/"
-				  ";"
-				  (getenv "PATH")))
-			  (setenv "SBCL_HOME" SBCL_BASE)
-			  (setq SBCL-IN-PATH t))
-		       `(`sbcl  (,(concat SBCL_BASE "/" "sbcl.exe")
-				"--noinform")))))))
- #+END_SRC
-
-*** Binary from 2.0.2 MSYS64 Unknown. [CRUFF]
- This is assumed to be broken.
- #+BEGIN_SRC emacs-lisp :tangle no
- (defmacro binary-compiled-sbcl-2-0-2()
- (when (boundp 'SBCL_BASE) 
-          (cond  
-		    ((string= SBCL_BASE "C:/devel/SBCL_2_0_2")
-		     (progn
-		       (unless (boundp 'SBCL-IN-PATH)
-			 (setenv "PATH"
-				 (concat
-				  SBCL_BASE
-				  "/bin/"
-				  ";"
-				  (getenv "PATH")))
-			 (setenv "SBCL_HOME"
-				 (concat
-				  SBCL_BASE
-				  "/lib/sbcl"))
-			 (setq SBCL-IN-PATH t))
-		       `(sbcl  (,(concat SBCL_BASE "/bin/" "sbcl.exe")
-				"--noinform"))))
-		    ((string= SBCL_BASE "C:/devel/SBCL_2_0_0-bin")
-		     (progn
-		       (unless (boundp 'SBCL-IN-PATH)
-			 (setenv "PATH"
-				 (concat
-				  SBCL_BASE
-				  "/bin/"
-				  ";"
-				  (getenv "PATH")))
-			  (setenv "SBCL_HOME" SBCL_BASE)
-			  (setq SBCL-IN-PATH t))
-		       `(`sbcl  (,(concat SBCL_BASE "/" "sbcl.exe")
-				"--noinform")))))))
- #+END_SRC
-
 ** Provision ABCL
  #+BEGIN_SRC emacs-lisp
  (defmacro provision-abcl()
@@ -561,11 +487,6 @@ Universal Startup Code should be here.
 	      (provision-clisp-msys64)
 	      (provision-clisp-cygwin64))))
 	     ; (provision-abcl)
-    ;; [CRUFF] to the end
-    ;;	,(when (and (eq system-type 'winodows-nt))
-    ;;	   `(clisp-win ("clisp" "-K" "full" "-I")))
-    ;;	,(when (and (eq system-type 'cygwin) (file-exists-p (convert-standard-filename "/usr/bin/clisp")))
-    ;;	    `(clisp-cyg (,(convert-standard-filename "/usr/bin/clisp" ))))))
 #+END_SRC
 
 * Common Lisp HyperSpec
