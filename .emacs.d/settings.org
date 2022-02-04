@@ -323,13 +323,28 @@ These are settings from the Emacs Customization Mechanism.
 (load custom-file)
 #+END_SRC
 
-* MSYS2/MINGW64 Emulation
-** Path Emulatiion
+* Generic arguments, paths and strings.
+#+BEGIN_SRC emacs-lisp
+  (defun double-quote-string(s)
+     (concat "\"" s "\""))
+
+  (defun single-quote-string (s)
+     (concat "\'" s "\'"))
+
+  (defun double-quote-list (l)
+    (mapcar 'double-quote-string l))
+
+  (defun single-quote-list (l)
+    (mapcar 'single-quote-string l))
+
+  (defun join-with-spaces (args)
+     (mapconcat 'identity args " "))
+#+END_SRC
+* MSYS64 Emulation
 Emulate paths and mingw64 bash startuup.
 Mingw requires careful crafting of paths and emulation of mount points.
 Any LISP built under mingw64 has an assumed environment of the build.
 
-This needs a basic provision code to use various compiled lisps.
 #+BEGIN_SRC emacs-lisp
   ;;; Add mingw path elements to exec path
   (let ((mingw64-root-mount "C:/devel/msys64")
@@ -341,43 +356,15 @@ This needs a basic provision code to use various compiled lisps.
   (add-to-list 'exec-path mingw64-bin-mount))
   (setq +msys64-base-path+ "C:/devel/msys64/")
 
-   ;;; Emulate file-exists-p under mingw64 path translation. 
   (defun msys64-file-exists-p (file)
     (file-exists-p (concat +msys64-base-path+ file)))
 
-#+END_SRC
-** Command Line Construction
-   There are two types of composition
-   - elisp object - make lists with cons and others.
-   - strings - concat strings to gether.
-#+BEGIN_SRC emacs-lisp
-  ;;; add string quotes
-
-  (defun double-quote-string(s)
-     (concat "\"" s "\""))
-
-  (defun single-quote-string (s)
-     (concat "\'" s "\'"))
-
-  ;;; These are the object compositors
-  (defun double-quote-list (l)
-    (mapcar 'double-quote-string l))
-
-  (defun single-quote-list (l)
-    (mapcar 'single-quote-string l))
-
-
-  ;;; These are the string  compositors
-  (defun msys2-command-string (cmd)
-    (concat +msys64-base-path+ "usr/bin/" cmd ".exe"))
-
-
-  ;; return a string of the args separated by a space.
-  (defun join-with-spaces (args)
-     (mapconcat 'identity args " "))
-
   (defun msys2-command (cmd params)
      (join-with-spaces (cons (msys2-command-string cmd) params)))
+
+
+  (defun msys2-command-string (cmd)
+    (concat +msys64-base-path+ "usr/bin/" cmd ".exe"))
 #+END_SRC
 * Cygwin Path Elements
 #+BEGIN_SRC emacs-lisp
@@ -385,8 +372,9 @@ This needs a basic provision code to use various compiled lisps.
   (defun cygwin64-file-exists-p (file)
     (file-exists-p (concat +cygwin64-base-path+ file)))
 #+END_SRC
-* Bash and Launching under Bash
-  Use  Command Line construction to rewrite these:
+* Start a progrom under MSYS64/BASH
+  Constructs commands as a list of strings.
+  MSYS64 Specific.
 #+BEGIN_SRC emacs-lisp
   (defun start-under-bash-login-shell (shell-task)
   "Excute a msys2-command under a msys2-64 bash login shell"
