@@ -2,6 +2,7 @@
 #+EXPORT-FILENAME init.el
 * HACKING - REBUILD SBCL MSYS2 START
   Use slime implemenation (tag (commands) :env (enviroment vars)) with mingw start.
+  Build mingw64 launch from regular generation.
 * README
 ** Add Header Notes to settings.el
 #+BEGIN_SRC emacs-lisp
@@ -366,21 +367,17 @@ This needs a basic provision code to use various compiled lisps.
     (mapcar 'single-quote-string l))
 
 
-   ;;; These are the string  compositors
+  ;;; These are the string  compositors
   (defun msys2-command-string (cmd)
     (concat +msys64-base-path+ "usr/bin/" cmd ".exe"))
 
 
-   ;; return a string of the args separated by a space.
+  ;; return a string of the args separated by a space.
   (defun join-with-spaces (args)
      (mapconcat 'identity args " "))
 
   (defun msys2-command (cmd params)
      (join-with-spaces (cons (msys2-command-string cmd) params)))
-
-   ;; Add parameters
-  (defun msys2-env-command (params)
-    (join-with-spaces (cons (msys2-command-string "env") params)))
 #+END_SRC
 * Cygwin Path Elements
 #+BEGIN_SRC emacs-lisp
@@ -391,11 +388,15 @@ This needs a basic provision code to use various compiled lisps.
 * Bash and Launching under Bash
   Use  Command Line construction to rewrite these:
 #+BEGIN_SRC emacs-lisp
-  (defun start-under-bash-login-shell (msys2-command)
+  (defun start-under-bash-login-shell (shell-task)
   "Excute a msys2-command under a msys2-64 bash login shell"
-    (list (concat +msys64-base-path+ "usr/bin/env.exe") "MSYSTEM=MINGW64"
-      (concat +msys64-base-path+ "usr/bin/bash.exe") "-l" "-c" msys2-command))
-#+END_SRC
+    (list (msys2-command-string "env")
+	  (double-quote-string "MSYSTEM=MINGW64")
+	  (msys2-command-string "bash")
+	  "-l"
+	  "-c"
+	  shell-task))
+ #+END_SRC
 * Setting up Aspell
 This code was not included??
 #+BEGOM_SRC emacs-lisp
