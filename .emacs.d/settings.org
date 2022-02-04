@@ -1,7 +1,7 @@
 #+STARTUP: overview
 #+EXPORT-FILENAME init.el
 * HACKING - REBUILD SBCL MSYS2 START
-  Use slime implemenation (tag (commands) :env (enviroment vars)) with mingw start.
+  Use slime implementation (tag (commands) :env (environment vars)) with mingw start.
   Build mingw64 launch from regular generation.
 * README
 ** Add Header Notes to settings.el
@@ -323,6 +323,15 @@ These are settings from the Emacs Customization Mechanism.
 (load custom-file)
 #+END_SRC
 
+* Setting up Aspell
+aspell configuration is in [[~/.aspell]]
+The BEGIN tag was botched in the line below.
+[TBD] Test if the works or can be removed.
+#+BEGOM_SRC emacs-lisp
+  (setq  ispell-program-name "aspell")
+  (setq  ispell-dictionary-alist '((master . en_US)))
+  (require 'ispell)
+#+END_SRC
 * Generic arguments, paths and strings.
 #+BEGIN_SRC emacs-lisp
   (defun double-quote-string(s)
@@ -339,6 +348,14 @@ These are settings from the Emacs Customization Mechanism.
 
   (defun join-with-spaces (args)
      (mapconcat 'identity args " "))
+#+END_SRC
+* Cygwin Emulation
+  Partial Cygwin Emulation.
+  Needed for CLISP slime.
+#+BEGIN_SRC emacs-lisp
+  (setq +cygwin64-base-path+ "C:/cygwin64")
+  (defun cygwin64-file-exists-p (file)
+    (file-exists-p (concat +cygwin64-base-path+ file)))
 #+END_SRC
 * MSYS64 Emulation
 Emulate paths and mingw64 bash startuup.
@@ -366,12 +383,6 @@ Any LISP built under mingw64 has an assumed environment of the build.
   (defun msys2-command-string (cmd)
     (concat +msys64-base-path+ "usr/bin/" cmd ".exe"))
 #+END_SRC
-* Cygwin Path Elements
-#+BEGIN_SRC emacs-lisp
-  (setq +cygwin64-base-path+ "C:/cygwin64")
-  (defun cygwin64-file-exists-p (file)
-    (file-exists-p (concat +cygwin64-base-path+ file)))
-#+END_SRC
 * Start a progrom under MSYS64/BASH
   Constructs commands as a list of strings.
   MSYS64 Specific.
@@ -385,13 +396,6 @@ Any LISP built under mingw64 has an assumed environment of the build.
 	  "-c"
 	  shell-task))
  #+END_SRC
-* Setting up Aspell
-This code was not included??
-#+BEGOM_SRC emacs-lisp
-  (setq  ispell-program-name "aspell")
-  (setq  ispell-dictionary-alist '((master . en_US)))
-  (require 'ispell)
-#+END_SRC
 * Configure Autocomplete
 Need to consider using HELM here
 #+BEGIN_SRC emacs-lisp
