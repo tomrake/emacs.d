@@ -1,6 +1,7 @@
 #+STARTUP: overview
 #+EXPORT-FILENAME init.el
 * HACKING - REBUILD SBCL MSYS2 START
+  Use slime implemenation (tag (commands) :env (enviroment vars)) with mingw start.
 * README
 ** Add Header Notes to settings.el
 #+BEGIN_SRC emacs-lisp
@@ -395,12 +396,6 @@ This needs a basic provision code to use various compiled lisps.
     (list (concat +msys64-base-path+ "usr/bin/env.exe") "MSYSTEM=MINGW64"
       (concat +msys64-base-path+ "usr/bin/bash.exe") "-l" "-c" msys2-command))
 #+END_SRC
-* Export emacs path changes to environment
-  [TBD] Why do I do this? This likely only affects any sub tasks spawned by emacs.
-#+BEGIN_SRC emacs-lisp
-  ;;;  Now rebuild path environment variable based on exec-path
-  (setenv "PATH" (mapconcat #'identity exec-path path-separator))
-#+END_SRC
 * Setting up Aspell
 This code was not included??
 #+BEGOM_SRC emacs-lisp
@@ -423,7 +418,7 @@ Universal Startup Code should be here.
      '("--noinform"))
 #+END_SRC
 *** On MSYS64
- [TBD] Split the startup check and parameter additions to sbcl in two parts.
+**** MINGW Common
 #+BEGIN_SRC emacs-lisp
 		(defun msys2-slime-implementation-p (tag exec-path env)
 		"When a msys2 binary exists create a slime and and excution line."
@@ -435,11 +430,9 @@ Universal Startup Code should be here.
 						  (double-quote-list (standard-sbcl-options))))))
 			   :env
 			   env)))
-
-		;; (defun working-sbcl ()
-		;;  "Set the standard working SBCL implmenation of LISP"
-		;;    (msys2-slime-implementation-p 'sbcl "/usr/local/bin/sbcl.exe"))
-
+#+END_SRC
+**** Provision the LISPs
+#+BEGIN_SRC emacs-lisp
 		(defun sbcl-2-0-0-msys ()
 		  (msys2-slime-implementation-p 'sbcl-2_0_0 "/usr/local/sbcl-2.0.0/bin/sbcl.exe"
 						(list "SBCL_HOME=C:/devel/msys64/usr/local/sbcl-2.0.0/lib/sbcl")))
