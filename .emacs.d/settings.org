@@ -9,7 +9,7 @@
 #+END_SRC
 
 * REVISIONS
-  Agreegate all LISP language Stuff
+  Move many untities in front of LISP Language
   MSYS64 lisp launch has been removed.
   Use slime implementation (tag (commands) :env (environment vars)) with mingw start.
   The env bash sbcl launch sequence had problems.
@@ -412,6 +412,115 @@ The BEGIN tag was botched in the line below.
 	     "-c"
 	     shell-task))
     #+END_SRC
+* Emacs Theme
+  [TBD] Raise this to before LISP and other language stuff.
+#+BEGIN_SRC emacs-lisp
+(load-theme 'manoj-dark)
+(set-face-attribute 'default nil :height 120)
+#+END_SRC
+
+* Rainbow Delimeters
+#+BEGIN_SRC emacs-lisp
+  (add-hook 'prog-mode-hook #'rainbow-delimiters-mode)
+  ;(font-lock-comment-face ((t (:italic t :slant oblique :foreground "#9fd385"))))
+  ;; (setf rainbow-delimiters-depth-1-face ((t (:foreground "dark orange"))))
+  ;; (setf rainbow-delimiters-depth-2-face ((t (:foreground "deep pink"))))
+  ;; (setf rainbow-delimiters-depth-3-face ((t (:foreground "chartreuse"))))
+  ;; (setf rainbow-delimiters-depth-4-face ((t (:foreground "deep sky blue"))))
+  ;; (setf rainbow-delimiters-depth-5-face ((t (:foreground "yellow"))))
+  ;; (setf rainbow-delimiters-depth-6-face ((t (:foreground "orchid"))))
+  ;; (setf rainbow-delimiters-depth-7-face ((t (:foreground "spring green"))))
+  ;; (setf rainbow-delimiters-depth-8-face ((t (:foreground "sienna1"))))
+#+END_SRC
+
+* Shells
+  [TBD] Decide what is CRUFF here.
+  I am attempting to use the friendly-shell infrastructure.
+
+  shell/git-bash works but has prompt problems.
+#+BEGIN_SRC emacs-lisp
+      (use-package friendly-shell
+	:ensure t
+	:config   
+	  (defun shell/git-bash (&optional path)
+	     (interactive)
+	     (friendly-shell :path path
+			     :interpreter "C:/Program Files/Git/bin/bash.exe"
+			     ;;:interpreter-args '("-l")
+			     )))
+
+
+      (use-package friendly-remote-shell
+	:ensure t
+	:config
+	   (defun shell/cisco (&optional path)
+	     (interactive)
+	     (with-shell-interpreter-connection-local-vars
+	       (friendly-remote-shell :path path))))
+
+
+
+	  ;; (setq win-shell-implementaions
+		    ;;       `((cmd (shell))
+		    ;; 	(ming64 ((defun my-shell-setup ()
+		    ;;        "For Cygwin bash under Emacs 20"
+
+		    ;;          (setq comint-scroll-show-maximum-output 'this)
+		    ;;          (make-variable-buffer-local 'comint-completion-addsuffix))
+		    ;;            (setq comint-completion-addsuffix t)
+		    ;;            ;; (setq comint-process-echoes t) ;; reported that this is no longer needed
+		    ;;            (setq comint-eol-on-send t)
+		    ;;            (setq w32-quote-process-args ?\")
+		    ;;            (add-hook 'shell-mode-hook 'my-shell-setup)))))
+
+		    ;; (defun win-shell ())
+
+		    ;; ;;; The MSYS-SHELL
+
+		    ;; (defun msys-shell () 
+		    ;;   (interactive)
+		    ;;   (let ((explicit-shell-file-name (convert-standard-filename "c:/devel/msys64/usr/bin/bash.exe"))
+		    ;; 	(shell-file-name "bash")
+		    ;; 	(explicit-bash.exe-args '("--noediting" "--login" "-i"))) 
+		    ;;     (setenv "SHELL" shell-file-name)
+		    ;;     (add-hook 'comint-output-filter-functions 'comint-strip-ctrl-m)
+		    ;;     (shell)))
+
+		    ;; ;;; The MINGW64-SHELL
+
+		    ;; (defun mingw64-shell () 
+		    ;;        (interactive)
+		    ;;        (let (( explicit-shell-file-name (convert-standard-filename  "c:/devel/msys64/mingw64/bin/bash.exe")))
+		    ;; 	 (shell "*bash*")
+		    ;; 	     (call-interactively 'shell)))
+#+END_SRC
+** Add shell extensions
+#+BEGIN_SRC emacs-lisp
+(use-package shx
+  :ensure t)
+#+END_SRC
+* Tramp                                                            
+[TBD] Review if this is correct after SSH has been reinstalled.
+** The default connection method is plink
+#+BEGIN_SRC emacs-lisp
+(require 'tramp)
+(setq tramp-default-method "plink")
+;(setq tramp-verbose 10)
+#+END_SRC
+** Remote shell to cisco
+#+BEGIN_SRC emacs-lisp
+(defun cisco-remote-shell ()
+  (interactive)
+  (let ((default-directory "/plink:osmc@192.168.1.43:~"))
+  (shell)))
+#+END_SRC
+* IDO                                              
+[TBD] Why do I need ido, What does it do for me?
+#+BEGIN_SRC emacs-lisp
+(require 'ido)
+(ido-mode t)
+#+END_SRC
+
 * Configure Autocomplete
   [COMPLETE]
 Need to consider using HELM here
@@ -553,27 +662,6 @@ Need to consider using HELM here
 		auto-mode-alist))
   #+END_SRC
 
-* Emacs Theme
-  [TBD] Raise this to before LISP and other language stuff.
-#+BEGIN_SRC emacs-lisp
-(load-theme 'manoj-dark)
-(set-face-attribute 'default nil :height 120)
-#+END_SRC
-
-* Rainbow Delimeters
-#+BEGIN_SRC emacs-lisp
-  (add-hook 'prog-mode-hook #'rainbow-delimiters-mode)
-  ;(font-lock-comment-face ((t (:italic t :slant oblique :foreground "#9fd385"))))
-  ;; (setf rainbow-delimiters-depth-1-face ((t (:foreground "dark orange"))))
-  ;; (setf rainbow-delimiters-depth-2-face ((t (:foreground "deep pink"))))
-  ;; (setf rainbow-delimiters-depth-3-face ((t (:foreground "chartreuse"))))
-  ;; (setf rainbow-delimiters-depth-4-face ((t (:foreground "deep sky blue"))))
-  ;; (setf rainbow-delimiters-depth-5-face ((t (:foreground "yellow"))))
-  ;; (setf rainbow-delimiters-depth-6-face ((t (:foreground "orchid"))))
-  ;; (setf rainbow-delimiters-depth-7-face ((t (:foreground "spring green"))))
-  ;; (setf rainbow-delimiters-depth-8-face ((t (:foreground "sienna1"))))
-#+END_SRC
-
 * Pascal Setup
   [TBD] I have no pascal compiler configured.
 #+BEGIN_SRC emacs-lisp
@@ -594,111 +682,6 @@ Need to consider using HELM here
 (setq auto-mode-alist
       (append '((".*\\.yml\\'" . yaml-mode))
 	      auto-mode-alist))
-#+END_SRC
-
-* Shells
-  [TBD] Decide what is CRUFF here.
-  I am attempting to use the friendly-shell infrastructure.
-
-  shell/git-bash works but has prompt problems.
-#+BEGIN_SRC emacs-lisp
-      (use-package friendly-shell
-	:ensure t
-	:config   
-	  (defun shell/git-bash (&optional path)
-	     (interactive)
-	     (friendly-shell :path path
-			     :interpreter "C:/Program Files/Git/bin/bash.exe"
-			     ;;:interpreter-args '("-l")
-			     )))
-
-
-      (use-package friendly-remote-shell
-	:ensure t
-	:config
-	   (defun shell/cisco (&optional path)
-	     (interactive)
-	     (with-shell-interpreter-connection-local-vars
-	       (friendly-remote-shell :path path))))
-
-
-
-	  ;; (setq win-shell-implementaions
-		    ;;       `((cmd (shell))
-		    ;; 	(ming64 ((defun my-shell-setup ()
-		    ;;        "For Cygwin bash under Emacs 20"
-
-		    ;;          (setq comint-scroll-show-maximum-output 'this)
-		    ;;          (make-variable-buffer-local 'comint-completion-addsuffix))
-		    ;;            (setq comint-completion-addsuffix t)
-		    ;;            ;; (setq comint-process-echoes t) ;; reported that this is no longer needed
-		    ;;            (setq comint-eol-on-send t)
-		    ;;            (setq w32-quote-process-args ?\")
-		    ;;            (add-hook 'shell-mode-hook 'my-shell-setup)))))
-
-		    ;; (defun win-shell ())
-
-		    ;; ;;; The MSYS-SHELL
-
-		    ;; (defun msys-shell () 
-		    ;;   (interactive)
-		    ;;   (let ((explicit-shell-file-name (convert-standard-filename "c:/devel/msys64/usr/bin/bash.exe"))
-		    ;; 	(shell-file-name "bash")
-		    ;; 	(explicit-bash.exe-args '("--noediting" "--login" "-i"))) 
-		    ;;     (setenv "SHELL" shell-file-name)
-		    ;;     (add-hook 'comint-output-filter-functions 'comint-strip-ctrl-m)
-		    ;;     (shell)))
-
-		    ;; ;;; The MINGW64-SHELL
-
-		    ;; (defun mingw64-shell () 
-		    ;;        (interactive)
-		    ;;        (let (( explicit-shell-file-name (convert-standard-filename  "c:/devel/msys64/mingw64/bin/bash.exe")))
-		    ;; 	 (shell "*bash*")
-		    ;; 	     (call-interactively 'shell)))
-#+END_SRC
-** Add shell extensions
-#+BEGIN_SRC emacs-lisp
-(use-package shx
-  :ensure t)
-#+END_SRC
-* Tramp                                                            
-[TBD] Review if this is correct after SSH has been reinstalled.
-** The default connection method is plink
-#+BEGIN_SRC emacs-lisp
-(require 'tramp)
-(setq tramp-default-method "plink")
-;(setq tramp-verbose 10)
-#+END_SRC
-** Remote shell to cisco
-#+BEGIN_SRC emacs-lisp
-(defun cisco-remote-shell ()
-  (interactive)
-  (let ((default-directory "/plink:osmc@192.168.1.43:~"))
-  (shell)))
-#+END_SRC
-* IDO                                              
-[TBD] Why do I need ido, What does it do for me?
-#+BEGIN_SRC emacs-lisp
-(require 'ido)
-(ido-mode t)
-#+END_SRC
-
-* Indent                                                            
- [TBD] Delete this.
-  - Leftover from  parsing experiment???
-#+BEGIN_SRC emacs-lisp
-(put 'if 'lisp-indent-function nil)
-(put 'when 'lisp-indent-function 1)
-(put 'unless 'lisp-indent-function 1)
-(put 'do 'lisp-indent-function 2)
-(put 'do* 'lisp-indent-function 2)
-#+END_SRC
-
-* Printing                                                          
-[TBD] Printing is broken remove this or fix this.
-#+BEGIN_SRC emacs-lisp :tangle no
-(setq printer-name "lpr://192.168.1.39")
 #+END_SRC
 
 * Ord Mode Customizations
