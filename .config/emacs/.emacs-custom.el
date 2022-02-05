@@ -14,9 +14,9 @@
  '(fci-rule-color "#383838")
  '(lpr-add-switches t)
  '(lpr-command "lpr.exe")
- '(lpr-headers-switches nil)
+ '(lpr-headers-switches nil t)
  '(package-selected-packages
-   '(shx friendly-remote-shell friendly-shell tramp magit dockerfile-mode docker-tramp anaconda-mode popup cyberpunk-theme ac-slime paredit rainbow-delimiters slime epc auto-complete flx-ido))
+   '(htmlize shx friendly-remote-shell friendly-shell tramp magit dockerfile-mode docker-tramp anaconda-mode popup cyberpunk-theme ac-slime paredit rainbow-delimiters slime epc auto-complete flx-ido))
  '(safe-local-variable-values '((org-use-property-inheritance . t))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
