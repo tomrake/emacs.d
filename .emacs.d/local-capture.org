@@ -35,10 +35,5 @@
        "|%^{Person|TOM|JOANNE}|%U|%^{Weight}|")
    ;; Shoppping Items
       ("s" "Shopping Request (s)" table-line (file+headline ,(concat org-gtd-dir "Shopping-Requests.org") "Requests")
-       "|%U|%^{Needed Item}|")
-
-
-       ))
+       "|%U|%^{Needed Item}|")))
  #+END_SRC
-
-   The FileHistory method of ba

@@ -3,6 +3,11 @@
 #+OPTIONS: num:nil ^:nil
 #+EXPORT-FILENAME: init.el
 #+INDEX: Emacs!Configuration
+* Report Debug START  :noexport:
+#+BEGIN_SRC emacs-lisp
+(message "Debug START")
+#+END_SRC
+
 * REVISIONS
   MSYS64 lisp launch has been removed.
   Use slime implementation (tag (commands) :env (environment vars)) with mingw start.
@@ -28,6 +33,7 @@
     This file .emacs.d/settings.org is ment to have common setup for all my use cases.
     Other files in .emacs.d/ are used for per user customization.
 *** Custom settings macro.
+    [TBD] Consider if this is org-mode specific.
     per load user .org settings
     This macro loads per user customizations.
 #+BEGIN_SRC emacs-lisp
@@ -332,14 +338,14 @@ These are settings from the Emacs Customization Mechanism.
 #+END_SRC
 
 * Setting up Aspell
-aspell configuration is in [[~/.aspell]]
+aspell configuration is in [[~/.aspell.conf]]
 The BEGIN tag was botched in the line below.
 [TBD] Test if the works or can be removed.
-#+BEGOM_SRC emacs-lisp
+\#+BEGOM_SRC emacs-lisp
   (setq  ispell-program-name "aspell")
   (setq  ispell-dictionary-alist '((master . en_US)))
   (require 'ispell)
-#+END_SRC
+\#+END_SRC
 * Generic arguments, paths and strings.
 #+BEGIN_SRC emacs-lisp
   (defun double-quote-string(s)
@@ -420,6 +426,8 @@ Need to consider using HELM here
 (ac-config-default)
 #+END_SRC
 
+* LISP Language
+  [TBD] Add SBCL CLISP slime and related stuff to this topic.
 * Provision Various Common LISPs
 #+INDEX: Common Lisp!Provisioning
 Universal Startup Code should be here.
@@ -550,7 +558,8 @@ I use my local clone of the Hyperspec
 	      auto-mode-alist))
 #+END_SRC
 
-* Emacs Theme                                                        :review:
+* Emacs Theme
+  [TBD] Raise this to before LISP and other language stuff.
 #+BEGIN_SRC emacs-lisp
 (load-theme 'manoj-dark)
 (set-face-attribute 'default nil :height 120)
@@ -570,7 +579,8 @@ I use my local clone of the Hyperspec
   ;; (setf rainbow-delimiters-depth-8-face ((t (:foreground "sienna1"))))
 #+END_SRC
 
-* Pascal Setup                                                       :review:
+* Pascal Setup
+  [TBD] I have no pascal compiler configured.
 #+BEGIN_SRC emacs-lisp
 (add-hook 'pascal-mode-hook
 	  (lambda ()
@@ -591,7 +601,8 @@ I use my local clone of the Hyperspec
 	      auto-mode-alist))
 #+END_SRC
 
-* Shells                                                             :review:
+* Shells
+  [TBD] Decide what is CRUFF here.
   I am attempting to use the friendly-shell infrastructure.
 
   shell/git-bash works but has prompt problems.
@@ -656,7 +667,8 @@ I use my local clone of the Hyperspec
 (use-package shx
   :ensure t)
 #+END_SRC
-* Tramp                                                              :review:
+* Tramp                                                            
+[TBD] Review if this is correct after SSH has been reinstalled.
 ** The default connection method is plink
 #+BEGIN_SRC emacs-lisp
 (require 'tramp)
@@ -668,15 +680,17 @@ I use my local clone of the Hyperspec
 (defun cisco-remote-shell ()
   (interactive)
   (let ((default-directory "/plink:osmc@192.168.1.43:~"))
-     (shell)))
+  (shell)))
 #+END_SRC
-* IDO                                                                :review:
+* IDO                                              
+[TBD] Why do I need ido, What does it do for me?
 #+BEGIN_SRC emacs-lisp
 (require 'ido)
 (ido-mode t)
 #+END_SRC
 
-* Indent                                                             :review:
+* Indent                                                            
+ [TBD] Delete this.
   - Leftover from  parsing experiment???
 #+BEGIN_SRC emacs-lisp
 (put 'if 'lisp-indent-function nil)
@@ -686,7 +700,8 @@ I use my local clone of the Hyperspec
 (put 'do* 'lisp-indent-function 2)
 #+END_SRC
 
-* Printing                                                           :review:
+* Printing                                                          
+[TBD] Printing is broken remove this or fix this.
 #+BEGIN_SRC emacs-lisp :tangle no
 (setq printer-name "lpr://192.168.1.39")
 #+END_SRC
@@ -703,15 +718,6 @@ All the newest stuff will be in ~/org/gtd/
 #+BEGIN_SRC emacs-lisp
 (setf org-gtd-dir (concat org-mode-base-dir "gtd/"))
 #+END_SRC
-** site-lisp  and org-checklist.el
-   - https://www.gnu.org/software/emacs/manual/html_node/elisp/Library-Search.html
-   - I want add org-checklist.el so I will add it to site-lisp
-   - "/usr/local/share/emacs/site-lisp" per manual where
-     - replace /usr/local with the installation prefix appropriate for your Emacs.
-     - Current value: file:\\C:\ProgramData\chocolatey\lib\Emacs\tools
-#+BEGIN_SRC emacs-lisp
-;;; org-checklist.el location is in <emacs-install>/share/emacs/site-lisp/
-#+END_SRC
 ** Org Key Binding
  #+BEGIN_SRC emacs-lisp
  ;;;; Org Mode key bindings.
@@ -722,6 +728,7 @@ All the newest stuff will be in ~/org/gtd/
  #+END_SRC
 
 ** Configure BABEL languages
+ [TBD] Do I really need to specify these at all?
  #+BEGIN_SRC emacs-lisp
  (org-babel-do-load-languages
   'org-babel-load-languages
@@ -730,11 +737,13 @@ All the newest stuff will be in ~/org/gtd/
  #+END_SRC
 
 ** org modules needed
+ [TBD] Do I need org-habit  here?
  #+BEGIN_SRC emacs-lisp
  (setq org-modules '(org-habit org-checklist))
  #+END_SRC
 
-** Configure habit (do not remember why)
+** org-habit
+ [TBD] Find out why I Should not delete this.
  #+BEGIN_SRC emacs-lisp
  (setq org-habit-graph-column 50)
  #+END_SRC
@@ -745,8 +754,9 @@ All the newest stuff will be in ~/org/gtd/
        '(("bugzilla" . "http://192.168.1.50/bugzilla/show_bug.cgi?id=")
 	 ("bugzilla-comp" . "http://192.168.1.50/bugzilla/describecomponents.cgi?product=")))
  #+END_SRC
-** Customize by Environemt
+** Customize by Environmemt
 *** customization macros
+[TBD] Should this macro be closer to the top of the file for reuse?
 #+BEGIN_SRC emacs-lisp
   ;;; Specify a emacs variable from an environment variable env-string or  base,new-path-string
   (defmacro default-or-environment (emacs-var base new-path-string env-string) 
@@ -756,6 +766,7 @@ All the newest stuff will be in ~/org/gtd/
 #+END_SRC
 
 *** Ensure there are standard user ~/org directories
+ [TBD] is this how I am configured now?
  How to define the standard HOME org directory.
  Under windows and linux this is ~/org.
  
@@ -773,6 +784,7 @@ All the newest stuff will be in ~/org/gtd/
   #+END_SRC
 
 *** Standard Notes file
+ [TBD] Is this still relavent?
  This is a standard per User notes file.
  Unser windows and linux this ~/org/notes/notes.org
   #+BEGIN_SRC emacs-lisp
@@ -781,8 +793,6 @@ All the newest stuff will be in ~/org/gtd/
   (default-or-environment org-notes-file org-user-dir "/nodes/notes.org" "ORG-NOTES-FILE")
   (setq org-default-notes-file org-notes-file)
   #+END_SRC
-
-
 
 ** Task agenda context
  - This starts an agenda context
@@ -793,13 +803,11 @@ All the newest stuff will be in ~/org/gtd/
   - The following may be defined with the above values
     
 ** Capture Templates
-Use local-caputre to customize org-capture.
+Use [[~/.emacs.d/local-capture.org]] to change the capture template.
  #+BEGIN_SRC emacs-lisp
  ;;;; Customize the agenda locally
  (local-custom-file "local-capture.org" "Customize org-capture")
  #+END_SRC
-
-   The FileHistory method of ba
 ** Refile configuration
  #+BEGIN_SRC emacs-lisp
  (setq org-refile-targets `( (,(concat org-gtd-dir "new-gtd.org") :maxlevel . 1)
@@ -813,15 +821,22 @@ Customize  this default by environment variable USER_REOPEN_FILES
  #+END_SRC
  
 ** Fix for cmdproxy
+Allow Windows CMD commands to be run from .org files.
 See https://emacs.stackexchange.com/questions/19037/org-babel-invoking-cmd-exe
+
+How to use, note "cmdproxy.exe" is a Windows Emacs file.
+#+BEGIN_EXAMPLE
+\#+BEGIN_SRC sh :shcmd "cmdproxy.exe"
+dir
+\#+END_SRC
+#+END_EXAMPLE
 #+BEGIN_SRC emacs-lisp
 (require 'ob-shell)
 (defadvice org-babel-sh-evaluate (around set-shell activate)
   "Add header argument :shcmd that determines the shell to be called."
   (defvar org-babel-sh-command)
   (let* ((org-babel-sh-command (or (cdr (assoc :shcmd params)) org-babel-sh-command)))
-    ad-do-it
-    ))
+    ad-do-it))
 #+END_SRC
 ** org-publish
 #+BEGIN_SRC emacs-lisp
@@ -845,3 +860,11 @@ See https://emacs.stackexchange.com/questions/19037/org-babel-invoking-cmd-exe
 (float-time (time-subtract *emacs-download* *emacs-load-start*)))
 #+END_SRC
 
+* Report Debug Mark :noexport:
+#+BEGIN_SRC emacs-lisp
+(message "Debug MARK")
+#+END_SRC
+* Report Debug End :noexport:
+#+BEGIN_SRC emacs-lisp
+(message "Debug END")
+#+END_SRC
