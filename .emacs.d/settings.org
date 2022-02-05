@@ -9,6 +9,7 @@
 #+END_SRC
 
 * REVISIONS
+  Agreegate all LISP language Stuff
   MSYS64 lisp launch has been removed.
   Use slime implementation (tag (commands) :env (environment vars)) with mingw start.
   The env bash sbcl launch sequence had problems.
@@ -421,14 +422,14 @@ Need to consider using HELM here
 
 * LISP Language
   [TBD] Add SBCL CLISP slime and related stuff to this topic.
-* Provision Various Common LISPs
-#+INDEX: Common Lisp!Provisioning
-Universal Startup Code should be here.
-** Provision standard SBCL
-#+BEGIN_SRC emacs-lisp
-   (defun standard-sbcl-options()
-     '("--noinform"))
-#+END_SRC
+** Provision Various Common LISPs
+ #+INDEX: Common Lisp!Provisioning
+ Universal Startup Code should be here.
+*** Provision standard SBCL
+ #+BEGIN_SRC emacs-lisp
+    (defun standard-sbcl-options()
+      '("--noinform"))
+ #+END_SRC
 *** RAW Binary
 **** Common
 #+BEGIN_SRC emacs-lisp
@@ -452,104 +453,105 @@ Universal Startup Code should be here.
 				
 
 #+END_SRC
-** Provision ABCL
- #+BEGIN_SRC emacs-lisp
- (defmacro provision-abcl()
-   `(when (and (file-exists-p  (convert-standard-filename "C:/Program Files/ABCL/abcl.jar")))
-	 `(abcl  ("java" "-jar" ,(convert-standard-filename "C:/Program Files/ABCL/abcl.jar")))))
- #+END_SRC
-** Provision CCL
-   #+BEGIN_SRC emacs-lisp
-     (defun provision-ccl ()
-       (let ((ccl "C:/Users/zzzap/quicklisp/local-projects/ccl/wx86cl64.exe"))
-         (when (file-exists-p ccl)
-           `(ccl-64 (,ccl)))))
-   #+END_SRC
+*** Provision ABCL
+  #+BEGIN_SRC emacs-lisp
+  (defmacro provision-abcl()
+    `(when (and (file-exists-p  (convert-standard-filename "C:/Program Files/ABCL/abcl.jar")))
+	  `(abcl  ("java" "-jar" ,(convert-standard-filename "C:/Program Files/ABCL/abcl.jar")))))
+  #+END_SRC
+*** Provision CCL
+    #+BEGIN_SRC emacs-lisp
+      (defun provision-ccl ()
+	(let ((ccl "C:/Users/zzzap/quicklisp/local-projects/ccl/wx86cl64.exe"))
+          (when (file-exists-p ccl)
+            `(ccl-64 (,ccl)))))
+    #+END_SRC
 
-** Provision CLISP
-*** On MSYS2
+*** Provision CLISP
+**** On MSYS2
 #+BEGIN_SRC emacs-lisp
   (defun provision-clisp-msys64 ()
     (when nil
     `(clisp-msys64 ())))
 #+END_SRC
-*** On CYGWIN when emacs running under cygwin
+**** On CYGWIN when emacs running under cygwin
 #+BEGIN_SRC emacs-lisp
   (defun provision-clisp-cygwin64()
     (when nil
     `(clisp-cygwin64 ())))
 #+END_SRC
-* SLIME
-#+INDEX: Common Lisp!Slime Provisioning
-** quicklisp-helper
-Load the quicklisp-helper file 
-#+INDEX: Common Lisp!quicklisp, slime helper
-#+INDEX: quicklisp!slime helper
-#+INDEX: Slime!quicklisp helper
-#+BEGIN_SRC emacs-lisp
-  ;;;; Build the implemenation lisp dynamically.
-  ;;;; Remove all nil items from the list.
-    ;;;; Load slime helper
-    (load (expand-file-name "~/quicklisp/slime-helper.el"))
-#+END_SRC
-** slime-lisp-implementations
-#+INDEX: Slime!LISP Implmentations
-#+BEGIN_SRC emacs-lisp
-    (setq slime-lisp-implementations
-	  (seq-filter (lambda (e) e)
-	    (list
-	      (sbcl-2-2-1)
-	      (sbcl-2-0-0)
-	      (provision-ccl)
-	      (provision-clisp-msys64)
-	      (provision-clisp-cygwin64))))
-	     ; (provision-abcl)
-#+END_SRC
+** SLIME
+   Slime is the inferface to LISP on emacs.
+ #+INDEX: Common Lisp!Slime Provisioning
+*** quicklisp-helper
+ Load the quicklisp-helper file 
+ #+INDEX: Common Lisp!quicklisp, slime helper
+ #+INDEX: quicklisp!slime helper
+ #+INDEX: Slime!quicklisp helper
+ #+BEGIN_SRC emacs-lisp
+   ;;;; Build the implemenation lisp dynamically.
+   ;;;; Remove all nil items from the list.
+     ;;;; Load slime helper
+     (load (expand-file-name "~/quicklisp/slime-helper.el"))
+ #+END_SRC
+*** slime-lisp-implementations
+ #+INDEX: Slime!LISP Implmentations
+ #+BEGIN_SRC emacs-lisp
+     (setq slime-lisp-implementations
+	   (seq-filter (lambda (e) e)
+	     (list
+	       (sbcl-2-2-1)
+	       (sbcl-2-0-0)
+	       (provision-ccl)
+	       (provision-clisp-msys64)
+	       (provision-clisp-cygwin64))))
+	      ; (provision-abcl)
+ #+END_SRC
 
-* Common Lisp HyperSpec
-I use my local clone of the Hyperspec
-#+BEGIN_SRC emacs-lisp
-(setq common-lisp-hyperspec-root (convert-standard-filename (getenv "HyperSpec")))
-#+END_SRC
+*** Common Lisp HyperSpec
+  I use my local clone of the Hyperspec
+  #+BEGIN_SRC emacs-lisp
+  (setq common-lisp-hyperspec-root (convert-standard-filename (getenv "HyperSpec")))
+  #+END_SRC
 
-* Option  for SLIME
-  Can I delete this?
-#+BEGIN_SRC emacs-lisp
-(setq slime-contribs '(slime-fancy))
-(global-set-key "\C-cs" 'slime-selector)
-#+END_SRC
+*** Option  for SLIME
+    Can I delete this?
+  #+BEGIN_SRC emacs-lisp
+  (setq slime-contribs '(slime-fancy))
+  (global-set-key "\C-cs" 'slime-selector)
+  #+END_SRC
 
-* Slime Autocomplete
-  [COMPLETE}
-#+BEGIN_SRC emacs-lisp
-(require 'ac-slime)
-(add-hook 'slime-mode-hook 'set-up-slime-ac)
-(add-hook 'slime-repl-mode-hook 'set-up-slime-ac)
-(eval-after-load "auto-complete"
-  '(add-to-list 'ac-modes 'slime-repl-mode))
-#+END_SRC
+*** Slime Autocomplete
+    [COMPLETE}
+  #+BEGIN_SRC emacs-lisp
+  (require 'ac-slime)
+  (add-hook 'slime-mode-hook 'set-up-slime-ac)
+  (add-hook 'slime-repl-mode-hook 'set-up-slime-ac)
+  (eval-after-load "auto-complete"
+    '(add-to-list 'ac-modes 'slime-repl-mode))
+  #+END_SRC
 
-* Paredit mode
-#+BEGIN_SRC emacs-lisp
-(add-hook 'lisp-mode-hook #'paredit-mode)
-#+END_SRC
+*** Paredit mode
+  #+BEGIN_SRC emacs-lisp
+  (add-hook 'lisp-mode-hook #'paredit-mode)
+  #+END_SRC
 
-* Auto complete mode for LISP
-  [COMPLETE]
-#+BEGIN_SRC emacs-lisp
-(add-hook 'lisp-mode-hook #'auto-complete-mode)
-#+END_SRC
+*** Auto complete mode for LISP
+    [COMPLETE]
+  #+BEGIN_SRC emacs-lisp
+  (add-hook 'lisp-mode-hook #'auto-complete-mode)
+  #+END_SRC
 
-* Enable lisp-mode .lisp and .asd files
-#+BEGIN_SRC emacs-lisp
-(setq auto-mode-alist
-      (append '((".*\\.asd\\'" . lisp-mode))
-	      auto-mode-alist))
+*** Enable lisp-mode .lisp and .asd files
+  #+BEGIN_SRC emacs-lisp
+  (setq auto-mode-alist
+	(append '((".*\\.asd\\'" . lisp-mode))
+		auto-mode-alist))
 
-(setq auto-mode-alist
-      (append '((".*\\.cl\\'" . lisp-mode))
-	      auto-mode-alist))
-#+END_SRC
+  (setq auto-mode-alist
+	(append '((".*\\.cl\\'" . lisp-mode))
+		auto-mode-alist))
+  #+END_SRC
 
 * Emacs Theme
   [TBD] Raise this to before LISP and other language stuff.
