@@ -114,9 +114,8 @@ Fix initial window position.
   (my/set-initial-frame)
   #+END_SRC
 
-* Package Archives distros                                           :review:
-Which online distros we use to get packages.
-Much of this is legacy code and needs review.
+* Package Archives distros                         
+Good for any emacs released since 2012
 #+BEGIN_SRC emacs-lisp
   (setq package-check-signature nil)
   (require 'package)
@@ -126,19 +125,13 @@ Much of this is legacy code and needs review.
 	       '("elpa" . "https://elpa.gnu.org/packages/") t)
   (add-to-list 'package-archives
 	       '("org" . "https://orgmode.org/elpa/"))
-  (when (< emacs-major-version 24)
-    ;; For important compatibility libraries like cl-lib
-    (add-to-list 'package-archives '("gnu" . "https://elpa.gnu.org/packages/")))
   (package-initialize)
 #+END_SRC
 * Load use-package
+  [TBD] Consider if this needs to be initialized
 #+BEGIN_SRC emacs-lisp
 (require 'use-package)
 #+END_SRC
-
-* Initialize uss-package
-  [TBD]
-
 * Download Timing
 This download timing mechanism is likely deprecated also.
 #+BEGIN_SRC emacs-lisp
