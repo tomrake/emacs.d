@@ -1,5 +1,8 @@
 #+STARTUP: overview
-#+EXPORT-FILENAME init.el
+#+TITLE: Emacs configuration
+#+OPTIONS: num:nil ^:nil
+#+EXPORT-FILENAME: init.el
+#+INDEX: Emacs!Configuration
 * REVISIONS
   MSYS64 lisp launch has been removed.
   Use slime implementation (tag (commands) :env (environment vars)) with mingw start.
@@ -354,53 +357,61 @@ The BEGIN tag was botched in the line below.
   (defun join-with-spaces (args)
      (mapconcat 'identity args " "))
 #+END_SRC
-* Cygwin Emulation
-  Partial Cygwin Emulation.
-  Needed for CLISP slime.
-#+BEGIN_SRC emacs-lisp
-  (setq +cygwin64-base-path+ "C:/cygwin64")
-  (defun cygwin64-file-exists-p (file)
-    (file-exists-p (concat +cygwin64-base-path+ file)))
-#+END_SRC
-* MSYS64 Emulation
-Emulate paths and mingw64 bash startuup.
-Mingw requires careful crafting of paths and emulation of mount points.
-Any LISP built under mingw64 has an assumed environment of the build.
+* External Subsytems
+  msys2 and cygwin have internal file system roots in Windows, those roots are defined here.
+** Subsytem Roots
+   Define where the roots of the file systems are located on Windows.
+*** Cygwin Root
+  #+BEGIN_SRC emacs-lisp
+	(setq +cygwin64-base-path+ "C:/cygwin64")
+  #+END_SRC
+*** msys2 root
+  #+BEGIN_SRC emacs-lisp
+    ;; Paths to msys2 file root
+    (let ((mingw64-root-mount "C:/devel/msys64")
+	  (mingw64-bin-mount "C:/devel/msys64/usr/bin"))
 
-#+BEGIN_SRC emacs-lisp
-  ;;; Add mingw path elements to exec path
-  (let ((mingw64-root-mount "C:/devel/msys64")
-	(mingw64-bin-mount "C:/devel/msys64/usr/bin"))
-
-  (add-to-list 'exec-path (concat mingw64-root-mount "/mingw64/bin"))
-  (add-to-list 'exec-path (concat mingw64-root-mount "/usr/local/bin"))
-  (add-to-list 'exec-path (concat mingw64-root-mount "/usr/bin"))
-  (add-to-list 'exec-path mingw64-bin-mount))
-  (setq +msys64-base-path+ "C:/devel/msys64/")
-
-  (defun msys64-file-exists-p (file)
-    (file-exists-p (concat +msys64-base-path+ file)))
-
-  (defun msys2-command (cmd params)
-     (join-with-spaces (cons (msys2-command-string cmd) params)))
-
-
-  (defun msys2-command-string (cmd)
-    (concat +msys64-base-path+ "usr/bin/" cmd ".exe"))
-#+END_SRC
-* Start a progrom under MSYS64/BASH
-  Constructs commands as a list of strings.
-  MSYS64 Specific.
-#+BEGIN_SRC emacs-lisp
-  (defun start-under-bash-login-shell (shell-task)
-  "Excute a msys2-command under a msys2-64 bash login shell"
-    (list (msys2-command-string "env")
-	  (double-quote-string "MSYSTEM=MINGW64")
-	  (msys2-command-string "bash")
-	  "-l"
-	  "-c"
-	  shell-task))
+    (add-to-list 'exec-path (concat mingw64-root-mount "/mingw64/bin"))
+    (add-to-list 'exec-path (concat mingw64-root-mount "/usr/local/bin"))
+    (add-to-list 'exec-path (concat mingw64-root-mount "/usr/bin"))
+    (add-to-list 'exec-path mingw64-bin-mount))
+    (setq +msys64-base-path+ "C:/devel/msys64/")
+  #+END_SRC
+** Subsystem emulators
+   Subsystem parts need to be emulated.
+*** Cygwin Emulator
+ #+BEGIN_SRC emacs-lisp
+       (defun cygwin64-file-exists-p (file)
+	 (file-exists-p (concat +cygwin64-base-path+ file)))
  #+END_SRC
+*** msys2 Emulator
+ #+BEGIN_SRC emacs-lisp
+   (defun msys64-file-exists-p (file)
+     (file-exists-p (concat +msys64-base-path+ file)))
+
+   (defun msys2-command (cmd params)
+      (join-with-spaces (cons (msys2-command-string cmd) params)))
+
+
+   (defun msys2-command-string (cmd)
+     (concat +msys64-base-path+ "usr/bin/" cmd ".exe"))
+ #+END_SRC
+** Tools implemanted for various subsystems
+*** Cygwin Tools
+    No tools for cygwin yet.
+*** msys2 Tools
+**** msys2/bash run
+     Start a command in a msys2 shell
+   #+BEGIN_SRC emacs-lisp
+     (defun start-under-bash-login-shell (shell-task)
+     "Excute a msys2-command under a msys2-64 bash login shell"
+       (list (msys2-command-string "env")
+	     (double-quote-string "MSYSTEM=MINGW64")
+	     (msys2-command-string "bash")
+	     "-l"
+	     "-c"
+	     shell-task))
+    #+END_SRC
 * Configure Autocomplete
   [COMPLETE]
 Need to consider using HELM here
@@ -410,6 +421,7 @@ Need to consider using HELM here
 #+END_SRC
 
 * Provision Various Common LISPs
+#+INDEX: Common Lisp!Provisioning
 Universal Startup Code should be here.
 ** Provision standard SBCL
 #+BEGIN_SRC emacs-lisp
@@ -427,6 +439,7 @@ Universal Startup Code should be here.
 	       env)))
 #+END_SRC
 **** Provision the LISPs
+#+INDEX: SBCL!Slime provisioning
 #+BEGIN_SRC emacs-lisp
       (defun sbcl-2-0-0 ()
 	(only-sbcl-p 'sbcl-2.0.0 "C:/devel/msys64/usr/local/sbcl-2.0.0/bin/sbcl.exe"
@@ -466,23 +479,21 @@ Universal Startup Code should be here.
     `(clisp-cygwin64 ())))
 #+END_SRC
 * SLIME
-  - On a new version of SBCL it is time for a review
-    - Modified the slime-lisp-implementation construction to use (list ..)
-    - Current Issue is that the sbcl startup needs correct SBCL_HOME set.
-      - Try to inject this at the bash env init phase.
-  - There are a number of defunct implemnations in this list:
-    - SBCL_2_0_@
-    - SBCL_2_0_0-bin
-    - Both clisp need review.
-  - Refactor
-    - each entry in the slime-lisp-implemenation should be:
-      - ,(provision-user-compiled-mingw)
-      - if that privision returns nil there is no entry.
+#+INDEX: Common Lisp!Slime Provisioning
+** quicklisp-helper
+Load the quicklisp-helper file 
+#+INDEX: Common Lisp!quicklisp, slime helper
+#+INDEX: quicklisp!slime helper
+#+INDEX: Slime!quicklisp helper
 #+BEGIN_SRC emacs-lisp
   ;;;; Build the implemenation lisp dynamically.
   ;;;; Remove all nil items from the list.
     ;;;; Load slime helper
     (load (expand-file-name "~/quicklisp/slime-helper.el"))
+#+END_SRC
+** slime-lisp-implementations
+#+INDEX: Slime!LISP Implmentations
+#+BEGIN_SRC emacs-lisp
     (setq slime-lisp-implementations
 	  (seq-filter (lambda (e) e)
 	    (list
@@ -681,6 +692,7 @@ I use my local clone of the Hyperspec
 #+END_SRC
 
 * Ord Mode Customizations
+#+INDEX: org-mode!main configuration
 The newest redesign of org mode gtd is to use a per user setup with no public shared data.
 All the newest stuff will be in ~/org/gtd/
 ** org mode location
