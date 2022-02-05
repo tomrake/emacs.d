@@ -1,5 +1,7 @@
-** Task agenda context
- - This starts an agenda context
+#+TITLE: Custom org-agenda
+#+OPTIONS: toc:nil num:nil ^:nil
+#+INDEX: org-agenda!customization
+** My customized org-agends
  #+BEGIN_SRC emacs-lisp
 	 (setq org-agenda-files (list (concat org-gtd-dir "new-gtd.org")))
 	 (setq org-agenda-skip-scheduled-if-done t)
@@ -41,5 +43,4 @@
 	      ))
        
  #+END_SRC
-  - The following may be defined with the above values
 

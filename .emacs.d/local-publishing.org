@@ -64,6 +64,17 @@
 	     :makeindex t
 	     :section-numbers nil
 	     :auto-preamble t)
+	    ("emacs-config"
+	     :base-directory "~/.emacs.d"
+	     :base-extension "org"
+	     :publishing-directory "c:/Users/Public/org-web/emacs-config"
+	     :recursive nil
+	     :publishing-function org-html-publish-to-html
+	     :headline-levels 9             ; Just the default for this project.
+	     :auto-sitemap t
+	     :makeindex t
+	     :section-numbers nil
+	     :auto-preamble t)
 	  ,@(publish-project "technical" "~org/org-web/source/technical" "c:/Users/Public/org-web/technical")
   ;	  ,@(publish-project "projects" "~/org/org-web/source/projects" "c:/Users/Public/org-web/projects")
   ;	  ,@(publish-project "hacking" "~/org/org-web/source/hacking" "c:/Users/Public/org-web/hacking")	

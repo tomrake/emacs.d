@@ -1,3 +1,7 @@
+#+TITLE: Emacs Org Capture Templates
+#+OPTIONS: num:nil toc:nil ^:nil
+#+INDEX: emacs-org!Capture Template
+#+INDEX: org-mode!Capture Template
 ** Capture Templates
  #+BEGIN_SRC emacs-lisp
    ;;; Define ord-gtd template directories
