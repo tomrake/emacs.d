@@ -8,7 +8,7 @@
 #+END_SRC
 
 * Emacs Housekeeping
-** Generated file  warning.
+** The generated file warning to init.el
 #+BEGIN_SRC emacs-lisp
   ;;;; NOTE: This file had been generated from ~/.emacs.d/settings.org
   ;;;; Emacs customization is done in ~/.emacs.d/settings.org
@@ -16,10 +16,22 @@
   ;;;; ~/.emacs.d/settings.org is created and updated by *tangle* of code blocks from  settings.org
 #+END_SRC
 
-** Custom settings macro.
-    [TBD] Consider if this is org-mode specific.
-    per load user .org settings
-    This macro loads per user customizations.
+** Start time
+  #+BEGIN_SRC emacs-lisp
+  ;; load time metrics
+  (setq  *emacs-load-start* (current-time))
+  #+END_SRC
+
+** The emacs customization file.
+ Define were emacs cusomization is saved and restored.
+ #+BEGIN_SRC emacs-lisp
+    ;;;; emacs customization file
+   (setq custom-file "~/.config/emacs/.emacs-custom.el")
+   (load custom-file)
+ #+END_SRC
+
+** Allow loading of a file from .emacs.d/
+ User custom setting from .emacs.d files.
 #+BEGIN_SRC emacs-lisp
   ;;;; Macro to load user customizations from .emacs.d
   (defmacro local-custom-file (file description)
@@ -33,27 +45,19 @@
 	   (message (concat "Custom file is missing " file-and-path))))))
 
 #+END_SRC
-
-** Debug On Error
-
-  Enable debugging.
-
+** Emacs debug-on-error
+   [TBD] Should this be set from an enviroment variable.
+   [TBD] Is there already a command line switch for this?
   #+BEGIN_SRC emacs-lisp
   ;(setq debug-on-error t)
   #+END_SRC
 
-** Load time metrics
-  Mark the begining time of execution of init.el so we can compare and report
-  at the end.
-  #+BEGIN_SRC emacs-lisp
-  ;; load time metrics
-  (setq  *emacs-load-start* (current-time))
-  #+END_SRC
-
 * To Be Done :noexport:
+  List of things to be done to this file
   - [ ] Review and cleanup Documenation
 
 * REVISIONS
+  Removed IDO and AC- code by :tangle no
   Document core emacs configuration tools.
   MSYS64 lisp launch has been removed.
   Use slime implementation (tag (commands) :env (environment vars)) with mingw start.
@@ -206,13 +210,6 @@ specify specific crossplatform functions and macros for path construction.
         (clipboard-kill-region (point-min) (point-max)))
       (message filename))))
 #+END_SRC
-* Save the emacs customization to a file.
-These are settings from the Emacs Customization Mechanism.
-#+BEGIN_SRC emacs-lisp
-(setq custom-file "~/.config/emacs/.emacs-custom.el")
-(load custom-file)
-#+END_SRC
-
 * Setting up Aspell
 aspell configuration is in [[~/.aspell.conf]]
 The BEGIN tag was botched in the line below.
@@ -377,6 +374,7 @@ The BEGIN tag was botched in the line below.
 		    ;; 	     (call-interactively 'shell)))
 #+END_SRC
 ** Add shell extensions
+[TBD] If this is org shell extenstion then put this in org-mode section.
 #+BEGIN_SRC emacs-lisp
 (use-package shx
   :ensure t)
@@ -397,8 +395,8 @@ The BEGIN tag was botched in the line below.
   (shell)))
 #+END_SRC
 * IDO                                              
-[TBD] Why do I need ido, What does it do for me?
-#+BEGIN_SRC emacs-lisp
+  IDO is an interactive DO framework. It is very minibuffer intensive.
+#+BEGIN_SRC emacs-lisp :tangle no
 (require 'ido)
 (ido-mode t)
 #+END_SRC
@@ -406,13 +404,15 @@ The BEGIN tag was botched in the line below.
 * Configure Autocomplete
   [COMPLETE]
 Need to consider using HELM here
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp :tangle no
 (require 'auto-complete-config)
 (ac-config-default)
 #+END_SRC
 
 * LISP Language
-  [TBD] Add SBCL CLISP slime and related stuff to this topic.
+  I have many versions of LISP to use under emacs slime.
+  I use quicklisp to download LISP packages.
+  [TBD] I use autocomplete for slime complettion, but am considering switching to helm.
 ** Provision Various Common LISPs
  #+INDEX: Common Lisp!Provisioning
  Universal Startup Code should be here.
@@ -499,12 +499,6 @@ Need to consider using HELM here
 	      ; (provision-abcl)
  #+END_SRC
 
-*** Common Lisp HyperSpec
-  I use my local clone of the Hyperspec
-  #+BEGIN_SRC emacs-lisp
-  (setq common-lisp-hyperspec-root (convert-standard-filename (getenv "HyperSpec")))
-  #+END_SRC
-
 *** Option  for SLIME
     Can I delete this?
   #+BEGIN_SRC emacs-lisp
@@ -512,19 +506,19 @@ Need to consider using HELM here
   (global-set-key "\C-cs" 'slime-selector)
   #+END_SRC
 
+*** Paredit mode
+  #+BEGIN_SRC emacs-lisp
+  (add-hook 'lisp-mode-hook #'paredit-mode)
+  #+END_SRC
+
 *** Slime Autocomplete
     [COMPLETE}
-  #+BEGIN_SRC emacs-lisp
+  #+BEGIN_SRC emacs-lisp :tangle no
   (require 'ac-slime)
   (add-hook 'slime-mode-hook 'set-up-slime-ac)
   (add-hook 'slime-repl-mode-hook 'set-up-slime-ac)
   (eval-after-load "auto-complete"
     '(add-to-list 'ac-modes 'slime-repl-mode))
-  #+END_SRC
-
-*** Paredit mode
-  #+BEGIN_SRC emacs-lisp
-  (add-hook 'lisp-mode-hook #'paredit-mode)
   #+END_SRC
 
 *** Auto complete mode for LISP
@@ -542,6 +536,12 @@ Need to consider using HELM here
   (setq auto-mode-alist
 	(append '((".*\\.cl\\'" . lisp-mode))
 		auto-mode-alist))
+  #+END_SRC
+
+*** Common Lisp HyperSpec
+  I use my local clone of the Hyperspec
+  #+BEGIN_SRC emacs-lisp
+  (setq common-lisp-hyperspec-root (convert-standard-filename (getenv "HyperSpec")))
   #+END_SRC
 
 * Pascal Setup
