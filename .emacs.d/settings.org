@@ -7,8 +7,54 @@
 (message "Debug START")
 #+END_SRC
 
+* Emacs Housekeeping
+** Generated file  warning.
+#+BEGIN_SRC emacs-lisp
+  ;;;; NOTE: This file had been generated from ~/.emacs.d/settings.org
+  ;;;; Emacs customization is done in ~/.emacs.d/settings.org
+  ;;;; ~/.emacs.d/init.el will load ~/.emacs.d/settings.el
+  ;;;; ~/.emacs.d/settings.org is created and updated by *tangle* of code blocks from  settings.org
+#+END_SRC
+
+** Custom settings macro.
+    [TBD] Consider if this is org-mode specific.
+    per load user .org settings
+    This macro loads per user customizations.
+#+BEGIN_SRC emacs-lisp
+  ;;;; Macro to load user customizations from .emacs.d
+  (defmacro local-custom-file (file description)
+    `(progn
+       (require 'org)
+       (message (concat "Looking for " ,description " file: " ,file ))
+       (let ((file-and-path (expand-file-name ,file user-emacs-directory)))
+	 (if (file-exists-p file-and-path)
+	     (progn (message (concat "org-babel-load of " file-and-path))
+		    (org-babel-load-file file-and-path))
+	   (message (concat "Custom file is missing " file-and-path))))))
+
+#+END_SRC
+
+** Debug On Error
+
+  Enable debugging.
+
+  #+BEGIN_SRC emacs-lisp
+  ;(setq debug-on-error t)
+  #+END_SRC
+
+** Load time metrics
+  Mark the begining time of execution of init.el so we can compare and report
+  at the end.
+  #+BEGIN_SRC emacs-lisp
+  ;; load time metrics
+  (setq  *emacs-load-start* (current-time))
+  #+END_SRC
+
+* To Be Done :noexport:
+  - [ ] Review and cleanup Documenation
+
 * REVISIONS
-  Move org mode utility code into org-mode area.
+  Document core emacs configuration tools.
   MSYS64 lisp launch has been removed.
   Use slime implementation (tag (commands) :env (environment vars)) with mingw start.
   The env bash sbcl launch sequence had problems.
@@ -16,87 +62,43 @@
 
   I marked [COMPLETE] where autocomplete or completion is configured.
   The concept is to try out helm.
-* README
-** Add Header Notes to settings.el
-#+BEGIN_SRC emacs-lisp
-  ;;;; NOTE: This file had been generated from ~/.emacs.d/settings.org
-  ;;;; Emacs customization is done in ~/.emacs.d/settings.org
-  ;;;; ~/.emacs.d/init.el will load ~/.emacs.d/settings.el
-  ;;;; ~/.emacs.d/settings.org is created and updated by *tangle* of code blocks from  settings.org
-#+END_SRC
-[[file:~/.emacs.d/init.el]]
-[[file:~/.emacs.d/settings.el]]
-[[file:~/.emacs.d/settings.org]]
-[[file:~/.emacs.d/README.org]]
-** Design Notes
-*** Emacs organization
-    This file .emacs.d/settings.org is ment to have common setup for all my use cases.
-    Other files in .emacs.d/ are used for per user customization.
-*** Custom settings macro.
-    [TBD] Consider if this is org-mode specific.
-    per load user .org settings
-    This macro loads per user customizations.
-#+BEGIN_SRC emacs-lisp
-  ;;;; Macro to load user customizations from .emacs.d
-	    (defmacro local-custom-file (file description)
-	      `(progn
-		 (require 'org)
-		 (message (concat "Looking for " ,description " file: " ,file ))
-		 (let ((file-and-path (expand-file-name ,file user-emacs-directory)))
-			 (if (file-exists-p file-and-path)
-			   (progn (message (concat "org-babel-load of " file-and-path))
-				(org-babel-load-file file-and-path))
-			   (message (concat "Custom file is missing " file-and-path))))))
-#+END_SRC
-
-**** TODO Review and fix column view data [/]
-     - [ ] Find recommened COLUMNS line
-     - [ ] Hunt down COLUMN items in :PROPERTIES: drawers.
-     - [ ] Fix Font size issue
-       - Column view screws up the font sizing.
-**** TODO  Consider capture mode to publishing notes perhaps publish the Journel
-     - How to handle a publishing a  date tree?
-     Current defects
-     - There is face style problems when agenda views go into column view mode.
-*** GTD organization - Review
-    I used an older GTD example that was developed before org-capture.
+* Documentation
+** A few Issues
+*** TODO Review and fix column view data [/]
+    - [ ] Find recommened COLUMNS line
+    - [ ] Hunt down COLUMN items in :PROPERTIES: drawers.
+    - [ ] Fix Font size issue
+      - Column view screws up the font sizing.
+*** TODO  Consider capture mode to publishing notes perhaps publish the Journel
+    - How to handle a publishing a  date tree?
     Current defects
-    - The custom agenda views need to be reconsidered for my taste
-    - I have been using tasks to write notes about my process
-      - org publication is now being used to document task acitivity
-	this should lead to removal of "documentation tasks"
-      - documenation task should be a capture item to be published.
-*** TODO Consider adding issue/error tracking in emacs [/]
-    - [ ] Reseach error issue tracking in org-mode/emacs
-    - [ ] Next create action plan or defer
+    - There is face style problems when agenda views go into column view mode.
+** README
+ [[file:~/.emacs.d/init.el]]
+ [[file:~/.emacs.d/settings.el]]
+ [[file:~/.emacs.d/settings.org]]
+ [[file:~/.emacs.d/README.org]]
+*** Design Notes
+**** Emacs organization
+     This file .emacs.d/settings.org is ment to have common setup for all my use cases.
+     Other files in .emacs.d/ are used for per user customization.
+**** GTD organization - Review
+     I used an older GTD example that was developed before org-capture.
+     Current defects
+     - The custom agenda views need to be reconsidered for my taste
+     - I have been using tasks to write notes about my process
+       - org publication is now being used to document task acitivity
+	 this should lead to removal of "documentation tasks"
+       - documenation task should be a capture item to be published.
+**** TODO Consider adding issue/error tracking in emacs [/]
+     - [ ] Reseach error issue tracking in org-mode/emacs
+     - [ ] Next create action plan or defer
 
 ** Standard coding setup
 *** emacs
 The source of Emacs startup code is largely controlled by .emacs/setting.org
 *** General
 All programming code is located in ~/quicklisp/local-projects/
-
-* Generated File Warning
-Add a warning to init.el that it is
-#+BEGIN_SRC emacs-lisp
-
-#+END_SRC
-
-* Debug On Error
-
-Enable debugging.
-
-#+BEGIN_SRC emacs-lisp
-;(setq debug-on-error t)
-#+END_SRC
-
-* Load time metrics
-Mark the begining time of execution of init.el so we can compare and report
-at the end.
-#+BEGIN_SRC emacs-lisp
-;; load time metrics
-(setq  *emacs-load-start* (current-time))
-#+END_SRC
 
 * Initial Frame Size
 Fix initial window position.
@@ -113,6 +115,20 @@ Fix initial window position.
   (setq frame-resize-pixelwise t)
   (my/set-initial-frame)
   #+END_SRC
+
+* Basic Look and feel
+I don't like the a messy startup screen.
+
+ #+BEGIN_SRC emacs-lisp
+   (setq inhibit-startup-screen t)
+   (setq visible-bell 1)
+   ;;(load-theme 'vs-dark-theme)
+
+ #+END_SRC
+* Fix Windows 10 cursor problem
+ #+BEGIN_SRC emacs-lisp
+ (setq w32-use-visible-system-caret nil)
+ #+END_SRC
 
 * Package Archives distros                         
 Good for any emacs released since 2012
@@ -138,15 +154,6 @@ This download timing mechanism is likely deprecated also.
 (setq *emacs-download* (current-time))
 #+END_SRC
 
-* Basic Look and feel
-I don't like the a messy startup screen.
-
- #+BEGIN_SRC emacs-lisp
-   (setq inhibit-startup-screen t)
-   (setq visible-bell 1)
-   ;;(load-theme 'vs-dark-theme)
-
- #+END_SRC
 * Magit
 #+BEGIN_SRC emacs-lisp
 (global-set-key (kbd "C-x g") 'magit-status)
@@ -172,11 +179,6 @@ I don't like the a messy startup screen.
     ;; If using org-roam-protocol
     (require 'org-roam-protocol))
 #+END_SRC
-
-* Fix Windows 10 cursor problem
- #+BEGIN_SRC emacs-lisp
- (setq w32-use-visible-system-caret nil)
- #+END_SRC
 
 * Crossplatform filename
 Attempt specifiy filepaths in a cross platform way.
