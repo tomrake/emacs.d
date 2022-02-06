@@ -57,6 +57,7 @@
   - [ ] Review and cleanup Documenation
 
 * REVISIONS
+  Removing  IDO AC- code
   Removed IDO and AC- code by :tangle no
   Document core emacs configuration tools.
   MSYS64 lisp launch has been removed.
@@ -394,21 +395,6 @@ The BEGIN tag was botched in the line below.
   (let ((default-directory "/plink:osmc@192.168.1.43:~"))
   (shell)))
 #+END_SRC
-* IDO                                              
-  IDO is an interactive DO framework. It is very minibuffer intensive.
-#+BEGIN_SRC emacs-lisp :tangle no
-(require 'ido)
-(ido-mode t)
-#+END_SRC
-
-* Configure Autocomplete
-  [COMPLETE]
-Need to consider using HELM here
-#+BEGIN_SRC emacs-lisp :tangle no
-(require 'auto-complete-config)
-(ac-config-default)
-#+END_SRC
-
 * LISP Language
   I have many versions of LISP to use under emacs slime.
   I use quicklisp to download LISP packages.
@@ -509,22 +495,6 @@ Need to consider using HELM here
 *** Paredit mode
   #+BEGIN_SRC emacs-lisp
   (add-hook 'lisp-mode-hook #'paredit-mode)
-  #+END_SRC
-
-*** Slime Autocomplete
-    [COMPLETE}
-  #+BEGIN_SRC emacs-lisp :tangle no
-  (require 'ac-slime)
-  (add-hook 'slime-mode-hook 'set-up-slime-ac)
-  (add-hook 'slime-repl-mode-hook 'set-up-slime-ac)
-  (eval-after-load "auto-complete"
-    '(add-to-list 'ac-modes 'slime-repl-mode))
-  #+END_SRC
-
-*** Auto complete mode for LISP
-    [COMPLETE]
-  #+BEGIN_SRC emacs-lisp
-  (add-hook 'lisp-mode-hook #'auto-complete-mode)
   #+END_SRC
 
 *** Enable lisp-mode .lisp and .asd files
