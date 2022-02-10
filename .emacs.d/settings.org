@@ -153,6 +153,12 @@ Good for any emacs released since 2012
 #+BEGIN_SRC emacs-lisp
 (require 'use-package)
 #+END_SRC
+* Company
+#+BEGIN_SRC emacs-lisp
+  (use-package company
+  :config
+   (add-hook 'after-init-hook 'global-company-mode))
+#+END_SRC
 * Download Timing
 This download timing mechanism is likely deprecated also.
 #+BEGIN_SRC emacs-lisp
@@ -161,8 +167,14 @@ This download timing mechanism is likely deprecated also.
 
 * Magit
 #+BEGIN_SRC emacs-lisp
-(global-set-key (kbd "C-x g") 'magit-status)
-#+END_SRC
+(use-package magit
+  :defer 2
+  :ensure t
+  :pin melpa
+  :bind
+  (("C-x g" . magit-status)
+   ("C-x M-d" . magit-dispatch-popup)))
+ #+END_SRC
 * org-roam
   I am setting up org-roam
 #+BEGIN_SRC emacs-lisp

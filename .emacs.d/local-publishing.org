@@ -17,9 +17,9 @@
 	    (,webdir% ,webdir)
 	    (,notes-part% (concat ,name% "-notes"))
 	    (,static-part% (concat ,name% "-static")))
-	    (message "name: %s" ,name%)
-	    (message "notes-part %s" ,notes-part%)
-	    (message "static-part %s" ,static-part%)
+	    ;(message "name: %s" ,name%)
+	    ;(message "notes-part %s" ,notes-part%)
+	    ;(message "static-part %s" ,static-part%)
 	    (list `(,,notes-part%
 	     :base-directory ,,srcdir%
 	     :base-extension "org"
