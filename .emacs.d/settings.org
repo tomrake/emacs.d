@@ -55,13 +55,15 @@
 * To Be Done :noexport:
   List of things to be done to this file
   - [ ] Review and cleanup Documenation
-
+  - [ ] Revert unchanged buffers and direds
 * REVISIONS
+  Add Revert buffer section.
+  IDO has been reinstalled
   Removing  IDO AC- code
   Removed IDO and AC- code by :tangle no
   Document core emacs configuration tools.
   MSYS64 lisp launch has been removed.
-  Use slime implementation (tag (commands) :env (environment vars)) with mingw start.
+  Use slime implementation nged (commands) :env (environment vars)) with mingw start.
   The env bash sbcl launch sequence had problems.
   To run as emacs inferior there is no need for a shell.
 
@@ -152,6 +154,20 @@ Good for any emacs released since 2012
   [TBD] Consider if this needs to be initialized
 #+BEGIN_SRC emacs-lisp
 (require 'use-package)
+#+END_SRC
+* Buffer Auto reverting
+#+BEGIN_SRC emacs-lisp
+  ;; auto revert mode
+  (global-auto-revert-mode 1)
+
+  ;; dired auto revert
+  (setf global-auto-revert-non-file-buffers t)
+#+END_SRC
+* IDO
+#+BEGIN_SRC emacs-lisp
+(use-package  ido
+    :config
+  (ido-mode t))
 #+END_SRC
 * Company
 #+BEGIN_SRC emacs-lisp
