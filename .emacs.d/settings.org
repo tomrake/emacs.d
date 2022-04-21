@@ -815,11 +815,14 @@ Customize  this default by environment variable USER_REOPEN_FILES
  (find-file (concat org-gtd-dir "new-gtd.org"))
  #+END_SRC
  
-** Fix for cmdproxy
+** org mode add :shcmd to sh blocks
+Using :shcmd "cmdproxy.exe" on Windows uses the emacs version of cmd.
+Using :shcmd   msys2-base / "bin/bash.exe" will run a shell under msys2 bash.
 Allow Windows CMD commands to be run from .org files.
+
 See https://emacs.stackexchange.com/questions/19037/org-babel-invoking-cmd-exe
 
-How to use, note "cmdproxy.exe" is a Windows Emacs file.
+Example how to use, note "cmdproxy.exe" is a Windows Emacs file.
 #+BEGIN_EXAMPLE
 \#+BEGIN_SRC sh :shcmd "cmdproxy.exe"
 dir
