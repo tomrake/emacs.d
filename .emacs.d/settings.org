@@ -137,7 +137,8 @@ I don't like the a messy startup screen.
  (setq w32-use-visible-system-caret nil)
  #+END_SRC
 
-* Package Archives distros                         
+* Package Arc
+hives distros
 Good for any emacs released since 2012
 #+BEGIN_SRC emacs-lisp
   (setq package-check-signature nil)
@@ -146,8 +147,9 @@ Good for any emacs released since 2012
 	       '("melpa" . "https://melpa.org/packages/") t)
   (add-to-list 'package-archives
 	       '("elpa" . "https://elpa.gnu.org/packages/") t)
-  (add-to-list 'package-archives
-	       '("org" . "https://orgmode.org/elpa/"))
+  ;; (add-to-list 'package-archives
+  ;; 	     '("org" . "https://orgmode.org/elpa/") t)
+
   (package-initialize)
 #+END_SRC
 * Load use-package
@@ -778,6 +780,15 @@ All the newest stuff will be in ~/org/gtd/
   (setq org-default-notes-file org-notes-file)
   #+END_SRC
 
+** org TODO 
+#+BEGIN_SRC emacs-lisp
+(setq org-todo-keyword-faces '(("TODO" . "red")
+			       ("STARTED" ."yellow")
+                               ("IN-PROGRESS" . "yellow")
+			       ("FIND"."yellow") 
+			       ("CANCELLED"."green")
+			       ("DONE" . "green")));
+#+END_SRC
 ** Task agenda context
  - This starts an agenda context
  #+BEGIN_SRC emacs-lisp
