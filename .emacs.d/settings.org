@@ -780,7 +780,7 @@ All the newest stuff will be in ~/org/gtd/
   (setq org-default-notes-file org-notes-file)
   #+END_SRC
 
-** org TODO 
+** org TODO Colors
 #+BEGIN_SRC emacs-lisp
 (setq org-todo-keyword-faces '(("TODO" . "red")
 			       ("STARTED" ."yellow")
@@ -806,7 +806,8 @@ Use [[~/.emacs.d/local-capture.org]] to change the capture template.
 ** Refile configuration
  #+BEGIN_SRC emacs-lisp
  (setq org-refile-targets `( (,(concat org-gtd-dir "new-gtd.org") :maxlevel . 1)
-                             (,(concat org-gtd-dir "Someday.org") :maxlevel . 2)))
+                             (,(concat org-gtd-dir "Someday.org") :maxlevel . 2)
+                             (,(concat org-gtd-dir "Tickler.org") :maxlevel . 1)))
  #+END_SRC
 
 ** Always present the new-gtd.org file

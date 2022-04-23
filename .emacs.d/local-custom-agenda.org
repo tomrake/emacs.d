@@ -3,44 +3,64 @@
 #+INDEX: org-agenda!customization
 ** My customized org-agends
  #+BEGIN_SRC emacs-lisp
-	 (setq org-agenda-files (list (concat org-gtd-dir "new-gtd.org")))
-	 (setq org-agenda-skip-scheduled-if-done t)
-	 (setq org-agenda-todo-list-sublevels t)
-	 ;;; Define Custom Agenda views
-	 (setq org-agenda-custom-commands
-	   `(("H" "All Contexts"
-	       ((agenda)
-		(tags-todo "ATTIC")
-		(tags-todo "HOME")
-		(tags-todo "COMPUTER")
-		(tags-todo "MOBILE")
-		(tags-todo "OUTDOOR")
-		(tags-todo "PROJECT")
-		(tags-todo "FINANCIAL")))
-	     ("D" "Daily Action List"
-	       ((agenda "" ((org-agenda-ndays 1)
-			    (org-agenda-sorting-strategy
-			      `((agenda time-up priority-down tag-up)))
-			    (org-deadline-waring-days 0)))))
-	     ("g" . "GTD contexts")
-	      ("ga" "Attic" tags-todo "ATTIC")
-	      ("gh" "Home" tags-todo "HOME")
-	      ("gc" "Computer" tags-todo "COMPUTER")
-	      ("gm" "Mobile" tag-toto "MOBILE")
-	      ("go" "Outdoor" tag-toto "OUTDOOR")
-	      ("gp" "Projects" tags-todo "PROJECTS")
-	      ("gf" "Financial" tags-todo "FINANCIAL")
+	(setq org-agenda-files (list (concat org-gtd-dir "new-gtd.org")
+				     (concat org-gtd-dir "Tickler.org")
+				     (concat org-gtd-dir "Inbox.org")))
+	(setq org-agenda-skip-scheduled-if-done t)
+	(setq org-agenda-todo-list-sublevels t)
 
-	     ("p" . "Priorities")
-	      ("pa" "A items" tags-todo "+PRIORITY=\"A\"")
-	      ("pb" "B items" tags-todo "+PRIORITY=\"B\"")
-	      ("pc" "C items" tags-todo "+PRIORITY=\"C\"")
-             ("y" agenda*)
-             ("c" "Weekly schedule" agenda ""
-                ((org-agenda-span 7)           ;; agenda will start in week view
-                 (org-agenda-repeating-timestamp-show-all t)   ;; ensures that repeating events appear on all relevant dates
-                 (org-agenda-skip-function '(org-agenda-skip-entry-if 'deadline 'scheduled))))  
-	      ))
-       
+   ;;;; The following two defuns are from Nicolas Petton
+   ;;;; from https://emacs.cafe/emacs/orgmode/gtd/2017/06/30/orgmode-gtd.html
+    (defun my-org-agenda-skip-all-siblings-but-first ()
+       "Skip all but the first non-done entry."
+       (let (should-skip-entry)
+	 (unless (org-current-is-todo)
+	   (setq should-skip-entry t))
+	 (save-excursion
+	   (while (and (not should-skip-entry) (org-goto-sibling t))
+	     (when (org-current-is-todo)
+	       (setq should-skip-entry t))))
+	 (when should-skip-entry
+	   (or (outline-next-heading)
+	       (goto-char (point-max))))))
+
+     (defun org-current-is-todo ()
+       (string= "TODO" (org-get-todo-state)))
+	;;; Define Custom Agenda views
+	(setq org-agenda-custom-commands
+	  `(("H" "All Contexts"
+	      ((agenda)
+	       (tags-todo "ATTIC")
+	       (tags-todo "HOME")
+	       (tags-todo "COMPUTER")
+	       (tags-todo "MOBILE")
+	       (tags-todo "OUTDOOR")
+	       (tags-todo "PROJECT")
+	       (tags-todo "FINANCIAL")))
+	    ("D" "Daily Action List"
+	      ((agenda "" ((org-agenda-ndays 1)
+			   (org-agenda-sorting-strategy
+			     `((agenda time-up priority-down tag-up)))
+			   (org-deadline-waring-days 0)))))
+	    ("g" . "GTD contexts")
+	     ("ga" "Attic" tags-todo "ATTIC")
+	     ("gh" "Home" tags-todo "HOME")
+	     ("gc" "Computer" tags-todo "COMPUTER")
+	     ("gm" "Mobile" tag-toto "MOBILE")
+	     ("go" "Outdoor" tag-toto "OUTDOOR")
+	     ("gp" "Projects" tags-todo "PROJECTS")
+	     ("gf" "Financial" tags-todo "FINANCIAL")
+
+	    ("p" . "Priorities")
+	     ("pa" "A items" tags-todo "+PRIORITY=\"A\"")
+	     ("pb" "B items" tags-todo "+PRIORITY=\"B\"")
+	     ("pc" "C items" tags-todo "+PRIORITY=\"C\"")
+	    ("y" agenda*)
+	    ("c" "Weekly schedule" agenda ""
+	       ((org-agenda-span 7)           ;; agenda will start in week view
+		(org-agenda-repeating-timestamp-show-all t)   ;; ensures that repeating events appear on all relevant dates
+		(org-agenda-skip-function '(org-agenda-skip-entry-if 'deadline 'scheduled))))  
+	     ))
+
  #+END_SRC
 

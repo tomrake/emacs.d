@@ -11,16 +11,19 @@
    (setq org-capture-templates
     `(
    ;; Todo
-      ("t" "Todo" entry (file+headline ,(concat org-gtd-dir "new-gtd.org") "Tasks")
+      ("t" "Inbox Entry" entry (file+headline ,(concat org-gtd-dir "Inbox.org") "Tasks")
+       "* TODO %^{Brief Description} %^g\n  OPENED: %U")
+   ;; Tickler
+      ("T" "Tickler Entry" entry (file+headline ,(concat org-gtd-dir "Tickler.org") "TICKLERSXS")
        "* TODO %^{Brief Description} %^g\n  OPENED: %U")
    ;; Journal Capture
       ("j" "Journal" entry (file+datetree ,(concat org-gtd-dir "Journal.org") )
 	 "* %?\nEntered on %U\n  %i\n  %a")
    ;; Medical Appointments  (m) Medical template
       ("m" "Medical Appointments")
-      ("mo" "(o) Office Appointent" entry (file+headline ,(concat org-gtd-dir "new-gtd.org") "Medical Appointments")
+      ("mo" "(o) Office Appointent" entry (file+headline ,(concat org-gtd-dir "Tickler.org") "TICKLERS")
        (file ,(concat gtd-template-dir "Office-Appointment.txt")) :empty-lines 1 :time-prompt t)
-      ("mt" "(t) Testing Appointent" entry (file+headline ,(concat org-gtd-dir "new-gtd.org") "Medical Appointments")
+      ("mt" "(t) Testing Appointent" entry (file+headline ,(concat org-gtd-dir "Tickler.org") "TICKLERS")
        (file ,(concat gtd-template-dir "Testing-Appointment.txt")) :empty-lines 1 :time-prompt t)
    ;; Health Data Capture
       ("h" "Health Data Capture (h)")
