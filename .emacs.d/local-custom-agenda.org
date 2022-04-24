@@ -30,10 +30,10 @@
 	(setq org-agenda-custom-commands
 	  `(("H" "All Contexts"
 	      ((agenda)
+	       (tags-todo "CAR")
 	       (tags-todo "ATTIC")
 	       (tags-todo "HOME")
 	       (tags-todo "COMPUTER")
-	       (tags-todo "MOBILE")
 	       (tags-todo "OUTDOOR")
 	       (tags-todo "PROJECT")
 	       (tags-todo "FINANCIAL")))
@@ -46,7 +46,6 @@
 	     ("ga" "Attic" tags-todo "ATTIC")
 	     ("gh" "Home" tags-todo "HOME")
 	     ("gc" "Computer" tags-todo "COMPUTER")
-	     ("gm" "Mobile" tag-toto "MOBILE")
 	     ("go" "Outdoor" tag-toto "OUTDOOR")
 	     ("gp" "Projects" tags-todo "PROJECTS")
 	     ("gf" "Financial" tags-todo "FINANCIAL")
