@@ -14,7 +14,7 @@
       ("t" "Inbox Entry" entry (file+headline ,(concat org-gtd-dir "Inbox.org") "Tasks")
        "* TODO %^{Brief Description} %^g\n  OPENED: %U")
    ;; Tickler
-      ("T" "Tickler Entry" entry (file+headline ,(concat org-gtd-dir "Tickler.org") "TICKLERSXS")
+      ("T" "Tickler Entry" entry (file+headline ,(concat org-gtd-dir "Tickler.org") "TICKLERS")
        "* TODO %^{Brief Description} %^g\n  OPENED: %U")
    ;; Journal Capture
       ("j" "Journal" entry (file+datetree ,(concat org-gtd-dir "Journal.org") )
