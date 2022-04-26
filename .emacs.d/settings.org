@@ -803,10 +803,10 @@ Use [[~/.emacs.d/local-capture.org]] to change the capture template.
  ;;;; Customize the agenda locally
  (local-custom-file "local-capture.org" "Customize org-capture")
  #+END_SRC
-** Always present the new-gtd.org file
+** Always present the gtd.org file
 Customize  this default by environment variable USER_REOPEN_FILES
  #+BEGIN_SRC emacs-lisp
- (find-file (concat org-gtd-dir "new-gtd.org"))
+ (find-file (concat org-gtd-dir "gtd.org"))
  #+END_SRC
  
 ** org mode add :shcmd to sh blocks

@@ -3,7 +3,7 @@
 #+INDEX: org-agenda!customization
 ** Refile configuration
  #+BEGIN_SRC emacs-lisp
- (setq org-refile-targets `( (,(concat org-gtd-dir "new-gtd.org") :maxlevel . 2)
+ (setq org-refile-targets `( (,(concat org-gtd-dir "gtd.org") :maxlevel . 2)
                              (,(concat org-gtd-dir "Someday.org") :maxlevel . 2)
                              (,(concat org-gtd-dir "Tickler.org") :maxlevel . 1)))
  #+END_SRC
@@ -12,10 +12,10 @@
 
 
  #+BEGIN_SRC emacs-lisp
-		   (setq org-agenda-files (list (concat org-gtd-dir "new-gtd.org")
+		   (setq org-agenda-files (list (concat org-gtd-dir "gtd.org")
 						(concat org-gtd-dir "Tickler.org")
 						(concat org-gtd-dir "Inbox.org")))
-		   (setq current-agenda-files (list (concat org-gtd-dir "new-gtd.org")
+		   (setq current-agenda-files (list (concat org-gtd-dir "gtd.org")
 						    (concat org-gtd-dir "Inbox.org")))
 		   (setq full-agenda-files (cons (concat org-gtd-dir "Someday.org") org-agenda-files))
 		   (setq org-agenda-skip-scheduled-if-done t)
