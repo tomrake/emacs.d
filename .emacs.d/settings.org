@@ -803,13 +803,6 @@ Use [[~/.emacs.d/local-capture.org]] to change the capture template.
  ;;;; Customize the agenda locally
  (local-custom-file "local-capture.org" "Customize org-capture")
  #+END_SRC
-** Refile configuration
- #+BEGIN_SRC emacs-lisp
- (setq org-refile-targets `( (,(concat org-gtd-dir "new-gtd.org") :maxlevel . 1)
-                             (,(concat org-gtd-dir "Someday.org") :maxlevel . 2)
-                             (,(concat org-gtd-dir "Tickler.org") :maxlevel . 1)))
- #+END_SRC
-
 ** Always present the new-gtd.org file
 Customize  this default by environment variable USER_REOPEN_FILES
  #+BEGIN_SRC emacs-lisp
