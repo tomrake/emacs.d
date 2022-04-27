@@ -65,7 +65,7 @@
 		  ((org-deadline-warning-days 7)))
 	  (todo)))
 	("Da" "A Scheduled Project task"
-	 ((agenda "" ((org-agenda-files current-agenda-files)
+	 ((agenda "" ((org-agenda-files org-agenda-files)
 		      (org-agenda-ndays 1)
 		      (org-agenda-sorting-strategy
 		       `((agenda time-up priority-down tag-up)))
