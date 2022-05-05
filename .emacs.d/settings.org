@@ -107,6 +107,11 @@ The source of Emacs startup code is largely controlled by .emacs/setting.org
 *** General
 All programming code is located in ~/quicklisp/local-projects/
 
+* org-protocol
+#+BEGIN_SRC emacs-lisp
+  (server-start)
+  (require 'org-protocol)
+#+END_SRC
 * Initial Frame Size
 Fix initial window position.
   #+BEGIN_SRC emacs-lisp
@@ -577,9 +582,27 @@ The BEGIN tag was botched in the line below.
 #+INDEX: org-mode!main configuration
 The newest redesign of org mode gtd is to use a per user setup with no public shared data.
 All the newest stuff will be in ~/org/gtd/
-** Create permanent links for each heading in an org file.
+** killing frame for org-protcol capture
+#+BEGIN_SRC emacs-lisp
+  ;; Kill the frame if one was created for the capture
+  (defvar kk/delete-frame-after-capture 0 "Whether to delete the last frame after the current capture")
+
+  (defun kk/delete-frame-if-neccessary (&rest r)
+    (cond
+     ((= kk/delete-frame-after-capture 0) nil)
+     ((> kk/delete-frame-after-capture 1)
+      (setq kk/delete-frame-after-capture (- kk/delete-frame-after-capture 1)))
+     (t
+      (setq kk/delete-frame-after-capture 0)
+      (delete-frame))))
+
+  (advice-add 'org-capture-finalize :after 'kk/delete-frame-if-neccessary)
+  (advice-add 'org-capture-kill :after 'kk/delete-frame-if-neccessary)
+  (advice-add 'org-capture-refile :after 'kk/delete-frame-if-neccessary)
+#+END_SRC
+** Create permanent links for each heading in an org file.  
    Create CUSTOM_ID for each heading bases on a uniqure random sequence.
- #+BEGIN_SRC emacs-lisp
+ #+BEGIN_SRC emacs-lisp  :tangle no :noexport:
 	     (require 'org-id)
 	     (setq org-id-link-to-org-use-id 'create-if-interactive-and-no-custom-id)
 
@@ -780,12 +803,15 @@ All the newest stuff will be in ~/org/gtd/
   (setq org-default-notes-file org-notes-file)
   #+END_SRC
 
-** org TODO Colors
+** org TODOs types
+#+BEGIN_SRC emacs-lisp
+(setq org-todo-keywords '((sequence "TODO(t)" "WAITING(w)" "BLOCKED(b)" "|" "DONE(d)" "CANCELLED(c)")))
+#+END_SRC
+** org TODO colors
 #+BEGIN_SRC emacs-lisp
 (setq org-todo-keyword-faces '(("TODO" . "red")
-			       ("STARTED" ."yellow")
-                               ("IN-PROGRESS" . "yellow")
-			       ("FIND"."yellow") 
+			       ("WAITING" ."yellow1")
+                               ("BLOCKED" . "orange1")
 			       ("CANCELLED"."green")
 			       ("DONE" . "green")));
 #+END_SRC

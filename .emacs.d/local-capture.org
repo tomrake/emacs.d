@@ -4,39 +4,53 @@
 #+INDEX: org-mode!Capture Template
 ** Capture Templates
  #+BEGIN_SRC emacs-lisp
-   ;;; Define ord-gtd template directories
-    (default-or-environment gtd-template-dir org-gtd-dir "/template/" "ORG-TEMPLATE-DIR")
+     ;;;
+     (defun transform-square-brackets-to-round-ones(string-to-transform)
+    "Transforms [ into ( and ] into ), other chars left unchanged."
+    (concat 
+    (mapcar #'(lambda (c) (if (equal c ?\[) ?\( (if (equal c ?\]) ?\) c))) string-to-transform)))
 
-   ;; ;;; See: http://cachestocaches.com/2016/9/my-workflow-org-agenda/
-   (setq org-capture-templates
-    `(
-   ;; Todo
-      ("t" "Inbox Entry" entry (file+headline ,(concat org-gtd-dir "Inbox.org") "Tasks")
-       "* TODO %^{Brief Description} %^g\n  OPENED: %U")
-   ;; Tickler
-      ("T" "Tickler Entry" entry (file+headline ,(concat org-gtd-dir "Tickler.org") "TICKLERS")
-       "* TODO %^{Brief Description} %^g\n  OPENED: %U")
-   ;; Journal Capture
-      ("j" "Journal" entry (file+datetree ,(concat org-gtd-dir "Journal.org") )
-	 "* %?\nEntered on %U\n  %i\n  %a")
-   ;; Medical Appointments  (m) Medical template
-      ("m" "Medical Appointments")
-      ("mo" "(o) Office Appointent" entry (file+headline ,(concat org-gtd-dir "Tickler.org") "TICKLERS")
-       (file ,(concat gtd-template-dir "Office-Appointment.txt")) :empty-lines 1 :time-prompt t)
-      ("mt" "(t) Testing Appointent" entry (file+headline ,(concat org-gtd-dir "Tickler.org") "TICKLERS")
-       (file ,(concat gtd-template-dir "Testing-Appointment.txt")) :empty-lines 1 :time-prompt t)
-   ;; Health Data Capture
-      ("h" "Health Data Capture (h)")
+     ;;; Define ord-gtd template directories
+      (default-or-environment gtd-template-dir org-gtd-dir "/template/" "ORG-TEMPLATE-DIR")
 
-      ("hb" "Blood Pressure (b)" table-line (file+headline ,(concat org-gtd-dir "Medical-Data.org") "Blood Pressure")
-	"|%^{Person|TOM|JOANNE}|%U|%^{Systtolic}|%^{Diastolic}|%^{Pulse}|")
+     ;; ;;; See: http://cachestocaches.com/2016/9/my-workflow-org-agenda/
+     (setq org-capture-templates
+      `(
+     ;; Todo
+	("t" "Inbox Entry" entry (file+headline ,(concat org-gtd-dir "Inbox.org") "Tasks")
+	 "* TODO %^{Brief Description} %^g\n  OPENED: %U")
+     ;; Tickler
+	("T" "Tickler Entry" entry (file+headline ,(concat org-gtd-dir "Tickler.org") "TICKLERS")
+	 "* TODO %^{Brief Description} %^g\n  OPENED: %U")
+     ;; Journal Capture
+	("j" "Journal" entry (file+datetree ,(concat org-gtd-dir "Journal.org") )
+	   "* %?\nEntered on %U\n  %i\n  %a")
+     ;; Medical Appointments  (m) Medical template
+	("m" "Medical Appointments")
+	("mo" "(o) Office Appointent" entry (file+headline ,(concat org-gtd-dir "Tickler.org") "TICKLERS")
+	 (file ,(concat gtd-template-dir "Office-Appointment.txt")) :empty-lines 1 :time-prompt t)
+	("mt" "(t) Testing Appointent" entry (file+headline ,(concat org-gtd-dir "Tickler.org") "TICKLERS")
+	 (file ,(concat gtd-template-dir "Testing-Appointment.txt")) :empty-lines 1 :time-prompt t)
+     ;; Health Data Capture
+	("h" "Health Data Capture (h)")
 
-      ("ht" "Temperature (t)" table-line (file+headline ,(concat org-gtd-dir "Medical-Data.org") "Temperature")
-       "|%^{Person|TOM|JOANNE}|%U|%^{Temperature}|")
+	("hb" "Blood Pressure (b)" table-line (file+headline ,(concat org-gtd-dir "Medical-Data.org") "Blood Pressure")
+	  "|%^{Person|TOM|JOANNE}|%U|%^{Systtolic}|%^{Diastolic}|%^{Pulse}|")
 
-      ("hw" "Weight (w)" table-line (file+headline ,(concat org-gtd-dir "Medical-Data.org") "Weight")
-       "|%^{Person|TOM|JOANNE}|%U|%^{Weight}|")
-   ;; Shoppping Items
-      ("s" "Shopping Request (s)" table-line (file+headline ,(concat org-gtd-dir "Shopping-Requests.org") "Requests")
-       "|%U|%^{Needed Item}|")))
+	("ht" "Temperature (t)" table-line (file+headline ,(concat org-gtd-dir "Medical-Data.org") "Temperature")
+	 "|%^{Person|TOM|JOANNE}|%U|%^{Temperature}|")
+
+	("hw" "Weight (w)" table-line (file+headline ,(concat org-gtd-dir "Medical-Data.org") "Weight")
+	 "|%^{Person|TOM|JOANNE}|%U|%^{Weight}|")
+     ;; Shoppping Items
+	("s" "Shopping Request (s)" table-line (file+headline ,(concat org-gtd-dir "Shopping-Requests.org") "Requests")
+	 "|%U|%^{Needed Item}|")
+     ;; org-protocol 
+	("p" "Protocol" entry (file+headline ,(concat org-directory "gtd\notes.org") "Inbox")
+   "* %^{Title}\nSource: %u, %c\n #+BEGIN_QUOTE\n%i\n#+END_QUOTE\n\n\n%?")
+
+	("L" "Protocol Link" entry (file+headline ,(concat org-directory "gtd\notes.org") "Inbox")
+ "* %? [[%:link][%:description]] %(progn (setq kk/delete-frame-after-capture 2) \"\")\nCaptured On: %U"
+ :empty-lines 1)
+	))
  #+END_SRC
