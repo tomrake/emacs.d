@@ -862,6 +862,14 @@ dir
 (local-custom-file "local-publishing.org" "Configuration of org-publishing")
 #+END_SRC  
 
+* PS Print with GHOSTSCRIPT
+#+BEGIN_SRC emacs-lisp
+;   (setenv "GS_LIB" "/mingw64/share/ghostscript/9.53.5/lib;e:/tools/GSTools/gs8.14/fonts")
+   (setq ps-lpr-command "C:/Program Files/gs/gs9.56.1/bin/gswin64c.exe")
+   (setq ps-lpr-switches '("-q" "-dNOPAUSE" "-dBATCH" "-sDEVICE=mswinpr2" "-sOutputFile=\"%printer%CANON\""))
+   (setq ps-printer-name t)
+
+#+END_SRC
 * Final Presenation to the user.
 
 ** load per user settings
