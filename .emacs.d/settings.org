@@ -7,7 +7,33 @@
 (message "Debug START")
 #+END_SRC
 
-* Emacs Housekeeping
+* FRONT STUFF
+
+** Documentation
+*** Revision Narative
+  I want to update to emacs 28.1. And in doing so I wish to convert my ad-hoc  package loading to use-package.
+
+  I am revised much of the junk documenation and will set a version of the settings.org files.
+
+  These are the configuration sources:
+    - init.el this defers to settings.org>setting.el
+    - local-capture.org
+    - local-custom-agenda.org
+    - local-publishing.org
+    - local-settings.org
+    - ~/.custom/emacs/emacs-custom.el
+
+  The next process is do git check in all changes and reboot emacs.
+*** README
+ [[file:~/.emacs.d/init.el]]
+ [[file:~/.emacs.d/settings.el]]
+ [[file:~/.emacs.d/settings.org]]
+ [[file:~/.emacs.d/README.org]]
+*** Standard coding setup
+ - The source of Emacs startup code is largely controlled by .emacs/setting.org
+ - All programming code is located in ~/quicklisp/local-projects/
+
+* Begining setting generation.
 ** The generated file warning to init.el
 #+BEGIN_SRC emacs-lisp
   ;;;; NOTE: This file had been generated from ~/.emacs.d/settings.org
@@ -52,61 +78,6 @@
   ;(setq debug-on-error t)
   #+END_SRC
 
-* To Be Done :noexport:
-  List of things to be done to this file
-  - [ ] Review and cleanup Documenation
-  - [ ] Revert unchanged buffers and direds
-* REVISIONS
-  Add Revert buffer section.
-  IDO has been reinstalled
-  Removing  IDO AC- code
-  Removed IDO and AC- code by :tangle no
-  Document core emacs configuration tools.
-  MSYS64 lisp launch has been removed.
-  Use slime implementation nged (commands) :env (environment vars)) with mingw start.
-  The env bash sbcl launch sequence had problems.
-  To run as emacs inferior there is no need for a shell.
-
-  I marked [COMPLETE] where autocomplete or completion is configured.
-  The concept is to try out helm.
-* Documentation
-** A few Issues
-*** TODO Review and fix column view data [/]
-    - [ ] Find recommened COLUMNS line
-    - [ ] Hunt down COLUMN items in :PROPERTIES: drawers.
-    - [ ] Fix Font size issue
-      - Column view screws up the font sizing.
-*** TODO  Consider capture mode to publishing notes perhaps publish the Journel
-    - How to handle a publishing a  date tree?
-    Current defects
-    - There is face style problems when agenda views go into column view mode.
-** README
- [[file:~/.emacs.d/init.el]]
- [[file:~/.emacs.d/settings.el]]
- [[file:~/.emacs.d/settings.org]]
- [[file:~/.emacs.d/README.org]]
-*** Design Notes
-**** Emacs organization
-     This file .emacs.d/settings.org is ment to have common setup for all my use cases.
-     Other files in .emacs.d/ are used for per user customization.
-**** GTD organization - Review
-     I used an older GTD example that was developed before org-capture.
-     Current defects
-     - The custom agenda views need to be reconsidered for my taste
-     - I have been using tasks to write notes about my process
-       - org publication is now being used to document task acitivity
-	 this should lead to removal of "documentation tasks"
-       - documenation task should be a capture item to be published.
-**** TODO Consider adding issue/error tracking in emacs [/]
-     - [ ] Reseach error issue tracking in org-mode/emacs
-     - [ ] Next create action plan or defer
-
-** Standard coding setup
-*** emacs
-The source of Emacs startup code is largely controlled by .emacs/setting.org
-*** General
-All programming code is located in ~/quicklisp/local-projects/
-
 * org-protocol
 #+BEGIN_SRC emacs-lisp
   (server-start)
@@ -142,8 +113,7 @@ I don't like the a messy startup screen.
  (setq w32-use-visible-system-caret nil)
  #+END_SRC
 
-* Package Arc
-hives distros
+* Package Archives distros
 Good for any emacs released since 2012
 #+BEGIN_SRC emacs-lisp
   (setq package-check-signature nil)
