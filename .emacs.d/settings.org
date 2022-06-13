@@ -1,7 +1,8 @@
 #+STARTUP: overview
 #+TITLE: Emacs configuration
 #+OPTIONS: num:nil ^:nil
-#+EXPORT-FILENAME: init.el#+INDEX: Emacs!Configuration
+#+EXPORT-FILENAME: init.el
+#+INDEX: Emacs!Configuration
 * Report Debug START  :noexport:
 #+BEGIN_SRC emacs-lisp
 (message "Debug START")
@@ -11,6 +12,8 @@
 
 ** Documentation
 *** Revision Narative
+
+**** Phase 1
   I want to update to emacs 28.1. And in doing so I wish to convert my ad-hoc  package loading to use-package.
 
   I am revised much of the junk documenation and will set a version of the settings.org files.
@@ -24,6 +27,21 @@
     - ~/.custom/emacs/emacs-custom.el
 
   The next process is do git check in all changes and reboot emacs.
+
+  These were the difficulties in getting 28.1 to run.
+
+  I needed to quote the EMACS_HOME enviroment variable becauce Program Fles has a space.
+
+  I needed to do a special load and compile to get use-project the Ian Y E Pen solution.
+
+  I needed to (use-package rainbow-delimiter :ensure t) to fetch that package.
+
+  I needed to :tangle no the slime-helper part.
+
+  Org gtd seems to be functional.
+  
+****  Phase 2
+  This  phase  is planning to remove existing themes and  use Modus Themes and then customize them.
 *** README
  [[file:~/.emacs.d/init.el]]
  [[file:~/.emacs.d/settings.el]]
@@ -130,7 +148,13 @@ Good for any emacs released since 2012
 * Load use-package
   [TBD] Consider if this needs to be initialized
 #+BEGIN_SRC emacs-lisp
-(require 'use-package)
+(unless (package-installed-p 'use-package)
+  (package-refresh-contents)
+  (package-install 'use-package))
+(eval-and-compile
+  (setq use-package-always-ensure t
+        use-package-expand-minimally t))
+;;  (require 'use-package)
 #+END_SRC
 * Buffer Auto reverting
 #+BEGIN_SRC emacs-lisp
@@ -306,6 +330,8 @@ The BEGIN tag was botched in the line below.
 
 * Rainbow Delimeters
 #+BEGIN_SRC emacs-lisp
+  (use-package rainbow-delimiters
+    :ensure t)
   (add-hook 'prog-mode-hook #'rainbow-delimiters-mode)
   ;(font-lock-comment-face ((t (:italic t :slant oblique :foreground "#9fd385"))))
   ;; (setf rainbow-delimiters-depth-1-face ((t (:foreground "dark orange"))))
@@ -477,7 +503,7 @@ The BEGIN tag was botched in the line below.
  #+INDEX: Common Lisp!quicklisp, slime helper
  #+INDEX: quicklisp!slime helper
  #+INDEX: Slime!quicklisp helper
- #+BEGIN_SRC emacs-lisp
+ #+BEGIN_SRC emacs-lisp  :tangle no
    ;;;; Build the implemenation lisp dynamically.
    ;;;; Remove all nil items from the list.
      ;;;; Load slime helper
