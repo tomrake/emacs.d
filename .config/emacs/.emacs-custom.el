@@ -10,7 +10,7 @@
    ["#212526" "#ff4b4b" "#b4fa70" "#fce94f" "#729fcf" "#e090d7" "#8cc4ff" "#eeeeec"])
  '(custom-enabled-themes '(modus-operandi))
  '(custom-safe-themes
-   '("dad40020beea412623b04507a4c185079bff4dcea20a93d8f8451acb6afc8358" "8a332a2fbbd95db0e0ad05c6cb9a42800d4dab92af960cafbe3c553357e1f3c6" "96a4406cca483476d3ce524052bcdd69889a2109c5c3e60be0c8951534d1e0e1"))
+   '("a0415d8fc6aeec455376f0cbcc1bee5f8c408295d1c2b9a1336db6947b89dd98" "dad40020beea412623b04507a4c185079bff4dcea20a93d8f8451acb6afc8358" "8a332a2fbbd95db0e0ad05c6cb9a42800d4dab92af960cafbe3c553357e1f3c6" "96a4406cca483476d3ce524052bcdd69889a2109c5c3e60be0c8951534d1e0e1"))
  '(fci-rule-color "#383838")
  '(lpr-add-switches t)
  '(lpr-command "lpr.exe")

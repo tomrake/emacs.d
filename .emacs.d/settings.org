@@ -319,13 +319,12 @@ The BEGIN tag was botched in the line below.
 	     "-c"
 	     shell-task))
     #+END_SRC
-* Emacs Theme
-  [TBD] Raise this to before LISP and other language stuff.
+* Modus Theme Configuration
 #+BEGIN_SRC emacs-lisp
-;  (add-to-list 'load-path "~/.emacs.d/modus-themes")
   (require 'modus-themes)
-  (modus-themes-load-themes)
-  (modus-themes-load-vivendi) 
+  (setq modus-themes-mode-line '(accented borderless))
+  (setq modus-themes-region '(bg-only))
+  (load-theme 'modus-vivendi t)
 #+END_SRC
 
 * Rainbow Delimeters
@@ -411,7 +410,7 @@ The BEGIN tag was botched in the line below.
 (use-package shx
   :ensure t)
 #+END_SRC
-* Tramp                                                            
+* Tramp
 [TBD] Review if this is correct after SSH has been reinstalled.
 ** The default connection method is plink
 #+BEGIN_SRC emacs-lisp
@@ -434,12 +433,14 @@ The BEGIN tag was botched in the line below.
  #+INDEX: Common Lisp!Provisioning
  Universal Startup Code should be here.
 *** Provision standard SBCL
+ Return the standard SBCL options.
  #+BEGIN_SRC emacs-lisp
     (defun standard-sbcl-options()
       '("--noinform"))
  #+END_SRC
 *** RAW Binary
 **** Common
+When the executable exec-path is found generate a slime enstry under tag having the env enviroment.
 #+BEGIN_SRC emacs-lisp
   (defun only-sbcl-p (tag exec-path env)
       (when (file-exists-p exec-path)
@@ -450,6 +451,9 @@ The BEGIN tag was botched in the line below.
 #+END_SRC
 **** Provision the LISPs
 #+INDEX: SBCL!Slime provisioning
+SBCL versions:
+  - Add SBCL-2.0.0 msys2 compiled 
+  - Add SBCL-2.2.1 msys2 compiled
 #+BEGIN_SRC emacs-lisp
       (defun sbcl-2-0-0 ()
 	(only-sbcl-p 'sbcl-2.0.0 "C:/devel/msys64/usr/local/sbcl-2.0.0/bin/sbcl.exe"
@@ -462,12 +466,14 @@ The BEGIN tag was botched in the line below.
 
 #+END_SRC
 *** Provision ABCL
+  When java and ABCL are located create an ABCL slime item.
   #+BEGIN_SRC emacs-lisp
   (defmacro provision-abcl()
     `(when (and (file-exists-p  (convert-standard-filename "C:/Program Files/ABCL/abcl.jar")))
 	  `(abcl  ("java" "-jar" ,(convert-standard-filename "C:/Program Files/ABCL/abcl.jar")))))
   #+END_SRC
 *** Provision CCL
+  When a specific CCL binary is present create a CCL slime item.
     #+BEGIN_SRC emacs-lisp
       (defun provision-ccl ()
 	(let ((ccl "C:/Users/zzzap/quicklisp/local-projects/ccl/wx86cl64.exe"))
@@ -476,13 +482,16 @@ The BEGIN tag was botched in the line below.
     #+END_SRC
 
 *** Provision CLISP
+CLISP provisioning has not been thought out yet.
 **** On MSYS2
+MSYS2 versions of CLISP are not provisioned.
 #+BEGIN_SRC emacs-lisp
   (defun provision-clisp-msys64 ()
     (when nil
     `(clisp-msys64 ())))
 #+END_SRC
 **** On CYGWIN when emacs running under cygwin
+CYGWIN version of CLISP is not provisioned
 #+BEGIN_SRC emacs-lisp
   (defun provision-clisp-cygwin64()
     (when nil
@@ -499,6 +508,7 @@ The BEGIN tag was botched in the line below.
                 slime-company-after-completion 'slime-company-just-one-space))
 #+END_SRC
 *** quicklisp-helper
+ [UPGRADE HACK]The slime  helper during the  28.1 upgrade and quicklisp-helper needed :tangle no to avoid errors/
  Load the quicklisp-helper file 
  #+INDEX: Common Lisp!quicklisp, slime helper
  #+INDEX: quicklisp!slime helper
