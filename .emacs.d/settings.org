@@ -486,7 +486,9 @@ SBCL versions:
 	(only-sbcl-p 'sbcl-2.2.1 "C:/devel/msys64/usr/local/sbcl-2.2.1/bin/sbcl.exe"
 		     (list (concat "HOME=" (getenv "HOME")) "SBCL_HOME=C:/devel/msys64/usr/local/sbcl-2.2.1/lib/sbcl")))
 				
-
+      (defun sbcl-2-2-5()
+	(only-sbcl-p 'sbcl-2.2.5 "C:/devel/msys64/usr/local/sbcl-2.2.5/bin/sbcl.exe"
+		     (list (concat "HOME=" (getenv "HOME")) "SBCL_HOME=C:/devel/msys64/usr/local/sbcl-2.2.5/lib/sbcl")))
 #+END_SRC
 *** Provision ABCL
   When java and ABCL are located create an ABCL slime item.
@@ -545,15 +547,16 @@ CYGWIN version of CLISP is not provisioned
 *** slime-lisp-implementations
  #+INDEX: Slime!LISP Implmentations
  #+BEGIN_SRC emacs-lisp
-     (setq slime-lisp-implementations
-	   (seq-filter (lambda (e) e)
-	     (list
-	       (sbcl-2-2-1)
-	       (sbcl-2-0-0)
-	       (provision-ccl)
-	       (provision-clisp-msys64)
-	       (provision-clisp-cygwin64))))
-	      ; (provision-abcl)
+   (setq slime-lisp-implementations
+	 (seq-filter (lambda (e) e)
+	   (list
+	     (sbcl-2-2-5)
+	     (sbcl-2-2-1)
+	     (sbcl-2-0-0)
+	     (provision-ccl)
+	     (provision-clisp-msys64)
+	     (provision-clisp-cygwin64))))
+	    ; (provision-abcl)
  #+END_SRC
 
 *** Option  for SLIME
