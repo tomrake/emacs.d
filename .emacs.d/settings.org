@@ -326,6 +326,7 @@ The BEGIN tag was botched in the line below.
 * Modus Theme Configuration
 Main Page: [[https://protesilaos.com/emacs/modus-themes]]
 #+BEGIN_SRC emacs-lisp
+    (set-face-attribute 'default nil :height 120)
     (require 'modus-themes)
     (setq modus-themes-mode-line '(accented borderless))
     (setq modus-themes-region '(bg-only))
@@ -344,10 +345,10 @@ Main Page: [[https://protesilaos.com/emacs/modus-themes]]
 	  (t . (rainbow bold background 1.0))))
   (setq modus-themes-org-agenda
       '((header-block . (variable-pitch 1.5))
-        (header-date . (grayscale workaholic bold-today 1.2))
-        (event . (accented italic varied))
-        (scheduled . uniform)
-        (habit . traffic-light)))
+	(header-date . (grayscale workaholic bold-today 1.2))
+	(event . (accented italic varied))
+	(scheduled . uniform)
+	(habit . traffic-light)))
   (load-theme 'modus-vivendi t)
 #+END_SRC
 
