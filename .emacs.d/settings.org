@@ -579,8 +579,9 @@ CYGWIN version of CLISP is not provisioned
 
 *** Common Lisp HyperSpec
   I use my local clone of the Hyperspec
+**** TODO Fix when HyperSpec is loaded.
   #+BEGIN_SRC emacs-lisp
-  (setq common-lisp-hyperspec-root (convert-standard-filename (getenv "HyperSpec")))
+  ;(setq common-lisp-hyperspec-root (convert-standard-filename (getenv "HyperSpec")))
   #+END_SRC
 
 * Pascal Setup
