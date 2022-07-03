@@ -603,7 +603,7 @@ CYGWIN version of CLISP is not provisioned
 	      auto-mode-alist))
 #+END_SRC
 
-* Ord Mode Customizations
+* Org Mode Customizations
 #+INDEX: org-mode!main configuration
 The newest redesign of org mode gtd is to use a per user setup with no public shared data.
 All the newest stuff will be in ~/org/gtd/
@@ -830,15 +830,16 @@ All the newest stuff will be in ~/org/gtd/
 
 ** org TODOs types
 #+BEGIN_SRC emacs-lisp
-(setq org-todo-keywords '((sequence "TODO(t)" "WAITING(w)" "BLOCKED(b)" "|" "DONE(d)" "CANCELLED(c)")))
+(setq org-todo-keywords '((sequence "TODO(t)" "NEXT(n)" "WAITING(w@/!)" "BLOCKED(b@)" "|" "DONE(d!)" "CANCELLED(c@)")))
 #+END_SRC
 ** org TODO colors
 #+BEGIN_SRC emacs-lisp
-(setq org-todo-keyword-faces '(("TODO" . "red")
-			       ("WAITING" ."yellow1")
-                               ("BLOCKED" . "orange1")
-			       ("CANCELLED"."green")
-			       ("DONE" . "green")));
+  (setq org-todo-keyword-faces '(("TODO" . "red")
+			         ("NEXT" . "magenta")
+				 ("WAITING" ."yellow1")
+				 ("BLOCKED" . "orange1")
+				 ("CANCELLED"."green")
+				 ("DONE" . "green")));
 #+END_SRC
 ** Task agenda context
  - This starts an agenda context
