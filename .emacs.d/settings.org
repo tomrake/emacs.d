@@ -58,6 +58,7 @@
   ;;;; Emacs customization is done in ~/.emacs.d/settings.org
   ;;;; ~/.emacs.d/init.el will load ~/.emacs.d/settings.el
   ;;;; ~/.emacs.d/settings.org is created and updated by *tangle* of code blocks from  settings.org
+  (setq org-src-tab-acts-natively t)
 #+END_SRC
 
 ** Start time
@@ -888,6 +889,21 @@ dir
 (local-custom-file "local-publishing.org" "Configuration of org-publishing")
 #+END_SRC  
 
+** Report Debug Mark                                               :noexport:
+#+BEGIN_SRC emacs-lisp
+(message "Debug MARK")
+#+END_SRC
+** org-present
+#+BEGIN_SRC emacs-lisp
+(use-package org-present
+  :ensure t
+  :config
+    (use-package visual-fill-column
+      :ensure t
+      :config
+      (setq visual-fill-column-width 110
+	    visual-fill-column-center-text t)))
+#+END_SRC
 * PS Print with GHOSTSCRIPT
 ** Setup the remote printer
 #+BEGIN_SRC emacs-lisp
@@ -919,10 +935,6 @@ dir
 (float-time (time-subtract *emacs-download* *emacs-load-start*)))
 #+END_SRC
 
-* Report Debug Mark :noexport:
-#+BEGIN_SRC emacs-lisp
-(message "Debug MARK")
-#+END_SRC
 * Report Debug End :noexport:
 #+BEGIN_SRC emacs-lisp
 (message "Debug END")
