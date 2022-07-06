@@ -831,14 +831,13 @@ All the newest stuff will be in ~/org/gtd/
 
 ** org TODOs types
 #+BEGIN_SRC emacs-lisp
-(setq org-todo-keywords '((sequence "TODO(t)" "NEXT(n)" "WAITING(w@/!)" "BLOCKED(b@)" "|" "DONE(d!)" "CANCELLED(c@)")))
+(setq org-todo-keywords '((sequence "TODO(t)" "NEXT(n)" "WAITING(w@/!)" "|" "DONE(d!)" "CANCELLED(c@)")))
 #+END_SRC
 ** org TODO colors
 #+BEGIN_SRC emacs-lisp
   (setq org-todo-keyword-faces '(("TODO" . "red")
 			         ("NEXT" . "magenta")
 				 ("WAITING" ."yellow1")
-				 ("BLOCKED" . "orange1")
 				 ("CANCELLED"."green")
 				 ("DONE" . "green")));
 #+END_SRC
@@ -907,9 +906,9 @@ dir
 * PS Print with GHOSTSCRIPT
 ** Setup the remote printer
 #+BEGIN_SRC emacs-lisp
-;   (setenv "GS_LIB" "/mingw64/share/ghostscript/9.53.5/lib;e:/tools/GSTools/gs8.14/fonts")
+;   (setenv "GS_LIB" "/mingw64/share/ghostscript/9.53.1/lib;e:/tools/GSTools/gs8.14/fonts")
    (setq ps-lpr-command "C:/Program Files/gs/gs9.56.1/bin/gswin64c.exe")
-   (setq ps-lpr-switches '("-q" "-dNOPAUSE" "-dBATCH" "-sDEVICE=mswinpr2" "-sOutputFile=\"%printer%CANON\""))
+   (setq ps-lpr-switches '("-q" "-dNOPAUSE" "-dBATCH" "-sDEVICE=mswinpr2" "-sOutputFile=\"%printer%Canon\ TS6000\ series\""))
    (setq ps-printer-name t)
 #+END_SRC
 ** Setup the printing size and line-numbering
