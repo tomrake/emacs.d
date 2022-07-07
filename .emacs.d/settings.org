@@ -103,7 +103,7 @@
 
 * org-protocol
 #+BEGIN_SRC emacs-lisp
-  (server-start)
+  ;(server-start)
   (require 'org-protocol)
 #+END_SRC
 * Initial Frame Size
@@ -476,17 +476,20 @@ SBCL versions:
   - Add SBCL-2.0.0 msys2 compiled 
   - Add SBCL-2.2.1 msys2 compiled
 #+BEGIN_SRC emacs-lisp
-      (defun sbcl-2-0-0 ()
-	(only-sbcl-p 'sbcl-2.0.0 "C:/devel/msys64/usr/local/sbcl-2.0.0/bin/sbcl.exe"
-	             (list (concat "HOME=" (getenv "HOME")) "SBCL_HOME=C:/devel/msys64/usr/local/sbcl-2.0.0/lib/sbcl")))
+  ;; (defun sbcl-2-0-0 ()
+  ;;   (only-sbcl-p 'sbcl-2.0.0 "C:/devel/msys64/usr/local/sbcl-2.0.0/bin/sbcl.exe"
+  ;; 	       (list (concat "HOME=" (getenv "HOME")) "SBCL_HOME=C:/devel/msys64/usr/local/sbcl-2.0.0/lib/sbcl")))
 
-      (defun sbcl-2-2-1()
-	(only-sbcl-p 'sbcl-2.2.1 "C:/devel/msys64/usr/local/sbcl-2.2.1/bin/sbcl.exe"
-		     (list (concat "HOME=" (getenv "HOME")) "SBCL_HOME=C:/devel/msys64/usr/local/sbcl-2.2.1/lib/sbcl")))
-				
-      (defun sbcl-2-2-5()
-	(only-sbcl-p 'sbcl-2.2.5 "C:/devel/msys64/usr/local/sbcl-2.2.5/bin/sbcl.exe"
-		     (list (concat "HOME=" (getenv "HOME")) "SBCL_HOME=C:/devel/msys64/usr/local/sbcl-2.2.5/lib/sbcl")))
+  ;; (defun sbcl-2-2-1()
+  ;;   (only-sbcl-p 'sbcl-2.2.1 "C:/devel/msys64/usr/local/sbcl-2.2.1/bin/sbcl.exe"
+  ;; 	       (list (concat "HOME=" (getenv "HOME")) "SBCL_HOME=C:/devel/msys64/usr/local/sbcl-2.2.1/lib/sbcl")))
+
+  ;; (defun sbcl-2-2-5()
+  ;;   (only-sbcl-p 'sbcl-2.2.5 "C:/devel/msys64/usr/local/sbcl-2.2.5/bin/sbcl.exe"
+  ;; 	       (list (concat "HOME=" (getenv "HOME")) "SBCL_HOME=C:/devel/msys64/usr/local/sbcl-2.2.5/lib/sbcl")))
+  (defun sbcl-2-2-6()
+    (only-sbcl-p 'sbcl-2.2.6 "C:/devel/msys64/usr/local/sbcl-2.2.6/bin/sbcl.exe"
+		 (list (concat "HOME=" (getenv "HOME")) "SBCL_HOME=C:/devel/msys64/usr/local/sbcl-2.2.6/lib/sbcl")))
 #+END_SRC
 *** Provision ABCL
   When java and ABCL are located create an ABCL slime item.
@@ -536,7 +539,7 @@ CYGWIN version of CLISP is not provisioned
  #+INDEX: Common Lisp!quicklisp, slime helper
  #+INDEX: quicklisp!slime helper
  #+INDEX: Slime!quicklisp helper
- #+BEGIN_SRC emacs-lisp  :tangle no
+ #+BEGIN_SRC emacs-lisp :tangle no
    ;;;; Build the implemenation lisp dynamically.
    ;;;; Remove all nil items from the list.
      ;;;; Load slime helper
@@ -548,10 +551,8 @@ CYGWIN version of CLISP is not provisioned
    (setq slime-lisp-implementations
 	 (seq-filter (lambda (e) e)
 	   (list
-	     (sbcl-2-2-5)
-;	     (sbcl-2-2-1)
-;	     (sbcl-2-0-0)
 	     (provision-ccl)
+	     (sbcl-2-2-6)
 	     (provision-clisp-msys64)
 	     (provision-clisp-cygwin64))))
 	    ; (provision-abcl)
