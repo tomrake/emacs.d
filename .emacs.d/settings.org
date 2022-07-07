@@ -61,12 +61,6 @@
   (setq org-src-tab-acts-natively t)
 #+END_SRC
 
-** Start time
-  #+BEGIN_SRC emacs-lisp
-  ;; load time metrics
-  (setq  *emacs-load-start* (current-time))
-  #+END_SRC
-
 ** Magic Modes
 #+BEGIN_SRC emacs-lisp
   (setq magic-mode-alist '(("*.org" . org)))
@@ -179,12 +173,6 @@ Good for any emacs released since 2012
   :config
    (add-hook 'after-init-hook 'global-company-mode))
 #+END_SRC
-* Download Timing
-This download timing mechanism is likely deprecated also.
-#+BEGIN_SRC emacs-lisp
-(setq *emacs-download* (current-time))
-#+END_SRC
-
 * Magit
 #+BEGIN_SRC emacs-lisp
 (use-package magit
@@ -926,14 +914,6 @@ dir
 ;;;; Various user settings is a local configuration.
  (local-custom-file "local-settings.org" "Final user settings")
  #+END_SRC
-
-* Report the time metrics
-#+BEGIN_SRC emacs-lisp
-(setq *emacs-load-end* (current-time))
-(message "Time for .emacs downloading: %s loading %s " 
-(float-time (time-subtract *emacs-load-end* *emacs-download*))
-(float-time (time-subtract *emacs-download* *emacs-load-start*)))
-#+END_SRC
 
 * Report Debug End :noexport:
 #+BEGIN_SRC emacs-lisp
