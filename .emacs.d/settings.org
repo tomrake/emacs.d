@@ -52,20 +52,24 @@
  - All programming code is located in ~/quicklisp/local-projects/
 
 * Begining setting generation.
-** The generated file warning to init.el
+* The generated file warning to init.el
 #+BEGIN_SRC emacs-lisp
   ;;;; NOTE: This file had been generated from ~/.emacs.d/settings.org
   ;;;; Emacs customization is done in ~/.emacs.d/settings.org
   ;;;; ~/.emacs.d/init.el will load ~/.emacs.d/settings.el
   ;;;; ~/.emacs.d/settings.org is created and updated by *tangle* of code blocks from  settings.org
   (setq org-src-tab-acts-natively t)
+  ()
 #+END_SRC
-
-** Magic Modes
+* Server Start
+#+BEGIN_SRC enacs-lisp
+  (server-start)
+#+END_SRC
+* Magic Modes
 #+BEGIN_SRC emacs-lisp
   (setq magic-mode-alist '(("*.org" . org)))
 #+END_SRC
-** The emacs customization file.
+* The emacs customization file.
  Define were emacs cusomization is saved and restored.
  #+BEGIN_SRC emacs-lisp
     ;;;; emacs customization file
@@ -73,7 +77,7 @@
    (load custom-file)
  #+END_SRC
 
-** Allow loading of a file from .emacs.d/
+* Allow loading of a file from .emacs.d/
  User custom setting from .emacs.d files.
 #+BEGIN_SRC emacs-lisp
   ;;;; Macro to load user customizations from .emacs.d
@@ -88,7 +92,7 @@
 	   (message (concat "Custom file is missing " file-and-path))))))
 
 #+END_SRC
-** Emacs debug-on-error
+* Emacs debug-on-error
    [TBD] Should this be set from an enviroment variable.
    [TBD] Is there already a command line switch for this?
   #+BEGIN_SRC emacs-lisp
@@ -256,13 +260,13 @@ Fixed on 7/2/2022 moving to DESKER
 #+END_SRC
 * External Subsytems
   msys2 and cygwin have internal file system roots in Windows, those roots are defined here.
-** Subsytem Roots
+  Subsytem Roots
    Define where the roots of the file systems are located on Windows.
-*** Cygwin Root
+* Cygwin Root
   #+BEGIN_SRC emacs-lisp
 	(setq +cygwin64-base-path+ "C:/cygwin64")
   #+END_SRC
-*** msys2 root
+* msys2 root
   #+BEGIN_SRC emacs-lisp
     ;; Paths to msys2 file root
     (let ((mingw64-root-mount "C:/devel/msys64")
@@ -274,14 +278,15 @@ Fixed on 7/2/2022 moving to DESKER
     (add-to-list 'exec-path mingw64-bin-mount))
     (setq +msys64-base-path+ "C:/devel/msys64/")
   #+END_SRC
-** Subsystem emulators
+* Subsystem emulators
    Subsystem parts need to be emulated.
-*** Cygwin Emulator
+* Cygwin Emulator
  #+BEGIN_SRC emacs-lisp
        (defun cygwin64-file-exists-p (file)
 	 (file-exists-p (concat +cygwin64-base-path+ file)))
  #+END_SRC
-*** msys2 Emulator
+* msys2 Emulator
+
  #+BEGIN_SRC emacs-lisp
    (defun msys64-file-exists-p (file)
      (file-exists-p (concat +msys64-base-path+ file)))
@@ -293,11 +298,11 @@ Fixed on 7/2/2022 moving to DESKER
    (defun msys2-command-string (cmd)
      (concat +msys64-base-path+ "usr/bin/" cmd ".exe"))
  #+END_SRC
-** Tools implemanted for various subsystems
-*** Cygwin Tools
+* Tools implemanted for various subsystems
+* Cygwin Tools
     No tools for cygwin yet.
-*** msys2 Tools
-**** msys2/bash run
+* msys2 Tools
+* msys2/bash run
      Start a command in a msys2 shell
    #+BEGIN_SRC emacs-lisp
      (defun start-under-bash-login-shell (shell-task)
@@ -406,7 +411,7 @@ Main Page: [[https://protesilaos.com/emacs/modus-themes]]
 		    ;; 	 (shell "*bash*")
 		    ;; 	     (call-interactively 'shell)))
 #+END_SRC
-** Add shell extensions
+* Add shell extensions
 [TBD] If this is org shell extenstion then put this in org-mode section.
 #+BEGIN_SRC emacs-lisp
 (use-package shx
@@ -414,13 +419,13 @@ Main Page: [[https://protesilaos.com/emacs/modus-themes]]
 #+END_SRC
 * Tramp
 [TBD] Review if this is correct after SSH has been reinstalled.
-** The default connection method is plink
+* The default connection method is plink
 #+BEGIN_SRC emacs-lisp
 (require 'tramp)
 (setq tramp-default-method "plink")
 ;(setq tramp-verbose 10)
 #+END_SRC
-** Remote shell to cisco
+* Remote shell to cisco
 #+BEGIN_SRC emacs-lisp
 (defun cisco-remote-shell ()
   (interactive)
@@ -438,17 +443,17 @@ Main Page: [[https://protesilaos.com/emacs/modus-themes]]
   I have many versions of LISP to use under emacs slime.
   I use quicklisp to download LISP packages.
   [TBD] I use autocomplete for slime complettion, but am considering switching to helm.
-** Provision Various Common LISPs
+* Provision Various Common LISPs
  #+INDEX: Common Lisp!Provisioning
  Universal Startup Code should be here.
-*** Provision standard SBCL
+* Provision standard SBCL
  Return the standard SBCL options.
  #+BEGIN_SRC emacs-lisp
     (defun standard-sbcl-options()
       '("--noinform"))
  #+END_SRC
-*** RAW Binary
-**** Common
+* RAW Binary
+* Common
 When the executable exec-path is found generate a slime enstry under tag having the env enviroment.
 #+BEGIN_SRC emacs-lisp
   (defun only-sbcl-p (tag exec-path env)
@@ -458,7 +463,7 @@ When the executable exec-path is found generate a slime enstry under tag having 
 	       :env
 	       env)))
 #+END_SRC
-**** Provision the LISPs
+* Provision the LISPs
 #+INDEX: SBCL!Slime provisioning
 SBCL versions:
   - Add SBCL-2.0.0 msys2 compiled 
@@ -479,14 +484,14 @@ SBCL versions:
     (only-sbcl-p 'sbcl-2.2.6 "C:/devel/msys64/usr/local/sbcl-2.2.6/bin/sbcl.exe"
 		 (list (concat "HOME=" (getenv "HOME")) "SBCL_HOME=C:/devel/msys64/usr/local/sbcl-2.2.6/lib/sbcl")))
 #+END_SRC
-*** Provision ABCL
+* Provision ABCL
   When java and ABCL are located create an ABCL slime item.
   #+BEGIN_SRC emacs-lisp
   (defmacro provision-abcl()
     `(when (and (file-exists-p  (convert-standard-filename "C:/Program Files/ABCL/abcl.jar")))
 	  `(abcl  ("java" "-jar" ,(convert-standard-filename "C:/Program Files/ABCL/abcl.jar")))))
   #+END_SRC
-*** Provision CCL
+* Provision CCL
   When a specific CCL binary is present create a CCL slime item.
     #+BEGIN_SRC emacs-lisp
       (defun provision-ccl ()
@@ -495,33 +500,34 @@ SBCL versions:
             `(ccl-64 (,ccl)))))
     #+END_SRC
 
-*** Provision CLISP
+* Provision CLISP
 CLISP provisioning has not been thought out yet.
-**** On MSYS2
+* On MSYS2
+
 MSYS2 versions of CLISP are not provisioned.
 #+BEGIN_SRC emacs-lisp
   (defun provision-clisp-msys64 ()
     (when nil
     `(clisp-msys64 ())))
 #+END_SRC
-**** On CYGWIN when emacs running under cygwin
+* On CYGWIN when emacs running under cygwin
 CYGWIN version of CLISP is not provisioned
 #+BEGIN_SRC emacs-lisp
   (defun provision-clisp-cygwin64()
     (when nil
     `(clisp-cygwin64 ())))
 #+END_SRC
-** SLIME
+* SLIME
    Slime is the inferface to LISP on emacs.
  #+INDEX: Common Lisp!Slime Provisioning
-*** slime-company
+* slime-company
 #+BEGIN_SRC emacs-lisp
 (use-package slime-company
   :after (slime company)
   :config (setq slime-company-completion 'fuzzy
                 slime-company-after-completion 'slime-company-just-one-space))
 #+END_SRC
-*** quicklisp-helper
+* quicklisp-helper
  [UPGRADE HACK]The slime  helper during the  28.1 upgrade and quicklisp-helper needed :tangle no to avoid errors/
  Load the quicklisp-helper file 
  #+INDEX: Common Lisp!quicklisp, slime helper
@@ -533,7 +539,7 @@ CYGWIN version of CLISP is not provisioned
      ;;;; Load slime helper
      (load (expand-file-name "~/quicklisp/slime-helper.el"))
  #+END_SRC
-*** slime-lisp-implementations
+* slime-lisp-implementations
  #+INDEX: Slime!LISP Implmentations
  #+BEGIN_SRC emacs-lisp
    (setq slime-lisp-implementations
@@ -546,14 +552,14 @@ CYGWIN version of CLISP is not provisioned
 	    ; (provision-abcl)
  #+END_SRC
 
-*** Option  for SLIME
+* Option  for SLIME
     Can I delete this?
   #+BEGIN_SRC emacs-lisp
   (setq slime-contribs '(slime-fancy))
   (global-set-key "\C-cs" 'slime-selector)
   #+END_SRC
 
-*** Enable lisp-mode .lisp and .asd files
+* Enable lisp-mode .lisp and .asd files
   #+BEGIN_SRC emacs-lisp
   (setq auto-mode-alist
 	(append '((".*\\.asd\\'" . lisp-mode))
@@ -564,9 +570,9 @@ CYGWIN version of CLISP is not provisioned
 		auto-mode-alist))
   #+END_SRC
 
-*** Common Lisp HyperSpec
+* Common Lisp HyperSpec
   I use my local clone of the Hyperspec
-**** TODO Fix when HyperSpec is loaded.
+* TODO Fix when HyperSpec is loaded.
   #+BEGIN_SRC emacs-lisp
   ;(setq common-lisp-hyperspec-root (convert-standard-filename (getenv "HyperSpec")))
   #+END_SRC
@@ -597,7 +603,7 @@ CYGWIN version of CLISP is not provisioned
 #+INDEX: org-mode!main configuration
 The newest redesign of org mode gtd is to use a per user setup with no public shared data.
 All the newest stuff will be in ~/org/gtd/
-** killing frame for org-protcol capture
+* killing frame for org-protcol capture
 #+BEGIN_SRC emacs-lisp
   ;; Kill the frame if one was created for the capture
   (defvar kk/delete-frame-after-capture 0 "Whether to delete the last frame after the current capture")
@@ -615,7 +621,7 @@ All the newest stuff will be in ~/org/gtd/
   (advice-add 'org-capture-kill :after 'kk/delete-frame-if-neccessary)
   (advice-add 'org-capture-refile :after 'kk/delete-frame-if-neccessary)
 #+END_SRC
-** Create permanent links for each heading in an org file.  
+* Create permanent links for each heading in an org file.  
    Create CUSTOM_ID for each heading bases on a uniqure random sequence.
  #+BEGIN_SRC emacs-lisp  :tangle no :noexport:
 	     (require 'org-id)
@@ -734,15 +740,15 @@ All the newest stuff will be in ~/org/gtd/
 
 
  #+END_SRC
-** org mode location
+* org mode location
 #+BEGIN_SRC emacs-lisp
 (setf org-mode-base-dir "~/org/")
 #+END_SRC
-** gtd location
+* gtd location
 #+BEGIN_SRC emacs-lisp
 (setf org-gtd-dir (concat org-mode-base-dir "gtd/"))
 #+END_SRC
-** Org Key Binding
+* Org Key Binding
  #+BEGIN_SRC emacs-lisp
  ;;;; Org Mode key bindings.
  (global-set-key (kbd "C-c l") 'org-store-link)
@@ -751,7 +757,7 @@ All the newest stuff will be in ~/org/gtd/
  (global-set-key (kbd "C-c b") 'org-switchb)
  #+END_SRC
 
-** Configure BABEL languages
+* Configure BABEL languages
  [TBD] Do I really need to specify these at all?
  #+BEGIN_SRC emacs-lisp
  (org-babel-do-load-languages
@@ -760,26 +766,26 @@ All the newest stuff will be in ~/org/gtd/
     (emacs-lisp . t)))
  #+END_SRC
 
-** org modules needed
+* org modules needed
  [TBD] Do I need org-habit  here?
  #+BEGIN_SRC emacs-lisp
  (setq org-modules '(org-habit org-checklist))
  #+END_SRC
 
-** org-habit
+* org-habit
  [TBD] Find out why I Should not delete this.
  #+BEGIN_SRC emacs-lisp
  (setq org-habit-graph-column 50)
  #+END_SRC
 
-** Org link abbreviations
+* Org link abbreviations
  #+BEGIN_SRC emacs-lisp
  (setq org-link-abbrev-alist
        '(("bugzilla" . "http://192.168.1.50/bugzilla/show_bug.cgi?id=")
 	 ("bugzilla-comp" . "http://192.168.1.50/bugzilla/describecomponents.cgi?product=")))
  #+END_SRC
-** Customize by Environmemt
-*** customization macros
+* Customize by Environmemt
+* customization macros
 [TBD] Should this macro be closer to the top of the file for reuse?
 #+BEGIN_SRC emacs-lisp
   ;;; Specify a emacs variable from an environment variable env-string or  base,new-path-string
@@ -789,7 +795,7 @@ All the newest stuff will be in ~/org/gtd/
                           (concat ,base ,new-path-string))))
 #+END_SRC
 
-*** Ensure there are standard user ~/org directories
+* Ensure there are standard user ~/org directories
  [TBD] is this how I am configured now?
  How to define the standard HOME org directory.
  Under windows and linux this is ~/org.
@@ -807,7 +813,7 @@ All the newest stuff will be in ~/org/gtd/
   (default-or-environment org-public-dir "c:/Users/Public/Documents" "/org" "ORG-PUBLIC-DIR")
   #+END_SRC
 
-*** Standard Notes file
+* Standard Notes file
  [TBD] Is this still relavent?
  This is a standard per User notes file.
  Unser windows and linux this ~/org/notes/notes.org
@@ -818,11 +824,11 @@ All the newest stuff will be in ~/org/gtd/
   (setq org-default-notes-file org-notes-file)
   #+END_SRC
 
-** org TODOs types
+* org TODOs types
 #+BEGIN_SRC emacs-lisp
 (setq org-todo-keywords '((sequence "TODO(t)" "NEXT(n)" "WAITING(w@/!)" "|" "DONE(d!)" "CANCELLED(c@)")))
 #+END_SRC
-** org TODO colors
+* org TODO colors
 #+BEGIN_SRC emacs-lisp
   (setq org-todo-keyword-faces '(("TODO" . "red")
 			         ("NEXT" . "magenta")
@@ -830,7 +836,7 @@ All the newest stuff will be in ~/org/gtd/
 				 ("CANCELLED"."green")
 				 ("DONE" . "green")));
 #+END_SRC
-** Task agenda context
+* Task agenda context
  - This starts an agenda context
  #+BEGIN_SRC emacs-lisp
  ;;;; Customize the agenda locally
@@ -838,19 +844,19 @@ All the newest stuff will be in ~/org/gtd/
  #+END_SRC
   - The following may be defined with the above values
     
-** Capture Templates
+* Capture Templates
 Use [[~/.emacs.d/local-capture.org]] to change the capture template.
  #+BEGIN_SRC emacs-lisp
  ;;;; Customize the agenda locally
  (local-custom-file "local-capture.org" "Customize org-capture")
  #+END_SRC
-** Always present the gtd.org file
+* Always present the gtd.org file
 Customize  this default by environment variable USER_REOPEN_FILES
  #+BEGIN_SRC emacs-lisp
  (find-file (concat org-gtd-dir "gtd.org"))
  #+END_SRC
  
-** org mode add :shcmd to sh blocks
+* org mode add :shcmd to sh blocks
 Using :shcmd "cmdproxy.exe" on Windows uses the emacs version of cmd.
 Using :shcmd   msys2-base / "bin/bash.exe" will run a shell under msys2 bash.
 Allow Windows CMD commands to be run from .org files.
@@ -871,17 +877,17 @@ dir
   (let* ((org-babel-sh-command (or (cdr (assoc :shcmd params)) org-babel-sh-command)))
     ad-do-it))
 #+END_SRC
-** org-publish
+* org-publish
 #+BEGIN_SRC emacs-lisp
 ;;;; org-publishing is a local configuration.
 (local-custom-file "local-publishing.org" "Configuration of org-publishing")
 #+END_SRC  
 
-** Report Debug Mark                                               :noexport:
+* Report Debug Mark                                                :noexport:
 #+BEGIN_SRC emacs-lisp
 (message "Debug MARK")
 #+END_SRC
-** org-present
+* org-present
 #+BEGIN_SRC emacs-lisp
 (use-package org-present
   :ensure t
@@ -893,14 +899,14 @@ dir
 	    visual-fill-column-center-text t)))
 #+END_SRC
 * PS Print with GHOSTSCRIPT
-** Setup the remote printer
+* Setup the remote printer
 #+BEGIN_SRC emacs-lisp
 ;   (setenv "GS_LIB" "/mingw64/share/ghostscript/9.53.1/lib;e:/tools/GSTools/gs8.14/fonts")
    (setq ps-lpr-command "C:/Program Files/gs/gs9.56.1/bin/gswin64c.exe")
    (setq ps-lpr-switches '("-q" "-dNOPAUSE" "-dBATCH" "-sDEVICE=mswinpr2" "-sOutputFile=\"%printer%Canon\ TS6000\ series\""))
    (setq ps-printer-name t)
 #+END_SRC
-** Setup the printing size and line-numbering
+* Setup the printing size and line-numbering
 #+BEGIN_SRC emacs-lisp
 (setf ps-font-family 'Courier)
 (setf ps-font-size 10.0)
@@ -909,7 +915,7 @@ dir
 #+END_SRC
 * Final Presenation to the user.
 
-** load per user settings
+* load per user settings
  #+BEGIN_SRC emacs-lisp
 ;;;; Various user settings is a local configuration.
  (local-custom-file "local-settings.org" "Final user settings")
