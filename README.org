@@ -1,0 +1,6 @@
+#+TTILE: About Code Directory
+
+#+OPTIONS: num:nil toc:nil ^:nil
+
+The items in this directory are symlinked in ~/
+The primary purpose of this sturcture is to provide the ability to backup and version control all the Code. 
