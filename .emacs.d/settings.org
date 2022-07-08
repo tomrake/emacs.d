@@ -452,9 +452,8 @@ Main Page: [[https://protesilaos.com/emacs/modus-themes]]
     (defun standard-sbcl-options()
       '("--noinform"))
  #+END_SRC
-* RAW Binary
-* Common
-When the executable exec-path is found generate a slime enstry under tag having the env enviroment.
+* Return slime entry with tag and env only if exec-path if found.
+When the executable exec-path is found generate a slime entry under tag having the env enviroment.
 #+BEGIN_SRC emacs-lisp
   (defun only-sbcl-p (tag exec-path env)
       (when (file-exists-p exec-path)
@@ -463,35 +462,25 @@ When the executable exec-path is found generate a slime enstry under tag having 
 	       :env
 	       env)))
 #+END_SRC
-* Provision the LISPs
+* Provision a SBCL entry for slime.
 #+INDEX: SBCL!Slime provisioning
 SBCL versions:
   - Add SBCL-2.0.0 msys2 compiled 
   - Add SBCL-2.2.1 msys2 compiled
 #+BEGIN_SRC emacs-lisp
-  ;; (defun sbcl-2-0-0 ()
-  ;;   (only-sbcl-p 'sbcl-2.0.0 "C:/devel/msys64/usr/local/sbcl-2.0.0/bin/sbcl.exe"
-  ;; 	       (list (concat "HOME=" (getenv "HOME")) "SBCL_HOME=C:/devel/msys64/usr/local/sbcl-2.0.0/lib/sbcl")))
-
-  ;; (defun sbcl-2-2-1()
-  ;;   (only-sbcl-p 'sbcl-2.2.1 "C:/devel/msys64/usr/local/sbcl-2.2.1/bin/sbcl.exe"
-  ;; 	       (list (concat "HOME=" (getenv "HOME")) "SBCL_HOME=C:/devel/msys64/usr/local/sbcl-2.2.1/lib/sbcl")))
-
-  ;; (defun sbcl-2-2-5()
-  ;;   (only-sbcl-p 'sbcl-2.2.5 "C:/devel/msys64/usr/local/sbcl-2.2.5/bin/sbcl.exe"
-  ;; 	       (list (concat "HOME=" (getenv "HOME")) "SBCL_HOME=C:/devel/msys64/usr/local/sbcl-2.2.5/lib/sbcl")))
   (defun sbcl-2-2-6()
     (only-sbcl-p 'sbcl-2.2.6 "C:/devel/msys64/usr/local/sbcl-2.2.6/bin/sbcl.exe"
 		 (list (concat "HOME=" (getenv "HOME")) "SBCL_HOME=C:/devel/msys64/usr/local/sbcl-2.2.6/lib/sbcl")))
 #+END_SRC
-* Provision ABCL
+* Provision a ABCL entry for slime
   When java and ABCL are located create an ABCL slime item.
   #+BEGIN_SRC emacs-lisp
   (defmacro provision-abcl()
     `(when (and (file-exists-p  (convert-standard-filename "C:/Program Files/ABCL/abcl.jar")))
 	  `(abcl  ("java" "-jar" ,(convert-standard-filename "C:/Program Files/ABCL/abcl.jar")))))
   #+END_SRC
-* Provision CCL
+** TODO Verify that java also existes
+* Provison a CCL entry for slime
   When a specific CCL binary is present create a CCL slime item.
     #+BEGIN_SRC emacs-lisp
       (defun provision-ccl ()
@@ -500,34 +489,31 @@ SBCL versions:
             `(ccl-64 (,ccl)))))
     #+END_SRC
 
-* Provision CLISP
-CLISP provisioning has not been thought out yet.
-* On MSYS2
-
-MSYS2 versions of CLISP are not provisioned.
+* Provision a CLISP if on MSYS2
 #+BEGIN_SRC emacs-lisp
   (defun provision-clisp-msys64 ()
     (when nil
     `(clisp-msys64 ())))
 #+END_SRC
-* On CYGWIN when emacs running under cygwin
+** TODO Fix MSYS2 Provisioning
+* Provision a CLISP if on Cygwin
 CYGWIN version of CLISP is not provisioned
 #+BEGIN_SRC emacs-lisp
   (defun provision-clisp-cygwin64()
     (when nil
     `(clisp-cygwin64 ())))
 #+END_SRC
-* SLIME
+** TODO Fix Cygwin Provisionsing
+* Slime / Company
    Slime is the inferface to LISP on emacs.
- #+INDEX: Common Lisp!Slime Provisioning
-* slime-company
+#+INDEX: Common Lisp!Slime Provisioning
 #+BEGIN_SRC emacs-lisp
 (use-package slime-company
   :after (slime company)
   :config (setq slime-company-completion 'fuzzy
                 slime-company-after-completion 'slime-company-just-one-space))
 #+END_SRC
-* quicklisp-helper
+* Add quicklisp-helper
  [UPGRADE HACK]The slime  helper during the  28.1 upgrade and quicklisp-helper needed :tangle no to avoid errors/
  Load the quicklisp-helper file 
  #+INDEX: Common Lisp!quicklisp, slime helper
@@ -539,7 +525,7 @@ CYGWIN version of CLISP is not provisioned
      ;;;; Load slime helper
      (load (expand-file-name "~/quicklisp/slime-helper.el"))
  #+END_SRC
-* slime-lisp-implementations
+* Slime Lisp Implemenatations
  #+INDEX: Slime!LISP Implmentations
  #+BEGIN_SRC emacs-lisp
    (setq slime-lisp-implementations
@@ -549,14 +535,17 @@ CYGWIN version of CLISP is not provisioned
 	     (sbcl-2-2-6)
 	     (provision-clisp-msys64)
 	     (provision-clisp-cygwin64))))
-	    ; (provision-abcl)
+	     (provision-abcl)
  #+END_SRC
 
-* Option  for SLIME
+* Set Slime Contribs to slime-fancy
     Can I delete this?
   #+BEGIN_SRC emacs-lisp
-  (setq slime-contribs '(slime-fancy))
-  (global-set-key "\C-cs" 'slime-selector)
+    (setq slime-contribs '(slime-fancy))
+  #+END_SRC
+* Set Slime Keys
+  #+BEGIN_SRC emacs-lisp
+    (global-set-key "\C-cs" 'slime-selector)
   #+END_SRC
 
 * Enable lisp-mode .lisp and .asd files
@@ -574,9 +563,9 @@ CYGWIN version of CLISP is not provisioned
   I use my local clone of the Hyperspec
 * TODO Fix when HyperSpec is loaded.
   #+BEGIN_SRC emacs-lisp
-  ;(setq common-lisp-hyperspec-root (convert-standard-filename (getenv "HyperSpec")))
+    (when (getenv "HyperSpec")
+     (setq common-lisp-hyperspec-root (convert-standard-filename (getenv "HyperSpec"))))
   #+END_SRC
-
 * Pascal Setup
   [TBD] I have no pascal compiler configured.
 #+BEGIN_SRC emacs-lisp
@@ -602,7 +591,6 @@ CYGWIN version of CLISP is not provisioned
 * Org Mode Customizations
 #+INDEX: org-mode!main configuration
 The newest redesign of org mode gtd is to use a per user setup with no public shared data.
-All the newest stuff will be in ~/org/gtd/
 * killing frame for org-protcol capture
 #+BEGIN_SRC emacs-lisp
   ;; Kill the frame if one was created for the capture
@@ -784,8 +772,7 @@ All the newest stuff will be in ~/org/gtd/
        '(("bugzilla" . "http://192.168.1.50/bugzilla/show_bug.cgi?id=")
 	 ("bugzilla-comp" . "http://192.168.1.50/bugzilla/describecomponents.cgi?product=")))
  #+END_SRC
-* Customize by Environmemt
-* customization macros
+* Specify Default Path and Override from Enviroment Variable
 [TBD] Should this macro be closer to the top of the file for reuse?
 #+BEGIN_SRC emacs-lisp
   ;;; Specify a emacs variable from an environment variable env-string or  base,new-path-string
@@ -899,19 +886,14 @@ dir
 	    visual-fill-column-center-text t)))
 #+END_SRC
 * PS Print with GHOSTSCRIPT
-* Setup the remote printer
 #+BEGIN_SRC emacs-lisp
-;   (setenv "GS_LIB" "/mingw64/share/ghostscript/9.53.1/lib;e:/tools/GSTools/gs8.14/fonts")
    (setq ps-lpr-command "C:/Program Files/gs/gs9.56.1/bin/gswin64c.exe")
    (setq ps-lpr-switches '("-q" "-dNOPAUSE" "-dBATCH" "-sDEVICE=mswinpr2" "-sOutputFile=\"%printer%Canon\ TS6000\ series\""))
    (setq ps-printer-name t)
-#+END_SRC
-* Setup the printing size and line-numbering
-#+BEGIN_SRC emacs-lisp
-(setf ps-font-family 'Courier)
-(setf ps-font-size 10.0)
-(setf ps-line-number t)
-(setf ps-line-number-font-size 10)
+   (setf ps-font-family 'Courier)
+   (setf ps-font-size 10.0)
+   (setf ps-line-number t)
+   (setf ps-line-number-font-size 10)
 #+END_SRC
 * Final Presenation to the user.
 
