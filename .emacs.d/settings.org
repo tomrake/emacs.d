@@ -421,16 +421,13 @@ Main Page: [[https://protesilaos.com/emacs/modus-themes]]
 [TBD] Review if this is correct after SSH has been reinstalled.
 * The default connection method is plink
 #+BEGIN_SRC emacs-lisp
-(require 'tramp)
-(setq tramp-default-method "plink")
-;(setq tramp-verbose 10)
-#+END_SRC
-* Remote shell to cisco
-#+BEGIN_SRC emacs-lisp
-(defun cisco-remote-shell ()
-  (interactive)
-  (let ((default-directory "/plink:osmc@192.168.1.43:~"))
-  (shell)))
+  (use-package tramp
+    :config
+      (setq tramp-default-method "plink")
+      (defun cisco-remote-shell ()
+        (interactive)
+        (let ((default-directory "/plink:osmc@192.168.1.43:~"))
+          (shell))))
 #+END_SRC
 * Paredit mode
   #+BEGIN_SRC emacs-lisp
@@ -446,8 +443,7 @@ Main Page: [[https://protesilaos.com/emacs/modus-themes]]
 * Provision Various Common LISPs
  #+INDEX: Common Lisp!Provisioning
  Universal Startup Code should be here.
-* Provision standard SBCL
- Return the standard SBCL options.
+* Standard Options for SBCL startup
  #+BEGIN_SRC emacs-lisp
     (defun standard-sbcl-options()
       '("--noinform"))
@@ -525,29 +521,25 @@ CYGWIN version of CLISP is not provisioned
      ;;;; Load slime helper
      (load (expand-file-name "~/quicklisp/slime-helper.el"))
  #+END_SRC
-* Slime Lisp Implemenatations
+* SLIME Configuation
  #+INDEX: Slime!LISP Implmentations
  #+BEGIN_SRC emacs-lisp
-   (setq slime-lisp-implementations
-	 (seq-filter (lambda (e) e)
-	   (list
-	     (provision-ccl)
-	     (sbcl-2-2-6)
-	     (provision-clisp-msys64)
-	     (provision-clisp-cygwin64))))
-	     (provision-abcl)
+      (use-package slime
+	:config
+   ;;;; Configure slime from the above provisionsing
+   ;;;; Remove any empty items
+   
+	  (setq slime-lisp-implementations
+	    (seq-filter (lambda (e) e)
+	      (list
+		(provision-ccl)
+		(sbcl-2-2-6)
+		(provision-clisp-msys64)
+		(provision-clisp-cygwin64))))
+		(provision-abcl)
+       (setq slime-contribs '(slime-fancy))
+       (global-set-key "\C-cs" 'slime-selector))
  #+END_SRC
-
-* Set Slime Contribs to slime-fancy
-    Can I delete this?
-  #+BEGIN_SRC emacs-lisp
-    (setq slime-contribs '(slime-fancy))
-  #+END_SRC
-* Set Slime Keys
-  #+BEGIN_SRC emacs-lisp
-    (global-set-key "\C-cs" 'slime-selector)
-  #+END_SRC
-
 * Enable lisp-mode .lisp and .asd files
   #+BEGIN_SRC emacs-lisp
   (setq auto-mode-alist
