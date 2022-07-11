@@ -25,35 +25,36 @@
 
  
  #+BEGIN_SRC emacs-lisp
- (setq org-agenda-files
-       (list (gtd-file "gtd.org")
-	     (gtd-file "Tickler.org")
-	     (gtd-file "Annual-Days.org")
-	     (gtd-file "Inbox.org")))
- (setq current-agenda-files
-       (list (gtd-file "gtd.org")
-	     (gtd-file "Inbox.org")))
- (setq full-agenda-files (cons (gtd-file "Someday.org") org-agenda-files))
- (setq org-agenda-skip-scheduled-if-done t)
- (setq org-agenda-todo-list-sublevels t)
+    (setq org-agenda-files
+	  (list (gtd-file "gtd.org")
+		(gtd-file "Tickler.org")
+		(gtd-file "Annual-Days.org")
+		(gtd-file "Inbox.org")))
+    (setq current-agenda-files
+	  (list (gtd-file "gtd.org")
+		(gtd-file "Inbox.org")
+		(gtd-file "Tickler.org"))
+    (setq full-agenda-files (cons (gtd-file "Someday.org") org-agenda-files))
+    (setq org-agenda-skip-scheduled-if-done t)
+    (setq org-agenda-todo-list-sublevels t)
 
- ;;;; The following two defuns are from Nicolas Petton
- ;;;; from https://emacs.cafe/emacs/orgmode/gtd/2017/06/30/orgmode-gtd.html
- (defun my-org-agenda-skip-all-siblings-but-first ()
-	"Skip all but the first non-done entry."
-   (let (should-skip-entry)
-     (unless (org-current-is-todo)
-       (setq should-skip-entry t))
-     (save-excursion
-       (while (and (not should-skip-entry) (org-goto-sibling t))
-	      (when (org-current-is-todo)
-		    (setq should-skip-entry t))))
-     (when should-skip-entry
-       (or (outline-next-heading)
-	   (goto-char (point-max))))))
+    ;;;; The following two defuns are from Nicolas Petton
+    ;;;; from https://emacs.cafe/emacs/orgmode/gtd/2017/06/30/orgmode-gtd.html
+    (defun my-org-agenda-skip-all-siblings-but-first ()
+	   "Skip all but the first non-done entry."
+      (let (should-skip-entry)
+	(unless (org-current-is-todo)
+	  (setq should-skip-entry t))
+	(save-excursion
+	  (while (and (not should-skip-entry) (org-goto-sibling t))
+		 (when (org-current-is-todo)
+		       (setq should-skip-entry t))))
+	(when should-skip-entry
+	  (or (outline-next-heading)
+	      (goto-char (point-max))))))
 
- (defun org-current-is-todo ()
-   (string= "TODO" (org-get-todo-state)))
+    (defun org-current-is-todo ()
+      (string= "TODO" (org-get-todo-state)))
 
  #+END_SRC
 
@@ -103,8 +104,7 @@
 			  `((agenda time-up priority-down tag-up)))
 			 (org-deadline-warning-days 0)))
 				     ; exclude ticker files from todo list because they are covered in agenda
-	     (todo "" ((org-agenda-files current-agenda-files)
-		       (org-agenda-skip-function #'my-org-agenda-skip-all-siblings-but-first)))))
+	     (todo "NEXT" ((org-agenda-files current-agenda-files)))))
 	   ("g" . "GTD contexts")
 	   ("ga" "Attic" tags-todo "ATTIC")
 	   ("gh" "Home" tags-todo "HOME")
