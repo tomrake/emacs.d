@@ -33,7 +33,7 @@
     (setq current-agenda-files
 	  (list (gtd-file "gtd.org")
 		(gtd-file "Inbox.org")
-		(gtd-file "Tickler.org"))
+		(gtd-file "Tickler.org")))
     (setq full-agenda-files (cons (gtd-file "Someday.org") org-agenda-files))
     (setq org-agenda-skip-scheduled-if-done t)
     (setq org-agenda-todo-list-sublevels t)

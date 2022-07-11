@@ -10,9 +10,7 @@
     (concat 
     (mapcar #'(lambda (c) (if (equal c ?\[) ?\( (if (equal c ?\]) ?\) c))) string-to-transform)))
 
-     ;;; Define ord-gtd template directories
-      (default-or-environment gtd-template-dir org-gtd-dir "/template/" "ORG-TEMPLATE-DIR")
-
+ 
      ;; ;;; See: http://cachestocaches.com/2016/9/my-workflow-org-agenda/
      (setq org-capture-templates
       `(

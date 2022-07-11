@@ -824,8 +824,10 @@ The newest redesign of org mode gtd is to use a per user setup with no public sh
 * Capture Templates
 Use [[~/.emacs.d/local-capture.org]] to change the capture template.
  #+BEGIN_SRC emacs-lisp
- ;;;; Customize the agenda locally
- (local-custom-file "local-capture.org" "Customize org-capture")
+   ;;;; Customize the agenda locally
+   (let ((base (file-name-directory (or load-file-name (buffer-file-name)))))
+     (default-or-environment gtd-template-dir base  "" "ORG-TEMPLATE-DIR")
+     (local-custom-file "local-capture.org" "Customize org-capture"))
  #+END_SRC
 * Always present the gtd.org file
 Customize  this default by environment variable USER_REOPEN_FILES
