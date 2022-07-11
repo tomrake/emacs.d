@@ -1,4 +1,4 @@
-* TODO Medical Testing Appointment %^{Patient|TOM|JAMES|JOANNE|OTHER} with %^{Location} :%\1: %?
+* TODO Medical Testing Appointment %^{Patient|TOM|JAMES|JOANNE|OTHER} with %^{Location} :%\1:APPOINTMENT: %?
    SCHEDULED: %^T
    OPENED: %U
    :PROPERTIES:
