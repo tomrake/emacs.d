@@ -4,3 +4,5 @@
 
 The items in this directory are symlinked in ~/
 The primary purpose of this sturcture is to provide the ability to backup and version control all the Code. 
+
+The .git folder was missowned I copied all the contents to a new folder, and then renamed it .git.
