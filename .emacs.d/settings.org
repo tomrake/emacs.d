@@ -468,8 +468,8 @@ SBCL versions:
   - Add SBCL-2.2.1 msys2 compiled
 #+BEGIN_SRC emacs-lisp
   (defun sbcl-2-2-6()
-    (only-sbcl-p 'sbcl-2.2.6 "C:/devel/msys64/usr/local/sbcl-2.2.6/bin/sbcl.exe"
-		 (list (concat "HOME=" (getenv "HOME")) "SBCL_HOME=C:/devel/msys64/usr/local/sbcl-2.2.6/lib/sbcl")))
+    (only-sbcl-p 'sbcl-2.2.6 "C:/devel/msys64/usr/local/sbcl-2.2.6/bin/sbcl"
+		 (list (concat "HOME=" (getenv "HOME")) "SBCL_HOME=C:/devel/msys64/usr/local/sbcl-2.2.6/lib/sbcl/")))
 #+END_SRC
 * Provision a ABCL entry for slime
   When java and ABCL are located create an ABCL slime item.
@@ -507,7 +507,7 @@ CYGWIN version of CLISP is not provisioned
    Slime is the inferface to LISP on emacs.
 #+INDEX: Common Lisp!Slime Provisioning
 #+BEGIN_SRC emacs-lisp
-(use-package slime-company
+(use-package slime-company 
   :after (slime company)
   :config (setq slime-company-completion 'fuzzy
                 slime-company-after-completion 'slime-company-just-one-space))
@@ -531,15 +531,16 @@ CYGWIN version of CLISP is not provisioned
 	:config
    ;;;; Configure slime from the above provisionsing
    ;;;; Remove any empty items
-   
 	  (setq slime-lisp-implementations
 	    (seq-filter (lambda (e) e)
 	      (list
-		(provision-ccl)
-		(sbcl-2-2-6)
-		(provision-clisp-msys64)
-		(provision-clisp-cygwin64))))
-		(provision-abcl)
+	       `(sbcl ,(cons "C:/devel/msys64/usr/local/sbcl-2.2.6/bin/sbcl.exe"  (standard-sbcl-options)))
+	       (sbcl-2-2-6)
+	       (provision-ccl)
+	       ;(sbcl-2-2-6)
+	       (provision-clisp-msys64)
+	       (provision-clisp-cygwin64))))
+	       (provision-abcl)
        (setq slime-contribs '(slime-fancy))
        (global-set-key "\C-cs" 'slime-selector))
  #+END_SRC
