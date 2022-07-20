@@ -1,83 +1,106 @@
-g
+
+#+TITLE: Org publish customizations
+
 * org-publish
   This file is to be included when .emacs.d/settings.org is loaded.
 #+BEGIN_SRC emacs-lisp
-    (require 'ox-publish)
-    (defmacro publish-project (name srcdir webdir)
-      "Create  publication name generated from srcdir and browseable at webdir.
-       This publication has two components -notes and -static.
-       the -notes part is indexed."
-     (let ((name% (gensym))
-	   (webdir% (gensym))
-	   (srcdir% (gensym))
-	   (notes-part% (gensym))
-	   (static-part% (gensym)))
-     `(let* ((,name% ,name)
-	    (,srcdir% ,srcdir)
-	    (,webdir% ,webdir)
-	    (,notes-part% (concat ,name% "-notes"))
-	    (,static-part% (concat ,name% "-static")))
-	    ;(message "name: %s" ,name%)
-	    ;(message "notes-part %s" ,notes-part%)
-	    ;(message "static-part %s" ,static-part%)
-	    (list `(,,notes-part%
-	     :base-directory ,,srcdir%
-	     :base-extension "org"
-	     :publishing-directory ,,webdir%
-	     :recursive t
-	     :exclude ".*/\.git/.*|.*/.*~"
-	     :publishing-function org-html-publish-to-html
-	     :headline-levels 4             ; Just the default for this project.
-	     :auto-preamble t
-	     :with-sub-superscript nil
-	     :section-numbers nil
-	     :auto-sitemap t
-	     :makeindex t)
-	    `(,,static-part%
-	     :base-directory ,,srcdir%
-	     :base-extension "css\\|js\\|png\\|jpg\\|gif\\|pdf\\|mp3\\|ogg\\|swf"
-	     :publishing-directory ,,webdir%
-	     :auto-sitemap nil
-	     :recursive t
-	     :exclude ".*/\.git/.*|.*/.*~"
-	     :publishing-function org-publish-attachment)
-	    `(,,name% :components (,,notes-part% ,,static-part%))))))
+	       (require 'ox-publish)
+
+	       (default-or-environment src-base-path org-mode-base-dir "org-web/" "ORG-PUBLISH-SRC")
+	       (default-or-environment publish-base-path "" "c:/Users/Public/org-web/" "ORG-PUBLIC-TARGET")
+
+	     (defun publish-source-path (path)
+		 (concat src-base-path "source/" path))
+
+	       (defun publish-path (path)
+		 (concat publish-base-path path))
+
+	       (defmacro src-publish-pair (path)
+		 "Return a source and publish path pair."
+		 (let ((_path (gensym)))
+		    `(let ((,_path ,path))
+		      (list (publish-source-path  ,_path) (publish-path ,_path)))))
 
 
-    (setq org-publish-project-alist
-	  `(
-	    ("org"
-	     :base-directory "~/org/org-web/source/front"
-	     :base-extension "org"
-	     :publishing-directory "c:/Users/Public/org-web"
-	     :recursive nil
-	     :publishing-function org-html-publish-to-html
-	     :headline-levels 4             ; Just the default for this project.
-	     :auto-preamble t)
+	       (defmacro publish-project (name srcdir webdir)
+		 "Create  publication name generated from srcdir and browseable at webdir.
+		  This publication has two components -notes and -static.
+		  the -notes part is indexed."
+		(let ((name% (gensym))
+		      (webdir% (gensym))
+		      (srcdir% (gensym))
+		      (notes-part% (gensym))
+		      (static-part% (gensym)))
+		`(let* ((,name% ,name)
+		       (,srcdir% ,srcdir)
+		       (,webdir% ,webdir)
+		       (,notes-part% (concat ,name% "-notes"))
+		       (,static-part% (concat ,name% "-static")))
+		       ;(message "name: %s" ,name%)
+		       ;(message "notes-part %s" ,notes-part%)
+		       ;(message "static-part %s" ,static-part%)
+		       (list `(,,notes-part%
+			:base-directory ,,srcdir%
+			:base-extension "org"
+			:publishing-directory ,,webdir%
+			:recursive t
+			:exclude ".*/\.git/.*|.*/.*~"
+			:publishing-function org-html-publish-to-html
+			:headline-levels 4             ; Just the default for this project.
+			:auto-preamble t
+			:with-sub-superscript nil
+			:section-numbers nil
+			:auto-sitemap t
+			:makeindex t)
+		       `(,,static-part%
+			:base-directory ,,srcdir%
+			:base-extension "css\\|js\\|png\\|jpg\\|gif\\|pdf\\|mp3\\|ogg\\|swf"
+			:publishing-directory ,,webdir%
+			:auto-sitemap nil
+			:recursive t
+			:exclude ".*/\.git/.*|.*/.*~"
+			:publishing-function org-publish-attachment)
+		       `(,,name% :components (,,notes-part% ,,static-part%))))))
 
-	    ("emacs-config"
-	     :base-directory "~/.emacs.d"
-	     :base-extension "org"
-	     :publishing-directory "c:/Users/Public/org-web/emacs-config"
-	     :recursive nil
-	     :publishing-function org-html-publish-to-html
-	     :headline-levels 9             ; Just the default for this project.
-	     :auto-sitemap t
-	     :makeindex t
-	     :section-numbers nil
-	     :auto-preamble t)
-	    ,@(publish-project "technical" "c:/Users/zzzap/org/org-web/source/technical" "c:/Users/Public/org-web/technical")
-  ;	  ,@(publish-project "projects" "~/org/org-web/source/projects" "c:/Users/Public/org-web/projects")
-  ;	  ,@(publish-project "hacking" "~/org/org-web/source/hacking" "c:/Users/Public/org-web/hacking")	
-  ;	  ,@(publish-project "howto" "~/org/org-web/source/howto" "c:/Users/Public/org-web/howto")
-	    ,@(publish-project "benifits" "~/org/org-web/source/benifits" "c:/Users/Public/org-web/benifits")
-	    ,@(publish-project "sonya" "~/org/org-web/source/sonya" "c:/Users/Public/org-web/sonya")
-	    ,@(publish-project "james" "~/org/org-web/source/james" "c:/Users/Public/org-web/james")
-	    ,@(publish-project "code-projects" "~/quicklisp/local-projects" "c:/Users/Public/org-web/code-projects")
-	    ,@(publish-project "family" "~/org/org-web/source/family" "c:/Users/Public/org-web/family")
-	    ,@(publish-project "recipes" "~/org/org-web/source/recipes" "c:/Users/Public/org-web/recipes")
-	    ,@(publish-project "political" "~/org/org-web/source/political" "c:/Users/Public/org-web/political")
-	    ,@(publish-project "administration" "~/org/org-web/source/administration" "c:/Users/Public/org-web/administration")
-	    ("org-web" :components ("org" "benifits", "technical" "code-projects" "family" "recipes" "political" "administration"))))
+	(defun make-project (name)
+	  (publish-project name (publish-source-path name) (publish-path name)))
+
+
+	       (setq org-publish-project-alist
+		      `(
+		       ("org"
+			:base-directory "~/org/org-web/source/front"
+			:base-extension "org"
+			:publishing-directory "c:/Users/Public/org-web"
+			:recursive nil
+			:publishing-function org-html-publish-to-html
+			:headline-levels 4             ; Just the default for this project.
+			:auto-preamble t)
+
+		       ("emacs-config"
+			:base-directory "~/.emacs.d"
+			:base-extension "org"
+			:publishing-directory "c:/Users/Public/org-web/emacs-config"
+			:recursive nil
+			:publishing-function org-html-publish-to-html
+			:headline-levels 9             ; Just the default for this project.
+			:auto-sitemap t
+			:makeindex t
+			:section-numbers nil
+			:auto-preamble t)
+		       ,@(make-project "technical")
+		       ,@(make-project "benifits")
+      ;		 ,@(publish-project "technical" . ,(src-publish-pair "technical")))
+      ;		,@(publish-project "benifits" . ,(src-publish-pair "benifits"))
+      ,@(make-project "sonya")
+      ,@(make-project "james")
+		       ;; ,@(publish-project "code-projects" "~/quicklisp/local-projects" "c:/Users/Public/org-web/code-projects")
+    ,@(make-project "family")
+    ,@(make-project "recipes")
+    ,@(make-project "political")
+    ,@(make-project "administration")
+			("org-web" :components ("org" "benifits", "technical"
+	  ;;				     "code-projects"
+						"family" "recipes" "political" "administration"))))
 #+END_SRC  
 
