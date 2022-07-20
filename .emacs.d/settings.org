@@ -183,7 +183,7 @@ I don't like the a messy startup screen.
  #+END_SRC
 * org-roam
   I am setting up org-roam
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp :tangle no
   (use-package org-roam
     :ensure t
     :init
@@ -467,8 +467,11 @@ SBCL versions:
   - Add SBCL-2.0.0 msys2 compiled 
   - Add SBCL-2.2.1 msys2 compiled
 #+BEGIN_SRC emacs-lisp
+  (defun sbcl-2-2-5()
+    (only-sbcl-p 'sbcl-2.2.5 "C:/devel/msys64/usr/local/sbcl-2.2.5/bin/sbcl.exe"
+		 (list (concat "HOME=" (getenv "HOME")) "SBCL_HOME=C:/devel/msys64/usr/local/sbcl-2.2.5/lib/sbcl/")))
   (defun sbcl-2-2-6()
-    (only-sbcl-p 'sbcl-2.2.6 "C:/devel/msys64/usr/local/sbcl-2.2.6/bin/sbcl"
+    (only-sbcl-p 'sbcl-2.2.6 "C:/devel/msys64/usr/local/sbcl-2.2.6/bin/sbcl.exe"
 		 (list (concat "HOME=" (getenv "HOME")) "SBCL_HOME=C:/devel/msys64/usr/local/sbcl-2.2.6/lib/sbcl/")))
 #+END_SRC
 * Provision a ABCL entry for slime
@@ -518,7 +521,7 @@ CYGWIN version of CLISP is not provisioned
  #+INDEX: Common Lisp!quicklisp, slime helper
  #+INDEX: quicklisp!slime helper
  #+INDEX: Slime!quicklisp helper
- #+BEGIN_SRC emacs-lisp :tangle no
+ #+BEGIN_SRC emacs-lisp
    ;;;; Build the implemenation lisp dynamically.
    ;;;; Remove all nil items from the list.
      ;;;; Load slime helper
@@ -527,22 +530,26 @@ CYGWIN version of CLISP is not provisioned
 * SLIME Configuation
  #+INDEX: Slime!LISP Implmentations
  #+BEGIN_SRC emacs-lisp
-      (use-package slime
-	:config
-   ;;;; Configure slime from the above provisionsing
-   ;;;; Remove any empty items
-	  (setq slime-lisp-implementations
-	    (seq-filter (lambda (e) e)
-	      (list
-	       `(sbcl ,(cons "C:/devel/msys64/usr/local/sbcl-2.2.6/bin/sbcl.exe"  (standard-sbcl-options)))
-	       (sbcl-2-2-6)
-	       (provision-ccl)
-	       ;(sbcl-2-2-6)
-	       (provision-clisp-msys64)
-	       (provision-clisp-cygwin64))))
-	       (provision-abcl)
-       (setq slime-contribs '(slime-fancy))
-       (global-set-key "\C-cs" 'slime-selector))
+   ;;      (add-to-list 'load-path "C:/devel/msys64/usr/local/slime")
+   ;;      (require 'slime-auto-loads)
+	 (use-package slime
+	   :config
+      ;;;; Configure slime from the above provisionsing
+      ;;;; Remove any empty items
+	     (setq slime-lisp-implementations
+	       (seq-filter (lambda (e) e)
+		 (list
+	       	  `(sbcl-5  ,(cons "C:/devel/msys64/usr/local/sbcl-2.2.5/bin/sbcl.exe"  (standard-sbcl-options)))
+	          (sbcl-2-2-5)
+		  `(sbcl-6 ,(cons "C:/devel/msys64/usr/local/sbcl-2.2.6/bin/sbcl.exe"  (standard-sbcl-options)))
+		  (sbcl-2-2-6)
+		  (provision-ccl)
+		  ;(sbcl-2-2-6)
+		  (provision-clisp-msys64)
+		  (provision-clisp-cygwin64))))
+		  (provision-abcl)
+	  (setq slime-contribs '(slime-fancy))
+	  (global-set-key "\C-cs" 'slime-selector))
  #+END_SRC
 * Enable lisp-mode .lisp and .asd files
   #+BEGIN_SRC emacs-lisp
