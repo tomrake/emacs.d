@@ -80,7 +80,7 @@
 		       ("emacs-config"
 			:base-directory "~/.emacs.d"
 			:base-extension "org"
-			:publishing-directory "c:/Users/Public/org-web/emacs-config"
+			:publishing-directory ,(publish-path "emacs-config")
 			:recursive nil
 			:publishing-function org-html-publish-to-html
 			:headline-levels 9             ; Just the default for this project.
@@ -94,13 +94,12 @@
       ;		,@(publish-project "benifits" . ,(src-publish-pair "benifits"))
       ,@(make-project "sonya")
       ,@(make-project "james")
-		       ;; ,@(publish-project "code-projects" "~/quicklisp/local-projects" "c:/Users/Public/org-web/code-projects")
+    ,@(publish-project "code-projects" "~/quicklisp/local-projects"(publish-path "code-projects"))
     ,@(make-project "family")
     ,@(make-project "recipes")
     ,@(make-project "political")
     ,@(make-project "administration")
-			("org-web" :components ("org" "benifits", "technical"
-	  ;;				     "code-projects"
+			("org-web" :components ("org" "benifits", "technical" "code-projects" "emacs-config"
 						"family" "recipes" "political" "administration"))))
 #+END_SRC  
 
