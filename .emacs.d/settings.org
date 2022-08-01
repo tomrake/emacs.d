@@ -244,7 +244,7 @@ Fixed on 7/2/2022 moving to DESKER
 #+BEGIN_SRC emacs-lisp
   (setq ispell-program-name "aspell")
 #+END_SRC
-* Generic arguments, paths and strings.
+* Joining items as strings with and without quoting
 #+BEGIN_SRC emacs-lisp
   (defun double-quote-string(s)
      (concat "\"" s "\""))
@@ -261,15 +261,11 @@ Fixed on 7/2/2022 moving to DESKER
   (defun join-with-spaces (args)
      (mapconcat 'identity args " "))
 #+END_SRC
-* External Subsytems
-  msys2 and cygwin have internal file system roots in Windows, those roots are defined here.
-  Subsytem Roots
-   Define where the roots of the file systems are located on Windows.
-* Cygwin Root
+* Initialize My cygwin emulation
   #+BEGIN_SRC emacs-lisp
 	(setq +cygwin64-base-path+ "C:/cygwin64")
   #+END_SRC
-* msys2 root
+* Initialize My msys2 emulation
   #+BEGIN_SRC emacs-lisp
     ;; Paths to msys2 file root
     (let ((mingw64-root-mount "C:/devel/msys64")
@@ -281,15 +277,12 @@ Fixed on 7/2/2022 moving to DESKER
     (add-to-list 'exec-path mingw64-bin-mount))
     (setq +msys64-base-path+ "C:/devel/msys64/")
   #+END_SRC
-* Subsystem emulators
-   Subsystem parts need to be emulated.
-* Cygwin Emulator
+* Cygwin Enviroment Emulation
  #+BEGIN_SRC emacs-lisp
        (defun cygwin64-file-exists-p (file)
 	 (file-exists-p (concat +cygwin64-base-path+ file)))
  #+END_SRC
-* msys2 Emulator
-
+* msys2 Enviroment Emulation
  #+BEGIN_SRC emacs-lisp
    (defun msys64-file-exists-p (file)
      (file-exists-p (concat +msys64-base-path+ file)))
@@ -301,12 +294,7 @@ Fixed on 7/2/2022 moving to DESKER
    (defun msys2-command-string (cmd)
      (concat +msys64-base-path+ "usr/bin/" cmd ".exe"))
  #+END_SRC
-* Tools implemanted for various subsystems
-* Cygwin Tools
-    No tools for cygwin yet.
-* msys2 Tools
-* msys2/bash run
-     Start a command in a msys2 shell
+* Run a command in a msys2 shell
    #+BEGIN_SRC emacs-lisp
      (defun start-under-bash-login-shell (shell-task)
      "Excute a msys2-command under a msys2-64 bash login shell"
@@ -591,9 +579,11 @@ CYGWIN version of CLISP is not provisioned
 	      auto-mode-alist))
 #+END_SRC
 
-* Org Mode Customizations
-#+INDEX: org-mode!main configuration
-The newest redesign of org mode gtd is to use a per user setup with no public shared data.
+* org pdf export fix
+#+BEGIN_SRC emacs-lisp
+  ;; Where org-export latex can find perl
+  (setenv "PATH" (concat (getenv "PATH") (concat ";" +msys64-base-path+ "usr/bin/")))
+#+END_SRC
 * org global properties - efforts
 #+BEGIN_SRC emacs-lisp
   (setf org-global-properties
