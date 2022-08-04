@@ -766,10 +766,16 @@ CYGWIN version of CLISP is not provisioned
 
 * Org link abbreviations
  #+BEGIN_SRC emacs-lisp
- (setq org-link-abbrev-alist
-       '(("bugzilla" . "http://192.168.1.50/bugzilla/show_bug.cgi?id=")
-	 ("bugzilla-comp" . "http://192.168.1.50/bugzilla/describecomponents.cgi?product=")))
+   (setq org-link-abbrev-alist
+	 '(("bugzilla" . "http://192.168.1.50/bugzilla/show_bug.cgi?id=")
+	   ("bugzilla-comp" . "http://192.168.1.50/bugzilla/describecomponents.cgi?product=")
+	   ("code" . "file:///C:/Users/zzzap/Documents/Code/quicklisp/local-projects/%s")
+	   ("common-docs" . "file:///C:/Users/zzzap/Documents/Common-Document-Store/%s")))
  #+END_SRC
+
+ #+RESULTS:
+ : ((bugzilla . http://192.168.1.50/bugzilla/show_bug.cgi?id=) (bugzilla-comp . http://192.168.1.50/bugzilla/describecomponents.cgi?product=) (common-docs . file:///C:/Users/zzzap/Documents/Common-Document-Store/%s))
+
 * Ensure there are standard user ~/org directories
  [TBD] is this how I am configured now?
  How to define the standard HOME org directory.
