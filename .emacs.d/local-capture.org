@@ -30,9 +30,9 @@
 	     "* %?\nEntered on %U\n  %i\n  %a")
        ;; Medical Appointments  (m) Medical template
 	  ("m" "Medical Appointments")
-	  ("mo" "(o) Office Appointent" entry (file+headline ,(concat org-gtd-dir "Tickler.org") "TICKLERS")
+	  ("mo" "(o) Office Appointent" entry (file+headline ,(concat org-gtd-dir "Appointments.org") "APPOINTMENTS")
 	   (file ,(concat gtd-template-dir "Office-Appointment.txt")) :empty-lines 1 :time-prompt t)
-	  ("mt" "(t) Testing Appointent" entry (file+headline ,(concat org-gtd-dir "Tickler.org") "TICKLERS")
+	  ("mt" "(t) Testing Appointent" entry (file+headline ,(concat org-gtd-dir "Appointments.org") "APPOINTMENTS")
 	   (file ,(concat gtd-template-dir "Testing-Appointment.txt")) :empty-lines 1 :time-prompt t)
        ;; Health Data Capture
 	  ("h" "Health Data Capture (h)")
