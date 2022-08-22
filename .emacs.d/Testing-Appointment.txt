@@ -2,6 +2,7 @@
    SCHEDULED: %^T
    OPENED: %U
    :PROPERTIES:
+   :CATEGORY: APPOINT
    :INVITEE: %\1
    :LOCATION: %\2
    :END:

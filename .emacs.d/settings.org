@@ -497,7 +497,7 @@ CYGWIN version of CLISP is not provisioned
 * Slime / Company
    Slime is the inferface to LISP on emacs.
 #+INDEX: Common Lisp!Slime Provisioning
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp :tangle no
 (use-package slime-company 
   :after (slime company)
   :config (setq slime-company-completion 'fuzzy
@@ -527,7 +527,7 @@ CYGWIN version of CLISP is not provisioned
 	     (setq slime-lisp-implementations
 	       (seq-filter (lambda (e) e)
 		 (list
-		  '(sbcl ("C:/devel/msys64/usr/local/bin/sbcl" "--noinform"))
+		  '(sbcl ("C:/devel/msys65/bin/bash" "-c" "C:/devel/msys64/usr/local/bin/sbcl" "--noinform"))
 		  '(sbcl-5  ("C:/devel/msys64/usr/local/sbcl-2.2.5/bin/sbcl.exe"  "--noinform")
 			    :env ("SBCL_HOME=C:/devel/msys64/usr/local/sbcl-2.2.5/lib/sbcl/"))
 		  (sbcl-2-2-5)
