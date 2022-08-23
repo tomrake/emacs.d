@@ -282,7 +282,8 @@ Fixed on 7/2/2022 moving to DESKER
        (defun cygwin64-file-exists-p (file)
 	 (file-exists-p (concat +cygwin64-base-path+ file)))
  #+END_SRC
-* msys2 Enviroment Emulation
+* msys2 Envir
+oment Emulation
  #+BEGIN_SRC emacs-lisp
    (defun msys-path (path)
      (concat +msys64-base-path+ path))
@@ -443,14 +444,38 @@ Main Page: [[https://protesilaos.com/emacs/modus-themes]]
       '("--noinform"))
  #+END_SRC
 * Return slime entry with tag and env only if exec-path if found.
+
 When the executable exec-path is found generate a slime entry under tag having the env enviroment.
 #+BEGIN_SRC emacs-lisp
-  (defun only-sbcl-p (tag exec-path env)
-      (when (file-exists-p exec-path)
-         (list tag
-	   `( ,exec-path ,@(double-quote-list (standard-sbcl-options)))
-	       :env
-	       env)))
+     (defmacro add-slime-lisp (tag program program-args environment)
+      "Form a slime entry for a lisp"
+     `(list ,tag (cons ,program ,program-args) :env ,environment))
+
+    (defun invoke-standard-sbcl (tag program environment)
+      (add-slime-lisp tag program '("--noinform") environment))
+
+    (defun only-sbcl-p (tag exec-path env)
+	(when (file-exists-p exec-path)
+	   (list tag
+	     `( ,exec-path ,@(double-quote-list (standard-sbcl-options)))
+		 :env
+		 env)))
+
+     (defun msys-sbcl (tag path)
+       "The standard place I store sbcl that I compile are /usr/local/sbcl-version
+  sbcl-version/
+    bin/
+      sbcl.exec ; The executable
+    lib/
+      sbcl/     ; SBCL_HOME
+	contrib/
+	sbcl.core ; the core image
+	sbcl.mk"
+       ;;; The path is the path to the sbcl-version container.
+       (let ((exec-path (msys-path (concat path "bin/sbcl.exe")))
+	     (home-path (msys-path (concat path "lib/sbcl/"))))
+         (when (file-exists-p exec-path)
+		  (invoke-standard-sbcl tag exec-path (list (concat "SBCL_HOME=" home-path ))))))
 #+END_SRC
 * Provision a SBCL entry for slime.
 #+INDEX: SBCL!Slime provisioning
@@ -459,11 +484,17 @@ SBCL versions:
   - Add SBCL-2.2.1 msys2 compiled
 #+BEGIN_SRC emacs-lisp
   (defun sbcl-2-2-5()
-    (only-sbcl-p 'sbcl-2.2.5 "C:/devel/msys64/usr/local/sbcl-2.2.5/bin/sbcl.exe"
-		 (list (concat "HOME=" (getenv "HOME")) "SBCL_HOME=C:/devel/msys64/usr/local/sbcl-2.2.5/lib/sbcl/")))
+    (msys-sbcl 'sbcl-2.2.5 "usr/local/sbcl-2.2.5/")
+    ;; (only-sbcl-p 'sbcl-2.2.5 "C:/devel/msys64/usr/local/sbcl-2.2.5/bin/sbcl.exe"
+    ;; 	       (list (concat "HOME=" (getenv "HOME")) "SBCL_HOME=C:/devel/msys64/usr/local/sbcl-2.2.5/lib/sbcl/"))
+    )
+
   (defun sbcl-2-2-6()
-    (only-sbcl-p 'sbcl-2.2.6 "C:/devel/msys64/usr/local/sbcl-2.2.6/bin/sbcl.exe"
-		 (list (concat "HOME=" (getenv "HOME")) "SBCL_HOME=C:/devel/msys64/usr/local/sbcl-2.2.6/lib/sbcl/")))
+
+    ;; (only-sbcl-p 'sbcl-2.2.6 "C:/devel/msys64/usr/local/sbcl-2.2.6/bin/sbcl.exe"
+    ;; 	       (list (concat "HOME=" (getenv "HOME")) "SBCL_HOME=C:/devel/msys64/usr/local/sbcl-2.2.6/lib/sbcl/"))
+
+    )
 #+END_SRC
 * Provision a ABCL entry for slime
   When java and ABCL are located create an ABCL slime item.
