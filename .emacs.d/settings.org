@@ -450,7 +450,7 @@ When the executable exec-path is found generate a slime entry under tag having t
      (defmacro add-slime-lisp (tag program program-args environment)
       "Form a slime entry for a lisp"
      `(list ,tag (cons ,program ,program-args) :env ,environment))
-
+    ;;;; The standard options for SBCL call
     (defun invoke-standard-sbcl (tag program environment)
       (add-slime-lisp tag program '("--noinform") environment))
 
@@ -483,18 +483,11 @@ SBCL versions:
   - Add SBCL-2.0.0 msys2 compiled 
   - Add SBCL-2.2.1 msys2 compiled
 #+BEGIN_SRC emacs-lisp
-  (defun sbcl-2-2-5()
-    (msys-sbcl 'sbcl-2.2.5 "usr/local/sbcl-2.2.5/")
-    ;; (only-sbcl-p 'sbcl-2.2.5 "C:/devel/msys64/usr/local/sbcl-2.2.5/bin/sbcl.exe"
-    ;; 	       (list (concat "HOME=" (getenv "HOME")) "SBCL_HOME=C:/devel/msys64/usr/local/sbcl-2.2.5/lib/sbcl/"))
-    )
+  (defun msys-sbcl-2-2-5()
+    (msys-sbcl 'msys-sbcl-2.2.5 "usr/local/sbcl-2.2.5/"))
 
-  (defun sbcl-2-2-6()
-
-    ;; (only-sbcl-p 'sbcl-2.2.6 "C:/devel/msys64/usr/local/sbcl-2.2.6/bin/sbcl.exe"
-    ;; 	       (list (concat "HOME=" (getenv "HOME")) "SBCL_HOME=C:/devel/msys64/usr/local/sbcl-2.2.6/lib/sbcl/"))
-
-    )
+  (defun msys-sbcl-2-2-6()
+    (msys-sbcl 'msys-sbcl-2.2.6 "usr/local/sbcl-2.2.6/"))
 #+END_SRC
 * Provision a ABCL entry for slime
   When java and ABCL are located create an ABCL slime item.
@@ -561,13 +554,9 @@ CYGWIN version of CLISP is not provisioned
 	     (setq slime-lisp-implementations
 	       (seq-filter (lambda (e) e)
 		 (list
-		  '(sbcl ("C:/devel/msys65/bin/bash" "-c" "C:/devel/msys64/usr/local/bin/sbcl" "--noinform"))
-		  '(sbcl-5  ("C:/devel/msys64/usr/local/sbcl-2.2.5/bin/sbcl.exe"  "--noinform")
-			    :env ("SBCL_HOME=C:/devel/msys64/usr/local/sbcl-2.2.5/lib/sbcl/"))
-		  (sbcl-2-2-5)
-		  '(sbcl-6  ("C:/devel/msys64/usr/local/sbcl-2.2.6/bin/sbcl.exe"  "--noinform")
-			    :env ("SBCL_HOME=C:/devel/msys64/usr/local/sbcl-2.2.6/lib/sbcl/"))
-		  (sbcl-2-2-6)
+;		  '(sbcl ("C:/devel/msys65/bin/bash" "-c" "C:/devel/msys64/usr/local/bin/sbcl" "--noinform"))
+		  (msys-sbcl-2-2-6)
+		  (msys-sbcl-2-2-5)
 		  (provision-ccl)
 		  ;(sbcl-2-2-6)
 		  (provision-clisp-msys64)
