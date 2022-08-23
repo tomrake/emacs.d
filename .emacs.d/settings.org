@@ -284,15 +284,18 @@ Fixed on 7/2/2022 moving to DESKER
  #+END_SRC
 * msys2 Enviroment Emulation
  #+BEGIN_SRC emacs-lisp
+   (defun msys-path (path)
+     (concat +msys64-base-path+ path))
+
    (defun msys64-file-exists-p (file)
-     (file-exists-p (concat +msys64-base-path+ file)))
+     (file-exists-p (msys-path file)))
 
    (defun msys2-command (cmd params)
       (join-with-spaces (cons (msys2-command-string cmd) params)))
 
 
    (defun msys2-command-string (cmd)
-     (concat +msys64-base-path+ "usr/bin/" cmd ".exe"))
+     (concat (msys-path "usr/bin") cmd ".exe"))
  #+END_SRC
 * Run a command in a msys2 shell
    #+BEGIN_SRC emacs-lisp
@@ -585,7 +588,7 @@ CYGWIN version of CLISP is not provisioned
 * org pdf export fix
 #+BEGIN_SRC emacs-lisp
   ;; Where org-export latex can find perl
-  (setenv "PATH" (concat (getenv "PATH") (concat ";" +msys64-base-path+ "usr/bin/")))
+  (setenv "PATH" (concat (getenv "PATH") (concat ";" (msys-path "usr/bin/"))))
 #+END_SRC
 * org global properties - efforts
 #+BEGIN_SRC emacs-lisp
