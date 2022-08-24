@@ -534,7 +534,7 @@ CYGWIN version of CLISP is not provisioned
  #+INDEX: Common Lisp!quicklisp, slime helper
  #+INDEX: quicklisp!slime helper
  #+INDEX: Slime!quicklisp helper
- #+BEGIN_SRC emacs-lisp :tangle no
+ #+BEGIN_SRC emacs-lisp
    ;;;; Build the implemenation lisp dynamically.
    ;;;; Remove all nil items from the list.
      ;;;; Load slime helper
