@@ -450,7 +450,7 @@ Main Page: [[https://protesilaos.com/emacs/modus-themes]]
 #+BEGIN_SRC emacs-lisp
   ;;;; The standard options for SBCL
   (defun invoke-standard-sbcl (tag program environment)
-    (add-slime-lisp tag program '("--noinform" "-i") environment))
+    (add-slime-lisp tag program '("--noinform" "--no-userinit") environment))
 #+END_SRC
 
 * SBCL compiled under MSYS2 in TWR standard locations
@@ -476,6 +476,16 @@ Main Page: [[https://protesilaos.com/emacs/modus-themes]]
 	   (home-path (msys-path (concat path "lib/sbcl/"))))
        (when (file-exists-p exec-path)
 		(invoke-standard-sbcl tag exec-path (list (concat "SBCL_HOME=" home-path ))))))
+#+END_SRC
+* SBCL Windows Distrs TWR standard locations
+#+BEGIN_SRC emacs-lisp
+
+  (defun win-sbcl (tag path)
+    (let* ((twr-win (concat "C:/devel/msys64/usr/local/sbcl/win/" path "/"))
+	   (exec-path (concat twr-win "sbcl.exe"))
+	   (home-path twr-win))
+      (when (file-exists-p exec-path)
+	(invoke-standard-sbcl tag exec-path (list (concat "SBCL_HOME=" home-path))))))
 #+END_SRC
 * CCL for SLIME
   When a specific CCL binary is present create a CCL slime item.
@@ -548,18 +558,19 @@ CYGWIN version of CLISP is not provisioned
    ;	      :config
 	    ;;;; Configure slime from the above provisionsing
 	    ;;;; Remove any empty items
-                 (require 'slime)
+		 (require 'slime)
 		 (if nil
 		     (progn
-		       (setenv "SBCL_HOME" (msys-path "usr/local/sbcl-2.2.6/lib/sbcl/"))
-		       (setf inferior-lisp-program (msys-path "usr/local/sbcl-2.2.6/bin/sbcl.exe")))
+		       (setenv "SBCL_HOME" (msys-path "usr/local/sbcl/msys/2.2.6/lib/sbcl/"))
+		       (setf inferior-lisp-program (msys-path "usr/local/sbcl/msys/2.2.6/bin/sbcl.exe")))
 		     (progn
 		   (setq slime-lisp-implementations
 		     (seq-filter (lambda (e) e)
 		       (list
       ;		  '(sbcl ("C:/devel/msys65/bin/bash" "-c" "C:/devel/msys64/usr/local/bin/sbcl" "--noinform"))
-			(msys-sbcl 'msys-sbcl-2.2.6 "usr/local/sbcl-2.2.6/")
-			(msys-sbcl 'msys-sbcl-2.2.5 "usr/local/sbcl-2.2.5/")
+                        (win-sbcl 'win-sbcl-2.2.7 "2.2.7")
+			(msys-sbcl 'msys-sbcl-2.2.6 "usr/local/sbcl/msys/2.2.6/")
+			(msys-sbcl 'msys-sbcl-2.2.5 "usr/local/sbcl/msys/2.2.5/")
 			(provision-ccl 'ccl "C:/Users/zzzap/quicklisp/local-projects/ccl/wx86cl64.exe")
 			;(sbcl-2-2-6)
 			(provision-clisp-msys64)
