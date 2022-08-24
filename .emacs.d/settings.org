@@ -441,41 +441,42 @@ Main Page: [[https://protesilaos.com/emacs/modus-themes]]
 * Standard Options for SBCL startup
  #+BEGIN_SRC emacs-lisp
     (defun standard-sbcl-options()
-      '("--noinform"))
+      '("--noinform" "-i"))
  #+END_SRC
 * Return slime entry with tag and env only if exec-path if found.
 
 When the executable exec-path is found generate a slime entry under tag having the env enviroment.
 #+BEGIN_SRC emacs-lisp
-     (defmacro add-slime-lisp (tag program program-args environment)
-      "Form a slime entry for a lisp"
-     `(list ,tag (cons ,program ,program-args) :env ,environment))
-    ;;;; The standard options for SBCL call
-    (defun invoke-standard-sbcl (tag program environment)
-      (add-slime-lisp tag program '("--noinform") environment))
+   (defmacro add-slime-lisp (tag program program-args environment)
+    "The format of a standard slime entry for a lisp implenatation."
+   `(list ,tag (cons ,program ,program-args) :env ,environment))
 
-    (defun only-sbcl-p (tag exec-path env)
-	(when (file-exists-p exec-path)
-	   (list tag
-	     `( ,exec-path ,@(double-quote-list (standard-sbcl-options)))
-		 :env
-		 env)))
+  ;;;; The standard options for SBCL call
+  (defun invoke-standard-sbcl (tag program environment)
+    (add-slime-lisp tag program '("--noinform") environment))
 
-     (defun msys-sbcl (tag path)
-       "The standard place I store sbcl that I compile are /usr/local/sbcl-version
-  sbcl-version/
-    bin/
-      sbcl.exec ; The executable
-    lib/
-      sbcl/     ; SBCL_HOME
-	contrib/
-	sbcl.core ; the core image
-	sbcl.mk"
-       ;;; The path is the path to the sbcl-version container.
-       (let ((exec-path (msys-path (concat path "bin/sbcl.exe")))
-	     (home-path (msys-path (concat path "lib/sbcl/"))))
-         (when (file-exists-p exec-path)
-		  (invoke-standard-sbcl tag exec-path (list (concat "SBCL_HOME=" home-path ))))))
+
+  (defun msys-sbcl (tag path)
+    "Create a slime entry for the tag if the sbcl.exe is found."
+  ;;; The path is the path to the sbcl-version container.
+  ;;;
+  ;;; The standard place I store sbcl that I compile are /usr/local/sbcl-version
+  ;;;
+  ;;; File System Template for a sbcl implemenation
+  ;;;
+  ;;; sbcl-version/
+  ;;;   bin/
+  ;;;     sbcl.exec ; The executable
+  ;;;   lib/
+  ;;;     sbcl/     ; SBCL_HOME
+  ;;;       contrib/
+  ;;;       sbcl.core ; the core image
+  ;;;       sbcl.mk
+
+     (let ((exec-path (msys-path (concat path "bin/sbcl.exe")))
+	   (home-path (msys-path (concat path "lib/sbcl/"))))
+       (when (file-exists-p exec-path)
+		(invoke-standard-sbcl tag exec-path (list (concat "SBCL_HOME=" home-path ))))))
 #+END_SRC
 * Provision a SBCL entry for slime.
 #+INDEX: SBCL!Slime provisioning
@@ -500,10 +501,9 @@ SBCL versions:
 * Provison a CCL entry for slime
   When a specific CCL binary is present create a CCL slime item.
     #+BEGIN_SRC emacs-lisp
-      (defun provision-ccl ()
-	(let ((ccl "C:/Users/zzzap/quicklisp/local-projects/ccl/wx86cl64.exe"))
-          (when (file-exists-p ccl)
-            `(ccl-64 (,ccl)))))
+      (defun provision-ccl (tag path)
+	  (when (file-exists-p path)
+	    `(,tag (,path))))
     #+END_SRC
 
 * Provision a CLISP if on MSYS2
@@ -557,7 +557,7 @@ CYGWIN version of CLISP is not provisioned
 ;		  '(sbcl ("C:/devel/msys65/bin/bash" "-c" "C:/devel/msys64/usr/local/bin/sbcl" "--noinform"))
 		  (msys-sbcl-2-2-6)
 		  (msys-sbcl-2-2-5)
-		  (provision-ccl)
+		  (provision-ccl 'ccl "C:/Users/zzzap/quicklisp/local-projects/ccl/wx86cl64.exe")
 		  ;(sbcl-2-2-6)
 		  (provision-clisp-msys64)
 		  (provision-clisp-cygwin64))))
