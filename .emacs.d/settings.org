@@ -481,11 +481,12 @@ When the executable exec-path is found generate a slime entry under tag having t
 * Provision a ABCL entry for slime
   When java and ABCL are located create an ABCL slime item.
   #+BEGIN_SRC emacs-lisp
-  (defmacro provision-abcl()
-    `(when (and (file-exists-p  (convert-standard-filename "C:/Program Files/ABCL/abcl.jar")))
-	  `(abcl  ("java" "-jar" ,(convert-standard-filename "C:/Program Files/ABCL/abcl.jar")))))
+  (defun provision-abcl()
+    (let ((java "C:/Program Files/Java/jre1.8.0_333/bin/java.exe")
+          (abcl "C:/Program Files/ABCL/abcl.jar"))
+           (when (and (file-exists-p  java) (file-exists-p abcl))
+             `(abcl  (,java "-jar" ,abcl)))))
   #+END_SRC
-** TODO Verify that java also existes
 * Provison a CCL entry for slime
   When a specific CCL binary is present create a CCL slime item.
     #+BEGIN_SRC emacs-lisp
