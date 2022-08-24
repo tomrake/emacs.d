@@ -3,14 +3,28 @@
 #+OPTIONS: num:nil ^:nil
 #+EXPORT-FILENAME: init.el
 #+INDEX: Emacs!Configuration
-* Report Debug START  :noexport:
-#+BEGIN_SRC emacs-lisp
-(message "Debug START")
-#+END_SRC
-
 * FRONT STUFF
 
 ** Documentation
+*** README
+How my system is setup.
+
+I want to backup things in [[~/]] by FileHistory that material is in [[~/Documents/Code]]
+
+Most of the items in that directory are symlinked to ~/ (really MKLINK).
+
+
+These are the configuration files.
+ [[file:~/.emacs.d/init.el]]
+ [[file:~/.emacs.d/settings.el]]
+ [[file:~/.emacs.d/settings.org]]
+ [[file:~/.emacs.d/local-settings.org]] Per user settings if this file is shared
+ [[file:~/.emacs.d/local-capture.org]]  org-capture stuff
+ [[file:~/.emacs.d/Office-Appointment.txt]] capture template for Office Appointments
+ [[file:~/.emacs.d/Testing-Appointment.txt]] capture template for Testing Appointments
+ [[file:~/.emacs.d/local-custom-agenda.org]] org-agenda stuff
+ [[file:~/.emacs.d/local-publishing.org]] org-publishing stuff
+
 *** Revision Narative
 
 **** Phase 1
@@ -42,11 +56,6 @@
   
 ****  Phase 2
   This  phase  is planning to remove existing themes and  use Modus Themes and then customize them.
-*** README
- [[file:~/.emacs.d/init.el]]
- [[file:~/.emacs.d/settings.el]]
- [[file:~/.emacs.d/settings.org]]
- [[file:~/.emacs.d/README.org]]
 *** Standard coding setup
  - The source of Emacs startup code is largely controlled by .emacs/setting.org
  - All programming code is located in ~/quicklisp/local-projects/
@@ -59,7 +68,6 @@
   ;;;; ~/.emacs.d/init.el will load ~/.emacs.d/settings.el
   ;;;; ~/.emacs.d/settings.org is created and updated by *tangle* of code blocks from  settings.org
   (setq org-src-tab-acts-natively t)
-  ()
 #+END_SRC
 * Server Start
 #+BEGIN_SRC enacs-lisp
@@ -76,7 +84,6 @@
    (setq custom-file "~/.config/emacs/.emacs-custom.el")
    (load custom-file)
  #+END_SRC
-
 * Allow loading of a file from .emacs.d/
  User custom setting from .emacs.d files.
 #+BEGIN_SRC emacs-lisp
@@ -99,6 +106,27 @@
   ;(setq debug-on-error t)
   #+END_SRC
 
+* !!!!!! PACKAGE SYSTEM SETUP
+  
+* Setup Package Archives
+#+BEGIN_SRC emacs-lisp
+  (setq package-check-signature nil)
+  (require 'package)
+  (add-to-list 'package-archives
+	       '("melpa" . "https://melpa.org/packages/") t)
+  (package-initialize)
+#+END_SRC
+* Load use-package
+  [TBD] Consider if this needs to be initialized
+#+BEGIN_SRC emacs-lisp
+  (unless (package-installed-p 'use-package)
+    (package-refresh-contents)
+    (package-install 'use-package))
+  (eval-and-compile
+    (setq use-package-always-ensure t
+	  use-package-expand-minimally t))
+  ;;  (require 'use-package)
+#+END_SRC
 * org-protocol
 #+BEGIN_SRC emacs-lisp
   ;(server-start)
@@ -132,25 +160,6 @@ I don't like the a messy startup screen.
  (setq w32-use-visible-system-caret nil)
  #+END_SRC
 
-* Package Archives distros
-#+BEGIN_SRC emacs-lisp
-  (setq package-check-signature nil)
-  (require 'package)
-  (add-to-list 'package-archives
-	       '("melpa" . "https://melpa.org/packages/") t)
-  (package-initialize)
-#+END_SRC
-* Load use-package
-  [TBD] Consider if this needs to be initialized
-#+BEGIN_SRC emacs-lisp
-(unless (package-installed-p 'use-package)
-  (package-refresh-contents)
-  (package-install 'use-package))
-(eval-and-compile
-  (setq use-package-always-ensure t
-        use-package-expand-minimally t))
-;;  (require 'use-package)
-#+END_SRC
 * Buffer Auto reverting
 #+BEGIN_SRC emacs-lisp
   ;; auto revert mode
@@ -431,31 +440,21 @@ Main Page: [[https://protesilaos.com/emacs/modus-themes]]
       :config
 	(add-hook 'lisp-mode-hook #'paredit-mode))
   #+END_SRC
-* LISP Language
-  I have many versions of LISP to use under emacs slime.
-  I use quicklisp to download LISP packages.
-  [TBD] I use autocomplete for slime complettion, but am considering switching to helm.
-* Provision Various Common LISPs
- #+INDEX: Common Lisp!Provisioning
- Universal Startup Code should be here.
-* Standard Options for SBCL startup
- #+BEGIN_SRC emacs-lisp
-    (defun standard-sbcl-options()
-      '("--noinform" "-i"))
- #+END_SRC
-* Return slime entry with tag and env only if exec-path if found.
-
-When the executable exec-path is found generate a slime entry under tag having the env enviroment.
+* A standard slime entry for slime-lisp-implemenations
 #+BEGIN_SRC emacs-lisp
    (defmacro add-slime-lisp (tag program program-args environment)
     "The format of a standard slime entry for a lisp implenatation."
    `(list ,tag (cons ,program ,program-args) :env ,environment))
-
-  ;;;; The standard options for SBCL call
+#+END_SRC
+* Standard Options for SBCL startup
+#+BEGIN_SRC emacs-lisp
+  ;;;; The standard options for SBCL
   (defun invoke-standard-sbcl (tag program environment)
-    (add-slime-lisp tag program '("--noinform") environment))
+    (add-slime-lisp tag program '("--noinform" "-i") environment))
+#+END_SRC
 
-
+* SBCL compiled under MSYS2 in TWR standard locations
+#+BEGIN_SRC emacs-lisp
   (defun msys-sbcl (tag path)
     "Create a slime entry for the tag if the sbcl.exe is found."
   ;;; The path is the path to the sbcl-version container.
@@ -478,7 +477,16 @@ When the executable exec-path is found generate a slime entry under tag having t
        (when (file-exists-p exec-path)
 		(invoke-standard-sbcl tag exec-path (list (concat "SBCL_HOME=" home-path ))))))
 #+END_SRC
-* Provision a ABCL entry for slime
+* CCL for SLIME
+  When a specific CCL binary is present create a CCL slime item.
+    #+BEGIN_SRC emacs-lisp
+      (defun provision-ccl (tag path)
+	  (when (file-exists-p path)
+	    `(,tag (,path))))
+    #+END_SRC
+
+* Untested or not working LISP implemenatations
+** Provision a ABCL entry for slime
   When java and ABCL are located create an ABCL slime item.
   #+BEGIN_SRC emacs-lisp
   (defun provision-abcl()
@@ -487,29 +495,20 @@ When the executable exec-path is found generate a slime entry under tag having t
            (when (and (file-exists-p  java) (file-exists-p abcl))
              `(abcl  (,java "-jar" ,abcl)))))
   #+END_SRC
-* Provison a CCL entry for slime
-  When a specific CCL binary is present create a CCL slime item.
-    #+BEGIN_SRC emacs-lisp
-      (defun provision-ccl (tag path)
-	  (when (file-exists-p path)
-	    `(,tag (,path))))
-    #+END_SRC
-
-* Provision a CLISP if on MSYS2
+** Provision a CLISP if on MSYS2
 #+BEGIN_SRC emacs-lisp
   (defun provision-clisp-msys64 ()
     (when nil
     `(clisp-msys64 ())))
 #+END_SRC
-** TODO Fix MSYS2 Provisioning
-* Provision a CLISP if on Cygwin
+** Provision a CLISP if on Cygwin
 CYGWIN version of CLISP is not provisioned
 #+BEGIN_SRC emacs-lisp
   (defun provision-clisp-cygwin64()
     (when nil
     `(clisp-cygwin64 ())))
 #+END_SRC
-** TODO Fix Cygwin Provisionsing
+
 * Slime / Company
    Slime is the inferface to LISP on emacs.
 #+INDEX: Common Lisp!Slime Provisioning
@@ -525,35 +524,55 @@ CYGWIN version of CLISP is not provisioned
  #+INDEX: Common Lisp!quicklisp, slime helper
  #+INDEX: quicklisp!slime helper
  #+INDEX: Slime!quicklisp helper
- #+BEGIN_SRC emacs-lisp
+ #+BEGIN_SRC emacs-lisp :tangle no
    ;;;; Build the implemenation lisp dynamically.
    ;;;; Remove all nil items from the list.
      ;;;; Load slime helper
      (load (expand-file-name "~/Documents/Code/quicklisp/slime-helper.el"))
  #+END_SRC
+* Report Debug START  :noexport:
+#+BEGIN_SRC emacs-lisp
+(message "Debug START")
+#+END_SRC
+
+* Report Debug MARK                                                :noexport:
+#+BEGIN_SRC emacs-lisp
+(message "Debug MARK")
+#+END_SRC
 * SLIME Configuation
  #+INDEX: Slime!LISP Implmentations
  #+BEGIN_SRC emacs-lisp
-      ;;      (add-to-list 'load-path "C:/devel/msys64/usr/local/slime")
-      ;;      (require 'slime-auto-loads)
-	    (use-package slime
-	      :config
-	 ;;;; Configure slime from the above provisionsing
-	 ;;;; Remove any empty items
-		(setq slime-lisp-implementations
-		  (seq-filter (lambda (e) e)
-		    (list
-   ;		  '(sbcl ("C:/devel/msys65/bin/bash" "-c" "C:/devel/msys64/usr/local/bin/sbcl" "--noinform"))
-                     (msys-sbcl 'msys-sbcl-2.2.6 "usr/local/sbcl-2.2.6/")
-		     (msys-sbcl 'msys-sbcl-2.2.5 "usr/local/sbcl-2.2.5/")
-		     (provision-ccl 'ccl "C:/Users/zzzap/quicklisp/local-projects/ccl/wx86cl64.exe")
-		     ;(sbcl-2-2-6)
-		     (provision-clisp-msys64)
-		     (provision-clisp-cygwin64))))
-		     (provision-abcl)
-	     (setq slime-contribs '(slime-fancy))
-	     (global-set-key "\C-cs" 'slime-selector))
+	       (add-to-list 'load-path "C:/devel/msys64/usr/local/slime")
+	 ;;      (require 'slime-auto-loads)
+   ;	    (use-package slime
+   ;	      :config
+	    ;;;; Configure slime from the above provisionsing
+	    ;;;; Remove any empty items
+                 (require 'slime)
+		 (if nil
+		     (progn
+		       (setenv "SBCL_HOME" (msys-path "usr/local/sbcl-2.2.6/lib/sbcl/"))
+		       (setf inferior-lisp-program (msys-path "usr/local/sbcl-2.2.6/bin/sbcl.exe")))
+		     (progn
+		   (setq slime-lisp-implementations
+		     (seq-filter (lambda (e) e)
+		       (list
+      ;		  '(sbcl ("C:/devel/msys65/bin/bash" "-c" "C:/devel/msys64/usr/local/bin/sbcl" "--noinform"))
+			(msys-sbcl 'msys-sbcl-2.2.6 "usr/local/sbcl-2.2.6/")
+			(msys-sbcl 'msys-sbcl-2.2.5 "usr/local/sbcl-2.2.5/")
+			(provision-ccl 'ccl "C:/Users/zzzap/quicklisp/local-projects/ccl/wx86cl64.exe")
+			;(sbcl-2-2-6)
+			(provision-clisp-msys64)
+			(provision-clisp-cygwin64))))
+			(provision-abcl)
+		(setq slime-contribs '(slime-fancy))
+		(global-set-key "\C-cs" 'slime-selector)))
+
  #+END_SRC
+* Report Debug End :noexport:
+#+BEGIN_SRC emacs-lisp
+(message "Debug END")
+#+END_SRC
 * Enable lisp-mode .lisp and .asd files
   #+BEGIN_SRC emacs-lisp
   (setq auto-mode-alist
@@ -881,10 +900,6 @@ dir
 (local-custom-file "local-publishing.org" "Configuration of org-publishing")
 #+END_SRC  
 
-* Report Debug Mark                                                :noexport:
-#+BEGIN_SRC emacs-lisp
-(message "Debug MARK")
-#+END_SRC
 * org-present
 #+BEGIN_SRC emacs-lisp
 (use-package org-present
@@ -914,7 +929,3 @@ dir
  (local-custom-file "local-settings.org" "Final user settings")
  #+END_SRC
 
-* Report Debug End :noexport:
-#+BEGIN_SRC emacs-lisp
-(message "Debug END")
-#+END_SRC
