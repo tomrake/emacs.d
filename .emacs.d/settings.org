@@ -478,18 +478,6 @@ When the executable exec-path is found generate a slime entry under tag having t
        (when (file-exists-p exec-path)
 		(invoke-standard-sbcl tag exec-path (list (concat "SBCL_HOME=" home-path ))))))
 #+END_SRC
-* Provision a SBCL entry for slime.
-#+INDEX: SBCL!Slime provisioning
-SBCL versions:
-  - Add SBCL-2.0.0 msys2 compiled 
-  - Add SBCL-2.2.1 msys2 compiled
-#+BEGIN_SRC emacs-lisp
-  (defun msys-sbcl-2-2-5()
-    (msys-sbcl 'msys-sbcl-2.2.5 "usr/local/sbcl-2.2.5/"))
-
-  (defun msys-sbcl-2-2-6()
-    (msys-sbcl 'msys-sbcl-2.2.6 "usr/local/sbcl-2.2.6/"))
-#+END_SRC
 * Provision a ABCL entry for slime
   When java and ABCL are located create an ABCL slime item.
   #+BEGIN_SRC emacs-lisp
@@ -545,25 +533,25 @@ CYGWIN version of CLISP is not provisioned
 * SLIME Configuation
  #+INDEX: Slime!LISP Implmentations
  #+BEGIN_SRC emacs-lisp
-   ;;      (add-to-list 'load-path "C:/devel/msys64/usr/local/slime")
-   ;;      (require 'slime-auto-loads)
-	 (use-package slime
-	   :config
-      ;;;; Configure slime from the above provisionsing
-      ;;;; Remove any empty items
-	     (setq slime-lisp-implementations
-	       (seq-filter (lambda (e) e)
-		 (list
-;		  '(sbcl ("C:/devel/msys65/bin/bash" "-c" "C:/devel/msys64/usr/local/bin/sbcl" "--noinform"))
-		  (msys-sbcl-2-2-6)
-		  (msys-sbcl-2-2-5)
-		  (provision-ccl 'ccl "C:/Users/zzzap/quicklisp/local-projects/ccl/wx86cl64.exe")
-		  ;(sbcl-2-2-6)
-		  (provision-clisp-msys64)
-		  (provision-clisp-cygwin64))))
-		  (provision-abcl)
-	  (setq slime-contribs '(slime-fancy))
-	  (global-set-key "\C-cs" 'slime-selector))
+      ;;      (add-to-list 'load-path "C:/devel/msys64/usr/local/slime")
+      ;;      (require 'slime-auto-loads)
+	    (use-package slime
+	      :config
+	 ;;;; Configure slime from the above provisionsing
+	 ;;;; Remove any empty items
+		(setq slime-lisp-implementations
+		  (seq-filter (lambda (e) e)
+		    (list
+   ;		  '(sbcl ("C:/devel/msys65/bin/bash" "-c" "C:/devel/msys64/usr/local/bin/sbcl" "--noinform"))
+                     (msys-sbcl 'msys-sbcl-2.2.6 "usr/local/sbcl-2.2.6/")
+		     (msys-sbcl 'msys-sbcl-2.2.5 "usr/local/sbcl-2.2.5/")
+		     (provision-ccl 'ccl "C:/Users/zzzap/quicklisp/local-projects/ccl/wx86cl64.exe")
+		     ;(sbcl-2-2-6)
+		     (provision-clisp-msys64)
+		     (provision-clisp-cygwin64))))
+		     (provision-abcl)
+	     (setq slime-contribs '(slime-fancy))
+	     (global-set-key "\C-cs" 'slime-selector))
  #+END_SRC
 * Enable lisp-mode .lisp and .asd files
   #+BEGIN_SRC emacs-lisp
