@@ -450,7 +450,7 @@ Main Page: [[https://protesilaos.com/emacs/modus-themes]]
 #+BEGIN_SRC emacs-lisp
   ;;;; The standard options for SBCL
   (defun invoke-standard-sbcl (tag program environment)
-    (add-slime-lisp tag program '("--noinform" "--no-userinit") environment))
+    (add-slime-lisp tag program '("--noinform") environment))
 #+END_SRC
 
 * SBCL compiled under MSYS2 in TWR standard locations
@@ -568,7 +568,9 @@ CYGWIN version of CLISP is not provisioned
 		     (seq-filter (lambda (e) e)
 		       (list
       ;		  '(sbcl ("C:/devel/msys65/bin/bash" "-c" "C:/devel/msys64/usr/local/bin/sbcl" "--noinform"))
-                        (win-sbcl 'win-sbcl-2.2.7 "2.2.7")
+
+			(win-sbcl 'win-sbcl-2.2.7 "2.2.7")
+                        (win-sbcl 'win-sbcl-2.2.6 "2.2.6")
 			(msys-sbcl 'msys-sbcl-2.2.6 "usr/local/sbcl/msys/2.2.6/")
 			(msys-sbcl 'msys-sbcl-2.2.5 "usr/local/sbcl/msys/2.2.5/")
 			(provision-ccl 'ccl "C:/Users/zzzap/quicklisp/local-projects/ccl/wx86cl64.exe")
