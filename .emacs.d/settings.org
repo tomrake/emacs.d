@@ -495,15 +495,17 @@ Main Page: [[https://protesilaos.com/emacs/modus-themes]]
 	    `(,tag (,path))))
     #+END_SRC
 
-* Untested or not working LISP implemenatations
-** Provision a ABCL entry for slime
+* Provision a ABCL entry for slime
   When java and ABCL are located create an ABCL slime item.
   #+BEGIN_SRC emacs-lisp
-  (defun provision-abcl()
-    (let ((java "C:/Program Files/Java/jre1.8.0_333/bin/java.exe")
-          (abcl "C:/Program Files/ABCL/abcl.jar"))
-           (when (and (file-exists-p  java) (file-exists-p abcl))
-             `(abcl  (,java "-jar" ,abcl)))))
+    (defun provision-abcl()
+      (let ((java "c:/Program Files/Java/jdk1.8.0_333/bin/java.exe")
+	    (abcl "c:/Program Files/ABCL/abcl-src-1.9.0/dist/abcl.jar"))
+	    (message "java:")(message java) (message (if (file-exists-p java) "java exists!!" "java does not exists!!!!!!!"))
+	    (message "sbcl:") (message abcl) (message (if (file-exists-p abcl) "abcl exists!" "abcl does not exists!!!!!!!"))
+	     (when (and (file-exists-p  java) (file-exists-p abcl))
+	       (message "returning abcl entry")
+	       `(abcl  ,(list java "-jar" abcl)))))
   #+END_SRC
 ** Provision a CLISP if on MSYS2
 #+BEGIN_SRC emacs-lisp
@@ -518,7 +520,7 @@ CYGWIN version of CLISP is not provisioned
     (when nil
     `(clisp-cygwin64 ())))
 #+END_SRC
-
+* Untested or not working LISP implemenatations
 * Slime / Company
    Slime is the inferface to LISP on emacs.
 #+INDEX: Common Lisp!Slime Provisioning
@@ -552,35 +554,29 @@ CYGWIN version of CLISP is not provisioned
 * SLIME Configuation
  #+INDEX: Slime!LISP Implmentations
  #+BEGIN_SRC emacs-lisp
-	       (add-to-list 'load-path "C:/devel/msys64/usr/local/slime")
-	 ;;      (require 'slime-auto-loads)
-   ;	    (use-package slime
-   ;	      :config
-	    ;;;; Configure slime from the above provisionsing
-	    ;;;; Remove any empty items
-		 (require 'slime)
-		 (if nil
-		     (progn
-		       (setenv "SBCL_HOME" (msys-path "usr/local/sbcl/msys/2.2.6/lib/sbcl/"))
-		       (setf inferior-lisp-program (msys-path "usr/local/sbcl/msys/2.2.6/bin/sbcl.exe")))
-		     (progn
-		   (setq slime-lisp-implementations
-		     (seq-filter (lambda (e) e)
-		       (list
-      ;		  '(sbcl ("C:/devel/msys65/bin/bash" "-c" "C:/devel/msys64/usr/local/bin/sbcl" "--noinform"))
-
-			(win-sbcl 'win-sbcl-2.2.7 "2.2.7")
-                        (win-sbcl 'win-sbcl-2.2.6 "2.2.6")
-			(msys-sbcl 'msys-sbcl-2.2.6 "usr/local/sbcl/msys/2.2.6/")
-			(msys-sbcl 'msys-sbcl-2.2.5 "usr/local/sbcl/msys/2.2.5/")
-			(provision-ccl 'ccl "C:/Users/zzzap/quicklisp/local-projects/ccl/wx86cl64.exe")
-			;(sbcl-2-2-6)
-			(provision-clisp-msys64)
-			(provision-clisp-cygwin64))))
-			(provision-abcl)
-		(setq slime-contribs '(slime-fancy))
-		(global-set-key "\C-cs" 'slime-selector)))
-
+      (add-to-list 'load-path "C:/devel/msys64/usr/local/slime")
+   ;;;; Configure slime from the above provisionsing
+   ;;;; Remove any empty items
+	(require 'slime)
+	(require 'slime-autoloads)
+	(if nil
+	    (progn
+	      (setenv "SBCL_HOME" (msys-path "usr/local/sbcl/msys/2.2.6/lib/sbcl/"))
+	      (setf inferior-lisp-program (msys-path "usr/local/sbcl/msys/2.2.6/bin/sbcl.exe")))
+	    (progn
+	  (setq slime-lisp-implementations
+	    (seq-filter (lambda (e) e)
+	      (list
+	       (win-sbcl 'win-sbcl-2.2.7 "2.2.7")
+	       (win-sbcl 'win-sbcl-2.2.6 "2.2.6")
+	       (msys-sbcl 'msys-sbcl-2.2.6 "usr/local/sbcl/msys/2.2.6/")
+	       (msys-sbcl 'msys-sbcl-2.2.5 "usr/local/sbcl/msys/2.2.5/")
+	       (provision-ccl 'ccl "C:/Users/zzzap/quicklisp/local-projects/ccl/wx86cl64.exe")
+	       (provision-clisp-msys64)
+	       (provision-clisp-cygwin64)
+	       (provision-abcl))))
+       (setq slime-contribs '(slime-fancy))
+       (global-set-key "\C-cs" 'slime-selector)))
  #+END_SRC
 * Report Debug End :noexport:
 #+BEGIN_SRC emacs-lisp
