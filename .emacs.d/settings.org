@@ -499,7 +499,7 @@ Main Page: [[https://protesilaos.com/emacs/modus-themes]]
   When java and ABCL are located create an ABCL slime item.
   #+BEGIN_SRC emacs-lisp
     (defun provision-abcl()
-      (let ((java "c:/Program Files/Java/jdk1.8.0_333/bin/java.exe")
+      (let ((java (concat "c:/Program Files/Java/" (if t "jdk-18.0.2.1" "jdk1.8.0_333") "/bin/java.exe"))
 	    (abcl "c:/Program Files/ABCL/abcl-src-1.9.0/dist/abcl.jar"))
 	    (message "java:")(message java) (message (if (file-exists-p java) "java exists!!" "java does not exists!!!!!!!"))
 	    (message "sbcl:") (message abcl) (message (if (file-exists-p abcl) "abcl exists!" "abcl does not exists!!!!!!!"))
