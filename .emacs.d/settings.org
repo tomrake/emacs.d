@@ -622,11 +622,20 @@ CYGWIN version of CLISP is not provisioned
 	      auto-mode-alist))
 #+END_SRC
 
+* org templates
+#+BEGIN_SRC emacs-lisp
+(require 'org-tempo)
+
+(add-to-list 'org-structure-template-alist '("sh" . "src shell"))
+(add-to-list 'org-structure-template-alist '("el" . "src emacs-lisp"))
+#+END_SRC
+
 * org pdf export fix
 #+BEGIN_SRC emacs-lisp
   ;; Where org-export latex can find perl
   (setenv "PATH" (concat (getenv "PATH") (concat ";" (msys-path "usr/bin/"))))
 #+END_SRC
+
 * org global properties - efforts
 #+BEGIN_SRC emacs-lisp
   (setf org-global-properties
@@ -919,6 +928,41 @@ dir
       :config
       (setq visual-fill-column-width 110
 	    visual-fill-column-center-text t)))
+#+END_SRC
+* Bullets and fonts for org mode
+#+BEGIN_SRC emacs-lisp
+  (use-package org-bullets
+    :after org
+    :hook (org-mode . org-bullets-mode)
+    :custom
+    (org-bullets-bullet-list '("◉" "○" "●" "○" "●" "○" "●")))
+
+  ;; Replace list hyphen with dot
+  (font-lock-add-keywords 'org-mode
+			  '(("^ *\\([-]\\) "
+			    (0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "•"))))))
+
+  (dolist (face '((org-level-1 . 1.2)
+		  (org-level-2 . 1.1)
+		  (org-level-3 . 1.05)
+		  (org-level-4 . 1.0)
+		  (org-level-5 . 1.1)
+		  (org-level-6 . 1.1)
+		  (org-level-7 . 1.1)
+		  (org-level-8 . 1.1)))
+      (set-face-attribute (car face) nil :font "Cantarell" :weight 'regular :height (cdr face)))
+
+  ;; Make sure org-indent face is available
+  (require 'org-indent)
+
+  ;; Ensure that anything that should be fixed-pitch in Org files appears that way
+  (set-face-attribute 'org-block nil :foreground nil :inherit 'fixed-pitch)
+  (set-face-attribute 'org-code nil   :inherit '(shadow fixed-pitch))
+  (set-face-attribute 'org-indent nil :inherit '(org-hide fixed-pitch))
+  (set-face-attribute 'org-verbatim nil :inherit '(shadow fixed-pitch))
+  (set-face-attribute 'org-special-keyword nil :inherit '(font-lock-comment-face fixed-pitch))
+  (set-face-attribute 'org-meta-line nil :inherit '(font-lock-comment-face fixed-pitch))
+  (set-face-attribute 'org-checkbox nil :inherit 'fixed-pitch)
 #+END_SRC
 * PS Print with GHOSTSCRIPT
 #+BEGIN_SRC emacs-lisp
