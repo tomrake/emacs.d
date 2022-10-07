@@ -1,114 +1,137 @@
+#+STARTUP: overview
+#+TITLE: Emacs configuration
+#+OPTIONS: num:nil ^:nil
+#+EXPORT-FILENAME: init.el
+#+INDEX: Emacs!Configuration
+* FRONT STUFF
 
-#+EXPORT-FILENAME init.el
-* README
-** Standard LISP setup
+** Documentation
+*** README
+How my system is setup.
 
-quicklisp is installed at ~/quicklisp
+I want to backup things in [[~/]] by FileHistory that material is in [[~/Documents/Code]]
+
+Most of the items in that directory are symlinked to ~/ (really MKLINK).
 
 
-The base configuration searches for systems in the following directories:
-   - ~/common-lisp/
-   - ~/quicklisp/local-packages/
-   - c:/Users/Public/Documents/repos/
+These are the configuration files.
+ [[file:~/.emacs.d/init.el]]
+ [[file:~/.emacs.d/settings.el]]
+ [[file:~/.emacs.d/settings.org]]
+ [[file:~/.emacs.d/local-settings.org]] Per user settings if this file is shared
+ [[file:~/.emacs.d/local-capture.org]]  org-capture stuff
+ [[file:~/.emacs.d/Office-Appointment.txt]] capture template for Office Appointments
+ [[file:~/.emacs.d/Testing-Appointment.txt]] capture template for Testing Appointments
+ [[file:~/.emacs.d/local-custom-agenda.org]] org-agenda stuff
+ [[file:~/.emacs.d/local-publishing.org]] org-publishing stuff
 
-~/.quicklisp-user.lisp 
-Is a straight common lisp file used to add the above directories for then system
-The base configuration is done for all users except for user zzzap, which has a special legacy configuration.
+*** Revision Narative
 
-~/.config/common-lisp/source-registry.conf.d contains equivalent search directories
+**** Phase 1
+  I want to update to emacs 28.1. And in doing so I wish to convert my ad-hoc  package loading to use-package.
 
-NONSTANDARD legacy behaviour in zzzap
+  I am revised much of the junk documenation and will set a version of the settings.org files.
 
-zzzap has a non-standard/legacy quicklisp setup.lisp location of ~/local-code-projects/my-code/common-lisp/setup.lisp
+  These are the configuration sources:
+    - init.el this defers to settings.org>setting.el
+    - local-capture.org
+    - local-custom-agenda.org
+    - local-publishing.org
+    - local-settings.org
+    - ~/.custom/emacs/emacs-custom.el
 
-The Best solution would to convert and test all legacy code in the standard locations.
+  The next process is do git check in all changes and reboot emacs.
 
-*** Mitigration Strategy for zzzap
+  These were the difficulties in getting 28.1 to run.
 
-1. Make effort to find hard coded User/zzzap/ strings in lisp code.
-2. Do fixup of those strings test and certify  code
-3. Create ~/quickisp ~/common-lisp distro for zzzzp 
-4. mv selected items from legacy locations to new locations.
+  I needed to quote the EMACS_HOME enviroment variable becauce Program Fles has a space.
 
-** READ NOTES MESSAGE
-#+BEGIN_SRC emacs-lisp
-;;;; See the README in ~/emacs.d/settings.org has documentation on emacs, common-lisp setup.
-#+END_SRC
-** Each User has a role
-I have different roles on my PC. And each role had different sharing requirements.
-Each role has different setup files.
-Each role is represented by a specific user on my PC.
+  I needed to do a special load and compile to get use-project the Ian Y E Pen solution.
 
-** The public user is a common shared user
-Shared configuration across many user is done by files in the public user.
-These files are referenced by each user configuration file, see the org configuration in this file for en example.
-The Public user contains a copy of the primary template for emacs settings in a git repo.
+  I needed to (use-package rainbow-delimiter :ensure t) to fetch that package.
 
-** How SBCL user customization is handled
-I generally use SBCL and I use quicklisp.
+  I needed to :tangle no the slime-helper part.
 
-The following is by main .sbclrc file which is a per user file.
-
-#+BEGIN_SRC lisp
-;;;;          -*-  mode: lisp;  -*-
-
-;;; The following lines added by ql:add-to-init-file:
-#-quicklisp
-(let ((quicklisp-init (merge-pathnames
-                       "local-code-projects/my-code/common-lisp/setup.lisp"
-                       (user-homedir-pathname))))
-  (when (probe-file quicklisp-init)
-    (load quicklisp-init))
-  (print "loading Quicklisp"))
+  Org gtd seems to be functional.
   
-;;; Standard site directoires Thomas Rake
-#+quicklisp
-(let* ((user (first (last (pathname-directory (user-homedir-pathname)))))
-       (shared-code #+win32 #P"C:/Users/Public/Documents/repos/") ; could add unix defaults
-       (standard-lisp-home #+win32 (pathname (concatenate 'string "C:/Users/" user "/common-lisp/"))) ; count add unix defaults
-       (paths))
-;;;; Create path defaults based on the user
-  (cond ((equalp user "zzzap")
-	 (setf paths `(#P"C:/Users/zzzap/local-code-projects/my-code/common-lisp/local-attic/" ; very old code
-		       ,standard-lisp-home
-		       ,shared-code)))
-        (t `(,standard-lisp-home ,shared-code)))
-;;;; Add those paths that exist to quicklisp project directories.
-  (dolist (p paths)
-    (when (and p (probe-file p) (not (member p ql:*local-project-directories*)))
-      (print (format t "Adding ~A to quicklisp local projects directory." p))
-      (setf ql:*local-project-directories* (cons p ql:*local-project-directories*)))))
-#+END_SRC
+****  Phase 2
+  This  phase  is planning to remove existing themes and  use Modus Themes and then customize them.
+*** Standard coding setup
+ - The source of Emacs startup code is largely controlled by .emacs/setting.org
+ - All programming code is located in ~/quicklisp/local-projects/
 
-The variable path could be constructed based on the user executiong the .sbclrc file. This would make
-the .sbclrc file universal.
-
-** WIP Stash of resources
-https://dev.to/fedekau/automatically-managing-personal-and-work-git-configurations-27ad
-https://www.wyeworks.com/blog/2018/01/03/using-git-hooks-to-improve-your-day-to-day-workflow/
-
-* Generated File Warning
-Add a warning to init.el that it is
+* Begining setting generation.
+* The generated file warning to init.el
 #+BEGIN_SRC emacs-lisp
-;;;; This file had been generated from settings.org
+  ;;;; NOTE: This file had been generated from ~/.emacs.d/settings.org
+  ;;;; Emacs customization is done in ~/.emacs.d/settings.org
+  ;;;; ~/.emacs.d/init.el will load ~/.emacs.d/settings.el
+  ;;;; ~/.emacs.d/settings.org is created and updated by *tangle* of code blocks from  settings.org
+  (setq org-src-tab-acts-natively t)
 #+END_SRC
-
-* Debug On Error
-
-Enable debugging.
-
+* Server Start
+#+BEGIN_SRC enacs-lisp
+  (server-start)
+#+END_SRC
+* Magic Modes
 #+BEGIN_SRC emacs-lisp
-;(setq debug-on-error t)
+  (setq magic-mode-alist '(("*.org" . org)))
 #+END_SRC
-
-* Load time metrics
-Mark the begining time of execution of init.el so we can compare and report
-at the end.
+* The emacs customization file.
+ Define were emacs cusomization is saved and restored.
+ #+BEGIN_SRC emacs-lisp
+    ;;;; emacs customization file
+   (setq custom-file "~/.config/emacs/.emacs-custom.el")
+   (load custom-file)
+ #+END_SRC
+* Allow loading of a file from .emacs.d/
+ User custom setting from .emacs.d files.
 #+BEGIN_SRC emacs-lisp
-;; load time metrics
-(setq  *emacs-load-start* (current-time))
-#+END_SRC
+  ;;;; Macro to load user customizations from .emacs.d
+  (defmacro local-custom-file (file description)
+    `(progn
+       (require 'org)
+       (message (concat "Looking for " ,description " file: " ,file ))
+       (let ((file-and-path (expand-file-name ,file user-emacs-directory)))
+	 (if (file-exists-p file-and-path)
+	     (progn (message (concat "org-babel-load of " file-and-path))
+		    (org-babel-load-file file-and-path))
+	   (message (concat "Custom file is missing " file-and-path))))))
 
+#+END_SRC
+* Emacs debug-on-error
+   [TBD] Should this be set from an enviroment variable.
+   [TBD] Is there already a command line switch for this?
+  #+BEGIN_SRC emacs-lisp
+  ;(setq debug-on-error t)
+  #+END_SRC
+
+* !!!!!! PACKAGE SYSTEM SETUP
+  
+* Setup Package Archives
+#+BEGIN_SRC emacs-lisp
+  (setq package-check-signature nil)
+  (require 'package)
+  (add-to-list 'package-archives
+	       '("melpa" . "https://melpa.org/packages/") t)
+  (package-initialize)
+#+END_SRC
+* Load use-package
+  [TBD] Consider if this needs to be initialized
+#+BEGIN_SRC emacs-lisp
+  (unless (package-installed-p 'use-package)
+    (package-refresh-contents)
+    (package-install 'use-package))
+  (eval-and-compile
+    (setq use-package-always-ensure t
+	  use-package-expand-minimally t))
+  ;;  (require 'use-package)
+#+END_SRC
+* org-protocol
+#+BEGIN_SRC emacs-lisp
+  ;(server-start)
+  (require 'org-protocol)
+#+END_SRC
 * Initial Frame Size
 Fix initial window position.
   #+BEGIN_SRC emacs-lisp
@@ -125,93 +148,78 @@ Fix initial window position.
   (my/set-initial-frame)
   #+END_SRC
 
-* Package Archives distros                                           :review:
-Which online distros we use to get packages.
-Much of this is legacy code and needs review.
-#+BEGIN_SRC emacs-lisp
-(require 'package)
-(add-to-list 'package-archives
-             '("melpa" . "https://melpa.org/packages/")
-	     t)
-(add-to-list 'package-archives
-	     '("elpa" . "https://elpa.gnu.org/packages/")
-	     t)
-(add-to-list 'package-archives
-             '("org" . "https://orgmode.org/elpa/")
-              t)
-(when (< emacs-major-version 24)
-  ;; For important compatibility libraries like cl-lib
-  (add-to-list 'package-archives '("gnu" . "https://elpa.gnu.org/packages/")))
-(package-initialize)
-#+END_SRC
-
-* Package loading mechanism needs review                             :review:
-This revinvent the wheel mechanism is deprecated.
-#+BEGIN_SRC emacs-lisp :tangle no
-
-;;;; These are the packages needed
-
-(defvar local-packages '(flx-ido
-			 auto-complete
-			 epc
-			 slime
-			 rainbow-delimiters
-			 paredit
-			 ac-slime
-			 cyberpunk-theme
-			 dracula-theme
-			 dakrone-theme
-			 popup
-			 jedi
-			 docker-tramp
-			 dockerfile-mode
-			 pillar
-			 cmake-mode
-			 yaml-mode
-			 ess
-			 deft
-			 magit
-			 htmlize))
-
-
-;;;; Find any unistalled package
-
-(defun uninstalled-packages (packages)
-  (delq nil
-	(mapcar (lambda (p)
-		  (if (package-installed-p p nil) nil p))
-		packages)))
-
-;;;; Install any uninsalled packages
-
-(let ((need-to-install
-       (uninstalled-packages local-packages)))
-  (message "Checking for unistalled  packages: %s." need-to-install)
-  (when need-to-install
-    (progn
-      (package-refresh-contents)
-      (dolist (p need-to-install)
-        (message "Downloading %s." p)
-	(package-install p)))))
-#+END_SRC
-
-* Download Timing
-This download timing mechanism is likely deprecated also.
-#+BEGIN_SRC emacs-lisp
-(setq *emacs-download* (current-time))
-#+END_SRC
-
 * Basic Look and feel
 I don't like the a messy startup screen.
 
  #+BEGIN_SRC emacs-lisp
- (setq inhibit-startup-screen t)
- (setq visible-bell 1)
+   (setq inhibit-startup-screen t)
+   (setq visible-bell 1)
  #+END_SRC
 * Fix Windows 10 cursor problem
  #+BEGIN_SRC emacs-lisp
  (setq w32-use-visible-system-caret nil)
  #+END_SRC
+
+* Buffer Auto reverting
+#+BEGIN_SRC emacs-lisp
+  ;; auto revert mode
+  (global-auto-revert-mode 1)
+
+  ;; dired auto revert
+  (setf global-auto-revert-non-file-buffers t)
+#+END_SRC
+* IDO
+#+BEGIN_SRC emacs-lisp
+(use-package  ido
+    :config
+  (ido-mode t))
+#+END_SRC
+* Company
+#+BEGIN_SRC emacs-lisp
+  (use-package company
+  :config
+   (add-hook 'after-init-hook 'global-company-mode))
+#+END_SRC
+* Magit
+#+BEGIN_SRC emacs-lisp
+(use-package magit
+  :defer 2
+  :ensure t
+  :pin melpa
+  :bind
+  (("C-x g" . magit-status)
+   ("C-x M-d" . magit-dispatch-popup)))
+ #+END_SRC
+* org-roam
+  I am setting up org-roam
+#+BEGIN_SRC emacs-lisp :tangle no
+  (use-package org-roam
+    :ensure t
+    :init
+    (setq org-roam-v2-ack t)
+    :custom
+    (org-roam-directory (file-truename "~/org/roam/"))
+    :bind (("C-c n l" . org-roam-buffer-toggle)
+	   ("C-c n f" . org-roam-node-find)
+	   ("C-c n g" . org-roam-graph)
+	   ("C-c n i" . org-roam-node-insert)
+	   ("C-c n c" . org-roam-capture)
+	   ;; Dailies
+	   ("C-c n j" . org-roam-dailies-capture-today))
+    :config
+    (org-roam-db-autosync-mode)
+    ;; If using org-roam-protocol
+    (require 'org-roam-protocol))
+#+END_SRC
+
+* Default Pathnames with Enviroment Overrides
+#+BEGIN_SRC emacs-lisp
+  ;;; Specify a emacs variable from an environment variable env-string or  base,new-path-string
+  (defmacro default-or-environment (emacs-var base new-path-string env-string) 
+    `(setq ,emacs-var (if (getenv ,env-string)
+                          (getenv ,env-string)
+                          (concat ,base ,new-path-string))))
+#+END_SRC
 
 * Crossplatform filename
 Attempt specifiy filepaths in a cross platform way.
@@ -239,213 +247,369 @@ specify specific crossplatform functions and macros for path construction.
         (clipboard-kill-region (point-min) (point-max)))
       (message filename))))
 #+END_SRC
-* Save the emacs customization to a file.
-These are settings from the Emacs Customization Mechanism.
+* Ispell configured with Aspell
+aspell configuration is in [[~/.aspell.conf]]
+Fixed on 7/2/2022 moving to DESKER
+[2022-10-07 Fri 18:12]
+  - The EOL of the .aspell configuration files got corrupted.
+  - They should all be Unix (LF) ends of lines.
 #+BEGIN_SRC emacs-lisp
-(setq custom-file "~/.emacs-custom.el")
-(load custom-file)
+  (setq ispell-program-name "c:/devel/msys64/usr/bin/aspell.exe")
 #+END_SRC
-
-* MSYS2/MINGW64 Path elements
-Mingw requires careful crafting of  paths and emulation of mount points.
-Any LISP built under mingw has an assumed environment of the build.
+* Joining items as strings with and without quoting
 #+BEGIN_SRC emacs-lisp
-;;; Add mingw path elements to exec path
-(let ((mingw64-root-mount "C:/devel/msys64")
-      (mingw64-bin-mount "C:/devel/msys64/usr/bin"))
-  
-(add-to-list 'exec-path (concat mingw64-root-mount "/mingw64/bin"))
-(add-to-list 'exec-path (concat mingw64-root-mount "/usr/local/bin"))
-(add-to-list 'exec-path (concat mingw64-root-mount "/usr/bin"))
-(add-to-list 'exec-path mingw64-bin-mount))
-(setq +msys64-base-path+ "C:/devel/msys64/")
-(defun lisp-mingw64-implementation (tag)
-  "Create a slime implemenation in the local mingw64 system naned tag."
-  `(,tag (,(concat +msys64-base-path+ "usr/bin/env.exe") "MSYSTEM=MINGW64"
-	  ,(concat +msys64-base-path+ "usr/bin/bash.exe") "-l" "-c" "/usr/local/bin/sbcl --noinform")))
-;;;  Now rebuild path environment variable based on exec-path
-(setenv "PATH" (mapconcat #'identity exec-path path-separator))
+  (defun double-quote-string(s)
+     (concat "\"" s "\""))
+
+  (defun single-quote-string (s)
+     (concat "\'" s "\'"))
+
+  (defun double-quote-list (l)
+    (mapcar 'double-quote-string l))
+
+  (defun single-quote-list (l)
+    (mapcar 'single-quote-string l))
+
+  (defun join-with-spaces (args)
+     (mapconcat 'identity args " "))
 #+END_SRC
+* Initialize My cygwin emulation
+  #+BEGIN_SRC emacs-lisp
+	(setq +cygwin64-base-path+ "C:/cygwin64")
+  #+END_SRC
+* Initialize My msys2 emulation
+  #+BEGIN_SRC emacs-lisp
+    ;; Paths to msys2 file root
+    (let ((mingw64-root-mount "C:/devel/msys64")
+	  (mingw64-bin-mount "C:/devel/msys64/usr/bin"))
 
-* Setup SBCL
-This is where I keep my quirky self compiled SBCL compiled under msys2
-#+BEGIN_SRC emacs-lisp
-(setq SBCL_HOME_SAVE (getenv "SBCL_HOME"))
-(setq SBCL_BASE "C:/devel/SBCL_2_0_0-bin")
-#+END_SRC
-
-* Configure Autocomplete
-Need to consider using HELM here
-#+BEGIN_SRC emacs-lisp
-(require 'auto-complete-config)
-(ac-config-default)
-#+END_SRC
-
-* Copy OS PATH to emacs path
-This seems unused.
-#+BEGIN_SRC emacs-lisp
-(setq PATH_SAVE (getenv "PATH"))
-#+END_SRC
-
-* Provision Various Common LISPs
-
-** Provision user compiled SBCL
+    (add-to-list 'exec-path (concat mingw64-root-mount "/mingw64/bin"))
+    (add-to-list 'exec-path (concat mingw64-root-mount "/usr/local/bin"))
+    (add-to-list 'exec-path (concat mingw64-root-mount "/usr/bin"))
+    (add-to-list 'exec-path mingw64-bin-mount))
+    (setq +msys64-base-path+ "C:/devel/msys64/")
+  #+END_SRC
+* Cygwin Enviroment Emulation
  #+BEGIN_SRC emacs-lisp
- (defmacro user-compiled-mingw64-sbcl ()
-   `(when  (file-exists-p (concat +msys64-base-path+ "/usr/local/bin/sbcl.exe"))
-       (lisp-mingw64-implementation 'mingw64-sbcl)))
+       (defun cygwin64-file-exists-p (file)
+	 (file-exists-p (concat +cygwin64-base-path+ file)))
  #+END_SRC
-
-** Provions binary SBCL 2.0.0
- This is assumed to be broken.
- #+BEGIN_SRC emacs-lisp :tangle no
- (defmacro binary-supplied-sbcl-2-0-0 ()
-   (when (boundp 'SBCL_BASE) 
-	      (cond  
-		   
-		    ((string= SBCL_BASE "C:/devel/SBCL_2_0_0-bin")
-		     (progn
-		       (unless (boundp 'SBCL-IN-PATH)
-			 (setenv "PATH"
-				 (concat
-				  SBCL_BASE
-				  "/bin/"
-				  ";"
-				  (getenv "PATH")))
-			  (setenv "SBCL_HOME" SBCL_BASE)
-			  (setq SBCL-IN-PATH t))
-		       `(`sbcl  (,(concat SBCL_BASE "/" "sbcl.exe")
-				"--noinform"))))))
- )
- #+END_SRC
-
-** Provions binary SBCL 2.0.2
- This is assumed to be broken.
- #+BEGIN_SRC emacs-lisp :tangle no
- (defmacro binary-compiled-sbcl-2-0-2()
- (when (boundp 'SBCL_BASE) 
-          (cond  
-		    ((string= SBCL_BASE "C:/devel/SBCL_2_0_2")
-		     (progn
-		       (unless (boundp 'SBCL-IN-PATH)
-			 (setenv "PATH"
-				 (concat
-				  SBCL_BASE
-				  "/bin/"
-				  ";"
-				  (getenv "PATH")))
-			 (setenv "SBCL_HOME"
-				 (concat
-				  SBCL_BASE
-				  "/lib/sbcl"))
-			 (setq SBCL-IN-PATH t))
-		       `(sbcl  (,(concat SBCL_BASE "/bin/" "sbcl.exe")
-				"--noinform"))))
-		    ((string= SBCL_BASE "C:/devel/SBCL_2_0_0-bin")
-		     (progn
-		       (unless (boundp 'SBCL-IN-PATH)
-			 (setenv "PATH"
-				 (concat
-				  SBCL_BASE
-				  "/bin/"
-				  ";"
-				  (getenv "PATH")))
-			  (setenv "SBCL_HOME" SBCL_BASE)
-			  (setq SBCL-IN-PATH t))
-		       `(`sbcl  (,(concat SBCL_BASE "/" "sbcl.exe")
-				"--noinform"))))))
- )
- #+END_SRC
-
-** Provision ABCL
+* msys2 Envir
+oment Emulation
  #+BEGIN_SRC emacs-lisp
- (defmacro provision-abcl()
-   `(when (and (file-exists-p  (convert-standard-filename "C:/Program Files/ABCL/abcl.jar")))
-	 `(abcl  ("java" "-jar" ,(convert-standard-filename "C:/Program Files/ABCL/abcl.jar")))))
+   (defun msys-path (path)
+     (concat +msys64-base-path+ path))
+
+   (defun msys64-file-exists-p (file)
+     (file-exists-p (msys-path file)))
+
+   (defun msys2-command (cmd params)
+      (join-with-spaces (cons (msys2-command-string cmd) params)))
+
+
+   (defun msys2-command-string (cmd)
+     (concat (msys-path "usr/bin") cmd ".exe"))
  #+END_SRC
-
-* SLIME
-  - There are a number of defunct implemnations in this list:
-    - SBCL_2_0_@
-    - SBCL_2_0_0-bin
-    - Both clisp need review.
-  - Refactor
-    - each entry in the slime-lisp-implemenation should be:
-      - ,(provision-user-compiled-mingw)
-      - if that privision returns nil there is no entry.
+* Run a command in a msys2 shell
+   #+BEGIN_SRC emacs-lisp
+     (defun start-under-bash-login-shell (shell-task)
+     "Excute a msys2-command under a msys2-64 bash login shell"
+       (list (msys2-command-string "env")
+	     (double-quote-string "MSYSTEM=MINGW64")
+	     (msys2-command-string "bash")
+	     "-l"
+	     "-c"
+	     shell-task))
+    #+END_SRC
+* Modus Theme Configuration
+Main Page: [[https://protesilaos.com/emacs/modus-themes]]
 #+BEGIN_SRC emacs-lisp
-  (setq slime-lisp-implementations
-	`(,(user-compiled-mingw64-sbcl)
-          ,(provision-abcl)
-;	  ,(binary-supplied-sbcl-2-0-0)
-;	  ,(binary-compiled-sbcl-2-0-2)
-	,(when (and (eq system-type 'winodows-nt))
-	   `(clisp-win ("clisp" "-K" "full" "-I")))
-	,(when (and (eq system-type 'cygwin) (file-exists-p (convert-standard-filename "/usr/bin/clisp")))
-	    `(clisp-cyg (,(convert-standard-filename "/usr/bin/clisp" ))))))
-#+END_SRC
-
-* Common Lisp HyperSpec
-I use my local clone of the Hyperspec
-#+BEGIN_SRC emacs-lisp
-(setq common-lisp-hyperspec-root (convert-standard-filename (getenv "HyperSpec")))
-#+END_SRC
-
-* Option  for SLIME
-#+BEGIN_SRC emacs-lisp
-(setq slime-contribs '(slime-fancy))
-(global-set-key "\C-cs" 'slime-selector)
-#+END_SRC
-
-* Slime Autocomplete
-#+BEGIN_SRC emacs-lisp
-(require 'ac-slime)
-(add-hook 'slime-mode-hook 'set-up-slime-ac)
-(add-hook 'slime-repl-mode-hook 'set-up-slime-ac)
-(eval-after-load "auto-complete"
-  '(add-to-list 'ac-modes 'slime-repl-mode))
-#+END_SRC
-
-* Paredit mode
-#+BEGIN_SRC emacs-lisp
-(add-hook 'lisp-mode-hook #'paredit-mode)
-#+END_SRC
-
-* Auto complete mode for LISP
-#+BEGIN_SRC emacs-lisp
-(add-hook 'lisp-mode-hook #'auto-complete-mode)
-#+END_SRC
-
-* Enable lisp-mode .lisp and .asd files
-#+BEGIN_SRC emacs-lisp
-(setq auto-mode-alist
-      (append '((".*\\.asd\\'" . lisp-mode))
-	      auto-mode-alist))
-
-(setq auto-mode-alist
-      (append '((".*\\.cl\\'" . lisp-mode))
-	      auto-mode-alist))
-#+END_SRC
-
-* Emacs Theme                                                        :review:
-#+BEGIN_SRC emacs-lisp
-(load-theme 'manoj-dark)
-(set-face-attribute 'default nil :height 120)
+    (set-face-attribute 'default nil :height 120)
+    (require 'modus-themes)
+    (setq modus-themes-mode-line '(accented borderless))
+    (setq modus-themes-region '(bg-only))
+    (setq modus-themes-paren-match '(bold intense))
+    (setq modus-themes-lang-checkers '(background intense))
+    (setq modus-themes-italic-constructs t)
+    (setq modus-themes-bold-contructs t)
+  ;;; Org Mode
+  (setq modus-themes-heading
+	`((1 . (rainbow bold intense 1.7))
+	  (2 . (rainbow bold intense 1.6))
+	  (3 . (rainbow bold intense 1.5))
+	  (4 . (rainbow bold intense 1.4))
+	  (5 . (rainbow bold intense 1.3))
+	  (6 . (rainbow bold intense 1.2))
+	  (t . (rainbow bold background 1.0))))
+  (setq modus-themes-org-agenda
+      '((header-block . (variable-pitch 1.5))
+	(header-date . (grayscale workaholic bold-today 1.2))
+	(event . (accented italic varied))
+	(scheduled . uniform)
+	(habit . traffic-light)))
+  (load-theme 'modus-vivendi t)
 #+END_SRC
 
 * Rainbow Delimeters
-#+BEGIN_SRC emacs-lisp
-(add-hook 'prog-mode-hook #'rainbow-delimiters-mode)
+#+BEGIN_SRC emacs-lisp tangle:no
+  (use-package rainbow-delimiters
+    :ensure t)
+  (add-hook 'prog-mode-hook #'rainbow-delimiters-mode)
 #+END_SRC
 
-* Pascal Setup                                                       :review:
+* Shells
+  [TBD] Decide what is CRUFF here.
+  I am attempting to use the friendly-shell infrastructure.
+
+  shell/git-bash works but has prompt problems.
+#+BEGIN_SRC emacs-lisp
+      (use-package friendly-shell
+	:ensure t
+	:config   
+	  (defun shell/git-bash (&optional path)
+	     (interactive)
+	     (friendly-shell :path path
+			     :interpreter "C:/Program Files/Git/bin/bash.exe"
+			     ;;:interpreter-args '("-l")
+			     )))
+
+
+      (use-package friendly-remote-shell
+	:ensure t
+	:config
+	   (defun shell/cisco (&optional path)
+	     (interactive)
+	     (with-shell-interpreter-connection-local-vars
+	       (friendly-remote-shell :path path))))
+
+
+
+	  ;; (setq win-shell-implementaions
+		    ;;       `((cmd (shell))
+		    ;; 	(ming64 ((defun my-shell-setup ()
+		    ;;        "For Cygwin bash under Emacs 20"
+
+		    ;;          (setq comint-scroll-show-maximum-output 'this)
+		    ;;          (make-variable-buffer-local 'comint-completion-addsuffix))
+		    ;;            (setq comint-completion-addsuffix t)
+		    ;;            ;; (setq comint-process-echoes t) ;; reported that this is no longer needed
+		    ;;            (setq comint-eol-on-send t)
+		    ;;            (setq w32-quote-process-args ?\")
+		    ;;            (add-hook 'shell-mode-hook 'my-shell-setup)))))
+
+		    ;; (defun win-shell ())
+
+		    ;; ;;; The MSYS-SHELL
+
+		    ;; (defun msys-shell () 
+		    ;;   (interactive)
+		    ;;   (let ((explicit-shell-file-name (convert-standard-filename "c:/devel/msys64/usr/bin/bash.exe"))
+		    ;; 	(shell-file-name "bash")
+		    ;; 	(explicit-bash.exe-args '("--noediting" "--login" "-i"))) 
+		    ;;     (setenv "SHELL" shell-file-name)
+		    ;;     (add-hook 'comint-output-filter-functions 'comint-strip-ctrl-m)
+		    ;;     (shell)))
+
+		    ;; ;;; The MINGW64-SHELL
+
+		    ;; (defun mingw64-shell () 
+		    ;;        (interactive)
+		    ;;        (let (( explicit-shell-file-name (convert-standard-filename  "c:/devel/msys64/mingw64/bin/bash.exe")))
+		    ;; 	 (shell "*bash*")
+		    ;; 	     (call-interactively 'shell)))
+#+END_SRC
+* Add shell extensions
+[TBD] If this is org shell extenstion then put this in org-mode section.
+#+BEGIN_SRC emacs-lisp
+(use-package shx
+  :ensure t)
+#+END_SRC
+* Tramp
+[TBD] Review if this is correct after SSH has been reinstalled.
+* The default connection method is plink
+#+BEGIN_SRC emacs-lisp
+  (use-package tramp
+    :config
+      (setq tramp-default-method "plink")
+      (defun cisco-remote-shell ()
+        (interactive)
+        (let ((default-directory "/plink:osmc@192.168.1.43:~"))
+          (shell))))
+#+END_SRC
+* Paredit mode
+  #+BEGIN_SRC emacs-lisp
+    (use-package paredit
+      :ensure t
+      :config
+	(add-hook 'lisp-mode-hook #'paredit-mode))
+  #+END_SRC
+* A standard slime entry for slime-lisp-implemenations
+#+BEGIN_SRC emacs-lisp
+   (defmacro add-slime-lisp (tag program program-args environment)
+    "The format of a standard slime entry for a lisp implenatation."
+   `(list ,tag (cons ,program ,program-args) :env ,environment))
+#+END_SRC
+* Standard Options for SBCL startup
+#+BEGIN_SRC emacs-lisp
+  ;;;; The standard options for SBCL
+  (defun invoke-standard-sbcl (tag program environment)
+    (add-slime-lisp tag program '("--noinform") environment))
+#+END_SRC
+
+* SBCL compiled under MSYS2 in TWR standard locations
+#+BEGIN_SRC emacs-lisp
+  (defun msys-sbcl (tag path)
+    "Create a slime entry for the tag if the sbcl.exe is found."
+  ;;; The path is the path to the sbcl-version container.
+  ;;;
+  ;;; The standard place I store sbcl that I compile are /usr/local/sbcl-version
+  ;;;
+  ;;; File System Template for a sbcl implemenation
+  ;;;
+  ;;; sbcl-version/
+  ;;;   bin/
+  ;;;     sbcl.exec ; The executable
+  ;;;   lib/
+  ;;;     sbcl/     ; SBCL_HOME
+  ;;;       contrib/
+  ;;;       sbcl.core ; the core image
+  ;;;       sbcl.mk
+
+     (let ((exec-path (msys-path (concat path "bin/sbcl.exe")))
+	   (home-path (msys-path (concat path "lib/sbcl/"))))
+       (when (file-exists-p exec-path)
+		(invoke-standard-sbcl tag exec-path (list (concat "SBCL_HOME=" home-path ))))))
+#+END_SRC
+* SBCL Windows Distrs TWR standard locations
+#+BEGIN_SRC emacs-lisp
+
+  (defun win-sbcl (tag path)
+    (let* ((twr-win (concat "C:/devel/msys64/usr/local/sbcl/win/" path "/"))
+	   (exec-path (concat twr-win "sbcl.exe"))
+	   (home-path twr-win))
+      (when (file-exists-p exec-path)
+	(invoke-standard-sbcl tag exec-path (list (concat "SBCL_HOME=" home-path))))))
+#+END_SRC
+* CCL for SLIME
+  When a specific CCL binary is present create a CCL slime item.
+    #+BEGIN_SRC emacs-lisp
+      (defun provision-ccl (tag path)
+	  (when (file-exists-p path)
+	    `(,tag (,path))))
+    #+END_SRC
+
+* Provision a ABCL entry for slime
+  When java and ABCL are located create an ABCL slime item.
+  #+BEGIN_SRC emacs-lisp
+    (defun provision-abcl()
+      (let ((java (concat "c:/Program Files/Java/" (if t "jdk-18.0.2.1" "jdk1.8.0_333") "/bin/java.exe"))
+	    (abcl "c:/Program Files/ABCL/abcl-src-1.9.0/dist/abcl.jar"))
+	    (message "java:")(message java) (message (if (file-exists-p java) "java exists!!" "java does not exists!!!!!!!"))
+	    (message "sbcl:") (message abcl) (message (if (file-exists-p abcl) "abcl exists!" "abcl does not exists!!!!!!!"))
+	     (when (and (file-exists-p  java) (file-exists-p abcl))
+	       (message "returning abcl entry")
+	       `(abcl  ,(list java "-jar" abcl)))))
+  #+END_SRC
+** Provision a CLISP if on MSYS2
+#+BEGIN_SRC emacs-lisp
+  (defun provision-clisp-msys64 ()
+    (when nil
+    `(clisp-msys64 ())))
+#+END_SRC
+** Provision a CLISP if on Cygwin
+CYGWIN version of CLISP is not provisioned
+#+BEGIN_SRC emacs-lisp
+  (defun provision-clisp-cygwin64()
+    (when nil
+    `(clisp-cygwin64 ())))
+#+END_SRC
+* Untested or not working LISP implemenatations
+* Slime / Company
+   Slime is the inferface to LISP on emacs.
+#+INDEX: Common Lisp!Slime Provisioning
+#+BEGIN_SRC emacs-lisp :tangle no
+(use-package slime-company 
+  :after (slime company)
+  :config (setq slime-company-completion 'fuzzy
+                slime-company-after-completion 'slime-company-just-one-space))
+#+END_SRC
+* Add quicklisp-helper
+ [UPGRADE HACK]The slime  helper during the  28.1 upgrade and quicklisp-helper needed :tangle no to avoid errors/
+ Load the quicklisp-helper file 
+ #+INDEX: Common Lisp!quicklisp, slime helper
+ #+INDEX: quicklisp!slime helper
+ #+INDEX: Slime!quicklisp helper
+ #+BEGIN_SRC emacs-lisp
+   ;;;; Build the implemenation lisp dynamically.
+   ;;;; Remove all nil items from the list.
+     ;;;; Load slime helper
+     (load (expand-file-name "~/Documents/Code/quicklisp/slime-helper.el"))
+ #+END_SRC
+* Report Debug START  :noexport:
+#+BEGIN_SRC emacs-lisp
+(message "Debug START")
+#+END_SRC
+
+* Report Debug MARK                                                :noexport:
+#+BEGIN_SRC emacs-lisp
+(message "Debug MARK")
+#+END_SRC
+* SLIME Configuation
+ #+INDEX: Slime!LISP Implmentations
+ #+BEGIN_SRC emacs-lisp
+      (add-to-list 'load-path "C:/devel/msys64/usr/local/slime")
+   ;;;; Configure slime from the above provisionsing
+   ;;;; Remove any empty items
+	(require 'slime)
+	(require 'slime-autoloads)
+	(if nil
+	    (progn
+	      (setenv "SBCL_HOME" (msys-path "usr/local/sbcl/msys/2.2.6/lib/sbcl/"))
+	      (setf inferior-lisp-program (msys-path "usr/local/sbcl/msys/2.2.6/bin/sbcl.exe")))
+	    (progn
+	  (setq slime-lisp-implementations
+	    (seq-filter (lambda (e) e)
+	      (list
+	       (win-sbcl 'win-sbcl-2.2.7 "2.2.7")
+	       (win-sbcl 'win-sbcl-2.2.6 "2.2.6")
+	       (msys-sbcl 'msys-sbcl-2.2.6 "usr/local/sbcl/msys/2.2.6/")
+	       (msys-sbcl 'msys-sbcl-2.2.5 "usr/local/sbcl/msys/2.2.5/")
+	       (provision-ccl 'ccl "C:/Users/zzzap/quicklisp/local-projects/ccl/wx86cl64.exe")
+	       (provision-clisp-msys64)
+	       (provision-clisp-cygwin64)
+	       (provision-abcl))))
+       (setq slime-contribs '(slime-fancy))
+       (global-set-key "\C-cs" 'slime-selector)))
+ #+END_SRC
+* Report Debug End :noexport:
+#+BEGIN_SRC emacs-lisp
+(message "Debug END")
+#+END_SRC
+* Enable lisp-mode .lisp and .asd files
+  #+BEGIN_SRC emacs-lisp
+  (setq auto-mode-alist
+	(append '((".*\\.asd\\'" . lisp-mode))
+		auto-mode-alist))
+
+  (setq auto-mode-alist
+	(append '((".*\\.cl\\'" . lisp-mode))
+		auto-mode-alist))
+  #+END_SRC
+
+* Common Lisp HyperSpec
+  I use my local clone of the Hyperspec
+* Hyperspec Root is loaded from Enviroment location
+  #+BEGIN_SRC emacs-lisp
+    (when (getenv "HyperSpec")
+     (setq common-lisp-hyperspec-root (convert-standard-filename (getenv "HyperSpec"))))
+  #+END_SRC
+* Pascal Setup
+  [TBD] I have no pascal compiler configured.
 #+BEGIN_SRC emacs-lisp
 (add-hook 'pascal-mode-hook
 	  (lambda ()
 	    (set (make-local-variable 'compile-command)
-		 (concat "fpc " (file-name-nondirectory (buffer-file-name)))
-		 )
-	    )
+		 (concat "fpc " (file-name-nondirectory (buffer-file-name)))))
 	  t)
 
 (setq auto-mode-alist
@@ -461,102 +625,171 @@ I use my local clone of the Hyperspec
 	      auto-mode-alist))
 #+END_SRC
 
-* Shells                                                             :review:
+* org templates
 #+BEGIN_SRC emacs-lisp
-(setq win-shell-implementaions
-      `((cmd (shell))
-	(ming64 (
-		      (defun my-shell-setup ()
-       "For Cygwin bash under Emacs 20"
-       (setq comint-scroll-show-maximum-output 'this)
-       (make-variable-buffer-local 'comint-completion-addsuffix))
-       (setq comint-completion-addsuffix t)
-       ;; (setq comint-process-echoes t) ;; reported that this is no longer needed
-       (setq comint-eol-on-send t)
-       (setq w32-quote-process-args ?\")
-     
-     (add-hook 'shell-mode-hook 'my-shell-setup)
-		 ))))
-	
-(defun win-shell ())
-  
-;; The MSYS-SHELL
+(require 'org-tempo)
 
-(defun msys-shell () 
-  (interactive)
-  (let ((explicit-shell-file-name (convert-standard-filename "c:/devel/msys64/usr/bin/bash.exe"))
-	(shell-file-name "bash")
-	(explicit-bash.exe-args '("--noediting" "--login" "-i"))) 
-    (setenv "SHELL" shell-file-name)
-    (add-hook 'comint-output-filter-functions 'comint-strip-ctrl-m)
-    (shell)))
-
-;; The MINGW64-SHELL
-
-(defun mingw64-shell () 
-       (interactive)
-       (let (( explicit-shell-file-name (convert-standard-filename  "c:/devel/msys64/mingw64/bin/bash.exe")))
-	 (shell "*bash*")
-	     (call-interactively 'shell))
-       ;; (setq shell-file-name "bash")
-       ;; (setq explicit-bash.exe-args '("--login" "-i")) 
-       ;; (setenv "SHELL" shell-file-name)
-       ;; (add-hook 'comint-output-filter-functions 'comint-strip-ctrl-m)
-       ;; (shell)
-       )
+(add-to-list 'org-structure-template-alist '("sh" . "src shell"))
+(add-to-list 'org-structure-template-alist '("el" . "src emacs-lisp"))
 #+END_SRC
 
-* Tramp                                                              :review:
-** The default connection method is plink
+* org pdf export fix
 #+BEGIN_SRC emacs-lisp
-(require 'tramp)
-(setq tramp-default-method "plink")
-;(setq tramp-verbose 10)
-#+END_SRC
-** Remote shell to cisco
-#+BEGIN_SRC emacs-lisp
-(defun cisco-remote-shell ()
-  (interactive)
-  (let ((default-directory "/plink:osmc@192.168.1.43:"))
-     (shell)))
-#+END_SRC
-* IDO                                                                :review:
-#+BEGIN_SRC emacs-lisp
-(require 'ido)
-(ido-mode t)
+  ;; Where org-export latex can find perl
+  (setenv "PATH" (concat (getenv "PATH") (concat ";" (msys-path "usr/bin/"))))
 #+END_SRC
 
-* Indent                                                             :review:
-  - Leftover from  parsing experiment???
+* org global properties - efforts
 #+BEGIN_SRC emacs-lisp
-(put 'if 'lisp-indent-function nil)
-(put 'when 'lisp-indent-function 1)
-(put 'unless 'lisp-indent-function 1)
-(put 'do 'lisp-indent-function 2)
-(put 'do* 'lisp-indent-function 2)
-#+END_SRC
-
-* Magit                                                              :review:
+  (setf org-global-properties
+      '(("Effort_ALL" . "0:05 0:10 0:15 0:30 1:00 2:00 4:00 6:00 8:00")))
+#+END_SRC  
+* killing frame for org-protcol capture
 #+BEGIN_SRC emacs-lisp
-(global-set-key (kbd "C-x g") 'magit-status)
-#+END_SRC
+  ;; Kill the frame if one was created for the capture
+  (defvar kk/delete-frame-after-capture 0 "Whether to delete the last frame after the current capture")
 
-* Printing                                                           :review:
-#+BEGIN_SRC emacs-lisp :tangle no
-(setq printer-name "lpr://192.168.1.39")
-#+END_SRC
+  (defun kk/delete-frame-if-neccessary (&rest r)
+    (cond
+     ((= kk/delete-frame-after-capture 0) nil)
+     ((> kk/delete-frame-after-capture 1)
+      (setq kk/delete-frame-after-capture (- kk/delete-frame-after-capture 1)))
+     (t
+      (setq kk/delete-frame-after-capture 0)
+      (delete-frame))))
 
-* Ord Mode Customizations
-** site-lisp  and org-checklist.el
-   - https://www.gnu.org/software/emacs/manual/html_node/elisp/Library-Search.html
-   - I want add org-checklist.el so I will add it to site-lisp
-   - "/usr/local/share/emacs/site-lisp" per manual where
-     - replace /usr/local with the installation prefix appropriate for your Emacs.
-     - Current value: file:\\C:\ProgramData\chocolatey\lib\Emacs\tools
+  (advice-add 'org-capture-finalize :after 'kk/delete-frame-if-neccessary)
+  (advice-add 'org-capture-kill :after 'kk/delete-frame-if-neccessary)
+  (advice-add 'org-capture-refile :after 'kk/delete-frame-if-neccessary)
+#+END_SRC
+* Create permanent links for each heading in an org file.  
+   Create CUSTOM_ID for each heading bases on a uniqure random sequence.
+ #+BEGIN_SRC emacs-lisp  :tangle no :noexport:
+	     (require 'org-id)
+	     (setq org-id-link-to-org-use-id 'create-if-interactive-and-no-custom-id)
+
+	   (defun eos/org-custom-id-get (&optional pom create prefix)
+	     "Get the CUSTOM_ID property of the entry at point-or-marker POM.
+	      If POM is nil, refer to the entry at point. If the entry does
+	      not have an CUSTOM_ID, the function returns nil. However, when
+	      CREATE is non nil, create a CUSTOM_ID if none is present
+	      already. PREFIX will be passed through to `org-id-new'. In any
+	      case, the CUSTOM_ID of the entry is returned."
+	     (interactive)
+	     (org-with-point-at pom
+	       (let ((id (org-entry-get nil "CUSTOM_ID")))
+		 (cond
+		  ((and id (stringp id) (string-match "\\S-" id))
+		   id)
+		  (create
+		   (setq id (org-id-new (concat prefix "h")))
+		   (org-entry-put pom "CUSTOM_ID" id)
+		   (org-id-add-location id (buffer-file-name (buffer-base-buffer)))
+		   id)))))
+
+     (defun org-id-new (&optional prefix)
+       "Create a new globally unique ID.
+
+     An ID consists of two parts separated by a colon:
+     - a prefix
+     - a unique part that will be created according to `org-id-method'.
+
+     PREFIX can specify the prefix, the default is given by the variable
+     `org-id-prefix'.  However, if PREFIX is the symbol `none', don't use any
+     prefix even if `org-id-prefix' specifies one.
+
+     So a typical ID could look like \"Org-4nd91V40HI\"."
+       (let* ((prefix (if (eq prefix 'none)
+			  ""
+			(concat (or prefix org-id-prefix) "-")))
+	      unique)
+	 (if (equal prefix "-") (setq prefix ""))
+	 (cond
+	  ((memq org-id-method '(uuidgen uuid))
+	   (setq unique (org-trim (shell-command-to-string org-id-uuid-program)))
+	   (unless (org-uuidgen-p unique)
+	     (setq unique (org-id-uuid))))
+	  ((eq org-id-method 'org)
+	   (let* ((etime (org-reverse-string (org-id-time-to-b36)))
+		  (postfix (if org-id-include-domain
+			       (progn
+				 (require 'message)
+				 (concat "@" (message-make-fqdn))))))
+	     (setq unique (concat etime postfix))))
+	  (t (error "Invalid `org-id-method'")))
+	 (concat prefix unique)))
+
+	 ;; automatically add ids to captured headlines
+	 (add-hook 'org-capture-prepare-finalize-hook
+		   (lambda () (eos/org-custom-id-get (point) 'create)))
+
+
+   (defun org-id-new (&optional prefix)
+     "Create a new globally unique ID.
+
+   An ID consists of two parts separated by a colon:
+   - a prefix
+   - a unique part that will be created according to `org-id-method'.
+
+   PREFIX can specify the prefix, the default is given by the variable
+   `org-id-prefix'.  However, if PREFIX is the symbol `none', don't use any
+   prefix even if `org-id-prefix' specifies one.
+
+   So a typical ID could look like \"Org-4nd91V40HI\"."
+     (let* ((prefix (if (eq prefix 'none)
+			""
+		      (concat (or prefix org-id-prefix) "-")))
+	    unique)
+       (if (equal prefix "-") (setq prefix ""))
+       (cond
+	((memq org-id-method '(uuidgen uuid))
+	 (setq unique (org-trim (shell-command-to-string org-id-uuid-program)))
+	 (unless (org-uuidgen-p unique)
+	   (setq unique (org-id-uuid))))
+	((eq org-id-method 'org)
+	 (let* ((etime (org-reverse-string (org-id-time-to-b36)))
+		(postfix (if org-id-include-domain
+			     (progn
+			       (require 'message)
+			       (concat "@" (message-make-fqdn))))))
+	   (setq unique (concat etime postfix))))
+	(t (error "Invalid `org-id-method'")))
+       (concat prefix unique)))
+
+
+ (defun eos/org-add-ids-to-headlines-in-file ()
+   "Add CUSTOM_ID properties to all headlines in the current
+    file which do not already have one. Only adds ids if the
+    `auto-id' option is set to `t' in the file somewhere. ie,
+    #+OPTIONS: auto-id:t"
+   (interactive)
+   (save-excursion
+     (widen)
+     (goto-char (point-min))
+     (when (re-search-forward "^#\\+OPTIONS:.*auto-id:t" (point-max) t)
+       (org-map-entries (lambda () (eos/org-custom-id-get (point) 'create))))))
+
+       ;; automatically add ids to saved org-mode headlines
+       (add-hook 'org-mode-hook
+		 (lambda ()
+		   (add-hook 'before-save-hook
+			     (lambda ()
+			       (when (and (eq major-mode 'org-mode)
+					  (eq buffer-read-only nil))
+				 (eos/org-add-ids-to-headlines-in-file))))))
+
+
+
+ #+END_SRC
+* org mode location
 #+BEGIN_SRC emacs-lisp
-;;; org-checklist.el location is in <emacs-install>/share/emacs/site-lisp/
+(setf org-mode-base-dir "~/org/")
 #+END_SRC
-** Org Key Binding
+* gtd location
+#+BEGIN_SRC emacs-lisp
+(setf org-gtd-dir (concat org-mode-base-dir "gtd/"))
+#+END_SRC
+* Org Key Binding
  #+BEGIN_SRC emacs-lisp
  ;;;; Org Mode key bindings.
  (global-set-key (kbd "C-c l") 'org-store-link)
@@ -565,7 +798,8 @@ I use my local clone of the Hyperspec
  (global-set-key (kbd "C-c b") 'org-switchb)
  #+END_SRC
 
-** Configure BABEL languages
+* Configure BABEL languages
+ [TBD] Do I really need to specify these at all?
  #+BEGIN_SRC emacs-lisp
  (org-babel-do-load-languages
   'org-babel-load-languages
@@ -573,45 +807,50 @@ I use my local clone of the Hyperspec
     (emacs-lisp . t)))
  #+END_SRC
 
-** org modules needed
+* org modules needed
+ [TBD] Do I need org-habit  here?
  #+BEGIN_SRC emacs-lisp
  (setq org-modules '(org-habit org-checklist))
  #+END_SRC
 
-** Configure habit (do not remember why)
+* org-habit
+ [TBD] Find out why I Should not delete this.
  #+BEGIN_SRC emacs-lisp
  (setq org-habit-graph-column 50)
  #+END_SRC
 
-** Org link abbreviations
+* Org link abbreviations
  #+BEGIN_SRC emacs-lisp
- (setq org-link-abbrev-alist
-       '(("bugzilla" . "http://192.168.1.50/bugzilla/show_bug.cgi?id=")
-	 ("bugzilla-comp" . "http://192.168.1.50/bugzilla/describecomponents.cgi?product=")))
+   (setq org-link-abbrev-alist
+	 '(("bugzilla" . "http://192.168.1.50/bugzilla/show_bug.cgi?id=")
+	   ("bugzilla-comp" . "http://192.168.1.50/bugzilla/describecomponents.cgi?product=")
+	   ("code" . "file:///C:/Users/zzzap/Documents/Code/quicklisp/local-projects/%s")
+	   ("common-docs" . "file:///C:/Users/zzzap/Documents/Common-Document-Store/%s")))
  #+END_SRC
-** Customize by Environemt
-*** customization macros
-#+BEGIN_SRC emacs-lisp
-  (defmacro default-or-environment (emacs-var base new-path-string env-string) 
-    `(setq ,emacs-var (if (getenv ,env-string)
-                          (getenv ,env-string)
-                          (concat ,base ,new-path-string))))
-#+END_SRC
 
-*** Ensure there are standard user ~/org directories
+ #+RESULTS:
+ : ((bugzilla . http://192.168.1.50/bugzilla/show_bug.cgi?id=) (bugzilla-comp . http://192.168.1.50/bugzilla/describecomponents.cgi?product=) (common-docs . file:///C:/Users/zzzap/Documents/Common-Document-Store/%s))
+
+* Ensure there are standard user ~/org directories
+ [TBD] is this how I am configured now?
  How to define the standard HOME org directory.
- Under windows and linux this is ~/org 
+ Under windows and linux this is ~/org.
+ 
   #+BEGIN_SRC emacs-lisp
-  ;; The standard user directory is org  in the HOME directory.
-  ;; This directory can be set by the environment var ORG-USER-DIR.
+  ;; Create stadard org directories if not already present.
+  ;; The standard user directory is ~/org in the HOME directory.
+  ;; Override with the var ORG-USER-DIR.
+  ;; The org-public-dir is a legacy model for shared tasks across all users.
+  ;; The public shared model is to be deprecated in the light of the task-agenda model.
   (default-or-environment org-user-dir (getenv "HOME") "/org" "ORG-USER-DIR")
   (unless (file-directory-p org-user-dir)
     (make-directory  org-user-dir))
   ;; Define a global org directory
-  (default-or-environment org-public-dir "c:/Users/Public/Documents" "/org" "ORG-PUBLIC-DIR")  
+  (default-or-environment org-public-dir "c:/Users/Public/Documents" "/org" "ORG-PUBLIC-DIR")
   #+END_SRC
 
-*** Standard Notes file
+* Standard Notes file
+ [TBD] Is this still relavent?
  This is a standard per User notes file.
  Unser windows and linux this ~/org/notes/notes.org
   #+BEGIN_SRC emacs-lisp
@@ -621,131 +860,149 @@ I use my local clone of the Hyperspec
   (setq org-default-notes-file org-notes-file)
   #+END_SRC
 
-*** Standard org and org-agenda directories
-   - I have a common place for org and org agenda files
-  #+BEGIN_SRC emacs-lisp
-    ;; My org agenda dir are files in ~/org/agenda
-    ;; The the agenda directory can be changed by env ORG-AGENDA-DIR
-    (default-or-environment org-agenda-dir org-user-dir "/agenda/" "ORG_AGENDA-DIR")
-    (default-or-environment org-public-agenda-dir org-public-dir "/agenda/" "ORG-PUBLIC-AGENDA-DIR")
-  #+END_SRC
-
-** A few custom checklists
- #+BEGIN_SRC emacs-lisp
- (defun morning-checklist-writer()
-   (format "* Morning Checklist
-   - [ ] Morning Tray for Mom [/]
-     - [ ] Morning Medications
-     - [ ] Breakfast
-       - [ ] Cereal 4oz milk
-     - [ ] 4oz water 1/2 TSP metamucil
-     - [ ] Spoon
-   - [ ] Feed Cat
-   - [ ] Eat YOUR Breakfast
- " nil))
-
- (defun monthly-tasks-for-james-seese ()
-   (format "* Monthly Tasks: James Seese
-   - [ ] Process all inbound mail.
-   - [ ] Separate mail by entity
-   - [ ] list all oustanding bills
-   - [ ] list all oustanding deposits
-   - [ ] Make deposit list
-     - [ ] vendor
-     - [ ] amount
-   - [ ] Make check list
-     - [ ] Vendor
-     - [ ] Amount
-   - [ ] Write and mail checks" nil))
- #+END_SRC
-
-** Task agenda context
+* org TODOs types
+#+BEGIN_SRC emacs-lisp
+(setq org-todo-keywords '((sequence "TODO(t)" "NEXT(n)" "WAITING(w@/!)" "|" "DONE(d!)" "CANCELLED(c@)")))
+#+END_SRC
+* org TODO colors
+#+BEGIN_SRC emacs-lisp
+  (setq org-todo-keyword-faces '(("TODO" . "red")
+			         ("NEXT" . "magenta")
+				 ("WAITING" ."yellow1")
+				 ("CANCELLED"."green")
+				 ("DONE" . "green")));
+#+END_SRC
+* Task agenda context
  - This starts an agenda context
  #+BEGIN_SRC emacs-lisp
- (setq org-agenda-files  `(,org-agenda-dir ,org-public-agenda-dir))
- (setq org-agenda-skip-scheduled-if-done t)
- (setq org-agenda-todo-list-sublevels t)
+ ;;;; Customize the agenda locally
+ (local-custom-file "local-custom-agenda.org" "Customize org-agenda")
  #+END_SRC
   - The following may be defined with the above values
-
-** Capture Templates
+    
+* Capture Templates
+Use [[~/.emacs.d/local-capture.org]] to change the capture template.
  #+BEGIN_SRC emacs-lisp
-      ;;; Define user and public template directories
-       (default-or-environment org-template-dir org-user-dir "/template/" "ORG-TEMPLATE-DIR")
-       (default-or-environment org-public-template-dir org-public-dir "/template/" "ORG-PUBLIC-TEMPLATE-DIR")
-
-      ;; ;;; See: http://cachestocaches.com/2016/9/my-workflow-org-agenda/
-      (setq org-capture-templates
-       `(("n" "note" entry (file ,(concat org-public-agenda-dir  "gtd.org"))
-	  "* %? :NOTE:\n%U\n%a\n" :clock-in t :clock-resume t)
-      ;; Medical Appointments
-      ;; Medical Appointment  (m) Medical template
-	 ("m" "MEDICAL   (m) Medical" entry (file+headline ,(concat org-public-agenda-dir "gtd.org") "Medical Appointments")
-	  (file ,(concat org-public-template-dir "Medical-Appointment.txt")) :empty-lines 1 :time-prompt t)
-
-      ;; Health Data Capture
-	 ("h" "Health Data Capture (h)")
-
-	 ("hb" "Blood Pressure (b)" table-line (file+headline ,(concat org-public-dir "/notes/Medical-Data.org") "Blood Pressure")
-	   "|%^{Person|TOM|JOANNE|SONYA}|%U|%^{Systtolic}|%^{Diastolic}|%^{Pulse}|")
-
-	 ("ht" "Temperature (t)" table-line (file+headline ,(concat org-public-dir "/notes/Medical-Data.org") "Temperature")
-	  "|%^{Person|TOM|JOANNE|SONYA}|%U|%^{Temperature}|")
-      ;; Small Items
-         ("i" "Small Items")
-      ;; Shoppping Items
-	 ("is" "Shopping Request (s)" table-line (file+headline ,(concat org-public-dir "/notes/Shopping-Requests.org") "Requests")
-	  "|%U|%^{Needed Item}|")
-      ;; Shoppping Items
-	 ("ie" "Fetch from Extension at Southfork Requests (e)" table-line
-   (file+headline ,(concat org-public-dir "/notes/Fetching-Requests.org") "Fetch Requests") "|%U|%^{Needed Item}|")
-      ;; Items for James O. Seese
-         ("ij" "Item for James O Seese (j)" table-line
-   (file+headline ,(concat org-user-dir "/agenda/JOS-POA.org") "Review Items") "|%U|%^{Needed Item}|")
-      ;; List of Goals
-	 ("g" "Set a goal (g)")
-	 ("gd" "Daily Goal TODO (d)"  entry (file+headline ,(concat org-public-agenda-dir "gtd.org") "Daily Goals")
-	   "*** TODO [#C] %^{Description}
-	   SCHEDULED: %t")
-	 ("gw" "Weekly Goal TODO (w)"  entry (file+headline ,(concat org-public-agenda-dir "gtd.org") "Weekly Goals")
-	   "*** TODO [#C] %^{Description}
-	   SCHEDULED: %t")
-	 ("j" "Journal" entry (file+datetree ,(concat org-user-dir "/diary.org"))
-	  "* %U %^{Title}\n  -%?" :clock-in t :clock-resume t)
-
-	  ))
+   ;;;; Customize the agenda locally
+   (let ((base (file-name-directory (or load-file-name (buffer-file-name)))))
+     (default-or-environment gtd-template-dir base  "" "ORG-TEMPLATE-DIR")
+     (local-custom-file "local-capture.org" "Customize org-capture"))
  #+END_SRC
-
-** Refile configuration
- #+BEGIN_SRC emacs-lisp
- (setq org-refile-targets '((org-agenda-files :maxlevel . 3)))
- #+END_SRC
-
-** Always present the gtd.org file
+* Always present the gtd.org file
 Customize  this default by environment variable USER_REOPEN_FILES
  #+BEGIN_SRC emacs-lisp
- (find-file (concat org-public-agenda-dir "gtd.org"))
+ (find-file (concat org-gtd-dir "gtd.org"))
  #+END_SRC
+ 
+* org mode add :shcmd to sh blocks
+Using :shcmd "cmdproxy.exe" on Windows uses the emacs version of cmd.
+Using :shcmd   msys2-base / "bin/bash.exe" will run a shell under msys2 bash.
+Allow Windows CMD commands to be run from .org files.
 
+See https://emacs.stackexchange.com/questions/19037/org-babel-invoking-cmd-exe
 
+Example how to use, note "cmdproxy.exe" is a Windows Emacs file.
+#+BEGIN_EXAMPLE
+\#+BEGIN_SRC sh :shcmd "cmdproxy.exe"
+dir
+\#+END_SRC
+#+END_EXAMPLE
+#+BEGIN_SRC emacs-lisp
+(require 'ob-shell)
+(defadvice org-babel-sh-evaluate (around set-shell activate)
+  "Add header argument :shcmd that determines the shell to be called."
+  (defvar org-babel-sh-command)
+  (let* ((org-babel-sh-command (or (cdr (assoc :shcmd params)) org-babel-sh-command)))
+    ad-do-it))
+#+END_SRC
+* org-publish
+#+BEGIN_SRC emacs-lisp
+;;;; org-publishing is a local configuration.
+(local-custom-file "local-publishing.org" "Configuration of org-publishing")
+#+END_SRC  
+
+* org-present
+#+BEGIN_SRC emacs-lisp
+(use-package org-present
+  :ensure t
+  :config
+    (use-package visual-fill-column
+      :ensure t
+      :config
+      (setq visual-fill-column-width 110
+	    visual-fill-column-center-text t)))
+#+END_SRC
+* Bullets and fonts for org mode
+#+BEGIN_SRC emacs-lisp
+  (use-package org-bullets
+    :after org
+    :hook (org-mode . org-bullets-mode)
+    :custom
+    (org-bullets-bullet-list '("◉" "○" "●" "○" "●" "○" "●")))
+
+  ;; Replace list hyphen with dot
+  (font-lock-add-keywords 'org-mode
+			  '(("^ *\\([-]\\) "
+			    (0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "•"))))))
+
+  (dolist (face '((org-level-1 . 1.2)
+		  (org-level-2 . 1.1)
+		  (org-level-3 . 1.05)
+		  (org-level-4 . 1.0)
+		  (org-level-5 . 1.1)
+		  (org-level-6 . 1.1)
+		  (org-level-7 . 1.1)
+		  (org-level-8 . 1.1)))
+      (set-face-attribute (car face) nil :font "Cantarell" :weight 'regular :height (cdr face)))
+
+  ;; Make sure org-indent face is available
+  (require 'org-indent)
+
+  ;; Ensure that anything that should be fixed-pitch in Org files appears that way
+  (set-face-attribute 'org-block nil :foreground nil :inherit 'fixed-pitch)
+  (set-face-attribute 'org-code nil   :inherit '(shadow fixed-pitch))
+  (set-face-attribute 'org-indent nil :inherit '(org-hide fixed-pitch))
+  (set-face-attribute 'org-verbatim nil :inherit '(shadow fixed-pitch))
+  (set-face-attribute 'org-special-keyword nil :inherit '(font-lock-comment-face fixed-pitch))
+  (set-face-attribute 'org-meta-line nil :inherit '(font-lock-comment-face fixed-pitch))
+  (set-face-attribute 'org-checkbox nil :inherit 'fixed-pitch)
+#+END_SRC
+* PS Print with GHOSTSCRIPT
+#+BEGIN_SRC emacs-lisp
+   (setq ps-lpr-command "C:/Program Files/gs/gs9.56.1/bin/gswin64c.exe")
+   (setq ps-lpr-switches '("-q" "-dNOPAUSE" "-dBATCH" "-sDEVICE=mswinpr2" "-sOutputFile=\"%printer%Canon\ TS6000\ series\""))
+   (setq ps-printer-name t)
+   (setf ps-font-family 'Courier)
+   (setf ps-font-size 10.0)
+   (setf ps-line-number t)
+   (setf ps-line-number-font-size 10)
+#+END_SRC
+* Dired
+#+BEGIN_SRC emacs-lisp
+  (use-package all-the-icons-dired
+      :ensure t
+      :pin melpa
+      :config
+      (add-hook 'dired-mode-hook 'all-the-icons-dired-mode))
+
+  (defun mydired-sort ()
+    "Sort dired listings with directories first."
+    (save-excursion
+      (let (buffer-read-only)
+	(forward-line 2) ;; beyond dir. header 
+	(sort-regexp-fields t "^.*$" "[ ]*." (point) (point-max)))
+      (set-buffer-modified-p nil)))
+
+  (defadvice dired-readin
+    (after dired-after-updating-hook first () activate)
+    "Sort dired listings with directories first before adding marks."
+    (mydired-sort))
+#+END_SRC
 * Final Presenation to the user.
 
-** load per user settings
+* load per user settings
  #+BEGIN_SRC emacs-lisp
- ;;;; load per user settings file
- ;;;; finding local  init directory from https://emacs.stackexchange.com/questions/52434/how-to-access-the-directory-of-the-init-el-file-from-elisp
- (message "local settings start")
- (when (file-exists-p (concat (file-name-directory (or load-file-name (buffer-file-name))) "/local-settings.org"))
-         (print "Starting to load")
-         (org-babel-load-file (expand-file-name "local-settings.org" (file-name-directory (or load-file-name (buffer-file-name))))))
- (message "local settings end")
+;;;; Various user settings is a local configuration.
+ (local-custom-file "local-settings.org" "Final user settings")
  #+END_SRC
-
-* Report the time metrics
-#+BEGIN_SRC emacs-lisp
-(setq *emacs-load-end* (current-time))
-(message "Time for .emacs downloading: %s loading %s " 
-(float-time (time-subtract *emacs-load-end* *emacs-download*))
-(float-time (time-subtract *emacs-download* *emacs-load-start*)))
-#+END_SRC
 

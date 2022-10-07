@@ -11,3 +11,6 @@
 					   (user-homedir-pathname))))
   (when (and quicklisp-per-user (probe-file quicklisp-per-user))
     (load quicklisp-per-user)))
+
+
+

@@ -1,0 +1,159 @@
+#+TITLE: Custom org-agenda
+#+OPTIONS: toc:nil num:nil ^:nil
+#+INDEX: org-agenda!customization
+** Refile configuration
+ #+BEGIN_SRC emacs-lisp
+
+   (defun gtd-file (name)
+     (concat org-gtd-dir name))
+
+   (setq org-refile-targets `((,(gtd-file "gtd.org") :maxlevel . 2)
+			      (,(gtd-file "Someday.org") :maxlevel . 2)
+			      (,(gtd-file "Tickler.org") :maxlevel . 1)
+			      (,(gtd-file "Appointments.org") :maxlevel . 1)))
+
+ #+END_SRC
+
+
+ 
+
+ #+BEGIN_SRC emacs-lisp
+ (setq org-agenda-start-with-log-mode t)
+ (setq org-log-done 'time)
+ (setq org-log-into-drawer "LOGBOOK")
+ #+END_SRC
+
+ This is init, and core part of the Petton algorithm.
+
+ I have these files
+ | File         | TODO  | Scheduled | Comments          |                  |
+ |--------------+-------+-----------+-------------------+------------------|
+ | gtd          | yes   | yes or no | tasks in progress | Do until done    |
+ | Inbox        | maybe | yes or no | tasks on entry    | Do or Move       |
+ | Annual-Days  | no    | yes       | calendar events   | Hold             |
+ | Appointments | yes   | yes       | appointment       | Do               |
+ | Tickler      | maybe | yes       | Reminders         | Wait and Dismiss |
+ |              |       |           |                   |                  |
+ 
+ #+BEGIN_SRC emacs-lisp
+   (setq org-agenda-files
+	 (list (gtd-file "gtd.org")
+	       (gtd-file "Tickler.org")
+	       (gtd-file "Annual-Days.org")
+	       (gtd-file "Appointments.org")
+	       (gtd-file "Inbox.org")))
+   (setq current-agenda-files
+	 (list (gtd-file "gtd.org")
+	       (gtd-file "Inbox.org")
+	       (gtd-file "Appointments.org")
+	       (gtd-file "Tickler.org")))
+   ;;; All items except for appointments
+   (setq org-non-appoinment-files
+	 (list (gtd-file "gtd.org")
+	       (gtd-file "Tickler.org")
+	       (gtd-file "Annual-Days.org")
+	       (gtd-file "Inbox.org")))
+   (setq full-agenda-files (cons (gtd-file "Someday.org") org-agenda-files))
+   (setq org-agenda-skip-scheduled-if-done t)
+   (setq org-agenda-todo-list-sublevels t)
+
+   ;;;; The following two defuns are from Nicolas Petton
+   ;;;; from https://emacs.cafe/emacs/orgmode/gtd/2017/06/30/orgmode-gtd.html
+   (defun my-org-agenda-skip-all-siblings-but-first ()
+	  "Skip all but the first non-done entry."
+     (let (should-skip-entry)
+       (unless (org-current-is-todo)
+	 (setq should-skip-entry t))
+       (save-excursion
+	 (while (and (not should-skip-entry) (org-goto-sibling t))
+		(when (org-current-is-todo)
+		      (setq should-skip-entry t))))
+       (when should-skip-entry
+	 (or (outline-next-heading)
+	     (goto-char (point-max))))))
+
+   (defun org-current-is-todo ()
+     (string= "TODO" (org-get-todo-state)))
+
+ #+END_SRC
+
+
+ My custom agenda-views
+ The D item were considered along with the Petton algoritm above.
+
+ #+BEGIN_SRC emacs-lisp
+
+   ;;;; Define Custom Agenda views
+   (setq org-agenda-custom-commands
+	 `(
+	   ("x" . "Experimental")
+	   ("xx" "xx" agenda)
+	   ("xy" "xy" agenda*)
+	   ("xn" "xn" todo "NEXT")
+	   ("xN" "xN" todo-tree "NEXT")
+	   ("xa" "All Appointments" tags "+APPOINTMENT")
+	   ("xj" "James Appointments" tags "+JAMES+APPOINTMENT")
+	   ("xJ" "James" tags "+JAMES")
+	   ("xc" "Weekly schedule" agenda ""
+	     ((org-agenda-span 7) ;; agenda will start in week view
+	      (org-agenda-repeating-timestamp-show-all t)))
+	   ("xn" "Daily Next Task List" agenda ""
+	     ((org-agenda-skip-function #'my-org-agenda-skip-all-siblings-but-first)))
+	   ("xf" "Evaluate all Tasks" agenda ""
+	     ((org-agenda-files current-agenda-files)))
+	   ("xs" "Daily Overview"
+	    ;; The first part is an agenda calendar view
+	    ((agenda "" ((org-agenda-files org-agenda-files)
+			 (org-agenda-ndays 1)
+			 (org-agenda-sorting-strategy
+			  `((agenda time-up priority-down tag-up)))
+			 (org-deadline-warning-days 0)))
+				     ; exclude ticker files from todo list because they are covered in agenda
+	     (todo "TODO" ((org-agenda-files org-non-appoinment-files)))
+	     (todo "WAITING" ((org-agenda-files org-non-appoinment-files)))
+	     (todo "NEXT" ((org-agenda-files org-non-appoinment-files)))))
+	   ("H" "All Contexts"
+	    ((agenda)
+	     (tags-todo "CAR")
+	     (tags-todo "JAMES")
+	     (tags-todo "TOM")
+	     (tags-todo "JOANNE")
+	     (tags-todo "ATTIC")
+	     (tags-todo "HOME")
+	     (tags-todo "COMPUTER")
+	     (tags-todo "OUTDOOR")))
+	   ("D" . "Daily Tasks")
+	   ("Dt" "Any Project Task"
+	    ((agenda ""
+		     ((org-deadline-warning-days 7)))
+	     (todo)))
+	   ("Da" "A Scheduled Project task"
+	    ((agenda "" ((org-agenda-files org-agenda-files)
+			 (org-agenda-ndays 1)
+			 (org-agenda-sorting-strategy
+			  `((agenda time-up priority-down tag-up)))
+			 (org-deadline-warning-days 0)))
+				     ; exclude ticker files from todo list because they are covered in agenda
+	     (todo "NEXT" ((org-agenda-files current-agenda-files)))))
+	   ("g" . "GTD contexts")
+	   ("ga" "Attic" tags-todo "ATTIC")
+	   ("gh" "Home" tags-todo "HOME")
+	   ("gc" "Computer" tags-todo "COMPUTER")
+	   ("go" "Outdoor" tag-toto "OUTDOOR")
+	   ("gp" "Projects" tags-todo "PROJECTS")
+	   ("gf" "Financial" tags-todo "FINANCIAL")
+
+	   ("p" . "Priorities")
+	   ("pa" "A items" tags-todo "+PRIORITY=\"A\"")
+	   ("pb" "B items" tags-todo "+PRIORITY=\"B\"")
+	   ("pc" "C items" tags-todo "+PRIORITY=\"C\"")
+	   ("y" agenda*)
+	   ("c" "Weekly schedule" agenda ""
+	    ((org-agenda-span 7) ;; agenda will start in week view
+	     (org-agenda-repeating-timestamp-show-all t))))) ;; ensures that repeating events appear on all relevant dates
+
+
+
+
+ #+END_SRC
+
