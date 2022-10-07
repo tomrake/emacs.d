@@ -247,11 +247,14 @@ specify specific crossplatform functions and macros for path construction.
         (clipboard-kill-region (point-min) (point-max)))
       (message filename))))
 #+END_SRC
-* Setting up Aspell
+* Ispell configured with Aspell
 aspell configuration is in [[~/.aspell.conf]]
 Fixed on 7/2/2022 moving to DESKER
+[2022-10-07 Fri 18:12]
+  - The EOL of the .aspell configuration files got corrupted.
+  - They should all be Unix (LF) ends of lines.
 #+BEGIN_SRC emacs-lisp
-  (setq ispell-program-name "aspell")
+  (setq ispell-program-name "c:/devel/msys64/usr/bin/aspell.exe")
 #+END_SRC
 * Joining items as strings with and without quoting
 #+BEGIN_SRC emacs-lisp
@@ -977,10 +980,23 @@ dir
 * Dired
 #+BEGIN_SRC emacs-lisp
   (use-package all-the-icons-dired
-    :ensure t
-    :pin melpa
-    :config
-    (add-hook 'dired-mode-hook 'all-the-icons-dired-mode))
+      :ensure t
+      :pin melpa
+      :config
+      (add-hook 'dired-mode-hook 'all-the-icons-dired-mode))
+
+  (defun mydired-sort ()
+    "Sort dired listings with directories first."
+    (save-excursion
+      (let (buffer-read-only)
+	(forward-line 2) ;; beyond dir. header 
+	(sort-regexp-fields t "^.*$" "[ ]*." (point) (point-max)))
+      (set-buffer-modified-p nil)))
+
+  (defadvice dired-readin
+    (after dired-after-updating-hook first () activate)
+    "Sort dired listings with directories first before adding marks."
+    (mydired-sort))
 #+END_SRC
 * Final Presenation to the user.
 
