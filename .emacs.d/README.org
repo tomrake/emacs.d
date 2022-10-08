@@ -1,0 +1,9 @@
+* Emacs init restructure
+  - Based on [[https://github.com/daviwil/emacs-from-scratch/blob/master/show-notes/Emacs-07.org]]
+  - Settings.org is renamed emacs.org
+  - init.el is placed under version control
+
+** Steps
+   - place init.el under version control
+   - modify settings.org to test when it is being saved.
+   * change settings.org to write init.el
