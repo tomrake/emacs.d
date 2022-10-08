@@ -30,6 +30,7 @@ These are the configuration files.
     - I am revising file generation from settings.org
     - settings.org is to be renamed Emacs.org
     - on saving this file will tangle code to init.el
+    - THIS IS A Test of init.el generation.
 *** Emacs init restructure
     - Based on
       - [[https://github.com/daviwil/emacs-from-scratch/blob/master/show-notes/Emacs-07.org]]
