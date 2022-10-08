@@ -1,6 +1,7 @@
 #+STARTUP: overview
 #+TITLE: Emacs configuration
 #+OPTIONS: num:nil ^:nil toc: nil
+#+PROPERTY: header-args:emacs-lisp :tangle ./init.el :mkdirp yes
 #+EXPORT-FILENAME: init.el
 #+INDEX: Emacs!Configuration
 * FRONT STUFF
@@ -985,8 +986,9 @@ dir
     "Sort dired listings with directories first before adding marks."
     (mydired-sort))
 #+END_SRC
-* Write Changes to init.el
+* Auto-tangle configuration files.
 #+begin_src emacs-lisp
+  ;; Autommatically tangle our Emacs.org config file when we save it.
   (defun efs/org-babel-tangle-config ()
     (when (string-equal (buffer-file-name)
 			(expand-file-name "~/Documents/Code/.emacs.d/Emacs.org"))
