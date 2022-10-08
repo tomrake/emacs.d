@@ -300,10 +300,7 @@
 (defun provision-abcl()
   (let ((java (concat "c:/Program Files/Java/" (if t "jdk-18.0.2.1" "jdk1.8.0_333") "/bin/java.exe"))
 	(abcl "c:/Program Files/ABCL/abcl-src-1.9.0/dist/abcl.jar"))
-	(message "java:")(message java) (message (if (file-exists-p java) "java exists!!" "java does not exists!!!!!!!"))
-	(message "sbcl:") (message abcl) (message (if (file-exists-p abcl) "abcl exists!" "abcl does not exists!!!!!!!"))
 	 (when (and (file-exists-p  java) (file-exists-p abcl))
-	   (message "returning abcl entry")
 	   `(abcl  ,(list java "-jar" abcl)))))
 
 (defun provision-clisp-msys64 ()
@@ -420,7 +417,7 @@
  '((lisp . t)
    (emacs-lisp . t)))
 
-(setq org-modules '(org-habit org-checklist))
+(setq org-modules '(org-habit org-checklist ox-extra))
 
 (setq org-habit-graph-column 50)
 
