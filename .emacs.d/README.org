@@ -1,5 +1,7 @@
 * Emacs init restructure
-  - Based on [[https://github.com/daviwil/emacs-from-scratch/blob/master/show-notes/Emacs-07.org]]
+  - Based on
+    - [[https://github.com/daviwil/emacs-from-scratch/blob/master/show-notes/Emacs-07.org]]
+    - [[https://systemcrafters.cc/emacs-from-scratch/configure-everything-with-org-babel/]]
   - Settings.org is renamed emacs.org
   - init.el is placed under version control
 

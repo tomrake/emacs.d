@@ -1,6 +1,6 @@
 #+STARTUP: overview
 #+TITLE: Emacs configuration
-#+OPTIONS: num:nil ^:nil
+#+OPTIONS: num:nil ^:nil toc: nil
 #+EXPORT-FILENAME: init.el
 #+INDEX: Emacs!Configuration
 * FRONT STUFF
@@ -26,41 +26,25 @@ These are the configuration files.
  [[file:~/.emacs.d/local-publishing.org]] org-publishing stuff
 
 *** Revision Narative
+    - I am revising file generation from settings.org
+    - settings.org is to be renamed Emacs.org
+    - on saving this file will tangle code to init.el
+*** Emacs init restructure
+    - Based on
+      - [[https://github.com/daviwil/emacs-from-scratch/blob/master/show-notes/Emacs-07.org]]
+      - [[https://systemcrafters.cc/emacs-from-scratch/configure-everything-with-org-babel/]]
+    - Settings.org is renamed emacs.org
+    - init.el is placed under version control
 
-**** Phase 1
-  I want to update to emacs 28.1. And in doing so I wish to convert my ad-hoc  package loading to use-package.
-
-  I am revised much of the junk documenation and will set a version of the settings.org files.
-
-  These are the configuration sources:
-    - init.el this defers to settings.org>setting.el
-    - local-capture.org
-    - local-custom-agenda.org
-    - local-publishing.org
-    - local-settings.org
-    - ~/.custom/emacs/emacs-custom.el
-
-  The next process is do git check in all changes and reboot emacs.
-
-  These were the difficulties in getting 28.1 to run.
-
-  I needed to quote the EMACS_HOME enviroment variable becauce Program Fles has a space.
-
-  I needed to do a special load and compile to get use-project the Ian Y E Pen solution.
-
-  I needed to (use-package rainbow-delimiter :ensure t) to fetch that package.
-
-  I needed to :tangle no the slime-helper part.
-
-  Org gtd seems to be functional.
-  
-****  Phase 2
-  This  phase  is planning to remove existing themes and  use Modus Themes and then customize them.
+**** Steps
+   - place init.el under version control
+   - modify settings.org to test when it is being saved.
+   * change settings.org to write init.el
 *** Standard coding setup
- - The source of Emacs startup code is largely controlled by .emacs/setting.org
- - All programming code is located in ~/quicklisp/local-projects/
+    - In general the ~/.emacs.d and ~/quicklisp are symlinks from ~/Documents/Code
+    - The source of Emacs startup code is largely controlled by ~/.emacs.d/setting.org
+    - All programming code is located in ~/quicklisp/local-projects/
 
-* Begining setting generation.
 * The generated file warning to init.el
 #+BEGIN_SRC emacs-lisp
   ;;;; NOTE: This file had been generated from ~/.emacs.d/settings.org
@@ -85,7 +69,12 @@ These are the configuration files.
    (load custom-file)
  #+END_SRC
 * Allow loading of a file from .emacs.d/
- User custom setting from .emacs.d files.
+***  [TBD] Once the init.el generation is working
+    - autosaving other .emacs.d/ configuration files could be done
+      the following macro will need to be reconsidered.
+      
+** User custom setting from .emacs.d files.
+
 #+BEGIN_SRC emacs-lisp
   ;;;; Macro to load user customizations from .emacs.d
   (defmacro local-custom-file (file description)
@@ -106,9 +95,7 @@ These are the configuration files.
   ;(setq debug-on-error t)
   #+END_SRC
 
-* !!!!!! PACKAGE SYSTEM SETUP
-  
-* Setup Package Archives
+* Package Archives - melpa
 #+BEGIN_SRC emacs-lisp
   (setq package-check-signature nil)
   (require 'package)
@@ -116,7 +103,7 @@ These are the configuration files.
 	       '("melpa" . "https://melpa.org/packages/") t)
   (package-initialize)
 #+END_SRC
-* Load use-package
+* use-package has specific loading requirements
   [TBD] Consider if this needs to be initialized
 #+BEGIN_SRC emacs-lisp
   (unless (package-installed-p 'use-package)
@@ -998,6 +985,16 @@ dir
     "Sort dired listings with directories first before adding marks."
     (mydired-sort))
 #+END_SRC
+* Write Changes to init.el
+#+begin_src emacs-lisp
+  (defun efs/org-babel-tangle-config ()
+    (when (string-equal (buffer-file-name)
+			(expand-file-name "~/Documents/Code/.emacs.d/Emacs.org"))
+      ;; Dynamic scoping to the rescue
+      (let ((org-confirm-babel-evaluate nil))
+	(org-babel-tangle))))
+  (add-hook 'org-mode-hook (lambda () (add-hook 'after-save-hook #'efs/org-babel-tangle-config)))
+#+end_src
 * Final Presenation to the user.
 
 * load per user settings
