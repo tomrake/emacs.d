@@ -433,8 +433,8 @@
 ;; The org-public-dir is a legacy model for shared tasks across all users.
 ;; The public shared model is to be deprecated in the light of the task-agenda model.
 (default-or-environment org-user-dir (getenv "HOME") "/org" "ORG-USER-DIR")
-(unless (file-directory-p org-user-dir)
-  (make-directory  org-user-dir))
+   (unless (file-directory-p org-user-dir)
+     (make-directory  org-user-dir))
 ;; Define a global org directory
 (default-or-environment org-public-dir "c:/Users/Public/Documents" "/org" "ORG-PUBLIC-DIR")
 
@@ -521,24 +521,26 @@
 (setf ps-line-number t)
 (setf ps-line-number-font-size 10)
 
+(use-package dired-single)
+
 (use-package all-the-icons-dired
-    :ensure t
-    :pin melpa
-    :config
-    (add-hook 'dired-mode-hook 'all-the-icons-dired-mode))
+      :ensure t
+      :pin melpa
+      :config
+      (add-hook 'dired-mode-hook 'all-the-icons-dired-mode))
 
 (defun mydired-sort ()
-  "Sort dired listings with directories first."
-  (save-excursion
-    (let (buffer-read-only)
-      (forward-line 2) ;; beyond dir. header 
-      (sort-regexp-fields t "^.*$" "[ ]*." (point) (point-max)))
-    (set-buffer-modified-p nil)))
+	"Sort dired listings with directories first."
+	(save-excursion
+	  (let (buffer-read-only)
+	    (forward-line 2) ;; beyond dir. header 
+	    (sort-regexp-fields t "^.*$" "[ ]*." (point) (point-max)))
+	  (set-buffer-modified-p nil)))
 
 (defadvice dired-readin
-  (after dired-after-updating-hook first () activate)
-  "Sort dired listings with directories first before adding marks."
-  (mydired-sort))
+	(after dired-after-updating-hook first () activate)
+	"Sort dired listings with directories first before adding marks."
+	(mydired-sort))
 
 (use-package diredc)
 

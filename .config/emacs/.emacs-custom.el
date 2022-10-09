@@ -16,7 +16,7 @@
  '(lpr-command "lpr.exe")
  '(lpr-headers-switches nil t)
  '(package-selected-packages
-   '(visual-fill-column org-present modus-themes org slime-company htmlize shx friendly-remote-shell friendly-shell tramp magit dockerfile-mode docker-tramp anaconda-mode popup cyberpunk-theme ac-slime paredit rainbow-delimiters slime epc auto-complete flx-ido))
+   '(pdf-tools diredc visual-fill-column org-present modus-themes org slime-company htmlize shx friendly-remote-shell friendly-shell tramp magit dockerfile-mode docker-tramp anaconda-mode popup cyberpunk-theme ac-slime paredit rainbow-delimiters slime epc auto-complete flx-ido))
  '(safe-local-variable-values '((org-use-property-inheritance . t))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.

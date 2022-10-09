@@ -611,26 +611,27 @@ CYGWIN version of CLISP is not provisioned
 	      auto-mode-alist))
 #+END_SRC
 
-* Org Structure Templates
+* Ord Mode
+** Org Structure Templates
 #+BEGIN_SRC emacs-lisp
-(require 'org-tempo)
+  (require 'org-tempo)
 
-(add-to-list 'org-structure-template-alist '("sh" . "src shell"))
-(add-to-list 'org-structure-template-alist '("el" . "src emacs-lisp"))
+  (add-to-list 'org-structure-template-alist '("sh" . "src shell"))
+  (add-to-list 'org-structure-template-alist '("el" . "src emacs-lisp"))
 #+END_SRC
 
-* pdflatex fixed with org export path to perl
+** pdflatex fixed with org export path to perl
 #+BEGIN_SRC emacs-lisp
   ;; Where org-export latex can find perl
   (setenv "PATH" (concat (getenv "PATH") (concat ";" (msys-path "usr/bin/"))))
 #+END_SRC
 
-* org global properties - efforts
+** org global properties - efforts
 #+BEGIN_SRC emacs-lisp
   (setf org-global-properties
       '(("Effort_ALL" . "0:05 0:10 0:15 0:30 1:00 2:00 4:00 6:00 8:00")))
 #+END_SRC  
-* killing frame for org-protcol capture
+** killing frame for org-protcol capture
 #+BEGIN_SRC emacs-lisp
   ;; Kill the frame if one was created for the capture
   (defvar kk/delete-frame-after-capture 0 "Whether to delete the last frame after the current capture")
@@ -648,49 +649,49 @@ CYGWIN version of CLISP is not provisioned
   (advice-add 'org-capture-kill :after 'kk/delete-frame-if-neccessary)
   (advice-add 'org-capture-refile :after 'kk/delete-frame-if-neccessary)
 #+END_SRC
-* org mode location
+** org mode location
 #+BEGIN_SRC emacs-lisp
-(setf org-mode-base-dir "~/org/")
+  (setf org-mode-base-dir "~/org/")
 #+END_SRC
-* gtd location
+** gtd location
 #+BEGIN_SRC emacs-lisp
-(setf org-gtd-dir (concat org-mode-base-dir "gtd/"))
+  (setf org-gtd-dir (concat org-mode-base-dir "gtd/"))
 #+END_SRC
-* Org Key Binding
- #+BEGIN_SRC emacs-lisp
- ;;;; Org Mode key bindings.
- (global-set-key (kbd "C-c l") 'org-store-link)
- (global-set-key (kbd "C-c a") 'org-agenda)
- (global-set-key (kbd "C-c c") 'org-capture)
- (global-set-key (kbd "C-c b") 'org-switchb)
- #+END_SRC
+** Org Key Binding
+#+BEGIN_SRC emacs-lisp
+  ;;;; Org Mode key bindings.
+  (global-set-key (kbd "C-c l") 'org-store-link)
+  (global-set-key (kbd "C-c a") 'org-agenda)
+  (global-set-key (kbd "C-c c") 'org-capture)
+  (global-set-key (kbd "C-c b") 'org-switchb)
+#+END_SRC
 
-* Configure BABEL languages
+** Configure BABEL languages
  [TBD] Do I really need to specify these at all?
  #+BEGIN_SRC emacs-lisp
- (org-babel-do-load-languages
-  'org-babel-load-languages
-  '((lisp . t)
-    (emacs-lisp . t)))
+   (org-babel-do-load-languages
+    'org-babel-load-languages
+    '((lisp . t)
+      (emacs-lisp . t)))
  #+END_SRC
 
-* org modules needed
+** org modules needed
  #+BEGIN_SRC emacs-lisp
- (setq org-modules '(org-habit org-checklist ox-extra))
+   (setq org-modules '(org-habit org-checklist ox-extra))
  #+END_SRC
-* Header Text Ignore
+** Header Text Ignore
 This code is bugged can't load ox-extras
 #+begin_src emacs-lisp :tangle no
   (require 'ox-extra)
   (ox-extras-activate '(ignore-headlines))
 #+end_src
-* org-habit
+** org-habit
  [TBD] Find out why I Should not delete this.
  #+BEGIN_SRC emacs-lisp
- (setq org-habit-graph-column 50)
+   (setq org-habit-graph-column 50)
  #+END_SRC
 
-* Org link abbreviations
+** Org link abbreviations
  #+BEGIN_SRC emacs-lisp
    (setq org-link-abbrev-alist
 	 '(("bugzilla" . "http://192.168.1.50/bugzilla/show_bug.cgi?id=")
@@ -699,43 +700,40 @@ This code is bugged can't load ox-extras
 	   ("common-docs" . "file:///C:/Users/zzzap/Documents/Common-Document-Store/%s")))
  #+END_SRC
 
- #+RESULTS:
- : ((bugzilla . http://192.168.1.50/bugzilla/show_bug.cgi?id=) (bugzilla-comp . http://192.168.1.50/bugzilla/describecomponents.cgi?product=) (common-docs . file:///C:/Users/zzzap/Documents/Common-Document-Store/%s))
-
-* Ensure there are standard user ~/org directories
+** Ensure there are standard user ~/org directories
  [TBD] is this how I am configured now?
  How to define the standard HOME org directory.
  Under windows and linux this is ~/org.
  
   #+BEGIN_SRC emacs-lisp
-  ;; Create stadard org directories if not already present.
-  ;; The standard user directory is ~/org in the HOME directory.
-  ;; Override with the var ORG-USER-DIR.
-  ;; The org-public-dir is a legacy model for shared tasks across all users.
-  ;; The public shared model is to be deprecated in the light of the task-agenda model.
-  (default-or-environment org-user-dir (getenv "HOME") "/org" "ORG-USER-DIR")
-  (unless (file-directory-p org-user-dir)
-    (make-directory  org-user-dir))
-  ;; Define a global org directory
-  (default-or-environment org-public-dir "c:/Users/Public/Documents" "/org" "ORG-PUBLIC-DIR")
+    ;; Create stadard org directories if not already present.
+    ;; The standard user directory is ~/org in the HOME directory.
+    ;; Override with the var ORG-USER-DIR.
+    ;; The org-public-dir is a legacy model for shared tasks across all users.
+    ;; The public shared model is to be deprecated in the light of the task-agenda model.
+    (default-or-environment org-user-dir (getenv "HOME") "/org" "ORG-USER-DIR")
+       (unless (file-directory-p org-user-dir)
+	 (make-directory  org-user-dir))
+    ;; Define a global org directory
+    (default-or-environment org-public-dir "c:/Users/Public/Documents" "/org" "ORG-PUBLIC-DIR")
   #+END_SRC
 
-* Standard Notes file
+** Standard Notes file
  [TBD] Is this still relavent?
  This is a standard per User notes file.
  Unser windows and linux this ~/org/notes/notes.org
   #+BEGIN_SRC emacs-lisp
-  ;; The Standard org note file is ~/org/notes/notes.
-  ;; This can be set by the environment variable ORG-NOTES-FILE
-  (default-or-environment org-notes-file org-user-dir "/nodes/notes.org" "ORG-NOTES-FILE")
-  (setq org-default-notes-file org-notes-file)
+    ;; The Standard org note file is ~/org/notes/notes.
+    ;; This can be set by the environment variable ORG-NOTES-FILE
+    (default-or-environment org-notes-file org-user-dir "/nodes/notes.org" "ORG-NOTES-FILE")
+    (setq org-default-notes-file org-notes-file)
   #+END_SRC
 
-* org TODOs types
+** org TODOs types
 #+BEGIN_SRC emacs-lisp
-(setq org-todo-keywords '((sequence "TODO(t)" "NEXT(n)" "WAITING(w@/!)" "|" "DONE(d!)" "CANCELLED(c@)")))
+  (setq org-todo-keywords '((sequence "TODO(t)" "NEXT(n)" "WAITING(w@/!)" "|" "DONE(d!)" "CANCELLED(c@)")))
 #+END_SRC
-* org TODO colors
+** org TODO colors
 #+BEGIN_SRC emacs-lisp
   (setq org-todo-keyword-faces '(("TODO" . "red")
 			         ("NEXT" . "magenta")
@@ -743,15 +741,15 @@ This code is bugged can't load ox-extras
 				 ("CANCELLED"."green")
 				 ("DONE" . "green")));
 #+END_SRC
-* Task agenda context
+** Task agenda context
  - This starts an agenda context
  #+BEGIN_SRC emacs-lisp
- ;;;; Customize the agenda locally
- (local-custom-file "local-custom-agenda.org" "Customize org-agenda")
+   ;;;; Customize the agenda locally
+   (local-custom-file "local-custom-agenda.org" "Customize org-agenda")
  #+END_SRC
   - The following may be defined with the above values
     
-* Capture Templates
+** Capture Templates
 Use [[~/.emacs.d/local-capture.org]] to change the capture template.
  #+BEGIN_SRC emacs-lisp
    ;;;; Customize the agenda locally
@@ -759,51 +757,51 @@ Use [[~/.emacs.d/local-capture.org]] to change the capture template.
      (default-or-environment gtd-template-dir base  "" "ORG-TEMPLATE-DIR")
      (local-custom-file "local-capture.org" "Customize org-capture"))
  #+END_SRC
-* Always present the gtd.org file
-Customize  this default by environment variable USER_REOPEN_FILES
+** Always present the gtd.org file
+  - Customize  this default by environment variable USER_REOPEN_FILES
  #+BEGIN_SRC emacs-lisp
  (find-file (concat org-gtd-dir "gtd.org"))
  #+END_SRC
  
-* org mode add :shcmd to sh blocks
-Using :shcmd "cmdproxy.exe" on Windows uses the emacs version of cmd.
-Using :shcmd   msys2-base / "bin/bash.exe" will run a shell under msys2 bash.
-Allow Windows CMD commands to be run from .org files.
+** org mode add :shcmd to sh blocks
+  - Using :shcmd "cmdproxy.exe" on Windows uses the emacs version of cmd.
+  - Using :shcmd   msys2-base / "bin/bash.exe" will run a shell under msys2 bash.
+  - Allow Windows CMD commands to be run from .org files.
 
-See https://emacs.stackexchange.com/questions/19037/org-babel-invoking-cmd-exe
+  - See https://emacs.stackexchange.com/questions/19037/org-babel-invoking-cmd-exe
 
-Example how to use, note "cmdproxy.exe" is a Windows Emacs file.
+  - Example how to use, note "cmdproxy.exe" is a Windows Emacs file.
 #+BEGIN_EXAMPLE
 \#+BEGIN_SRC sh :shcmd "cmdproxy.exe"
 dir
 \#+END_SRC
 #+END_EXAMPLE
 #+BEGIN_SRC emacs-lisp
-(require 'ob-shell)
-(defadvice org-babel-sh-evaluate (around set-shell activate)
-  "Add header argument :shcmd that determines the shell to be called."
-  (defvar org-babel-sh-command)
-  (let* ((org-babel-sh-command (or (cdr (assoc :shcmd params)) org-babel-sh-command)))
-    ad-do-it))
+  (require 'ob-shell)
+  (defadvice org-babel-sh-evaluate (around set-shell activate)
+    "Add header argument :shcmd that determines the shell to be called."
+    (defvar org-babel-sh-command)
+    (let* ((org-babel-sh-command (or (cdr (assoc :shcmd params)) org-babel-sh-command)))
+      ad-do-it))
 #+END_SRC
-* org-publish
+** org-publish
 #+BEGIN_SRC emacs-lisp
-;;;; org-publishing is a local configuration.
-(local-custom-file "local-publishing.org" "Configuration of org-publishing")
+  ;;;; org-publishing is a local configuration.
+  (local-custom-file "local-publishing.org" "Configuration of org-publishing")
 #+END_SRC  
 
-* org-present
+** org-present
 #+BEGIN_SRC emacs-lisp
-(use-package org-present
-  :ensure t
-  :config
-    (use-package visual-fill-column
-      :ensure t
-      :config
-      (setq visual-fill-column-width 110
-	    visual-fill-column-center-text t)))
+  (use-package org-present
+    :ensure t
+    :config
+      (use-package visual-fill-column
+	:ensure t
+	:config
+	(setq visual-fill-column-width 110
+	      visual-fill-column-center-text t)))
 #+END_SRC
-* Bullets and fonts for org mode
+** Bullets and fonts for org mode
 #+BEGIN_SRC emacs-lisp
   (use-package org-bullets
     :after org
@@ -838,6 +836,7 @@ dir
   (set-face-attribute 'org-meta-line nil :inherit '(font-lock-comment-face fixed-pitch))
   (set-face-attribute 'org-checkbox nil :inherit 'fixed-pitch)
 #+END_SRC
+
 * PS Print with GHOSTSCRIPT
 #+BEGIN_SRC emacs-lisp
    (setq ps-lpr-command "C:/Program Files/gs/gs9.56.1/bin/gswin64c.exe")
@@ -848,28 +847,42 @@ dir
    (setf ps-line-number t)
    (setf ps-line-number-font-size 10)
 #+END_SRC
+
+
 * Dired
+  - dired is configured as a file manager.
+** Single Dired buffer
+#+begin_src emacs-lisp
+  (use-package dired-single)
+#+end_src
+** All the icons
 #+BEGIN_SRC emacs-lisp
   (use-package all-the-icons-dired
-      :ensure t
-      :pin melpa
-      :config
-      (add-hook 'dired-mode-hook 'all-the-icons-dired-mode))
-
+	:ensure t
+	:pin melpa
+	:config
+	(add-hook 'dired-mode-hook 'all-the-icons-dired-mode))
+#+end_src
+** File Sort Order
+#+begin_src emacs-lisp
   (defun mydired-sort ()
-    "Sort dired listings with directories first."
-    (save-excursion
-      (let (buffer-read-only)
-	(forward-line 2) ;; beyond dir. header 
-	(sort-regexp-fields t "^.*$" "[ ]*." (point) (point-max)))
-      (set-buffer-modified-p nil)))
+	  "Sort dired listings with directories first."
+	  (save-excursion
+	    (let (buffer-read-only)
+	      (forward-line 2) ;; beyond dir. header 
+	      (sort-regexp-fields t "^.*$" "[ ]*." (point) (point-max)))
+	    (set-buffer-modified-p nil)))
 
   (defadvice dired-readin
-    (after dired-after-updating-hook first () activate)
-    "Sort dired listings with directories first before adding marks."
-    (mydired-sort))
+	  (after dired-after-updating-hook first () activate)
+	  "Sort dired listings with directories first before adding marks."
+	  (mydired-sort))
 #+END_SRC
-* Peep Dired
+** diredc - NOT CONFIGURED
+#+begin_src emacs-lisp
+  (use-package diredc)
+#+end_src
+** Peep Dired - NOT TANGLED
 #+begin_src emacs-lisp :tangle no
   (use-package peep-dired
   :config
@@ -881,10 +894,6 @@ dir
   (setq peep-dired-enable-on-directories t)
   ; file  types not to open
   (setq peep-dired-ignored-extensions '("mkv" "iso" "mp4"))
-#+end_src
-* diredc
-#+begin_src emacs-lisp
-(use-package diredc)
 #+end_src
 * Auto-tangle configuration files.
 #+begin_src emacs-lisp
