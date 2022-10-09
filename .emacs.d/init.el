@@ -521,7 +521,28 @@
 (setf ps-line-number t)
 (setf ps-line-number-font-size 10)
 
-(use-package dired-single)
+(use-package dired-single
+  :after
+    dired
+  :config
+    (defun twr/dired-init ()
+      (define-key dired-mode-map [remap dired-find-file]
+	'dired-single-buffer)
+      (define-key dired-mode-map [remap dired-mouse-find-file-other-window]
+	'dired-single-buffer-mouse)
+      (define-key dired-mode-map [remap dired-up-directory]
+	'dired-single-up-directory))
+    (twr/dired-init)
+    (setq dired-single-use-magic-buffer t)
+    ;; F5 is my special key
+    (global-set-key [(f5)] 'dired-single-magic-buffer)
+    (global-set-key [(control f5)] (function
+      (lambda nil (interactive)
+	(dired-single-magic-buffer default-directory))))
+    (global-set-key [(shift f5)] (function
+      (lambda nil (interactive)
+	(message "Current directory is: %s" default-directory))))
+    (global-set-key [(meta f5)] 'dired-single-toggle-buffer-name))
 
 (use-package all-the-icons-dired
       :ensure t
