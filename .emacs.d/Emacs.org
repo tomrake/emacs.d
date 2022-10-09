@@ -869,6 +869,23 @@ dir
     "Sort dired listings with directories first before adding marks."
     (mydired-sort))
 #+END_SRC
+* Peep Dired
+#+begin_src emacs-lisp :tangle no
+  (use-package peep-dired
+  :config
+  ; kill buffers when diabling the mode
+  (setq peep-dired-cleanup-on-disable t)
+  ; kill buffers when you move to another
+  (setq peep-direct-cleanup-on eagerly t)
+  ; set mode for peeped buffers
+  (setq peep-dired-enable-on-directories t)
+  ; file  types not to open
+  (setq peep-dired-ignored-extensions '("mkv" "iso" "mp4"))
+#+end_src
+* diredc
+#+begin_src emacs-lisp
+(use-package diredc)
+#+end_src
 * Auto-tangle configuration files.
 #+begin_src emacs-lisp
   ;; Autommatically tangle our Emacs.org config file when we save it.
