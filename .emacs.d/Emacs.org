@@ -899,8 +899,8 @@ dir
 	  "Sort dired listings with directories first before adding marks."
 	  (mydired-sort))
 #+END_SRC
-** diredc - NOT CONFIGURED
-#+begin_src emacs-lisp
+** diredc - NOT TANGLED
+#+begin_src emacs-lisp :tangle no
   (use-package diredc)
 #+end_src
 ** Peep Dired - NOT TANGLED
@@ -915,6 +915,17 @@ dir
   (setq peep-dired-enable-on-directories t)
   ; file  types not to open
   (setq peep-dired-ignored-extensions '("mkv" "iso" "mp4"))
+#+end_src
+* Openwith NO TANGLE
+#+begin_src emacs-lisp :tangle no
+  (require 'openwith)
+
+  (setq openwith-associatsions
+	 (list (list (openwith-make-extension-regexp '("mpg" "mpeg" "mp3" "mp4"
+					      "avi" "wmv" "wav" "mov" "flv"
+					      "ogm" "ogg" "mkv")) "vlc.exe")
+	       (list (openwith-make-extension-regexp '("JPEG" "JPG"))
+		     "c:/Program Files (x86)/JPEGView/JPEGView.exe")))
 #+end_src
 * Auto-tangle configuration files.
 #+begin_src emacs-lisp

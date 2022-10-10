@@ -563,8 +563,6 @@
 	"Sort dired listings with directories first before adding marks."
 	(mydired-sort))
 
-(use-package diredc)
-
 ;; Autommatically tangle our Emacs.org config file when we save it.
 (defun efs/org-babel-tangle-config ()
   (when (string-equal (buffer-file-name)
