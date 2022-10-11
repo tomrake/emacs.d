@@ -17,8 +17,6 @@
 
 (add-hook 'emacs-startup-hook #'efs/display-startup-time)
 
-(setq magic-mode-alist '(("*.org" . org)))
-
 ;;;; emacs customization file
 (setq custom-file "~/.config/emacs/.emacs-custom.el")
 (load custom-file)
@@ -41,6 +39,7 @@
 (require 'use-package)
 (setq use-package-always-ensure t)
 (setq use-package-verbose t)
+(setq use-package-always-defer t)
 
 ;(setq debug-on-error t)
 
@@ -48,15 +47,14 @@
 (defmacro local-custom-file (file description)
   `(progn
      (require 'org)
-     (message (concat "Looking for " ,description " file: " ,file ))
+     ;;(message (concat "Looking for " ,description " file: " ,file ))
      (let ((file-and-path (expand-file-name ,file user-emacs-directory)))
        (if (file-exists-p file-and-path)
-	   (progn (message (concat "org-babel-load of " file-and-path))
+	   (progn ;;(message (concat "org-babel-load of " file-and-path))
 		  (org-babel-load-file file-and-path))
 	 (message (concat "Custom file is missing " file-and-path))))))
 
-;(server-start)
-(require 'org-protocol)
+(setq magic-mode-alist '(("*.org" . org)))
 
 ;; Set initial frame size and position
 (defun my/set-initial-frame ()
@@ -174,16 +172,17 @@
 	"-c"
 	shell-task))
 
-(set-face-attribute 'default nil :height 120)
-  (require 'modus-themes)
-  (setq modus-themes-mode-line '(accented borderless))
-  (setq modus-themes-region '(bg-only))
+(use-package modus-themes
+    :config
+    (set-face-attribute 'default nil :height 120)
+    (setq modus-themes-mode-line '(accented borderless))
+    (setq modus-themes-region '(bg-only))
   (setq modus-themes-paren-match '(bold intense))
   (setq modus-themes-lang-checkers '(background intense))
   (setq modus-themes-italic-constructs t)
   (setq modus-themes-bold-contructs t)
 ;;; Org Mode
-(setq modus-themes-heading
+  (setq modus-themes-heading
       `((1 . (rainbow bold intense 1.7))
 	(2 . (rainbow bold intense 1.6))
 	(3 . (rainbow bold intense 1.5))
@@ -191,13 +190,13 @@
 	(5 . (rainbow bold intense 1.3))
 	(6 . (rainbow bold intense 1.2))
 	(t . (rainbow bold background 1.0))))
-(setq modus-themes-org-agenda
+  (setq modus-themes-org-agenda
     '((header-block . (variable-pitch 1.5))
       (header-date . (grayscale workaholic bold-today 1.2))
       (event . (accented italic varied))
       (scheduled . uniform)
       (habit . traffic-light)))
-(load-theme 'modus-vivendi t)
+  (load-theme 'modus-vivendi t))
 
 (use-package rainbow-delimiters
   :ensure t)

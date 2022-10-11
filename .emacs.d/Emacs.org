@@ -49,10 +49,6 @@ Add a heading to file about editing init.el.
 
 (add-hook 'emacs-startup-hook #'efs/display-startup-time)
 #+end_src
-* Magic Modes
-#+BEGIN_SRC emacs-lisp
-  (setq magic-mode-alist '(("*.org" . org)))
-#+END_SRC
 * The emacs customization file.
  Define were emacs cusomization is saved and restored.
  #+BEGIN_SRC emacs-lisp
@@ -60,7 +56,7 @@ Add a heading to file about editing init.el.
    (setq custom-file "~/.config/emacs/.emacs-custom.el")
    (load custom-file)
  #+END_SRC
-* Package Archives - melpa
+* Package Archives and use-package
 #+begin_src emacs-lisp
   ;; Initialize package sources
   (require 'package)
@@ -80,6 +76,7 @@ Add a heading to file about editing init.el.
   (require 'use-package)
   (setq use-package-always-ensure t)
   (setq use-package-verbose t)
+  (setq use-package-always-defer t)
 
 #+end_src
 * Emacs debug-on-error
@@ -101,17 +98,20 @@ Add a heading to file about editing init.el.
   (defmacro local-custom-file (file description)
     `(progn
        (require 'org)
-       (message (concat "Looking for " ,description " file: " ,file ))
+       ;;(message (concat "Looking for " ,description " file: " ,file ))
        (let ((file-and-path (expand-file-name ,file user-emacs-directory)))
 	 (if (file-exists-p file-and-path)
-	     (progn (message (concat "org-babel-load of " file-and-path))
+	     (progn ;;(message (concat "org-babel-load of " file-and-path))
 		    (org-babel-load-file file-and-path))
 	   (message (concat "Custom file is missing " file-and-path))))))
 
 #+END_SRC
-* org-protocol
+* Magic Modes
 #+BEGIN_SRC emacs-lisp
-  ;(server-start)
+  (setq magic-mode-alist '(("*.org" . org)))
+#+END_SRC
+* org-protocol - NO TANGLE
+#+BEGIN_SRC emacs-lisp :tangle no
   (require 'org-protocol)
 #+END_SRC
 * Initial Frame Size
@@ -306,16 +306,17 @@ oment Emulation
 * Modus Theme Configuration
 Main Page: [[https://protesilaos.com/emacs/modus-themes]]
 #+BEGIN_SRC emacs-lisp
-    (set-face-attribute 'default nil :height 120)
-    (require 'modus-themes)
-    (setq modus-themes-mode-line '(accented borderless))
-    (setq modus-themes-region '(bg-only))
+  (use-package modus-themes
+      :config
+      (set-face-attribute 'default nil :height 120)
+      (setq modus-themes-mode-line '(accented borderless))
+      (setq modus-themes-region '(bg-only))
     (setq modus-themes-paren-match '(bold intense))
     (setq modus-themes-lang-checkers '(background intense))
     (setq modus-themes-italic-constructs t)
     (setq modus-themes-bold-contructs t)
   ;;; Org Mode
-  (setq modus-themes-heading
+    (setq modus-themes-heading
 	`((1 . (rainbow bold intense 1.7))
 	  (2 . (rainbow bold intense 1.6))
 	  (3 . (rainbow bold intense 1.5))
@@ -323,13 +324,13 @@ Main Page: [[https://protesilaos.com/emacs/modus-themes]]
 	  (5 . (rainbow bold intense 1.3))
 	  (6 . (rainbow bold intense 1.2))
 	  (t . (rainbow bold background 1.0))))
-  (setq modus-themes-org-agenda
+    (setq modus-themes-org-agenda
       '((header-block . (variable-pitch 1.5))
 	(header-date . (grayscale workaholic bold-today 1.2))
 	(event . (accented italic varied))
 	(scheduled . uniform)
 	(habit . traffic-light)))
-  (load-theme 'modus-vivendi t)
+    (load-theme 'modus-vivendi t))
 #+END_SRC
 
 * Rainbow Delimeters
