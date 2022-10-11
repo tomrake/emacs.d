@@ -352,7 +352,7 @@ Main Page: [[https://protesilaos.com/emacs/modus-themes]]
     (interactive)
     (let ((explicit-shell-file-name "powershell.exe")
 	  (explicit-powershell.exe-args '()))
-      (shell)))
+      (shell (generate-new-buffer-name "*powershell*"))))
 #+end_src
 * Shells
   [TBD] Decide what is CRUFF here.

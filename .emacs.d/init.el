@@ -189,7 +189,7 @@
   (interactive)
   (let ((explicit-shell-file-name "powershell.exe")
 	(explicit-powershell.exe-args '()))
-    (shell)))
+    (shell (generate-new-buffer-name "*powershell*"))))
 
 (use-package friendly-shell
   :ensure t
