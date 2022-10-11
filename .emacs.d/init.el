@@ -1,14 +1,47 @@
-;;;; NOTE: This file had been generated from ~/.emacs.d/settings.org
-;;;; Emacs customization is done in ~/.emacs.d/settings.org
-;;;; ~/.emacs.d/init.el will load ~/.emacs.d/settings.el
-;;;; ~/.emacs.d/settings.org is created and updated by *tangle* of code blocks from  settings.org
-(setq org-src-tab-acts-natively t)
+;; NOTE: init.el is now generated from Emacs.org.  Please edit that file
+;;       in Emacs and init.el will be generated automatically!
+
+;; You will most likely need to adjust this font size for your system!
+(defvar efs/default-font-size 180)
+(defvar efs/default-variable-font-size 180)
+
+;; Make frame transparency overridable
+(defvar efs/frame-transparency '(90 . 90))
+
+(defun efs/display-startup-time ()
+  (message "Emacs loaded in %s with %d garbage collections."
+           (format "%.2f seconds"
+                   (float-time
+                   (time-subtract after-init-time before-init-time)))
+           gcs-done))
+
+(add-hook 'emacs-startup-hook #'efs/display-startup-time)
 
 (setq magic-mode-alist '(("*.org" . org)))
 
 ;;;; emacs customization file
 (setq custom-file "~/.config/emacs/.emacs-custom.el")
 (load custom-file)
+
+;; Initialize package sources
+(require 'package)
+
+(setq package-archives '(("melpa" . "https://melpa.org/packages/")
+                         ("org" . "https://orgmode.org/elpa/")
+                         ("elpa" . "https://elpa.gnu.org/packages/")))
+
+(package-initialize)
+(unless package-archive-contents
+  (package-refresh-contents))
+
+  ;; Initialize use-package on non-Linux platforms
+(unless (package-installed-p 'use-package)
+  (package-install 'use-package))
+
+(require 'use-package)
+(setq use-package-always-ensure t)
+
+;(setq debug-on-error t)
 
 ;;;; Macro to load user customizations from .emacs.d
 (defmacro local-custom-file (file description)
@@ -20,22 +53,6 @@
 	   (progn (message (concat "org-babel-load of " file-and-path))
 		  (org-babel-load-file file-and-path))
 	 (message (concat "Custom file is missing " file-and-path))))))
-
-;(setq debug-on-error t)
-
-(setq package-check-signature nil)
-(require 'package)
-(add-to-list 'package-archives
-	     '("melpa" . "https://melpa.org/packages/") t)
-(package-initialize)
-
-(unless (package-installed-p 'use-package)
-  (package-refresh-contents)
-  (package-install 'use-package))
-(eval-and-compile
-  (setq use-package-always-ensure t
-	use-package-expand-minimally t))
-;;  (require 'use-package)
 
 ;(server-start)
 (require 'org-protocol)
@@ -380,6 +397,8 @@
 (setq auto-mode-alist
       (append '((".*\\.yml\\'" . yaml-mode))
 	      auto-mode-alist))
+
+(setq org-src-tab-acts-natively t)
 
 (require 'org-tempo)
 
