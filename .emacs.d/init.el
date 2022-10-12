@@ -23,7 +23,7 @@
 
 ;; Initialize package sources
 (require 'package)
-
+;(setq package-check-signature nil)
 (setq package-archives '(("melpa" . "https://melpa.org/packages/")
 			 ("org" . "https://orgmode.org/elpa/")
 			 ("elpa" . "https://elpa.gnu.org/packages/")))
@@ -46,11 +46,12 @@
 ;;;; Macro to load user customizations from .emacs.d
 (defmacro local-custom-file (file description)
   `(progn
-     (require 'org)
+     ;(require 'org)
      ;;(message (concat "Looking for " ,description " file: " ,file ))
      (let ((file-and-path (expand-file-name ,file user-emacs-directory)))
        (if (file-exists-p file-and-path)
 	   (progn ;;(message (concat "org-babel-load of " file-and-path))
+	          (require 'org)
 		  (org-babel-load-file file-and-path))
 	 (message (concat "Custom file is missing " file-and-path))))))
 
@@ -398,9 +399,9 @@
       (append '((".*\\.yml\\'" . yaml-mode))
 	      auto-mode-alist))
 
-(setq org-src-tab-acts-natively t)
-
-(require 'org-tempo)
+(use-package org
+  :config
+  (setq org-src-tab-acts-natively t)
 
 (add-to-list 'org-structure-template-alist '("sh" . "src shell"))
 (add-to-list 'org-structure-template-alist '("el" . "src emacs-lisp"))
@@ -537,6 +538,8 @@
 (set-face-attribute 'org-special-keyword nil :inherit '(font-lock-comment-face fixed-pitch))
 (set-face-attribute 'org-meta-line nil :inherit '(font-lock-comment-face fixed-pitch))
 (set-face-attribute 'org-checkbox nil :inherit 'fixed-pitch)
+
+)
 
 (setq ps-lpr-command "C:/Program Files/gs/gs9.56.1/bin/gswin64c.exe")
 (setq ps-lpr-switches '("-q" "-dNOPAUSE" "-dBATCH" "-sDEVICE=mswinpr2" "-sOutputFile=\"%printer%Canon\ TS6000\ series\""))
