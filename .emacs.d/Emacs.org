@@ -29,7 +29,7 @@ Add a heading to file about editing init.el.
 #+begin_src emacs-lisp
   ;; NOTE: init.el is now generated from Emacs.org.  Please edit that file
   ;;       in Emacs and init.el will be generated automatically!
-
+  (setq gc-cons-threshold (* 50 1000 1000))
   ;; You will most likely need to adjust this font size for your system!
   (defvar efs/default-font-size 180)
   (defvar efs/default-variable-font-size 180)
@@ -61,6 +61,7 @@ Add a heading to file about editing init.el.
   ;; Initialize package sources
   (require 'package)
   ;(setq package-check-signature nil)
+  (setq package-gnupghome-dir "~/.gnupg/")
   (setq package-archives '(("melpa" . "https://melpa.org/packages/")
 			   ("org" . "https://orgmode.org/elpa/")
 			   ("elpa" . "https://elpa.gnu.org/packages/")))
@@ -173,7 +174,7 @@ I don't like the a messy startup screen.
   (("C-x g" . magit-status)
    ("C-x M-d" . magit-dispatch-popup)))
  #+END_SRC
-* org-roam
+* org-roam NO TANGLE
   I am setting up org-roam
 #+BEGIN_SRC emacs-lisp :tangle no
   (use-package org-roam
@@ -336,11 +337,8 @@ Main Page: [[https://protesilaos.com/emacs/modus-themes]]
 
 * Rainbow Delimeters
 #+BEGIN_SRC emacs-lisp tangle:no
-  (use-package rainbow-delimiters
-    :ensure t)
-  (add-hook 'prog-mode-hook #'rainbow-delimiters-mode)
+  (use-package rainbow-delimiters)
 #+END_SRC
-
 * Powershell
 #+begin_src emacs-lisp
   (defun powershell()
@@ -431,10 +429,8 @@ Main Page: [[https://protesilaos.com/emacs/modus-themes]]
 * Paredit mode
   #+BEGIN_SRC emacs-lisp
     (use-package paredit
-      :ensure t
-      :config
-	(add-hook 'lisp-mode-hook #'paredit-mode))
-  #+END_SRC
+      :hook lisp-mode)
+    #+END_SRC
 * A standard slime entry for slime-lisp-implemenations
 #+BEGIN_SRC emacs-lisp
    (defmacro add-slime-lisp (tag program program-args environment)
@@ -618,6 +614,7 @@ CYGWIN version of CLISP is not provisioned
 **  Make tab act natively in org source blocks
 #+begin_src emacs-lisp
   (use-package org
+    :pin elpa
     :config
     (setq org-src-tab-acts-natively t)
 #+end_src
@@ -760,12 +757,6 @@ Use [[~/.emacs.d/local-capture.org]] to change the capture template.
      (default-or-environment gtd-template-dir base  "" "ORG-TEMPLATE-DIR")
      (local-custom-file "local-capture.org" "Customize org-capture"))
  #+END_SRC
-** Always present the gtd.org file
-  - Customize  this default by environment variable USER_REOPEN_FILES
- #+BEGIN_SRC emacs-lisp
- (find-file (concat org-gtd-dir "gtd.org"))
- #+END_SRC
- 
 ** org mode add :shcmd to sh blocks
   - Using :shcmd "cmdproxy.exe" on Windows uses the emacs version of cmd.
   - Using :shcmd   msys2-base / "bin/bash.exe" will run a shell under msys2 bash.
@@ -973,3 +964,8 @@ dir
  (local-custom-file "local-settings.org" "Final user settings")
  #+END_SRC
 
+
+* Adjust for better GC
+#+begin_src emacs-lisp
+(setq gc-cons-threshold (* 2 1000 1000))  
+#+end_src

@@ -1,6 +1,6 @@
 ;; NOTE: init.el is now generated from Emacs.org.  Please edit that file
 ;;       in Emacs and init.el will be generated automatically!
-
+(setq gc-cons-threshold (* 50 1000 1000))
 ;; You will most likely need to adjust this font size for your system!
 (defvar efs/default-font-size 180)
 (defvar efs/default-variable-font-size 180)
@@ -24,6 +24,7 @@
 ;; Initialize package sources
 (require 'package)
 ;(setq package-check-signature nil)
+(setq package-gnupghome-dir "~/.gnupg/")
 (setq package-archives '(("melpa" . "https://melpa.org/packages/")
 			 ("org" . "https://orgmode.org/elpa/")
 			 ("elpa" . "https://elpa.gnu.org/packages/")))
@@ -199,9 +200,7 @@
       (habit . traffic-light)))
   (load-theme 'modus-vivendi t))
 
-(use-package rainbow-delimiters
-  :ensure t)
-(add-hook 'prog-mode-hook #'rainbow-delimiters-mode)
+(use-package rainbow-delimiters)
 
 (defun powershell()
   (interactive)
@@ -276,9 +275,7 @@
         (shell))))
 
 (use-package paredit
-  :ensure t
-  :config
-    (add-hook 'lisp-mode-hook #'paredit-mode))
+  :hook lisp-mode)
 
 (defmacro add-slime-lisp (tag program program-args environment)
  "The format of a standard slime entry for a lisp implenatation."
@@ -400,6 +397,7 @@
 	      auto-mode-alist))
 
 (use-package org
+  :pin elpa
   :config
   (setq org-src-tab-acts-natively t)
 
@@ -484,8 +482,6 @@
 (let ((base (file-name-directory (or load-file-name (buffer-file-name)))))
   (default-or-environment gtd-template-dir base  "" "ORG-TEMPLATE-DIR")
   (local-custom-file "local-capture.org" "Customize org-capture"))
-
-(find-file (concat org-gtd-dir "gtd.org"))
 
 (require 'ob-shell)
 (defadvice org-babel-sh-evaluate (around set-shell activate)
@@ -622,3 +618,5 @@
 
 ;;;; Various user settings is a local configuration.
  (local-custom-file "local-settings.org" "Final user settings")
+
+(setq gc-cons-threshold (* 2 1000 1000))

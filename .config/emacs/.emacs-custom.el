@@ -10,13 +10,13 @@
    ["#212526" "#ff4b4b" "#b4fa70" "#fce94f" "#729fcf" "#e090d7" "#8cc4ff" "#eeeeec"])
  '(custom-enabled-themes '(modus-operandi))
  '(custom-safe-themes
-   '("a0415d8fc6aeec455376f0cbcc1bee5f8c408295d1c2b9a1336db6947b89dd98" "dad40020beea412623b04507a4c185079bff4dcea20a93d8f8451acb6afc8358" "8a332a2fbbd95db0e0ad05c6cb9a42800d4dab92af960cafbe3c553357e1f3c6" "96a4406cca483476d3ce524052bcdd69889a2109c5c3e60be0c8951534d1e0e1"))
+   '("92d350334df87fe61a682518ff214c773625c6d5ace8060d128adc550bc60c9b" "a0415d8fc6aeec455376f0cbcc1bee5f8c408295d1c2b9a1336db6947b89dd98" "dad40020beea412623b04507a4c185079bff4dcea20a93d8f8451acb6afc8358" "8a332a2fbbd95db0e0ad05c6cb9a42800d4dab92af960cafbe3c553357e1f3c6" "96a4406cca483476d3ce524052bcdd69889a2109c5c3e60be0c8951534d1e0e1"))
  '(fci-rule-color "#383838")
  '(lpr-add-switches t)
  '(lpr-command "lpr.exe")
  '(lpr-headers-switches nil t)
  '(package-selected-packages
-   '(gnu-elpa-keyring-update openwith dired-single pdf-tools diredc visual-fill-column org-present modus-themes org slime-company htmlize shx friendly-remote-shell friendly-shell tramp magit dockerfile-mode docker-tramp anaconda-mode popup cyberpunk-theme ac-slime paredit rainbow-delimiters slime epc auto-complete flx-ido))
+   '(## gnu-elpa-keyring-update openwith dired-single pdf-tools diredc visual-fill-column org-present modus-themes org slime-company htmlize shx friendly-remote-shell friendly-shell tramp magit dockerfile-mode docker-tramp anaconda-mode popup cyberpunk-theme ac-slime paredit rainbow-delimiters slime epc auto-complete flx-ido))
  '(safe-local-variable-values '((org-use-property-inheritance . t))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
