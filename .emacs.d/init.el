@@ -399,10 +399,13 @@
 (use-package org
   :pin elpa
   :config
-  (setq org-src-tab-acts-natively t)
 
+(setq org-src-tab-acts-natively t)
+
+(require 'org-tempo)
 (add-to-list 'org-structure-template-alist '("sh" . "src shell"))
 (add-to-list 'org-structure-template-alist '("el" . "src emacs-lisp"))
+(add-to-list 'org-structure-template-alist '("qb" . "quote"))
 
 ;; Where org-export latex can find perl
 (setenv "PATH" (concat (getenv "PATH") (concat ";" (msys-path "usr/bin/"))))
@@ -439,9 +442,10 @@
 (org-babel-do-load-languages
  'org-babel-load-languages
  '((lisp . t)
-   (emacs-lisp . t)))
+   (emacs-lisp . t)
+   (shell . t)))
 
-(setq org-modules '(org-habit org-checklist ox-extra))
+(setq org-modules '(org-habit))
 
 (setq org-habit-graph-column 50)
 
