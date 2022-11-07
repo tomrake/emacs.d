@@ -611,17 +611,28 @@ CYGWIN version of CLISP is not provisioned
 #+END_SRC
 
 * Org Mode
-**  Make tab act natively in org source blocks
+This is a large use-package config statement for org.
+
+** << The Open  ( use-package for org
+
 #+begin_src emacs-lisp
   (use-package org
     :pin elpa
     :config
+#+end_src
+
+Note that all items between the open and the close are added to the config.
+
+** Make tab act natively in org source blocks
+#+begin_src emacs-lisp
     (setq org-src-tab-acts-natively t)
 #+end_src
 ** Org Structure Templates
 #+BEGIN_SRC emacs-lisp
-    (add-to-list 'org-structure-template-alist '("sh" . "src shell"))
-    (add-to-list 'org-structure-template-alist '("el" . "src emacs-lisp"))
+  (require 'org-tempo)
+  (add-to-list 'org-structure-template-alist '("sh" . "src shell"))
+  (add-to-list 'org-structure-template-alist '("el" . "src emacs-lisp"))
+  (add-to-list 'org-structure-template-alist '("qb" . "quote"))
 #+END_SRC
 ** pdflatex fixed with org export path to perl
 #+BEGIN_SRC emacs-lisp
@@ -674,12 +685,13 @@ CYGWIN version of CLISP is not provisioned
    (org-babel-do-load-languages
     'org-babel-load-languages
     '((lisp . t)
-      (emacs-lisp . t)))
+      (emacs-lisp . t)
+      (shell . t)))
  #+END_SRC
 
 ** org modules needed
  #+BEGIN_SRC emacs-lisp
-   (setq org-modules '(org-habit org-checklist ox-extra))
+   (setq org-modules '(org-habit))
  #+END_SRC
 ** Header Text Ignore
 This code is bugged can't load ox-extras
@@ -830,10 +842,14 @@ dir
   (set-face-attribute 'org-meta-line nil :inherit '(font-lock-comment-face fixed-pitch))
   (set-face-attribute 'org-checkbox nil :inherit 'fixed-pitch)
 #+END_SRC
-** end of org config
+** >>The close of the (use-package org config
+
 #+begin_src emacs-lisp
   )
 #+end_src
+
+This is a single ) to close it.
+
 * PS Print with GHOSTSCRIPT
 #+BEGIN_SRC emacs-lisp
    (setq ps-lpr-command "C:/Program Files/gs/gs9.56.1/bin/gswin64c.exe")
