@@ -98,7 +98,7 @@
   ;; (setq vertico-count 20)
 
   ;; Grow and shrink the Vertico minibuffer
-  ;; (setq vertico-resize t)
+   (setq vertico-resize t)
 
   ;; Optionally enable cycling for `vertico-next' and `vertico-previous'.
   ;; (setq vertico-cycle t)
@@ -169,6 +169,14 @@
       (message filename))))
 
 (setq ispell-program-name "c:/devel/msys64/usr/bin/aspell.exe")
+
+(setq langtool-language-tool-jar  "c:/Users/Public/Documents/LanguageTool-5.9/languagetool-commandline.jar")
+(require 'langtool)
+(global-set-key "\C-x4w" 'langtool-check)
+(global-set-key "\C-x4W" 'langtool-check-done)
+(global-set-key "\C-x4l" 'langtool-switch-default-language)
+(global-set-key "\C-x44" 'langtool-show-message-at-point)
+(global-set-key "\C-x4c" 'langtool-correct-buffer)
 
 (defun double-quote-string(s)
    (concat "\"" s "\""))
@@ -316,11 +324,13 @@
 
 (use-package tramp
   :config
-    (setq tramp-default-method "plink")
-    (defun cisco-remote-shell ()
-      (interactive)
-      (let ((default-directory "/plink:osmc@192.168.1.43:~"))
-        (shell))))
+    (when (eq  window-system 'w32)
+      (setq putty-directory "C:\\Program Files\\PuTTY\\")
+      (setq tramp-default-method "plink")
+      (when (and (not (string-match putty-directory (getenv "PATH")))
+		 (file-directory-p putty-directory))
+	(setenv "PATH" (concat putty-directory ";" (getenv "PATH")))
+	(add-to-list 'exec-path putty-directory))))
 
 (use-package paredit
   :hook lisp-mode)
@@ -449,6 +459,11 @@
   :config
 
 (setq org-src-tab-acts-natively t)
+
+;; org-export with no TOC, no NUM and no SUB/SUPERSCRIPTS
+(setf org-export-with-toc nil)
+(setf org-export-with-section-numbers nil)
+(setf org-export-with-sub-superscripts nil)
 
 (require 'org-tempo)
 (add-to-list 'org-structure-template-alist '("sh" . "src shell"))

@@ -163,6 +163,10 @@ This is recommended setup from  [[https://github.com/minad/vertico]]
 I have the following issues
 - I want the list resized when windows is resized
 - I want the items sorted alpha, directories at the top.
+  [[https://www.gnu.org/software/emacs/manual/html_node/elisp/Programmed-Completion.html]]
+    - display-sort-function
+    - completion-table-dynamic ???
+Read up on [[https://www.gnu.org/software/emacs/manual/html_node/elisp/Completion.html]]
 #+begin_src emacs-lisp
   ;; Enable vertico
   (use-package vertico
@@ -177,7 +181,7 @@ I have the following issues
     ;; (setq vertico-count 20)
 
     ;; Grow and shrink the Vertico minibuffer
-    ;; (setq vertico-resize t)
+     (setq vertico-resize t)
 
     ;; Optionally enable cycling for `vertico-next' and `vertico-previous'.
     ;; (setq vertico-cycle t)
@@ -299,6 +303,16 @@ Fixed on 7/2/2022 moving to DESKER
 #+BEGIN_SRC emacs-lisp
   (setq ispell-program-name "c:/devel/msys64/usr/bin/aspell.exe")
 #+END_SRC
+* Language Tool
+#+begin_src emacs-lisp
+  (setq langtool-language-tool-jar  "c:/Users/Public/Documents/LanguageTool-5.9/languagetool-commandline.jar")
+  (require 'langtool)
+  (global-set-key "\C-x4w" 'langtool-check)
+  (global-set-key "\C-x4W" 'langtool-check-done)
+  (global-set-key "\C-x4l" 'langtool-switch-default-language)
+  (global-set-key "\C-x44" 'langtool-show-message-at-point)
+  (global-set-key "\C-x4c" 'langtool-correct-buffer)
+#+end_src
 * Joining items as strings with and without quoting
 #+BEGIN_SRC emacs-lisp
   (defun double-quote-string(s)
@@ -474,16 +488,17 @@ Main Page: [[https://protesilaos.com/emacs/modus-themes]]
   :ensure t)
 #+END_SRC
 * Tramp
-[TBD] Review if this is correct after SSH has been reinstalled.
-* The default connection method is plink
+Make plink the default tramp method if running on Windows when plink.exe exists.
 #+BEGIN_SRC emacs-lisp
   (use-package tramp
     :config
-      (setq tramp-default-method "plink")
-      (defun cisco-remote-shell ()
-        (interactive)
-        (let ((default-directory "/plink:osmc@192.168.1.43:~"))
-          (shell))))
+      (when (eq  window-system 'w32)
+	(setq putty-directory "C:\\Program Files\\PuTTY\\")
+	(setq tramp-default-method "plink")
+	(when (and (not (string-match putty-directory (getenv "PATH")))
+		   (file-directory-p putty-directory))
+	  (setenv "PATH" (concat putty-directory ";" (getenv "PATH")))
+	  (add-to-list 'exec-path putty-directory))))
 #+END_SRC
 * Paredit mode
   #+BEGIN_SRC emacs-lisp
@@ -683,8 +698,16 @@ This is a large use-package config statement for org.
 Note that all items between the open and the close are added to the config.
 
 ** Make tab act natively in org source blocks
+
 #+begin_src emacs-lisp
     (setq org-src-tab-acts-natively t)
+#+end_src
+** Configure org-export
+#+begin_src emacs-lisp
+  ;; org-export with no TOC, no NUM and no SUB/SUPERSCRIPTS
+  (setf org-export-with-toc nil)
+  (setf org-export-with-section-numbers nil)
+  (setf org-export-with-sub-superscripts nil)
 #+end_src
 ** Org Structure Templates
 #+BEGIN_SRC emacs-lisp
