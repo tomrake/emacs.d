@@ -84,7 +84,7 @@ Add a heading to file about editing init.el.
    [TBD] Should this be set from an enviroment variable.
    [TBD] Is there already a command line switch for this?
   #+BEGIN_SRC emacs-lisp
-  ;(setq debug-on-error t)
+;   (setq debug-on-error t)
   #+END_SRC
 
 * Allow loading of a file from .emacs.d/
@@ -168,57 +168,57 @@ I have the following issues
     - completion-table-dynamic ???
 Read up on [[https://www.gnu.org/software/emacs/manual/html_node/elisp/Completion.html]]
 #+begin_src emacs-lisp
-  ;; Enable vertico
-  (use-package vertico
-    :ensure t
-    :init
-    (vertico-mode)
+    ;; Enable vertico
+    (use-package vertico
+  ;    :ensure t
+      :config
+      (vertico-mode)
+      :custom
+      ;; Different scroll margin
+      ;; (setq vertico-scroll-margin 0)
 
-    ;; Different scroll margin
-    ;; (setq vertico-scroll-margin 0)
+      ;; Show more candidates
+      ;; (setq vertico-count 20)
 
-    ;; Show more candidates
-    ;; (setq vertico-count 20)
+      ;; Grow and shrink the Vertico minibuffer
+       (setq vertico-resize t)
 
-    ;; Grow and shrink the Vertico minibuffer
-     (setq vertico-resize t)
+      ;; Optionally enable cycling for `vertico-next' and `vertico-previous'.
+      ;; (setq vertico-cycle t)
+      )
 
-    ;; Optionally enable cycling for `vertico-next' and `vertico-previous'.
-    ;; (setq vertico-cycle t)
-    )
+    ;; Persist history over Emacs restarts. Vertico sorts by history position.
+    (use-package savehist
+      :ensure t
+      :init
+      (savehist-mode))
 
-  ;; Persist history over Emacs restarts. Vertico sorts by history position.
-  (use-package savehist
-    :ensure t
-    :init
-    (savehist-mode))
+    ;; A few more useful configurations...
+    (use-package emacs
+      :init
+      ;; Add prompt indicator to `completing-read-multiple'.
+      ;; We display [CRM<separator>], e.g., [CRM,] if the separator is a comma.
+      (defun crm-indicator (args)
+	(cons (format "[CRM%s] %s"
+		      (replace-regexp-in-string
+		       "\\`\\[.*?]\\*\\|\\[.*?]\\*\\'" ""
+		       crm-separator)
+		      (car args))
+	      (cdr args)))
+      (advice-add #'completing-read-multiple :filter-args #'crm-indicator)
 
-  ;; A few more useful configurations...
-  (use-package emacs
-    :init
-    ;; Add prompt indicator to `completing-read-multiple'.
-    ;; We display [CRM<separator>], e.g., [CRM,] if the separator is a comma.
-    (defun crm-indicator (args)
-      (cons (format "[CRM%s] %s"
-		    (replace-regexp-in-string
-		     "\\`\\[.*?]\\*\\|\\[.*?]\\*\\'" ""
-		     crm-separator)
-		    (car args))
-	    (cdr args)))
-    (advice-add #'completing-read-multiple :filter-args #'crm-indicator)
+      ;; Do not allow the cursor in the minibuffer prompt
+      (setq minibuffer-prompt-properties
+	    '(read-only t cursor-intangible t face minibuffer-prompt))
+      (add-hook 'minibuffer-setup-hook #'cursor-intangible-mode)
 
-    ;; Do not allow the cursor in the minibuffer prompt
-    (setq minibuffer-prompt-properties
-	  '(read-only t cursor-intangible t face minibuffer-prompt))
-    (add-hook 'minibuffer-setup-hook #'cursor-intangible-mode)
+      ;; Emacs 28: Hide commands in M-x which do not work in the current mode.
+      ;; Vertico commands are hidden in normal buffers.
+      ;; (setq read-extended-command-predicate
+      ;;       #'command-completion-default-include-p)
 
-    ;; Emacs 28: Hide commands in M-x which do not work in the current mode.
-    ;; Vertico commands are hidden in normal buffers.
-    ;; (setq read-extended-command-predicate
-    ;;       #'command-completion-default-include-p)
-
-    ;; Enable recursive minibuffers
-    (setq enable-recursive-minibuffers t))
+      ;; Enable recursive minibuffers
+      (setq enable-recursive-minibuffers t))
 #+end_src
 * Company
 Remove company in favor of Vertico
@@ -1031,6 +1031,14 @@ This is a single ) to close it.
   (setq peep-dired-enable-on-directories t)
   ; file  types not to open
   (setq peep-dired-ignored-extensions '("mkv" "iso" "mp4"))
+#+end_src
+* Mastodon
+#+begin_src emacs-lisp
+;;;; mastodon
+  (use-package mastodon
+    :ensure t)
+  (setq mastodon-active-user "tomrake")
+  (setq mastodon-instance-url "https://mastodon.social")
 #+end_src
 * Openwith NO TANGLE
 #+begin_src emacs-lisp :tangle no

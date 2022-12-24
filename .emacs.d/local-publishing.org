@@ -99,7 +99,7 @@
 		    :makeindex t
 		    :section-numbers nil
 		    :auto-preamble t)
-		   ,@(publish-project "code-projects" "~/quicklisp/local-projects"(publish-path "code-projects"))
+		   ,@(publish-project "code-projects" "~/Documents/Code/quicklisp/local-projects"(publish-path "code-projects"))
 
 		   ("org-web" :components ( "org-text" "org-parts" "code-projects" "emacs-config"))
 		   ("blog-src"
