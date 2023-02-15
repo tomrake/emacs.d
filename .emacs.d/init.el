@@ -680,6 +680,22 @@
   (setq mastodon-active-user "tomrake")
   (setq mastodon-instance-url "https://mastodon.social")
 
+(when (require 'openwith nil 'noerror)
+
+
+  (setq openwith-associatsions
+       (list (list (openwith-make-extension-regexp '("mpg" "mpeg" "mp3" "mp4"
+					    "avi" "wmv" "wav" "mov" "flv"
+					    "ogm" "ogg" "mkv")) "vlc.exe")
+	     (list (openwith-make-extension-regexp '("JPEG" "JPG"))
+		   "c:/Program Files (x86)/JPEGView/JPEGView.exe" '(file))))
+  (openwith-mode 1))
+
+(require 'recentf)
+(recentf-mode 1)
+(setq recentf-max-menu-items 25)
+(global-set-key "\C-x\ \C-r" 'recentf-open-files)
+
 ;; Autommatically tangle our Emacs.org config file when we save it.
 (defun efs/org-babel-tangle-config ()
   (when (string-equal (buffer-file-name)

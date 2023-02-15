@@ -1040,16 +1040,28 @@ This is a single ) to close it.
   (setq mastodon-active-user "tomrake")
   (setq mastodon-instance-url "https://mastodon.social")
 #+end_src
-* Openwith NO TANGLE
-#+begin_src emacs-lisp :tangle no
-  (require 'openwith)
+* Openwith
+NOTE:
+On Windows 11, this only opens the file by the Windows extension
+So configure it there.
+#+begin_src emacs-lisp
+  (when (require 'openwith nil 'noerror)
 
-  (setq openwith-associatsions
+    
+    (setq openwith-associatsions
 	 (list (list (openwith-make-extension-regexp '("mpg" "mpeg" "mp3" "mp4"
 					      "avi" "wmv" "wav" "mov" "flv"
 					      "ogm" "ogg" "mkv")) "vlc.exe")
 	       (list (openwith-make-extension-regexp '("JPEG" "JPG"))
-		     "c:/Program Files (x86)/JPEGView/JPEGView.exe")))
+		     "c:/Program Files (x86)/JPEGView/JPEGView.exe" '(file))))
+    (openwith-mode 1))
+#+end_src
+* Recentf
+#+begin_src emacs-lisp
+(require 'recentf)
+(recentf-mode 1)
+(setq recentf-max-menu-items 25)
+(global-set-key "\C-x\ \C-r" 'recentf-open-files)
 #+end_src
 * Auto-tangle configuration files.
 #+begin_src emacs-lisp
