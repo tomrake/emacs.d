@@ -1,3 +1,5 @@
+(message "Debug START")
+
 ;; NOTE: init.el is now generated from Emacs.org.  Please edit that file
 ;;       in Emacs and init.el will be generated automatically!
 (setq gc-cons-threshold (* 50 1000 1000))
@@ -7,6 +9,8 @@
 
 ;; Make frame transparency overridable
 (defvar efs/frame-transparency '(90 . 90))
+
+(setq session-save-file-coding-system 'utf-8)
 
 (defun efs/display-startup-time ()
   (message "Emacs loaded in %s with %d garbage collections."
@@ -61,10 +65,10 @@
 ;; Set initial frame size and position
 (defun my/set-initial-frame ()
   (let* ((base-factor 0.70)
-        (a-width (* (display-pixel-width) base-factor))
-        (a-height (* (display-pixel-height) base-factor))
-        (a-left (truncate (/ (- (display-pixel-width) a-width) 2)))
-        (a-top (truncate (/ (- (display-pixel-height) a-height) 2))))
+	(a-width (* (display-pixel-width) base-factor))
+	(a-height (* (display-pixel-height) base-factor))
+	(a-left (truncate (/ (- (display-pixel-width) a-width) 2)))
+	(a-top (truncate (/ (- (display-pixel-height) a-height) 2))))
     (set-frame-position (selected-frame) a-left a-top)
     (set-frame-size (selected-frame) (truncate a-width)  (truncate a-height) t)))
 (setq frame-resize-pixelwise t)
@@ -72,6 +76,8 @@
 
 (setq inhibit-startup-screen t)
 (setq visible-bell 1)
+   ;; Turn off tool bar
+(tool-bar-mode)
 
 (setq w32-use-visible-system-caret nil)
 
@@ -229,6 +235,8 @@
 	"-l"
 	"-c"
 	shell-task))
+
+(message "Debug MARK")
 
 (use-package modus-themes
     :config
@@ -395,10 +403,6 @@
   ;;;; Load slime helper
   (load (expand-file-name "~/Documents/Code/quicklisp/slime-helper.el"))
 
-(message "Debug START")
-
-(message "Debug MARK")
-
 (add-to-list 'load-path "C:/devel/msys64/usr/local/slime")
 ;;;; Configure slime from the above provisionsing
 ;;;; Remove any empty items
@@ -422,8 +426,6 @@
 	    (provision-abcl))))
     (setq slime-contribs '(slime-fancy))
     (global-set-key "\C-cs" 'slime-selector)))
-
-(message "Debug END")
 
 (setq auto-mode-alist
       (append '((".*\\.asd\\'" . lisp-mode))
@@ -632,6 +634,10 @@
   :config
     (eshell-git-prompt-use-theme 'powerline))
 
+(use-package dired
+  :config
+    (add-hook 'dired-mode-hook 'all-the-icons-dired-mode))
+
 (use-package dired-single
   :after
     dired
@@ -709,3 +715,5 @@
  (local-custom-file "local-settings.org" "Final user settings")
 
 (setq gc-cons-threshold (* 2 1000 1000))
+
+(message "Debug END")

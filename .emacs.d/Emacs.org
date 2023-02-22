@@ -4,6 +4,11 @@
 #+PROPERTY: header-args:emacs-lisp :tangle ./init.el :mkdirp yes
 #+EXPORT-FILENAME: init.el
 #+INDEX: Emacs!Configuration
+* Report Debug START  :noexport:
+#+BEGIN_SRC emacs-lisp
+(message "Debug START")
+#+END_SRC
+
 * FRONT STUFF
 ** Documentation
 *** General Coding 
@@ -38,6 +43,10 @@ Add a heading to file about editing init.el.
   (defvar efs/frame-transparency '(90 . 90))
 #+end_src
 
+* Default Coding System
+#+begin_src emacs-lisp
+(setq session-save-file-coding-system 'utf-8)
+#+end_src
 * Report Startup Time
 #+begin_src emacs-lisp
 (defun efs/display-startup-time ()
@@ -119,17 +128,17 @@ Add a heading to file about editing init.el.
 * Initial Frame Size
 Fix initial window position.
   #+BEGIN_SRC emacs-lisp
-  ;; Set initial frame size and position
-  (defun my/set-initial-frame ()
-    (let* ((base-factor 0.70)
-          (a-width (* (display-pixel-width) base-factor))
-          (a-height (* (display-pixel-height) base-factor))
-          (a-left (truncate (/ (- (display-pixel-width) a-width) 2)))
-          (a-top (truncate (/ (- (display-pixel-height) a-height) 2))))
-      (set-frame-position (selected-frame) a-left a-top)
-      (set-frame-size (selected-frame) (truncate a-width)  (truncate a-height) t)))
-  (setq frame-resize-pixelwise t)
-  (my/set-initial-frame)
+    ;; Set initial frame size and position
+    (defun my/set-initial-frame ()
+      (let* ((base-factor 0.70)
+	    (a-width (* (display-pixel-width) base-factor))
+	    (a-height (* (display-pixel-height) base-factor))
+	    (a-left (truncate (/ (- (display-pixel-width) a-width) 2)))
+	    (a-top (truncate (/ (- (display-pixel-height) a-height) 2))))
+	(set-frame-position (selected-frame) a-left a-top)
+	(set-frame-size (selected-frame) (truncate a-width)  (truncate a-height) t)))
+    (setq frame-resize-pixelwise t)
+    (my/set-initial-frame)
   #+END_SRC
 
 * Basic Look and feel
@@ -138,6 +147,8 @@ I don't like the a messy startup screen.
  #+BEGIN_SRC emacs-lisp
    (setq inhibit-startup-screen t)
    (setq visible-bell 1)
+      ;; Turn off tool bar
+   (tool-bar-mode)
  #+END_SRC
 * Fix Windows 10 cursor problem
  #+BEGIN_SRC emacs-lisp
@@ -378,6 +389,10 @@ oment Emulation
 	     "-c"
 	     shell-task))
     #+END_SRC
+* Report Debug MARK                                                :noexport:
+#+BEGIN_SRC emacs-lisp
+(message "Debug MARK")
+#+END_SRC
 * Modus Theme Configuration
 Main Page: [[https://protesilaos.com/emacs/modus-themes]]
 #+BEGIN_SRC emacs-lisp
@@ -604,15 +619,6 @@ CYGWIN version of CLISP is not provisioned
      ;;;; Load slime helper
      (load (expand-file-name "~/Documents/Code/quicklisp/slime-helper.el"))
  #+END_SRC
-* Report Debug START  :noexport:
-#+BEGIN_SRC emacs-lisp
-(message "Debug START")
-#+END_SRC
-
-* Report Debug MARK                                                :noexport:
-#+BEGIN_SRC emacs-lisp
-(message "Debug MARK")
-#+END_SRC
 * SLIME Configuation
  #+INDEX: Slime!LISP Implmentations
  #+BEGIN_SRC emacs-lisp
@@ -640,10 +646,6 @@ CYGWIN version of CLISP is not provisioned
        (setq slime-contribs '(slime-fancy))
        (global-set-key "\C-cs" 'slime-selector)))
  #+END_SRC
-* Report Debug End :noexport:
-#+BEGIN_SRC emacs-lisp
-(message "Debug END")
-#+END_SRC
 * Enable lisp-mode .lisp and .asd files
   #+BEGIN_SRC emacs-lisp
   (setq auto-mode-alist
@@ -967,6 +969,13 @@ This is a single ) to close it.
 #+end_src
 * Dired
   - dired is configured as a file manager.
+** dired hook
+#+begin_src emacs-lisp
+  (use-package dired
+    :config
+      (add-hook 'dired-mode-hook 'all-the-icons-dired-mode))
+ 
+#+end_src
 ** Single Dired buffer
 #+begin_src emacs-lisp
   (use-package dired-single
@@ -1087,3 +1096,7 @@ So configure it there.
 #+begin_src emacs-lisp
 (setq gc-cons-threshold (* 2 1000 1000))  
 #+end_src
+* Report Debug End :noexport:
+#+BEGIN_SRC emacs-lisp
+(message "Debug END")
+#+END_SRC
