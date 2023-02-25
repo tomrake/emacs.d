@@ -1075,38 +1075,38 @@ So configure it there.
 #+end_src
 * PPL Time of Day
 #+begin_src emacs-lisp
-    (setq ppl-holiday-table '(2023					;year
-      (1 1)					;new years day
-      (2 20)				;presidents day
-      (4 7)					; Good Friday
-      (5 29)				; Memorial Day
-      (7 4)					; Independence Day
-      (9 4)					; Labor Day
-      (11 24)				; Thanksgiving
-      (11 25)				; Next Day
-      (12 24)				; Christmas Eve
-      (12 25)))                              ; Christmas
+   (setq ppl-holiday-table '(2023					;year
+     (1 1)					;new years day
+     (2 20)				;presidents day
+     (4 7)					; Good Friday
+     (5 29)				; Memorial Day
+     (7 4)					; Independence Day
+     (9 4)					; Labor Day
+     (11 24)				; Thanksgiving
+     (11 25)				; Next Day
+     (12 24)				; Christmas Eve
+     (12 25)))                              ; Christmas
 
 
-     (defun is-holiday (dt table)
-       (if table (or (and (= (nth 4 dt) (nth 0 (car table)))
-			  (= (nth 3 dt) (nth 1 (car table))))
-		     (is-holiday dt (cdr table)))))
+    (defun is-holiday (dt table)
+      (if table (or (and (= (nth 4 dt) (nth 0 (car table)))
+			 (= (nth 3 dt) (nth 1 (car table))))
+		    (is-holiday dt (cdr table)))))
 
-     (defun is-ppl-holiday (dt)
-       (if (/= (car ppl-holiday-table) (nth 5 dt)) 
-	   (error "Update Date table") 
-	   (is-holiday dt (cdr ppl-holiday-table))))
+    (defun is-ppl-holiday (dt)
+      (if (/= (car ppl-holiday-table) (nth 5 dt)) 
+	  (error "Update Date table") 
+	  (is-holiday dt (cdr ppl-holiday-table))))
 
-     (defun summer (dt)
-       (< 5 (nth 4 dt) 12))
+    (defun summer (dt)
+      (< 5 (nth 4 dt) 12))
 
-   (defun ppl-high-rate ()
-     (let ((dt (decode-time)))
-	  (cond ((not (< 0 (nth 6 dt) 6))  nil)
-		((is-ppl-holiday dt)  nil)
-		((summer dt)  (<= 14 (nth 2 dt) 17))
-                 (t  ( <= 16 (nth 2 dt) 19)))))
+  (defun ppl-high-rate (&optional dt)
+    (unless dt (setq dt (decode-time)))
+	 (cond ((not (< 0 (nth 6 dt) 6))  nil)
+	       ((is-ppl-holiday dt)  nil)
+	       ((summer dt)  (<= 14 (nth 2 dt) 17))
+		(t  ( <= 16 (nth 2 dt) 19))))
 
 #+end_src
 * Auto-tangle configuration files.

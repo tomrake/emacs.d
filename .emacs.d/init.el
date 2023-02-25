@@ -729,12 +729,12 @@
   (defun summer (dt)
     (< 5 (nth 4 dt) 12))
 
-(defun ppl-high-rate ()
-  (let ((dt (decode-time)))
+(defun ppl-high-rate (&optional dt)
+  (unless dt (setq dt (decode-time)))
        (cond ((not (< 0 (nth 6 dt) 6))  nil)
 	     ((is-ppl-holiday dt)  nil)
 	     ((summer dt)  (<= 14 (nth 2 dt) 17))
-              (t  ( <= 16 (nth 2 dt) 19)))))
+	      (t  ( <= 16 (nth 2 dt) 19))))
 
 ;; Autommatically tangle our Emacs.org config file when we save it.
 (defun efs/org-babel-tangle-config ()
