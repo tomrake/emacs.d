@@ -420,7 +420,8 @@
 	    (win-sbcl 'win-sbcl-2.2.6 "2.2.6")
 	    (msys-sbcl 'msys-sbcl-2.2.6 "usr/local/sbcl/msys/2.2.6/")
 	    (msys-sbcl 'msys-sbcl-2.2.5 "usr/local/sbcl/msys/2.2.5/")
-	    (provision-ccl 'ccl "C:/Users/zzzap/quicklisp/local-projects/ccl/wx86cl64.exe")
+	    (provision-ccl 'ccl-64 "C:/Users/zzzap/Documents/Code/ccl/wx86cl64.exe")
+	    (provision-ccl 'ccl-32 "C:/Users/zzzap/Documents/Code/ccl/wx86cl.exe")
 	    (provision-clisp-msys64)
 	    (provision-clisp-cygwin64)
 	    (provision-abcl))))
@@ -701,6 +702,39 @@
 (recentf-mode 1)
 (setq recentf-max-menu-items 25)
 (global-set-key "\C-x\ \C-r" 'recentf-open-files)
+
+(setq ppl-holiday-table '(2023					;year
+   (1 1)					;new years day
+   (2 20)				;presidents day
+   (4 7)					; Good Friday
+   (5 29)				; Memorial Day
+   (7 4)					; Independence Day
+   (9 4)					; Labor Day
+   (11 24)				; Thanksgiving
+   (11 25)				; Next Day
+   (12 24)				; Christmas Eve
+   (12 25)))                              ; Christmas
+
+
+  (defun is-holiday (dt table)
+    (if table (or (and (= (nth 4 dt) (nth 0 (car table)))
+		       (= (nth 3 dt) (nth 1 (car table))))
+		  (is-holiday dt (cdr table)))))
+
+  (defun is-ppl-holiday (dt)
+    (if (/= (car ppl-holiday-table) (nth 5 dt)) 
+	(error "Update Date table") 
+	(is-holiday dt (cdr ppl-holiday-table))))
+
+  (defun summer (dt)
+    (< 5 (nth 4 dt) 12))
+
+(defun ppl-high-rate ()
+  (let ((dt (decode-time)))
+       (cond ((not (< 0 (nth 6 dt) 6))  nil)
+	     ((is-ppl-holiday dt)  nil)
+	     ((summer dt)  (<= 14 (nth 2 dt) 17))
+              (t  ( <= 16 (nth 2 dt) 19)))))
 
 ;; Autommatically tangle our Emacs.org config file when we save it.
 (defun efs/org-babel-tangle-config ()
