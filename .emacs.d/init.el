@@ -111,12 +111,12 @@
     )
 
   ;; Persist history over Emacs restarts. Vertico sorts by history position.
-  (use-package savehist
-    :ensure t
-    :init
-    (savehist-mode))
+  ;; (use-package savehist
+  ;;   :ensure t
+  ;;   :init
+  ;;   (savehist-mode))
 
-  ;; A few more useful configurations...
+  ;; ;; A few more useful configurations...
   (use-package emacs
     :init
     ;; Add prompt indicator to `completing-read-multiple'.
@@ -373,8 +373,15 @@
      (when (file-exists-p exec-path)
 	      (invoke-standard-sbcl tag exec-path (list (concat "SBCL_HOME=" home-path ))))))
 
-(defun win-sbcl (tag path)
-  (let* ((twr-win (concat "C:/devel/msys64/usr/local/sbcl/win/" path "/"))
+(defun win64-sbcl (tag path)
+  (let* ((twr-win (concat "C:/Users/zzzap/Documents/Code/sbcl/win/" path "/"))
+	 (exec-path (concat twr-win "sbcl.exe"))
+	 (home-path twr-win))
+    (when (file-exists-p exec-path)
+      (invoke-standard-sbcl tag exec-path (list (concat "SBCL_HOME=" home-path))))))
+
+  (defun win32-sbcl (tag path)
+  (let* ((twr-win (concat "C:/Users/zzzap/Documents/Code/sbcl/win-32/" path "/"))
 	 (exec-path (concat twr-win "sbcl.exe"))
 	 (home-path twr-win))
     (when (file-exists-p exec-path)
@@ -416,10 +423,12 @@
        (setq slime-lisp-implementations
 	 (seq-filter (lambda (e) e)
 	   (list
-	    (win-sbcl 'win-sbcl-2.2.7 "2.2.7")
-	    (win-sbcl 'win-sbcl-2.2.6 "2.2.6")
-	    (msys-sbcl 'msys-sbcl-2.2.6 "usr/local/sbcl/msys/2.2.6/")
-	    (msys-sbcl 'msys-sbcl-2.2.5 "usr/local/sbcl/msys/2.2.5/")
+	    (win64-sbcl 'win64-sbcl-2.3.1 "2.3.1")
+	    (win32-sbcl 'win32-sbcl-2.3.1 "2.3.1")
+	    (win64-sbcl 'win64-sbcl-2.2.7 "2.2.7")
+	    (win64-sbcl 'win64-sbcl-2.2.6 "2.2.6")
+	    ;(msys-sbcl 'msys-sbcl-2.2.6 "usr/local/sbcl/msys/2.2.6/")
+	    ;(msys-sbcl 'msys-sbcl-2.2.5 "usr/local/sbcl/msys/2.2.5/")
 	    (provision-ccl 'ccl-64 "C:/Users/zzzap/Documents/Code/ccl/wx86cl64.exe")
 	    (provision-ccl 'ccl-32 "C:/Users/zzzap/Documents/Code/ccl/wx86cl.exe")
 	    (provision-clisp-msys64)
