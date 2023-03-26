@@ -1,4 +1,3 @@
-
 #+STARTUP: overview
 #+TITLE: Emacs configuration
 #+OPTIONS: num:nil ^:nil toc: nil
@@ -643,6 +642,7 @@ CYGWIN version of CLISP is not provisioned
 	  (setq slime-lisp-implementations
 	    (seq-filter (lambda (e) e)
 	      (list
+	       (win64-sbcl 'win64-sbcl-2.3.2 "2.3.2")
 	       (win64-sbcl 'win64-sbcl-2.3.1 "2.3.1")
 	       (win32-sbcl 'win32-sbcl-2.3.1 "2.3.1")
 	       (win64-sbcl 'win64-sbcl-2.2.7 "2.2.7")
@@ -1076,7 +1076,7 @@ So configure it there.
 		     "c:/Program Files (x86)/JPEGView/JPEGView.exe" '(file))))
     (openwith-mode 1))
 #+end_src
-* Recentf
+* Recentf 
 #+begin_src emacs-lisp
 (require 'recentf)
 (recentf-mode 1)
@@ -1119,12 +1119,36 @@ So configure it there.
 		(t  ( <= 16 (nth 2 dt) 19))))
 
 #+end_src
+* YAML Mode
+Add yaml mode
+#+begin_src emacs-lisp
+(use-package yaml-mode)
+#+end_src
+* JSON to Single line
+This was found on https://stackoverflow.com/questions/39861580/emacs-program-to-collapse-json-to-single-line and is Justin Schell response.
+
+I am using to add icons to the icons.json file derived from feathericons.
+#+begin_src emacs-lisp
+(defun json-to-single-line (beg end)
+  "Collapse prettified json in region between BEG and END to a single line"
+  (interactive "r")
+  (if (use-region-p)
+      (save-excursion
+        (save-restriction
+          (narrow-to-region beg end)
+          (goto-char (point-min))
+          (while (re-search-forward "[[:space:]\n]+" nil t)
+            (replace-match " "))))
+    (print "This function operates on a region")))
+#+end_src
 * Auto-tangle configuration files.
 #+begin_src emacs-lisp
   ;; Autommatically tangle our Emacs.org config file when we save it.
   (defun efs/org-babel-tangle-config ()
     (when (string-equal (buffer-file-name)
 			(expand-file-name "~/Documents/Code/.emacs.d/Emacs.org"))
+      (message "Begin efs/tangle")
+      
       ;; Dynamic scoping to the rescue
       (let ((org-confirm-babel-evaluate nil))
 	(org-babel-tangle))))

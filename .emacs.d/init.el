@@ -423,6 +423,7 @@
        (setq slime-lisp-implementations
 	 (seq-filter (lambda (e) e)
 	   (list
+	    (win64-sbcl 'win64-sbcl-2.3.2 "2.3.2")
 	    (win64-sbcl 'win64-sbcl-2.3.1 "2.3.1")
 	    (win32-sbcl 'win32-sbcl-2.3.1 "2.3.1")
 	    (win64-sbcl 'win64-sbcl-2.2.7 "2.2.7")
@@ -745,10 +746,26 @@
 	     ((summer dt)  (<= 14 (nth 2 dt) 17))
 	      (t  ( <= 16 (nth 2 dt) 19))))
 
+(use-package yaml-mode)
+
+(defun json-to-single-line (beg end)
+  "Collapse prettified json in region between BEG and END to a single line"
+  (interactive "r")
+  (if (use-region-p)
+      (save-excursion
+        (save-restriction
+          (narrow-to-region beg end)
+          (goto-char (point-min))
+          (while (re-search-forward "[[:space:]\n]+" nil t)
+            (replace-match " "))))
+    (print "This function operates on a region")))
+
 ;; Autommatically tangle our Emacs.org config file when we save it.
 (defun efs/org-babel-tangle-config ()
   (when (string-equal (buffer-file-name)
 		      (expand-file-name "~/Documents/Code/.emacs.d/Emacs.org"))
+    (message "Begin efs/tangle")
+
     ;; Dynamic scoping to the rescue
     (let ((org-confirm-babel-evaluate nil))
       (org-babel-tangle))))
