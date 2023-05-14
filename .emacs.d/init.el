@@ -21,6 +21,8 @@
 
 (add-hook 'emacs-startup-hook #'efs/display-startup-time)
 
+(message "Debug MARK")
+
 ;;;; emacs customization file
 (setq custom-file "~/.config/emacs/.emacs-custom.el")
 (load custom-file)
@@ -227,17 +229,6 @@
 (defun msys2-command-string (cmd)
   (concat (msys-path "usr/bin") cmd ".exe"))
 
-(defun start-under-bash-login-shell (shell-task)
-"Excute a msys2-command under a msys2-64 bash login shell"
-  (list (msys2-command-string "env")
-	(double-quote-string "MSYSTEM=MINGW64")
-	(msys2-command-string "bash")
-	"-l"
-	"-c"
-	shell-task))
-
-(message "Debug MARK")
-
 (use-package modus-themes
     :config
     (set-face-attribute 'default nil :height 120)
@@ -343,16 +334,16 @@
 (use-package paredit
   :hook lisp-mode)
 
-(defmacro add-slime-lisp (tag program program-args environment)
+(defmacro add-slime-lisp (slime-tag program program-args environment)
  "The format of a standard slime entry for a lisp implenatation."
-`(list ,tag (cons ,program ,program-args) :env ,environment))
+`(list ,slime-tag (cons ,program ,program-args) :env ,environment))
 
 ;;;; The standard options for SBCL
-(defun invoke-standard-sbcl (tag program environment)
-  (add-slime-lisp tag program '("--noinform") environment))
+(defun invoke-standard-sbcl (slime-tag program environment)
+  (add-slime-lisp slime-tag program '("--noinform") environment))
 
-(defun msys-sbcl (tag path)
-  "Create a slime entry for the tag if the sbcl.exe is found."
+(defun msys-sbcl (slime-tag version)
+  "Create a slime entry for the slime-tag if the sbcl.exe is found."
 ;;; The path is the path to the sbcl-version container.
 ;;;
 ;;; The standard place I store sbcl that I compile are /usr/local/sbcl-version
@@ -368,28 +359,29 @@
 ;;;       sbcl.core ; the core image
 ;;;       sbcl.mk
 
-   (let ((exec-path (msys-path (concat path "bin/sbcl.exe")))
-	 (home-path (msys-path (concat path "lib/sbcl/"))))
+   (let* ((versioned-path (concat "C:/Users/zzzap/Documents/Code/sbcl/win/" version "/"))
+	  (exec-path (concat versioned-path "bin/sbcl.exe"))
+	  (home-path (concat versioned-path "lib/sbcl/")))
      (when (file-exists-p exec-path)
-	      (invoke-standard-sbcl tag exec-path (list (concat "SBCL_HOME=" home-path ))))))
+	      (invoke-standard-sbcl slime-tag exec-path (list (concat "SBCL_HOME=" home-path ))))))
 
-(defun win64-sbcl (tag path)
-  (let* ((twr-win (concat "C:/Users/zzzap/Documents/Code/sbcl/win/" path "/"))
-	 (exec-path (concat twr-win "sbcl.exe"))
-	 (home-path twr-win))
+(defun win64-sbcl (slime-tag version)
+  (let* ((versioned-path (concat "C:/Users/zzzap/Documents/Code/sbcl/win/" version "/"))
+	 (exec-path (concat versioned-path "sbcl.exe"))
+	 (home-path versioned-path))
     (when (file-exists-p exec-path)
-      (invoke-standard-sbcl tag exec-path (list (concat "SBCL_HOME=" home-path))))))
+      (invoke-standard-sbcl slime-tag exec-path (list (concat "SBCL_HOME=" home-path))))))
 
-  (defun win32-sbcl (tag path)
-  (let* ((twr-win (concat "C:/Users/zzzap/Documents/Code/sbcl/win-32/" path "/"))
-	 (exec-path (concat twr-win "sbcl.exe"))
-	 (home-path twr-win))
+  (defun win32-sbcl (slime-tag version)
+  (let* ((versioned-path (concat "C:/Users/zzzap/Documents/Code/sbcl/win-32/" version "/"))
+	 (exec-path (concat versioned-path "sbcl.exe"))
+	 (home-path versioned-path))
     (when (file-exists-p exec-path)
-      (invoke-standard-sbcl tag exec-path (list (concat "SBCL_HOME=" home-path))))))
+      (invoke-standard-sbcl slime-tag exec-path (list (concat "SBCL_HOME=" home-path))))))
 
-(defun provision-ccl (tag path)
+(defun provision-ccl (slime-tag path)
     (when (file-exists-p path)
-      `(,tag (,path))))
+      `(,slime-tag (,path))))
 
 (defun provision-abcl()
   (let ((java (concat "c:/Program Files/Java/" (if t "jdk-18.0.2.1" "jdk1.8.0_333") "/bin/java.exe"))
@@ -423,6 +415,8 @@
        (setq slime-lisp-implementations
 	 (seq-filter (lambda (e) e)
 	   (list
+	    (msys-sbcl 'win64-sbcl-2.3.4 "2.3.4")
+	    (msys-sbcl 'win64-sbcl-2.3.3 "2.3.3")
 	    (win64-sbcl 'win64-sbcl-2.3.2 "2.3.2")
 	    (win64-sbcl 'win64-sbcl-2.3.1 "2.3.1")
 	    (win32-sbcl 'win32-sbcl-2.3.1 "2.3.1")
@@ -624,6 +618,8 @@
 (setf ps-font-size 10.0)
 (setf ps-line-number t)
 (setf ps-line-number-font-size 10)
+
+(setq backup-directory-alist `(("." . ,(expand-file-name "tmp/backups/" user-emacs-directory))))
 
 (defun efs/configure-eshell ()
 	 ;; Save command history when commands are entered

@@ -5,7 +5,7 @@
 #+EXPORT-FILENAME: init.el
 #+INDEX: Emacs!Configuration
 * Report Debug START  :noexport:
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp :eval never-export
 (message "Debug START")
 #+END_SRC
 
@@ -58,6 +58,10 @@ Add a heading to file about editing init.el.
 
 (add-hook 'emacs-startup-hook #'efs/display-startup-time)
 #+end_src
+* Report Debug MARK                                                :noexport:
+#+BEGIN_SRC emacs-lisp :eval never-export
+(message "Debug MARK")
+#+END_SRC
 * The emacs customization file.
  Define were emacs cusomization is saved and restored.
  #+BEGIN_SRC emacs-lisp
@@ -346,6 +350,7 @@ Fixed on 7/2/2022 moving to DESKER
 	(setq +cygwin64-base-path+ "C:/cygwin64")
   #+END_SRC
 * Initialize My msys2 emulation
+[TBD] replace literal value mingw64 with a msys2-environment placeholder.
   #+BEGIN_SRC emacs-lisp
     ;; Paths to msys2 file root
     (let ((mingw64-root-mount "C:/devel/msys64")
@@ -362,8 +367,7 @@ Fixed on 7/2/2022 moving to DESKER
        (defun cygwin64-file-exists-p (file)
 	 (file-exists-p (concat +cygwin64-base-path+ file)))
  #+END_SRC
-* msys2 Envir
-oment Emulation
+* msys2 Enviroment Emulation
  #+BEGIN_SRC emacs-lisp
    (defun msys-path (path)
      (concat +msys64-base-path+ path))
@@ -379,7 +383,8 @@ oment Emulation
      (concat (msys-path "usr/bin") cmd ".exe"))
  #+END_SRC
 * Run a command in a msys2 shell
-   #+BEGIN_SRC emacs-lisp
+This is currently not used.
+   #+BEGIN_SRC emacs-lisp :tangle no
      (defun start-under-bash-login-shell (shell-task)
      "Excute a msys2-command under a msys2-64 bash login shell"
        (list (msys2-command-string "env")
@@ -389,10 +394,6 @@ oment Emulation
 	     "-c"
 	     shell-task))
     #+END_SRC
-* Report Debug MARK                                                :noexport:
-#+BEGIN_SRC emacs-lisp
-(message "Debug MARK")
-#+END_SRC
 * Modus Theme Configuration
 Main Page: [[https://protesilaos.com/emacs/modus-themes]]
 #+BEGIN_SRC emacs-lisp
@@ -522,21 +523,21 @@ Make plink the default tramp method if running on Windows when plink.exe exists.
     #+END_SRC
 * A standard slime entry for slime-lisp-implemenations
 #+BEGIN_SRC emacs-lisp
-   (defmacro add-slime-lisp (tag program program-args environment)
+   (defmacro add-slime-lisp (slime-tag program program-args environment)
     "The format of a standard slime entry for a lisp implenatation."
-   `(list ,tag (cons ,program ,program-args) :env ,environment))
+   `(list ,slime-tag (cons ,program ,program-args) :env ,environment))
 #+END_SRC
 * Standard Options for SBCL startup
 #+BEGIN_SRC emacs-lisp
   ;;;; The standard options for SBCL
-  (defun invoke-standard-sbcl (tag program environment)
-    (add-slime-lisp tag program '("--noinform") environment))
+  (defun invoke-standard-sbcl (slime-tag program environment)
+    (add-slime-lisp slime-tag program '("--noinform") environment))
 #+END_SRC
 
 * SBCL compiled under MSYS2 in TWR standard locations
 #+BEGIN_SRC emacs-lisp
-  (defun msys-sbcl (tag path)
-    "Create a slime entry for the tag if the sbcl.exe is found."
+  (defun msys-sbcl (slime-tag version)
+    "Create a slime entry for the slime-tag if the sbcl.exe is found."
   ;;; The path is the path to the sbcl-version container.
   ;;;
   ;;; The standard place I store sbcl that I compile are /usr/local/sbcl-version
@@ -552,34 +553,35 @@ Make plink the default tramp method if running on Windows when plink.exe exists.
   ;;;       sbcl.core ; the core image
   ;;;       sbcl.mk
 
-     (let ((exec-path (msys-path (concat path "bin/sbcl.exe")))
-	   (home-path (msys-path (concat path "lib/sbcl/"))))
+     (let* ((versioned-path (concat "C:/Users/zzzap/Documents/Code/sbcl/win/" version "/"))
+	    (exec-path (concat versioned-path "bin/sbcl.exe"))
+	    (home-path (concat versioned-path "lib/sbcl/")))
        (when (file-exists-p exec-path)
-		(invoke-standard-sbcl tag exec-path (list (concat "SBCL_HOME=" home-path ))))))
+		(invoke-standard-sbcl slime-tag exec-path (list (concat "SBCL_HOME=" home-path ))))))
 #+END_SRC
 * SBCL Windows Distrs TWR standard locations
 #+BEGIN_SRC emacs-lisp
 
-  (defun win64-sbcl (tag path)
-    (let* ((twr-win (concat "C:/Users/zzzap/Documents/Code/sbcl/win/" path "/"))
-	   (exec-path (concat twr-win "sbcl.exe"))
-	   (home-path twr-win))
+  (defun win64-sbcl (slime-tag version)
+    (let* ((versioned-path (concat "C:/Users/zzzap/Documents/Code/sbcl/win/" version "/"))
+	   (exec-path (concat versioned-path "sbcl.exe"))
+	   (home-path versioned-path))
       (when (file-exists-p exec-path)
-	(invoke-standard-sbcl tag exec-path (list (concat "SBCL_HOME=" home-path))))))
+	(invoke-standard-sbcl slime-tag exec-path (list (concat "SBCL_HOME=" home-path))))))
 
-    (defun win32-sbcl (tag path)
-    (let* ((twr-win (concat "C:/Users/zzzap/Documents/Code/sbcl/win-32/" path "/"))
-	   (exec-path (concat twr-win "sbcl.exe"))
-	   (home-path twr-win))
+    (defun win32-sbcl (slime-tag version)
+    (let* ((versioned-path (concat "C:/Users/zzzap/Documents/Code/sbcl/win-32/" version "/"))
+	   (exec-path (concat versioned-path "sbcl.exe"))
+	   (home-path versioned-path))
       (when (file-exists-p exec-path)
-	(invoke-standard-sbcl tag exec-path (list (concat "SBCL_HOME=" home-path))))))
+	(invoke-standard-sbcl slime-tag exec-path (list (concat "SBCL_HOME=" home-path))))))
 #+END_SRC
 * CCL for SLIME
   When a specific CCL binary is present create a CCL slime item.
     #+BEGIN_SRC emacs-lisp
-      (defun provision-ccl (tag path)
+      (defun provision-ccl (slime-tag path)
 	  (when (file-exists-p path)
-	    `(,tag (,path))))
+	    `(,slime-tag (,path))))
     #+END_SRC
 
 * Provision a ABCL entry for slime
@@ -642,6 +644,8 @@ CYGWIN version of CLISP is not provisioned
 	  (setq slime-lisp-implementations
 	    (seq-filter (lambda (e) e)
 	      (list
+	       (msys-sbcl 'win64-sbcl-2.3.4 "2.3.4")
+	       (msys-sbcl 'win64-sbcl-2.3.3 "2.3.3")
 	       (win64-sbcl 'win64-sbcl-2.3.2 "2.3.2")
 	       (win64-sbcl 'win64-sbcl-2.3.1 "2.3.1")
 	       (win32-sbcl 'win32-sbcl-2.3.1 "2.3.1")
@@ -956,6 +960,11 @@ This is a single ) to close it.
    (setf ps-line-number-font-size 10)
 #+END_SRC
 
+* Emacs Backup Files
+#+begin_src emacs-lisp
+(setq backup-directory-alist `(("." . ,(expand-file-name "tmp/backups/" user-emacs-directory))))
+#+end_src
+
 * Eshell
 #+begin_src emacs-lisp
   (defun efs/configure-eshell ()
@@ -1168,6 +1177,6 @@ I am using to add icons to the icons.json file derived from feathericons.
 (setq gc-cons-threshold (* 2 1000 1000))  
 #+end_src
 * Report Debug End :noexport:
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp  :eval never-export
 (message "Debug END")
 #+END_SRC

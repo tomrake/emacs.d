@@ -2,7 +2,7 @@
 
 
 (let ((paths
-	'("C:/Users/zzzap/Documents/Code/quicklisp/local-projects/")))
+	'("C:/Users/zzzap/Documents/Code/source-projects/")))
 ;;;; Add any from paths which is not present in ql:*local-project-directories*
   (dolist (p paths)
     (when (and p (probe-file p) (not (member p ql:*local-project-directories*)))
