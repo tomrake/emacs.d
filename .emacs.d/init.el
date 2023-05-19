@@ -1,5 +1,3 @@
-(message "Debug START")
-
 ;; NOTE: init.el is now generated from Emacs.org.  Please edit that file
 ;;       in Emacs and init.el will be generated automatically!
 (setq gc-cons-threshold (* 50 1000 1000))
@@ -10,24 +8,33 @@
 ;; Make frame transparency overridable
 (defvar efs/frame-transparency '(90 . 90))
 
-(setq session-save-file-coding-system 'utf-8)
+(message "Debug START")
 
-(defun efs/display-startup-time ()
-  (message "Emacs loaded in %s with %d garbage collections."
-           (format "%.2f seconds"
-                   (float-time
-                   (time-subtract after-init-time before-init-time)))
-           gcs-done))
+;; UTF-8 as default encoding
+(set-language-environment "UTF-8")
+(set-default-coding-systems 'utf-8)
+(set-keyboard-coding-system 'utf-8-unix)
 
-(add-hook 'emacs-startup-hook #'efs/display-startup-time)
+;; do this especially on Windows, else python output problem
+(set-terminal-coding-system 'utf-8-unix)
+
+;;;; Reporting Startup Time
+  (defun efs/display-startup-time ()
+    (message "Emacs loaded in %s with %d garbage collections."
+	     (format "%.2f seconds"
+		     (float-time
+		     (time-subtract after-init-time before-init-time)))
+	     gcs-done))
+
+  (add-hook 'emacs-startup-hook #'efs/display-startup-time)
 
 (message "Debug MARK")
 
-;;;; emacs customization file
-(setq custom-file "~/.config/emacs/.emacs-custom.el")
-(load custom-file)
+;;;; define emacs customization file and load it.
+  (setq custom-file "~/.config/emacs/.emacs-custom.el")
+  (load custom-file)
 
-;; Initialize package sources
+;;;; Initialize package sources
 (require 'package)
 ;(setq package-check-signature nil)
 (setq package-gnupghome-dir "~/.gnupg/")
@@ -39,16 +46,17 @@
 (unless package-archive-contents
   (package-refresh-contents))
 
-  ;; Initialize use-package on non-Linux platforms
+;;;; Initialize use-package on non-Linux platforms
 (unless (package-installed-p 'use-package)
   (package-install 'use-package))
-
+;;;; use-package
 (require 'use-package)
 (setq use-package-always-ensure t)
 (setq use-package-verbose t)
 (setq use-package-always-defer t)
 
-;   (setq debug-on-error t)
+;;;; Emacs Debug On Error
+   (setq debug-on-error t)
 
 ;;;; Macro to load user customizations from .emacs.d
 (defmacro local-custom-file (file description)
@@ -62,31 +70,23 @@
 		  (org-babel-load-file file-and-path))
 	 (message (concat "Custom file is missing " file-and-path))))))
 
+;;;; Magic File modes
 (setq magic-mode-alist '(("*.org" . org)))
 
-;; Set initial frame size and position
-(defun my/set-initial-frame ()
-  (let* ((base-factor 0.70)
-	(a-width (* (display-pixel-width) base-factor))
-	(a-height (* (display-pixel-height) base-factor))
-	(a-left (truncate (/ (- (display-pixel-width) a-width) 2)))
-	(a-top (truncate (/ (- (display-pixel-height) a-height) 2))))
-    (set-frame-position (selected-frame) a-left a-top)
-    (set-frame-size (selected-frame) (truncate a-width)  (truncate a-height) t)))
-(setq frame-resize-pixelwise t)
-(my/set-initial-frame)
+(add-hook 'emacs-startup-hook 'toggle-frame-maximized)
 
+;;;; Have a clean statup screen
 (setq inhibit-startup-screen t)
 (setq visible-bell 1)
-   ;; Turn off tool bar
+;;;; Turn off tool bar
 (tool-bar-mode)
 
 (setq w32-use-visible-system-caret nil)
 
-;; auto revert mode
+;;;; auto revert mode
 (global-auto-revert-mode 1)
 
-;; dired auto revert
+;;;; dired auto revert
 (setf global-auto-revert-non-file-buffers t)
 
 (use-package  ido
@@ -262,61 +262,6 @@
   (let ((explicit-shell-file-name "powershell.exe")
 	(explicit-powershell.exe-args '()))
     (shell (generate-new-buffer-name "*powershell*"))))
-
-(use-package friendly-shell
-  :ensure t
-  :config   
-    (defun shell/git-bash (&optional path)
-       (interactive)
-       (friendly-shell :path path
-		       :interpreter "C:/Program Files/Git/bin/bash.exe"
-		       ;;:interpreter-args '("-l")
-		       )))
-
-
-(use-package friendly-remote-shell
-  :ensure t
-  :config
-     (defun shell/cisco (&optional path)
-       (interactive)
-       (with-shell-interpreter-connection-local-vars
-	 (friendly-remote-shell :path path))))
-
-
-
-    ;; (setq win-shell-implementaions
-	      ;;       `((cmd (shell))
-	      ;; 	(ming64 ((defun my-shell-setup ()
-	      ;;        "For Cygwin bash under Emacs 20"
-
-	      ;;          (setq comint-scroll-show-maximum-output 'this)
-	      ;;          (make-variable-buffer-local 'comint-completion-addsuffix))
-	      ;;            (setq comint-completion-addsuffix t)
-	      ;;            ;; (setq comint-process-echoes t) ;; reported that this is no longer needed
-	      ;;            (setq comint-eol-on-send t)
-	      ;;            (setq w32-quote-process-args ?\")
-	      ;;            (add-hook 'shell-mode-hook 'my-shell-setup)))))
-
-	      ;; (defun win-shell ())
-
-	      ;; ;;; The MSYS-SHELL
-
-	      ;; (defun msys-shell () 
-	      ;;   (interactive)
-	      ;;   (let ((explicit-shell-file-name (convert-standard-filename "c:/devel/msys64/usr/bin/bash.exe"))
-	      ;; 	(shell-file-name "bash")
-	      ;; 	(explicit-bash.exe-args '("--noediting" "--login" "-i"))) 
-	      ;;     (setenv "SHELL" shell-file-name)
-	      ;;     (add-hook 'comint-output-filter-functions 'comint-strip-ctrl-m)
-	      ;;     (shell)))
-
-	      ;; ;;; The MINGW64-SHELL
-
-	      ;; (defun mingw64-shell () 
-	      ;;        (interactive)
-	      ;;        (let (( explicit-shell-file-name (convert-standard-filename  "c:/devel/msys64/mingw64/bin/bash.exe")))
-	      ;; 	 (shell "*bash*")
-	      ;; 	     (call-interactively 'shell)))
 
 (use-package shx
   :ensure t)
@@ -642,6 +587,7 @@
     (eshell-git-prompt-use-theme 'powerline))
 
 (use-package dired
+  :ensure nil
   :config
     (add-hook 'dired-mode-hook 'all-the-icons-dired-mode))
 
