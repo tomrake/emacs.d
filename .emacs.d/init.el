@@ -360,6 +360,7 @@
        (setq slime-lisp-implementations
 	 (seq-filter (lambda (e) e)
 	   (list
+	    (msys-sbcl 'win64-sbcl-2.3.5 "2.3.5")
 	    (msys-sbcl 'win64-sbcl-2.3.4 "2.3.4")
 	    (msys-sbcl 'win64-sbcl-2.3.3 "2.3.3")
 	    (win64-sbcl 'win64-sbcl-2.3.2 "2.3.2")
@@ -641,19 +642,66 @@
 
 (when (require 'openwith nil 'noerror)
 
-
-  (setq openwith-associatsions
-       (list (list (openwith-make-extension-regexp '("mpg" "mpeg" "mp3" "mp4"
-					    "avi" "wmv" "wav" "mov" "flv"
-					    "ogm" "ogg" "mkv")) "vlc.exe")
-	     (list (openwith-make-extension-regexp '("JPEG" "JPG"))
-		   "c:/Program Files (x86)/JPEGView/JPEGView.exe" '(file))))
-  (openwith-mode 1))
+     (setq openwith-associatsions
+	 (list (list (openwith-make-extension-regexp '("mpg" "mpeg" "mp3" "mp4"
+					      "avi" "wmv" "wav" "mov" "flv"
+					      "ogm" "ogg" "mkv")) "vlc.exe")
+	       (list (openwith-make-extension-regexp '("JPEG" "JPG"))
+		     "c:/Program Files (x86)/JPEGView/JPEGView.exe" '(file))))
+;;    (message "OPENWITH CONFIG")
+;;    (message openwith-associatsions)
+    (openwith-mode 1))
 
 (require 'recentf)
 (recentf-mode 1)
 (setq recentf-max-menu-items 25)
 (global-set-key "\C-x\ \C-r" 'recentf-open-files)
+
+(use-package pdf-tools
+   :config
+   (pdf-tools-install))
+
+
+(use-package org-noter
+  :config
+  ;; Your org-noter config ........
+  (require 'org-noter-pdftools))
+
+(use-package org-pdftools
+  :hook (org-mode . org-pdftools-setup-link))
+
+(use-package org-noter-pdftools
+  :after org-noter
+  :config
+  ;; Add a function to ensure precise note is inserted
+  (defun org-noter-pdftools-insert-precise-note (&optional toggle-no-questions)
+    (interactive "P")
+    (org-noter--with-valid-session
+     (let ((org-noter-insert-note-no-questions (if toggle-no-questions
+						   (not org-noter-insert-note-no-questions)
+						 org-noter-insert-note-no-questions))
+	   (org-pdftools-use-isearch-link t)
+	   (org-pdftools-use-freepointer-annot t))
+       (org-noter-insert-note (org-noter--get-precise-info)))))
+
+  ;; fix https://github.com/weirdNox/org-noter/pull/93/commits/f8349ae7575e599f375de1be6be2d0d5de4e6cbf
+  (defun org-noter-set-start-location (&optional arg)
+    "When opening a session with this document, go to the current location.
+With a prefix ARG, remove start location."
+    (interactive "P")
+    (org-noter--with-valid-session
+     (let ((inhibit-read-only t)
+	   (ast (org-noter--parse-root))
+	   (location (org-noter--doc-approx-location (when (called-interactively-p 'any) 'interactive))))
+       (with-current-buffer (org-noter--session-notes-buffer session)
+	 (org-with-wide-buffer
+	  (goto-char (org-element-property :begin ast))
+	  (if arg
+	      (org-entry-delete nil org-noter-property-note-location)
+	    (org-entry-put nil org-noter-property-note-location
+			   (org-noter--pretty-print-location location))))))))
+  (with-eval-after-load 'pdf-annot
+    (add-hook 'pdf-annot-activate-handler-functions #'org-noter-pdftools-jump-to-note)))
 
 (setq ppl-holiday-table '(2023					;year
    (1 1)					;new years day
