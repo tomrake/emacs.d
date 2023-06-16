@@ -73,6 +73,9 @@
 ;;;; Magic File modes
 (setq magic-mode-alist '(("*.org" . org)))
 
+(if (getenv "MSYSTEM") 
+  (load (expand-file-name "~/.roswell/helper.el")))
+
 (add-hook 'emacs-startup-hook 'toggle-frame-maximized)
 
 ;;;; Have a clean statup screen
@@ -308,7 +311,7 @@
 	  (exec-path (concat versioned-path "bin/sbcl.exe"))
 	  (home-path (concat versioned-path "lib/sbcl/")))
      (when (file-exists-p exec-path)
-	      (invoke-standard-sbcl slime-tag exec-path (list (concat "SBCL_HOME=" home-path ))))))
+	      (invoke-standard-sbcl slime-tag exec-path (list (concat "SBCL_HOME=" home-path) "CC=c:/devel/msys64/ucrt64/bin/gcc")))))
 
 (defun win64-sbcl (slime-tag version)
   (let* ((versioned-path (concat "C:/Users/zzzap/Documents/Code/sbcl/win/" version "/"))

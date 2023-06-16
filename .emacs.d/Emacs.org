@@ -131,6 +131,11 @@ Add a heading to file about editing init.el.
   ;;;; Magic File modes
   (setq magic-mode-alist '(("*.org" . org)))
 #+END_SRC
+* Roswell
+#+begin_src emacs-lisp
+(if (getenv "MSYSTEM") 
+  (load (expand-file-name "~/.roswell/helper.el")))
+#+end_src
 * org-protocol - NO TANGLE
 #+BEGIN_SRC emacs-lisp :tangle no
   (require 'org-protocol)
@@ -574,7 +579,7 @@ Make plink the default tramp method if running on Windows when plink.exe exists.
 	    (exec-path (concat versioned-path "bin/sbcl.exe"))
 	    (home-path (concat versioned-path "lib/sbcl/")))
        (when (file-exists-p exec-path)
-		(invoke-standard-sbcl slime-tag exec-path (list (concat "SBCL_HOME=" home-path ))))))
+		(invoke-standard-sbcl slime-tag exec-path (list (concat "SBCL_HOME=" home-path) "CC=c:/devel/msys64/ucrt64/bin/gcc")))))
 #+END_SRC
 * SBCL Windows Distrs TWR standard locations
 #+BEGIN_SRC emacs-lisp
