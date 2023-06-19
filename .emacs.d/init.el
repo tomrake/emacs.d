@@ -73,9 +73,6 @@
 ;;;; Magic File modes
 (setq magic-mode-alist '(("*.org" . org)))
 
-(if (getenv "MSYSTEM") 
-  (load (expand-file-name "~/.roswell/helper.el")))
-
 (add-hook 'emacs-startup-hook 'toggle-frame-maximized)
 
 ;;;; Have a clean statup screen
@@ -181,6 +178,9 @@
 
 (setq ispell-program-name "c:/devel/msys64/usr/bin/aspell.exe")
 
+(setq my-java "c:/Program Files/Java/jre1.8.0_341/bin/java.exe")
+
+(setq langtool-java-bin my-java)
 (setq langtool-language-tool-jar  "c:/Users/Public/Documents/LanguageTool-5.9/languagetool-commandline.jar")
 (require 'langtool)
 (global-set-key "\C-x4w" 'langtool-check)
@@ -206,31 +206,38 @@
 
 (setq +cygwin64-base-path+ "C:/cygwin64")
 
-;; Paths to msys2 file root
-(let ((mingw64-root-mount "C:/devel/msys64")
-      (mingw64-bin-mount "C:/devel/msys64/usr/bin"))
+(setq my-msys2-base "c:\devel\msys64")
+(setq msystem (getenv "MSYSTEM"))
+(setq old-msystem msystem)
+(setq old-msystem-prefix (getenv "MSYSTEM_PREFIX"))
 
-(add-to-list 'exec-path (concat mingw64-root-mount "/mingw64/bin"))
-(add-to-list 'exec-path (concat mingw64-root-mount "/usr/local/bin"))
-(add-to-list 'exec-path (concat mingw64-root-mount "/usr/bin"))
-(add-to-list 'exec-path mingw64-bin-mount))
-(setq +msys64-base-path+ "C:/devel/msys64/")
+;; Paths to msys2 file root
+
+  (let ((msys64-root-mount "C:/devel/msys64")
+	(msys64-bin-mount "C:/devel/msys64/usr/bin"))
+    (add-to-list 'exec-path (concat msys64-root-mount (getenv "MSYSTEM_PREFIX") "/bin"))
+    (add-to-list 'exec-path (concat msys64-root-mount "/usr/local/bin"))
+    (add-to-list 'exec-path (concat msys64-root-mount "/usr/bin"))
+    (add-to-list 'exec-path msys64-bin-mount)
+
+
+    (defun msys-path (path)
+      (concat my-msys2-base path))
+
+    (defun msys64-file-exists-p (file)
+      (file-exists-p (msys-path file)))
+
+    (defun msys2-command (cmd params)
+      (join-with-spaces (cons (msys2-command-string cmd) params)))
+
+    (defun msys2-command-string (cmd)
+      (concat (msys-path "usr/bin") cmd ".exe")))
+
+(if (getenv "MSYSTEM") 
+  (load (expand-file-name "~/.roswell/helper.el")))
 
 (defun cygwin64-file-exists-p (file)
   (file-exists-p (concat +cygwin64-base-path+ file)))
-
-(defun msys-path (path)
-  (concat +msys64-base-path+ path))
-
-(defun msys64-file-exists-p (file)
-  (file-exists-p (msys-path file)))
-
-(defun msys2-command (cmd params)
-   (join-with-spaces (cons (msys2-command-string cmd) params)))
-
-
-(defun msys2-command-string (cmd)
-  (concat (msys-path "usr/bin") cmd ".exe"))
 
 (use-package modus-themes
     :config
@@ -716,8 +723,8 @@
 
 ;; Autommatically tangle our Emacs.org config file when we save it.
 (defun efs/org-babel-tangle-config ()
-  (when (string-equal (buffer-file-name)
-		      (expand-file-name "~/Documents/Code/.emacs.d/Emacs.org"))
+  (when (string-equal (message (buffer-file-name))
+		      (message (expand-file-name "~/Documents/Code/.emacs.d/Emacs.org")))
     (message "Begin efs/tangle")
 
     ;; Dynamic scoping to the rescue

@@ -25,9 +25,16 @@ Regularize the msys2 integration
 - Compute the number of msys2 enviroments
 - Consider pacman and pacboy package management routines
 *** Revision Narative
-    Current revision tasks are to cleanup the package archive and use-package
-    pdf-tools hangs under msys2 launch.
-    slime hangs under msys2 launch.
+    - Current revision tasks are to cleanup the package archive and use-package
+    - pdf-tools hangs under msys2 launch.
+    - slime hangs under msys2 launch.
+    - Roswell still needs stablity work
+    - Run under msys2 shell mode needs work
+    - Emulate msys2 shell mode needs consideration and work - this was current mode.
+      - clickable windows launch.
+    - LanguageTool needed java specirficatiion.
+    - magit hangs - likely inferrior git problem
+    - magit fails on Windows launch.
 * Add edit this file warning to init.el
 Add a heading to file about editing init.el.
 #+begin_src emacs-lisp
@@ -138,11 +145,6 @@ Add a heading to file about editing init.el.
   ;;;; Magic File modes
   (setq magic-mode-alist '(("*.org" . org)))
 #+END_SRC
-* Roswell
-#+begin_src emacs-lisp
-(if (getenv "MSYSTEM") 
-  (load (expand-file-name "~/.roswell/helper.el")))
-#+end_src
 * org-protocol - NO TANGLE
 #+BEGIN_SRC emacs-lisp :tangle no
   (require 'org-protocol)
@@ -341,8 +343,14 @@ Fixed on 7/2/2022 moving to DESKER
 #+BEGIN_SRC emacs-lisp
   (setq ispell-program-name "c:/devel/msys64/usr/bin/aspell.exe")
 #+END_SRC
+* JAVA to use
+Certain tools need java set that location here.
+#+begin_src emacs-lisp
+(setq my-java "c:/Program Files/Java/jre1.8.0_341/bin/java.exe")
+#+end_src
 * Language Tool
 #+begin_src emacs-lisp
+  (setq langtool-java-bin my-java)
   (setq langtool-language-tool-jar  "c:/Users/Public/Documents/LanguageTool-5.9/languagetool-commandline.jar")
   (require 'langtool)
   (global-set-key "\C-x4w" 'langtool-check)
@@ -374,54 +382,52 @@ Fixed on 7/2/2022 moving to DESKER
 	(setq +cygwin64-base-path+ "C:/cygwin64")
   #+END_SRC
 * Initialize My msys2 emulation
-[2023-05-19] [TBD] Replace the mingw64 environement with ucrt64.
-  #+BEGIN_SRC emacs-lisp
-    ;; Paths to msys2 file root
-    (let ((mingw64-root-mount "C:/devel/msys64")
-	  (mingw64-bin-mount "C:/devel/msys64/usr/bin"))
+[2023-05-19] [TBD] Replace the msys64 environement with ucrt64.
+First we need to test if we are running under a MSYSTEM
 
-    (add-to-list 'exec-path (concat mingw64-root-mount "/mingw64/bin"))
-    (add-to-list 'exec-path (concat mingw64-root-mount "/usr/local/bin"))
-    (add-to-list 'exec-path (concat mingw64-root-mount "/usr/bin"))
-    (add-to-list 'exec-path mingw64-bin-mount))
-    (setq +msys64-base-path+ "C:/devel/msys64/")
-  #+END_SRC
+There are two use cases.
+- Startup from windows - the msystem need to be initialized
+- Startup from msystem shell - the msystem does not need to be initialized. 
+#+begin_src emacs-lisp
+  (setq my-msys2-base "c:\devel\msys64")
+  (setq msystem (getenv "MSYSTEM"))
+  (setq old-msystem msystem)
+  (setq old-msystem-prefix (getenv "MSYSTEM_PREFIX"))
+#+end_src
+#+BEGIN_SRC emacs-lisp
+  ;; Paths to msys2 file root
+
+    (let ((msys64-root-mount "C:/devel/msys64")
+	  (msys64-bin-mount "C:/devel/msys64/usr/bin"))
+      (add-to-list 'exec-path (concat msys64-root-mount (getenv "MSYSTEM_PREFIX") "/bin"))
+      (add-to-list 'exec-path (concat msys64-root-mount "/usr/local/bin"))
+      (add-to-list 'exec-path (concat msys64-root-mount "/usr/bin"))
+      (add-to-list 'exec-path msys64-bin-mount)
+ 
+
+      (defun msys-path (path)
+	(concat my-msys2-base path))
+
+      (defun msys64-file-exists-p (file)
+	(file-exists-p (msys-path file)))
+
+      (defun msys2-command (cmd params)
+	(join-with-spaces (cons (msys2-command-string cmd) params)))
+
+      (defun msys2-command-string (cmd)
+	(concat (msys-path "usr/bin") cmd ".exe")))
+ #+END_SRC
+* Roswell
+#+begin_src emacs-lisp
+(if (getenv "MSYSTEM") 
+  (load (expand-file-name "~/.roswell/helper.el")))
+#+end_src
 * Cygwin Enviroment Emulation
 [2023-05-19] This is likely unused.
  #+BEGIN_SRC emacs-lisp
        (defun cygwin64-file-exists-p (file)
 	 (file-exists-p (concat +cygwin64-base-path+ file)))
  #+END_SRC
-* msys2 Enviroment Emulation
-DEADLINE: <2023-05-19 Fri>
-[2023-05-19] This needs to be revised
- #+BEGIN_SRC emacs-lisp
-   (defun msys-path (path)
-     (concat +msys64-base-path+ path))
-
-   (defun msys64-file-exists-p (file)
-     (file-exists-p (msys-path file)))
-
-   (defun msys2-command (cmd params)
-      (join-with-spaces (cons (msys2-command-string cmd) params)))
-
-
-   (defun msys2-command-string (cmd)
-     (concat (msys-path "usr/bin") cmd ".exe"))
- #+END_SRC
-* Run a command in a msys2 shell
-[2023-05-19] Needs revision or removal
-This is currently not used.
-   #+BEGIN_SRC emacs-lisp :tangle no
-     (defun start-under-bash-login-shell (shell-task)
-     "Excute a msys2-command under a msys2-64 bash login shell"
-       (list (msys2-command-string "env")
-	     (double-quote-string "MSYSTEM=MINGW64")
-	     (msys2-command-string "bash")
-	     "-l"
-	     "-c"
-	     shell-task))
-    #+END_SRC
 * Modus Theme Configuration
 Main Page: [[https://protesilaos.com/emacs/modus-themes]]
 #+BEGIN_SRC emacs-lisp
@@ -520,7 +526,7 @@ Main Page: [[https://protesilaos.com/emacs/modus-themes]]
 
 		    ;; ;;; The MINGW64-SHELL
 
-		    ;; (defun mingw64-shell () 
+		    ;; (defun msys64-shell () 
 		    ;;        (interactive)
 		    ;;        (let (( explicit-shell-file-name (convert-standard-filename  "c:/devel/msys64/mingw64/bin/bash.exe")))
 		    ;; 	 (shell "*bash*")
@@ -551,12 +557,14 @@ Make plink the default tramp method if running on Windows when plink.exe exists.
       :hook lisp-mode)
     #+END_SRC
 * A standard slime entry for slime-lisp-implemenations
+Create a windows standalone startup for a lisp version.
 #+BEGIN_SRC emacs-lisp
    (defmacro add-slime-lisp (slime-tag program program-args environment)
     "The format of a standard slime entry for a lisp implenatation."
    `(list ,slime-tag (cons ,program ,program-args) :env ,environment))
 #+END_SRC
 * Standard Options for SBCL startup
+Here I add the standard startup arguments and enviroment for startup.
 #+BEGIN_SRC emacs-lisp
   ;;;; The standard options for SBCL
   (defun invoke-standard-sbcl (slime-tag program environment)
@@ -564,6 +572,7 @@ Make plink the default tramp method if running on Windows when plink.exe exists.
 #+END_SRC
 
 * SBCL compiled under MSYS2 in TWR standard locations
+This is to startup  ucrt64 compiled versions of sbcl
 #+BEGIN_SRC emacs-lisp
   (defun msys-sbcl (slime-tag version)
     "Create a slime entry for the slime-tag if the sbcl.exe is found."
@@ -589,6 +598,7 @@ Make plink the default tramp method if running on Windows when plink.exe exists.
 		(invoke-standard-sbcl slime-tag exec-path (list (concat "SBCL_HOME=" home-path) "CC=c:/devel/msys64/ucrt64/bin/gcc")))))
 #+END_SRC
 * SBCL Windows Distrs TWR standard locations
+
 #+BEGIN_SRC emacs-lisp
 
   (defun win64-sbcl (slime-tag version)
@@ -1195,20 +1205,21 @@ I am using to add icons to the icons.json file derived from feathericons.
     (print "This function operates on a region")))
 #+end_src
 * Auto-tangle configuration files.
+This is a tangel test,  does not tangle whtn msys launched. Windows launch neither.
+
 #+begin_src emacs-lisp
   ;; Autommatically tangle our Emacs.org config file when we save it.
   (defun efs/org-babel-tangle-config ()
-    (when (string-equal (buffer-file-name)
-			(expand-file-name "~/Documents/Code/.emacs.d/Emacs.org"))
+    (message "Checking after save for tangle.")
+    (when (string-equal (message (buffer-file-name))
+			(message (expand-file-name "~/Documents/Code/.emacs.d/Emacs.org")))
       (message "Begin efs/tangle")
-      
+
       ;; Dynamic scoping to the rescue
       (let ((org-confirm-babel-evaluate nil))
 	(org-babel-tangle))))
   (add-hook 'org-mode-hook (lambda () (add-hook 'after-save-hook #'efs/org-babel-tangle-config)))
 #+end_src
-* Final Presenation to the user.
-
 * load per user settings
  #+BEGIN_SRC emacs-lisp
 ;;;; Various user settings is a local configuration.
