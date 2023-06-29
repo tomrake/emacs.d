@@ -28,8 +28,6 @@
 
   (add-hook 'emacs-startup-hook #'efs/display-startup-time)
 
-(message "Debug MARK")
-
 ;;;; define emacs customization file and load it.
   (setq custom-file "~/.config/emacs/.emacs-custom.el")
   (load custom-file)
@@ -145,14 +143,6 @@
     ;; Enable recursive minibuffers
     (setq enable-recursive-minibuffers t))
 
-(use-package magit
-  :defer 2
-  :ensure t
-  :pin melpa
-  :bind
-  (("C-x g" . magit-status)
-   ("C-x M-d" . magit-dispatch-popup)))
-
 ;;; Specify a emacs variable from an environment variable env-string or  base,new-path-string
 (defmacro default-or-environment (emacs-var base new-path-string env-string) 
   `(setq ,emacs-var (if (getenv ,env-string)
@@ -232,6 +222,16 @@
 
     (defun msys2-command-string (cmd)
       (concat (msys-path "usr/bin") cmd ".exe")))
+
+(use-package magit
+  :defer 2
+  :ensure t
+  :pin melpa
+  :config
+  (setq magit-git-executable "C:/Users/zzzap/AppData/Local/Programs/Git/cmd/git.exe")
+  :bind
+  (("C-x g" . magit-status)
+   ("C-x M-d" . magit-dispatch-popup)))
 
 (if (getenv "MSYSTEM") 
   (load (expand-file-name "~/.roswell/helper.el")))
@@ -667,13 +667,6 @@
 (setq recentf-max-menu-items 25)
 (global-set-key "\C-x\ \C-r" 'recentf-open-files)
 
-(use-package pdf-tools
-   :config
-   ;(pdf-tools-install))
-
-(use-package org-pdftools
-  :hook (org-mode . org-pdftools-setup-link))
-
 (setq ppl-holiday-table '(2023					;year
    (1 1)					;new years day
    (2 20)				;presidents day
@@ -721,8 +714,11 @@
             (replace-match " "))))
     (print "This function operates on a region")))
 
+(message "Debug MARK")
+
 ;; Autommatically tangle our Emacs.org config file when we save it.
 (defun efs/org-babel-tangle-config ()
+  (message "Checking after save for tangle.")
   (when (string-equal (message (buffer-file-name))
 		      (message (expand-file-name "~/Documents/Code/.emacs.d/Emacs.org")))
     (message "Begin efs/tangle")

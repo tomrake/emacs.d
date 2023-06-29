@@ -35,6 +35,9 @@ Regularize the msys2 integration
     - LanguageTool needed java specirficatiion.
     - magit hangs - likely inferrior git problem
     - magit fails on Windows launch.
+    - The majority of the problems were due to pdf-tools failing initialization.
+    - magit still hangs.
+    - point to Windows Git.
 * Add edit this file warning to init.el
 Add a heading to file about editing init.el.
 #+begin_src emacs-lisp
@@ -76,10 +79,6 @@ Add a heading to file about editing init.el.
 
     (add-hook 'emacs-startup-hook #'efs/display-startup-time)
 #+end_src
-* Report Debug MARK                                                :noexport:
-#+BEGIN_SRC emacs-lisp :eval never-export
-(message "Debug MARK")
-#+END_SRC
 * The emacs customization file.
  Define were emacs cusomization is saved and restored.
  #+BEGIN_SRC emacs-lisp
@@ -267,16 +266,6 @@ Remove company in favor of Vertico
   :config
    (add-hook 'after-init-hook 'global-company-mode))
 #+END_SRC
-* Magit
-#+BEGIN_SRC emacs-lisp
-(use-package magit
-  :defer 2
-  :ensure t
-  :pin melpa
-  :bind
-  (("C-x g" . magit-status)
-   ("C-x M-d" . magit-dispatch-popup)))
- #+END_SRC
 * org-roam NO TANGLE
   I am setting up org-roam
 #+BEGIN_SRC emacs-lisp :tangle no
@@ -416,6 +405,18 @@ There are two use cases.
 
       (defun msys2-command-string (cmd)
 	(concat (msys-path "usr/bin") cmd ".exe")))
+ #+END_SRC
+* Magit
+#+BEGIN_SRC emacs-lisp
+  (use-package magit
+    :defer 2
+    :ensure t
+    :pin melpa
+    :config
+    (setq magit-git-executable "C:/Users/zzzap/AppData/Local/Programs/Git/cmd/git.exe")
+    :bind
+    (("C-x g" . magit-status)
+     ("C-x M-d" . magit-dispatch-popup)))
  #+END_SRC
 * Roswell
 #+begin_src emacs-lisp
@@ -1138,7 +1139,7 @@ So configure it there.
 org-noter hangs on msys2 launch
 I am not tangleing this to see of msys2 launch is sucessful.
 I remove noter loading, tangle again.
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle no
   (use-package pdf-tools
      :config
      ;(pdf-tools-install))
@@ -1204,6 +1205,10 @@ I am using to add icons to the icons.json file derived from feathericons.
             (replace-match " "))))
     (print "This function operates on a region")))
 #+end_src
+* Report Debug MARK                                                :noexport:
+#+BEGIN_SRC emacs-lisp :eval never-export
+(message "Debug MARK")
+#+END_SRC
 * Auto-tangle configuration files.
 This is a tangel test,  does not tangle whtn msys launched. Windows launch neither.
 
@@ -1231,7 +1236,7 @@ This is a tangel test,  does not tangle whtn msys launched. Windows launch neith
 #+begin_src emacs-lisp
 (setq gc-cons-threshold (* 2 1000 1000))  
 #+end_src
-* Report Debug End :noexport:
+* Report Debug END                                                 :noexport:
 #+BEGIN_SRC emacs-lisp  :eval never-export
 (message "Debug END")
 #+END_SRC
