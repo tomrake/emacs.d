@@ -83,7 +83,7 @@ Add a heading to file about editing init.el.
  Define were emacs cusomization is saved and restored.
  #+BEGIN_SRC emacs-lisp
    ;;;; define emacs customization file and load it.
-     (setq custom-file "~/.config/emacs/.emacs-custom.el")
+     (setq custom-file "~/.emacs.d/emacs-custom.el")
      (load custom-file)
  #+END_SRC
 * Package Archives and use-package

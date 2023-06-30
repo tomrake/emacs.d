@@ -29,7 +29,7 @@
   (add-hook 'emacs-startup-hook #'efs/display-startup-time)
 
 ;;;; define emacs customization file and load it.
-  (setq custom-file "~/.config/emacs/.emacs-custom.el")
+  (setq custom-file "~/.emacs.d/emacs-custom.el")
   (load custom-file)
 
 ;;;; Initialize package sources
