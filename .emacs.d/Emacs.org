@@ -25,6 +25,12 @@ Regularize the msys2 integration
 - Compute the number of msys2 enviroments
 - Consider pacman and pacboy package management routines
 *** Revision Narative
+****  July 1, 2023 Summary/Narative
+This was largely an effort to use roswell under msys2.
+The roswell team has largely abandoned Windows Distros outside of msys2.
+I fail to commit to a complete msys2 version of emacs, because I need a Windows native lanuch.
+Git is also in this position and Git For Windows and magit fail to nicely mesh with msys2 way of doing things.
+The following are part of the this battle:
     - Current revision tasks are to cleanup the package archive and use-package
     - pdf-tools hangs under msys2 launch.
     - slime hangs under msys2 launch.
@@ -38,6 +44,12 @@ Regularize the msys2 integration
     - The majority of the problems were due to pdf-tools failing initialization.
     - magit still hangs.
     - point to Windows Git.
+The above gives rist the following questions:
+- What are the git for windows issues to structure itself on windows?
+  - There is msys2-launcher for starting shells
+- What are the magit issues that structure it for windows.
+- What is the clean and recomended way to integrate windows launch to msys2 compiled applications.
+- What is the relationship that emacs has with git, magit, windows launch etc.
 * Add edit this file warning to init.el
 Add a heading to file about editing init.el.
 #+begin_src emacs-lisp
