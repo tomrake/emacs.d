@@ -44,12 +44,21 @@ The following are part of the this battle:
     - The majority of the problems were due to pdf-tools failing initialization.
     - magit still hangs.
     - point to Windows Git.
-The above gives rist the following questions:
+The above gives rise to the following questions:
 - What are the git for windows issues to structure itself on windows?
   - There is msys2-launcher for starting shells
 - What are the magit issues that structure it for windows.
 - What is the clean and recomended way to integrate windows launch to msys2 compiled applications.
 - What is the relationship that emacs has with git, magit, windows launch etc.
+An answer
+- The problem is with magit under msys2
+  - msys2 was not considered and cygwin is assumed, becasue msys2 is a fork of cygwin.
+  - magit is an elisp application which runs in emacs.
+  - There seem to be maddening window-nt checks and cygwin checks but no msys2 check.
+  - This is largely a programmers-are-not-as-smart-as-they-think problem.
+    - The future will split the one known fixed case into several.
+    - The simple solutions is to have them emacs lanuch declare the OS configuration.
+
 * Add edit this file warning to init.el
 Add a heading to file about editing init.el.
 #+begin_src emacs-lisp
