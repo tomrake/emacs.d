@@ -53,6 +53,8 @@
 (setq use-package-verbose t)
 (setq use-package-always-defer t)
 
+(setenv "PATH" (concat (getenv  "PATH") ";" "c:/Users/zzzap/AppData/Local/Programs/MiKTeX/miktex/bin/x64"))
+
 ;;;; Emacs Debug On Error
    (setq debug-on-error t)
 
@@ -77,7 +79,7 @@
 (setq inhibit-startup-screen t)
 (setq visible-bell 1)
 ;;;; Turn off tool bar
-(tool-bar-mode)
+(tool-bar-mode 0)
 
 (setq w32-use-visible-system-caret nil)
 
@@ -98,7 +100,7 @@
     (vertico-mode)
     :custom
     ;; Different scroll margin
-    ;; (setq vertico-scroll-margin 0)
+    (setq vertico-scroll-margin 0)
 
     ;; Show more candidates
     ;; (setq vertico-count 20)
@@ -228,7 +230,13 @@
   :ensure t
   :pin melpa
   :config
-  (setq magit-git-executable "C:/Users/zzzap/AppData/Local/Programs/Git/cmd/git.exe")
+  (if (getenv "MSYSTEM")
+  (setq magit-git-executable "C:/devel/msys64/usr/bin/git.exe"
+	with-editor-emacsclient-executable "C:/devel/msys64/ucrt64/bin/emacsclientw.exe")
+
+  (setq magit-git-executable "C:/Users/zzzap/AppData/Local/Programs/Git/cmd/git.exe"
+	with-editor-emacsclient-executable "C:/Program Files/Emacs/emacs-28.2/bin/emacsclient.exe")
+  )
   :bind
   (("C-x g" . magit-status)
    ("C-x M-d" . magit-dispatch-popup)))
@@ -434,7 +442,7 @@
 (add-to-list 'org-structure-template-alist '("qb" . "quote"))
 
 ;; Where org-export latex can find perl
-(setenv "PATH" (concat (getenv "PATH") (concat ";" (msys-path "usr/bin/"))))
+(setenv "PATH" (concat (getenv "PATH") ";" (msys-path "usr/bin/")))
 
 (setf org-global-properties
     '(("Effort_ALL" . "0:05 0:10 0:15 0:30 1:00 2:00 4:00 6:00 8:00")))

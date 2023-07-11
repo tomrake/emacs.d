@@ -122,6 +122,11 @@ Add a heading to file about editing init.el.
   (setq use-package-always-defer t)
 
 #+end_src
+* MiKTex
+#+begin_src emacs-lisp
+(setenv "PATH" (concat (getenv  "PATH") ";" "c:/Users/zzzap/AppData/Local/Programs/MiKTeX/miktex/bin/x64"))
+#+end_src
+
 * Emacs debug-on-error
    [TBD] Should this be set from an enviroment variable.
    [TBD] Is there already a command line switch for this?
@@ -188,7 +193,7 @@ I don't like the a messy startup screen.
    (setq inhibit-startup-screen t)
    (setq visible-bell 1)
    ;;;; Turn off tool bar
-   (tool-bar-mode)
+   (tool-bar-mode 0)
  #+END_SRC
 * Fix Windows 10 cursor problem
  #+BEGIN_SRC emacs-lisp
@@ -226,7 +231,7 @@ Read up on [[https://www.gnu.org/software/emacs/manual/html_node/elisp/Completio
       (vertico-mode)
       :custom
       ;; Different scroll margin
-      ;; (setq vertico-scroll-margin 0)
+      (setq vertico-scroll-margin 0)
 
       ;; Show more candidates
       ;; (setq vertico-count 20)
@@ -420,15 +425,21 @@ There are two use cases.
  #+END_SRC
 * Magit
 #+BEGIN_SRC emacs-lisp
-  (use-package magit
-    :defer 2
-    :ensure t
-    :pin melpa
-    :config
-    (setq magit-git-executable "C:/Users/zzzap/AppData/Local/Programs/Git/cmd/git.exe")
-    :bind
-    (("C-x g" . magit-status)
-     ("C-x M-d" . magit-dispatch-popup)))
+	  (use-package magit
+	    :defer 2
+	    :ensure t
+	    :pin melpa
+	    :config
+	    (if (getenv "MSYSTEM")
+	    (setq magit-git-executable "C:/devel/msys64/usr/bin/git.exe"
+		  with-editor-emacsclient-executable "C:/devel/msys64/ucrt64/bin/emacsclientw.exe")
+	       
+	    (setq magit-git-executable "C:/Users/zzzap/AppData/Local/Programs/Git/cmd/git.exe"
+		  with-editor-emacsclient-executable "C:/Program Files/Emacs/emacs-28.2/bin/emacsclient.exe")
+	    )
+	    :bind
+	    (("C-x g" . magit-status)
+	     ("C-x M-d" . magit-dispatch-popup)))
  #+END_SRC
 * Roswell
 #+begin_src emacs-lisp
@@ -789,7 +800,7 @@ Note that all items between the open and the close are added to the config.
 ** pdflatex fixed with org export path to perl
 #+BEGIN_SRC emacs-lisp
   ;; Where org-export latex can find perl
-  (setenv "PATH" (concat (getenv "PATH") (concat ";" (msys-path "usr/bin/"))))
+  (setenv "PATH" (concat (getenv "PATH") ";" (msys-path "usr/bin/")))
 #+END_SRC
 
 ** org global properties - efforts
