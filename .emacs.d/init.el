@@ -29,8 +29,8 @@
   (add-hook 'emacs-startup-hook #'efs/display-startup-time)
 
 ;;;; define emacs customization file and load it.
-  (setq custom-file "~/.emacs.d/emacs-custom.el")
-  (load custom-file)
+(setq custom-file (expand-file-name "emacs-custom.el" user-emacs-directory))
+(load custom-file)
 
 ;;;; Initialize package sources
 (require 'package)
@@ -728,7 +728,7 @@
 (defun efs/org-babel-tangle-config ()
   (message "Checking after save for tangle.")
   (when (string-equal (message (buffer-file-name))
-		      (message (expand-file-name "~/Documents/Code/.emacs.d/Emacs.org")))
+		      (message (expand-file-name "Emacs.org" user-emacs-directory)))
     (message "Begin efs/tangle")
 
     ;; Dynamic scoping to the rescue

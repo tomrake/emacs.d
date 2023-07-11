@@ -104,8 +104,8 @@ Add a heading to file about editing init.el.
  Define were emacs cusomization is saved and restored.
  #+BEGIN_SRC emacs-lisp
    ;;;; define emacs customization file and load it.
-     (setq custom-file "~/.emacs.d/emacs-custom.el")
-     (load custom-file)
+   (setq custom-file (expand-file-name "emacs-custom.el" user-emacs-directory))
+   (load custom-file)
  #+END_SRC
 * Package Archives and use-package
 #+begin_src emacs-lisp
@@ -1244,12 +1244,13 @@ I am using to add icons to the icons.json file derived from feathericons.
 * Auto-tangle configuration files.
 This is a tangel test,  does not tangle whtn msys launched. Windows launch neither.
 
+
 #+begin_src emacs-lisp
   ;; Autommatically tangle our Emacs.org config file when we save it.
   (defun efs/org-babel-tangle-config ()
     (message "Checking after save for tangle.")
     (when (string-equal (message (buffer-file-name))
-			(message (expand-file-name "~/Documents/Code/.emacs.d/Emacs.org")))
+			(message (expand-file-name "Emacs.org" user-emacs-directory)))
       (message "Begin efs/tangle")
 
       ;; Dynamic scoping to the rescue
