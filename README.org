@@ -1,8 +1,11 @@
-#+TTILE: About Code Directory
+* Emacs init restructure
+  - Based on
+    - [[https://github.com/daviwil/emacs-from-scratch/blob/master/show-notes/Emacs-07.org]]
+    - [[https://systemcrafters.cc/emacs-from-scratch/configure-everything-with-org-babel/]]
+  - Settings.org is renamed emacs.org
+  - init.el is placed under version control
 
-#+OPTIONS: num:nil toc:nil ^:nil
-
-The items in this directory are symlinked in ~/
-The primary purpose of this sturcture is to provide the ability to back up and version control all the Code. 
-
-The .git folder was missowned I copied all the contents to a new folder, and then renamed it .git.
+** Steps
+   - place init.el under version control
+   - modify settings.org to test when it is being saved.
+   * change settings.org to write init.el
