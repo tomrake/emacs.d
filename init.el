@@ -172,14 +172,17 @@
 
 (setq my-java "c:/Program Files/Java/jre1.8.0_341/bin/java.exe")
 
-(setq langtool-java-bin my-java)
-(setq langtool-language-tool-jar  "c:/Users/Public/Documents/LanguageTool-5.9/languagetool-commandline.jar")
-(require 'langtool)
-(global-set-key "\C-x4w" 'langtool-check)
-(global-set-key "\C-x4W" 'langtool-check-done)
-(global-set-key "\C-x4l" 'langtool-switch-default-language)
-(global-set-key "\C-x44" 'langtool-show-message-at-point)
-(global-set-key "\C-x4c" 'langtool-correct-buffer)
+(use-package langtool
+  :ensure t
+  :config
+    (setq langtool-java-bin my-java)
+    (setq langtool-language-tool-jar  "c:/Users/Public/Documents/LanguageTool-5.9/languagetool-commandline.jar")
+  :bind
+    (( "\C-x4w" . langtool-check)
+     ("\C-x4W" . langtool-check-done)
+     ("\C-x4l" . langtool-switch-default-language)
+     ("\C-x44" . langtool-show-message-at-point)
+     ("\C-x4c" . langtool-correct-buffer)))
 
 (defun double-quote-string(s)
    (concat "\"" s "\""))
