@@ -587,7 +587,8 @@ Make plink the default tramp method if running on Windows when plink.exe exists.
 * Paredit mode
   #+BEGIN_SRC emacs-lisp
     (use-package paredit
-      :hook lisp-mode)
+      :ensure t
+      :hook (lisp-mode . enable-paredit-mode))
     #+END_SRC
 * A standard slime entry for slime-lisp-implemenations
 Create a windows standalone startup for a lisp version.

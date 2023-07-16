@@ -295,7 +295,8 @@
 	(add-to-list 'exec-path putty-directory))))
 
 (use-package paredit
-  :hook lisp-mode)
+  :ensure t
+  :hook (lisp-mode . enable-paredit-mode))
 
 (defmacro add-slime-lisp (slime-tag program program-args environment)
  "The format of a standard slime entry for a lisp implenatation."
