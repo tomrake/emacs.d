@@ -244,8 +244,9 @@
   (("C-x g" . magit-status)
    ("C-x M-d" . magit-dispatch-popup)))
 
-(if (getenv "MSYSTEM") 
-  (load (expand-file-name "~/.roswell/helper.el")))
+(if (getenv "MSYSTEM")
+  (unless (expand-file-name "~/.roswell/helper.el")
+    (load (expand-file-name "~/.roswell/helper.el"))))
 
 (defun cygwin64-file-exists-p (file)
   (file-exists-p (concat +cygwin64-base-path+ file)))

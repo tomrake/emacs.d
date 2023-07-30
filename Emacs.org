@@ -455,8 +455,9 @@ There are two use cases.
  #+END_SRC
 * Roswell
 #+begin_src emacs-lisp
-(if (getenv "MSYSTEM") 
-  (load (expand-file-name "~/.roswell/helper.el")))
+  (if (getenv "MSYSTEM")
+    (unless (expand-file-name "~/.roswell/helper.el")
+      (load (expand-file-name "~/.roswell/helper.el"))))
 #+end_src
 * Cygwin Enviroment Emulation
 [2023-05-19] This is likely unused.
