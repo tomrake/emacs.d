@@ -58,7 +58,12 @@ An answer
   - This is largely a programmers-are-not-as-smart-as-they-think problem.
     - The future will split the one known fixed case into several.
     - The simple solutions is to have them emacs lanuch declare the OS configuration.
-
+**** July 30, 2023
+#+begin_src emacs-lisp
+  ;; Edited on 2023-07-30
+  ;; Version 3
+#+end_src
+I am creating multi user config. 
 * Add edit this file warning to init.el
 Add a heading to file about editing init.el.
 #+begin_src emacs-lisp
