@@ -367,8 +367,9 @@
 
 ;;;; Build the implemenation lisp dynamically.
 ;;;; Remove all nil items from the list.
-  ;;;; Load slime helper
-  (load (expand-file-name "~/Documents/Code/quicklisp/slime-helper.el"))
+;;;; Load slime helper
+(when (expand-file-name "~/Documents/Code/quicklisp/slime-helper.el")
+  (load (expand-file-name "~/Documents/Code/quicklisp/slime-helper.el")))
 
 (add-to-list 'load-path "C:/devel/msys64/usr/local/slime")
 ;;;; Configure slime from the above provisionsing

@@ -702,8 +702,9 @@ CYGWIN version of CLISP is not provisioned
  #+BEGIN_SRC emacs-lisp
    ;;;; Build the implemenation lisp dynamically.
    ;;;; Remove all nil items from the list.
-     ;;;; Load slime helper
-     (load (expand-file-name "~/Documents/Code/quicklisp/slime-helper.el"))
+   ;;;; Load slime helper
+   (when (expand-file-name "~/Documents/Code/quicklisp/slime-helper.el")
+     (load (expand-file-name "~/Documents/Code/quicklisp/slime-helper.el")))
  #+END_SRC
 * SLIME Configuation
  #+INDEX: Slime!LISP Implmentations
