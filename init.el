@@ -248,7 +248,7 @@
    ("C-x M-d" . magit-dispatch-popup)))
 
 (if (getenv "MSYSTEM")
-  (unless (expand-file-name "~/.roswell/helper.el")
+  (unless (file-exists-p (expand-file-name "~/.roswell/helper.el"))
     (load (expand-file-name "~/.roswell/helper.el"))))
 
 (defun cygwin64-file-exists-p (file)
@@ -371,7 +371,7 @@
 ;;;; Build the implemenation lisp dynamically.
 ;;;; Remove all nil items from the list.
 ;;;; Load slime helper
-(when (expand-file-name "~/Documents/Code/quicklisp/slime-helper.el")
+(when (file-exists-p (expand-file-name "~/Documents/Code/quicklisp/slime-helper.el"))
   (load (expand-file-name "~/Documents/Code/quicklisp/slime-helper.el")))
 
 (add-to-list 'load-path "C:/devel/msys64/usr/local/slime")
