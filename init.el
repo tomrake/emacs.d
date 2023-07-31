@@ -1,5 +1,5 @@
 ;; Edited on 2023-07-30
-;; Version 3
+;; Version 4
 
 ;; NOTE: init.el is now generated from Emacs.org.  Please edit that file
 ;;       in Emacs and init.el will be generated automatically!
@@ -248,7 +248,7 @@
    ("C-x M-d" . magit-dispatch-popup)))
 
 (if (getenv "MSYSTEM")
-  (unless (file-exists-p (expand-file-name "~/.roswell/helper.el"))
+  (when (file-exists-p (expand-file-name "~/.roswell/helper.el"))
     (load (expand-file-name "~/.roswell/helper.el"))))
 
 (defun cygwin64-file-exists-p (file)
