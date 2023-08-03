@@ -62,6 +62,8 @@ An answer
 #+begin_src emacs-lisp
   ;; Edited on 2023-07-30
   ;; Version 4
+  ;; Edited on 2023-08-01
+  ;; Version 1
 #+end_src
 I am creating multi user config. 
 * Add edit this file warning to init.el
@@ -614,29 +616,33 @@ Here I add the standard startup arguments and enviroment for startup.
     (add-slime-lisp slime-tag program '("--noinform") environment))
 #+END_SRC
 
+* Report Debug MARK                                                :noexport:
+#+BEGIN_SRC emacs-lisp :eval never-export
+(message "Debug MARK")
+#+END_SRC
 * SBCL compiled under MSYS2 in TWR standard locations
 This is to startup  ucrt64 compiled versions of sbcl
 #+BEGIN_SRC emacs-lisp
   (defun get-sbcl-versions (base-address)
     (remove "." (remove ".." (directory-files (concat base-address "win")))))
+  
   (defun make-sbcl-slime-version (prefix base-address version)
      (invoke-standard-sbcl
-     (concat prefix version)
+     (make-symbol (concat prefix version))
      (concat base-address "win/" version "/bin/sbcl.exe")
      (list (concat "SBCL_HOME=" base-address "win/" version "/lib/sbcl")
 	   "CC=c:/devel/msys64/ucrt64/bin/gcc")))
 
-
   (defun add-win64-sbcl (base-address)
     "Add a smile implmentation for each base-address/win/version/bin/sbcl.exe"
-    (let ((versions (get-sbcl-versions base-address))
-	  (rv nil))
+    (let ((versions (get-sbcl-versions base-address)))
       (dolist (version versions)
- 	  (when (file-exists-p (concat base-address "win/" version "/bin/sbcl.exe"))
-	    (setq rv (cons (make-sbcl-slime-version "win64-" base-address version) rv))))
-	  rv))
+	  (when (file-exists-p (concat base-address "win/" version "/bin/sbcl.exe"))
+	    (add-to-list 'slime-lisp-implementations (make-sbcl-slime-version "sbcl64-" base-address version))))))
 
-  
+  (defun add-sbcl ()
+    (add-win64-sbcl "C:/Users/zzzap/Documents/Code/sbcl/"))
+
   (defun msys-sbcl (slime-tag version)
     "Create a slime entry for the slime-tag if the sbcl.exe is found."
   ;;; The path is the path to the sbcl-version container.
@@ -683,6 +689,11 @@ This is to startup  ucrt64 compiled versions of sbcl
       (defun provision-ccl (slime-tag path)
 	  (when (file-exists-p path)
 	    `(,slime-tag (,path))))
+      (defun add-ccl ()
+	(let ((ccl32 (provision-ccl 'ccl-32 "C:/Users/zzzap/Documents/Code/ccl/wx86cl.exe"))
+	      (ccl64 (provision-ccl 'ccl-64 "C:/Users/zzzap/Documents/Code/ccl/wx86cl64.exe")))
+	  (when ccl32 (add-to-list 'slime-lisp-implementations ccl32))
+	  (when ccl64 (add-to-list 'slime-lisp-implementations ccl64))))	  
     #+END_SRC
 
 * Provision a ABCL entry for slime
@@ -693,20 +704,10 @@ This is to startup  ucrt64 compiled versions of sbcl
 	    (abcl "c:/Program Files/ABCL/abcl-src-1.9.0/dist/abcl.jar"))
 	     (when (and (file-exists-p  java) (file-exists-p abcl))
 	       `(abcl  ,(list java "-jar" abcl)))))
+    (defun add-abcl ()
+      (let ((abcl (provision-abcl)))
+	(when abcl (add-to-list 'slime-lisp-implementations abcl))))
   #+END_SRC
-** Provision a CLISP if on MSYS2
-#+BEGIN_SRC emacs-lisp
-  (defun provision-clisp-msys64 ()
-    (when nil
-    `(clisp-msys64 ())))
-#+END_SRC
-** Provision a CLISP if on Cygwin
-CYGWIN version of CLISP is not provisioned
-#+BEGIN_SRC emacs-lisp
-  (defun provision-clisp-cygwin64()
-    (when nil
-    `(clisp-cygwin64 ())))
-#+END_SRC
 * Untested or not working LISP implemenatations
 * Slime / Company
    Slime is the inferface to LISP on emacs.
@@ -731,7 +732,7 @@ CYGWIN version of CLISP is not provisioned
      (load (expand-file-name "~/Documents/Code/quicklisp/slime-helper.el")))
  #+END_SRC
 * SLIME Configuation
-** REDESGIN
+** REDESIGIN
 slime-lisp-implementation should be build by code that add to the list.
 The win64-sbcl should be build by a fundtion add-win64-sbcl
 
@@ -744,31 +745,11 @@ Note file-esists-p test if a file exists
    ;;;; Remove any empty items
 	(require 'slime)
 	(require 'slime-autoloads)
-	(if nil
-	    (progn
-	      (setenv "SBCL_HOME" (msys-path "usr/local/sbcl/msys/2.2.6/lib/sbcl/"))
-	      (setf inferior-lisp-program (msys-path "usr/local/sbcl/msys/2.2.6/bin/sbcl.exe")))
-	    (progn
-	  (setq slime-lisp-implementations
-	    (seq-filter (lambda (e) e)
-	      (list
-	       (msys-sbcl 'win64-sbcl-2.3.5 "2.3.5")
-	       (msys-sbcl 'win64-sbcl-2.3.4 "2.3.4")
-	       (msys-sbcl 'win64-sbcl-2.3.3 "2.3.3")
-	       (win64-sbcl 'win64-sbcl-2.3.2 "2.3.2")
-	       (win64-sbcl 'win64-sbcl-2.3.1 "2.3.1")
-	       (win32-sbcl 'win32-sbcl-2.3.1 "2.3.1")
-	       (win64-sbcl 'win64-sbcl-2.2.7 "2.2.7")
-	       (win64-sbcl 'win64-sbcl-2.2.6 "2.2.6")
-	       ;(msys-sbcl 'msys-sbcl-2.2.6 "usr/local/sbcl/msys/2.2.6/")
-	       ;(msys-sbcl 'msys-sbcl-2.2.5 "usr/local/sbcl/msys/2.2.5/")
-	       (provision-ccl 'ccl-64 "C:/Users/zzzap/Documents/Code/ccl/wx86cl64.exe")
-	       (provision-ccl 'ccl-32 "C:/Users/zzzap/Documents/Code/ccl/wx86cl.exe")
-	       (provision-clisp-msys64)
-	       (provision-clisp-cygwin64)
-	       (provision-abcl))))
+	(add-abcl)
+	(add-ccl)
+        (add-sbcl)
        (setq slime-contribs '(slime-fancy))
-       (global-set-key "\C-cs" 'slime-selector)))
+       (global-set-key "\C-cs" 'slime-selector)
  #+END_SRC
 * Enable lisp-mode .lisp and .asd files
   #+BEGIN_SRC emacs-lisp
@@ -1273,10 +1254,6 @@ I am using to add icons to the icons.json file derived from feathericons.
             (replace-match " "))))
     (print "This function operates on a region")))
 #+end_src
-* Report Debug MARK                                                :noexport:
-#+BEGIN_SRC emacs-lisp :eval never-export
-(message "Debug MARK")
-#+END_SRC
 * Auto-tangle configuration files.
 This is a tangel test,  does not tangle whtn msys launched. Windows launch neither.
 

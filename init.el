@@ -1,5 +1,7 @@
 ;; Edited on 2023-07-30
 ;; Version 4
+;; Edited on 2023-08-01
+;; Version 1
 
 ;; NOTE: init.el is now generated from Emacs.org.  Please edit that file
 ;;       in Emacs and init.el will be generated automatically!
@@ -313,25 +315,27 @@
 (defun invoke-standard-sbcl (slime-tag program environment)
   (add-slime-lisp slime-tag program '("--noinform") environment))
 
+(message "Debug MARK")
+
 (defun get-sbcl-versions (base-address)
   (remove "." (remove ".." (directory-files (concat base-address "win")))))
+
 (defun make-sbcl-slime-version (prefix base-address version)
    (invoke-standard-sbcl
-   (concat prefix version)
+   (make-symbol (concat prefix version))
    (concat base-address "win/" version "/bin/sbcl.exe")
    (list (concat "SBCL_HOME=" base-address "win/" version "/lib/sbcl")
 	 "CC=c:/devel/msys64/ucrt64/bin/gcc")))
 
-
 (defun add-win64-sbcl (base-address)
   "Add a smile implmentation for each base-address/win/version/bin/sbcl.exe"
-  (let ((versions (get-sbcl-versions base-address))
-	(rv nil))
+  (let ((versions (get-sbcl-versions base-address)))
     (dolist (version versions)
- 	(when (file-exists-p (concat base-address "win/" version "/bin/sbcl.exe"))
-	  (setq rv (cons (make-sbcl-slime-version "win64-" base-address version) rv))))
-	rv))
+	(when (file-exists-p (concat base-address "win/" version "/bin/sbcl.exe"))
+	  (add-to-list 'slime-lisp-implementations (make-sbcl-slime-version "sbcl64-" base-address version))))))
 
+(defun add-sbcl ()
+  (add-win64-sbcl "C:/Users/zzzap/Documents/Code/sbcl/"))
 
 (defun msys-sbcl (slime-tag version)
   "Create a slime entry for the slime-tag if the sbcl.exe is found."
@@ -373,20 +377,20 @@
 (defun provision-ccl (slime-tag path)
     (when (file-exists-p path)
       `(,slime-tag (,path))))
+(defun add-ccl ()
+  (let ((ccl32 (provision-ccl 'ccl-32 "C:/Users/zzzap/Documents/Code/ccl/wx86cl.exe"))
+	(ccl64 (provision-ccl 'ccl-64 "C:/Users/zzzap/Documents/Code/ccl/wx86cl64.exe")))
+    (when ccl32 (add-to-list 'slime-lisp-implementations ccl32))
+    (when ccl64 (add-to-list 'slime-lisp-implementations ccl64))))
 
 (defun provision-abcl()
   (let ((java (concat "c:/Program Files/Java/" (if t "jdk-18.0.2.1" "jdk1.8.0_333") "/bin/java.exe"))
 	(abcl "c:/Program Files/ABCL/abcl-src-1.9.0/dist/abcl.jar"))
 	 (when (and (file-exists-p  java) (file-exists-p abcl))
 	   `(abcl  ,(list java "-jar" abcl)))))
-
-(defun provision-clisp-msys64 ()
-  (when nil
-  `(clisp-msys64 ())))
-
-(defun provision-clisp-cygwin64()
-  (when nil
-  `(clisp-cygwin64 ())))
+(defun add-abcl ()
+  (let ((abcl (provision-abcl)))
+    (when abcl (add-to-list 'slime-lisp-implementations abcl))))
 
 ;;;; Build the implemenation lisp dynamically.
 ;;;; Remove all nil items from the list.
@@ -399,31 +403,11 @@
 ;;;; Remove any empty items
      (require 'slime)
      (require 'slime-autoloads)
-     (if nil
-	 (progn
-	   (setenv "SBCL_HOME" (msys-path "usr/local/sbcl/msys/2.2.6/lib/sbcl/"))
-	   (setf inferior-lisp-program (msys-path "usr/local/sbcl/msys/2.2.6/bin/sbcl.exe")))
-	 (progn
-       (setq slime-lisp-implementations
-	 (seq-filter (lambda (e) e)
-	   (list
-	    (msys-sbcl 'win64-sbcl-2.3.5 "2.3.5")
-	    (msys-sbcl 'win64-sbcl-2.3.4 "2.3.4")
-	    (msys-sbcl 'win64-sbcl-2.3.3 "2.3.3")
-	    (win64-sbcl 'win64-sbcl-2.3.2 "2.3.2")
-	    (win64-sbcl 'win64-sbcl-2.3.1 "2.3.1")
-	    (win32-sbcl 'win32-sbcl-2.3.1 "2.3.1")
-	    (win64-sbcl 'win64-sbcl-2.2.7 "2.2.7")
-	    (win64-sbcl 'win64-sbcl-2.2.6 "2.2.6")
-	    ;(msys-sbcl 'msys-sbcl-2.2.6 "usr/local/sbcl/msys/2.2.6/")
-	    ;(msys-sbcl 'msys-sbcl-2.2.5 "usr/local/sbcl/msys/2.2.5/")
-	    (provision-ccl 'ccl-64 "C:/Users/zzzap/Documents/Code/ccl/wx86cl64.exe")
-	    (provision-ccl 'ccl-32 "C:/Users/zzzap/Documents/Code/ccl/wx86cl.exe")
-	    (provision-clisp-msys64)
-	    (provision-clisp-cygwin64)
-	    (provision-abcl))))
+     (add-abcl)
+     (add-ccl)
+     (add-sbcl)
     (setq slime-contribs '(slime-fancy))
-    (global-set-key "\C-cs" 'slime-selector)))
+    (global-set-key "\C-cs" 'slime-selector)
 
 (setq auto-mode-alist
       (append '((".*\\.asd\\'" . lisp-mode))
@@ -750,8 +734,6 @@
           (while (re-search-forward "[[:space:]\n]+" nil t)
             (replace-match " "))))
     (print "This function operates on a region")))
-
-(message "Debug MARK")
 
 ;; Autommatically tangle our Emacs.org config file when we save it.
 (defun efs/org-babel-tangle-config ()
