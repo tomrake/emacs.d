@@ -617,20 +617,26 @@ Here I add the standard startup arguments and enviroment for startup.
 * SBCL compiled under MSYS2 in TWR standard locations
 This is to startup  ucrt64 compiled versions of sbcl
 #+BEGIN_SRC emacs-lisp
+  (defun get-sbcl-versions (base-address)
+    (remove "." (remove ".." (directory-files (concat base-address "win")))))
   (defun make-sbcl-slime-version (prefix base-address version)
-    (add-to-list slime-lisp-implementations
-    (invoke-standard-sbcl
+     (invoke-standard-sbcl
      (concat prefix version)
-     (concat base-address "/win/" version "/bin/sbcl.exe")
-     (list (concat "SBCL_HOME=" base-address "win" version "/lib/sbcl")
-	   "CC=c:/devel/msys64/ucrt64/bin/gcc"))))
+     (concat base-address "win/" version "/bin/sbcl.exe")
+     (list (concat "SBCL_HOME=" base-address "win/" version "/lib/sbcl")
+	   "CC=c:/devel/msys64/ucrt64/bin/gcc")))
+
+
   (defun add-win64-sbcl (base-address)
     "Add a smile implmentation for each base-address/win/version/bin/sbcl.exe"
-    ;; iterate over version-folder in base-address/win/*
-    ;;   version-folder name is version
-    ;;   (when (file-exists-p (concat base-address/win/ version "bin/sbcl.exe")))
-    ;;      (add-to-list slime-lisp-implemenations (make-sbcl-version version)
-    )
+    (let ((versions (get-sbcl-versions base-address))
+	  (rv nil))
+      (dolist (version versions)
+ 	  (when (file-exists-p (concat base-address "win/" version "/bin/sbcl.exe"))
+	    (setq rv (cons (make-sbcl-slime-version "win64-" base-address version) rv))))
+	  rv))
+
+  
   (defun msys-sbcl (slime-tag version)
     "Create a slime entry for the slime-tag if the sbcl.exe is found."
   ;;; The path is the path to the sbcl-version container.
@@ -728,6 +734,9 @@ CYGWIN version of CLISP is not provisioned
 ** REDESGIN
 slime-lisp-implementation should be build by code that add to the list.
 The win64-sbcl should be build by a fundtion add-win64-sbcl
+
+Note file-esists-p test if a file exists
+     file-directory-p test if a directory exists
  #+INDEX: Slime!LISP Implmentations
  #+BEGIN_SRC emacs-lisp
       (add-to-list 'load-path "C:/devel/msys64/usr/local/slime")

@@ -313,20 +313,26 @@
 (defun invoke-standard-sbcl (slime-tag program environment)
   (add-slime-lisp slime-tag program '("--noinform") environment))
 
+(defun get-sbcl-versions (base-address)
+  (remove "." (remove ".." (directory-files (concat base-address "win")))))
 (defun make-sbcl-slime-version (prefix base-address version)
-  (add-to-list slime-lisp-implementations
-  (invoke-standard-sbcl
+   (invoke-standard-sbcl
    (concat prefix version)
-   (concat base-address "/win/" version "/bin/sbcl.exe")
-   (list (concat "SBCL_HOME=" base-address "win" version "/lib/sbcl")
-	 "CC=c:/devel/msys64/ucrt64/bin/gcc"))))
+   (concat base-address "win/" version "/bin/sbcl.exe")
+   (list (concat "SBCL_HOME=" base-address "win/" version "/lib/sbcl")
+	 "CC=c:/devel/msys64/ucrt64/bin/gcc")))
+
+
 (defun add-win64-sbcl (base-address)
   "Add a smile implmentation for each base-address/win/version/bin/sbcl.exe"
-  ;; iterate over version-folder in base-address/win/*
-  ;;   version-folder name is version
-  ;;   (when (file-exists-p (concat base-address/win/ version "bin/sbcl.exe")))
-  ;;      (add-to-list slime-lisp-implemenations (make-sbcl-version version)
-  )
+  (let ((versions (get-sbcl-versions base-address))
+	(rv nil))
+    (dolist (version versions)
+ 	(when (file-exists-p (concat base-address "win/" version "/bin/sbcl.exe"))
+	  (setq rv (cons (make-sbcl-slime-version "win64-" base-address version) rv))))
+	rv))
+
+
 (defun msys-sbcl (slime-tag version)
   "Create a slime entry for the slime-tag if the sbcl.exe is found."
 ;;; The path is the path to the sbcl-version container.
