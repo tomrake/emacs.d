@@ -641,7 +641,7 @@ This is to startup  ucrt64 compiled versions of sbcl
 	    (add-to-list 'slime-lisp-implementations (make-sbcl-slime-version "sbcl64-" base-address version))))))
 
   (defun add-sbcl ()
-    (add-win64-sbcl "C:/Users/zzzap/Documents/Code/sbcl/"))
+    (add-win64-sbcl "C:/Users/Public/Lispers/sbcl/"))
 
   (defun msys-sbcl (slime-tag version)
     "Create a slime entry for the slime-tag if the sbcl.exe is found."
@@ -690,8 +690,8 @@ This is to startup  ucrt64 compiled versions of sbcl
 	  (when (file-exists-p path)
 	    `(,slime-tag (,path))))
       (defun add-ccl ()
-	(let ((ccl32 (provision-ccl 'ccl-32 "C:/Users/zzzap/Documents/Code/ccl/wx86cl.exe"))
-	      (ccl64 (provision-ccl 'ccl-64 "C:/Users/zzzap/Documents/Code/ccl/wx86cl64.exe")))
+	(let ((ccl32 (provision-ccl 'ccl-32 "C:/Users/Public/Lispers/ccl/wx86cl.exe"))
+	      (ccl64 (provision-ccl 'ccl-64 "C:/Users/Public/Lispers/ccl/wx86cl64.exe")))
 	  (when ccl32 (add-to-list 'slime-lisp-implementations ccl32))
 	  (when ccl64 (add-to-list 'slime-lisp-implementations ccl64))))	  
     #+END_SRC
