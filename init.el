@@ -2,10 +2,22 @@
 ;; Version 4
 ;; Edited on 2023-08-01
 ;; Version 1
+;; Edited on 2023-08-06
+;; chezmoi_config load with failure ok
+;; Version 1
 
 ;; NOTE: init.el is now generated from Emacs.org.  Please edit that file
 ;;       in Emacs and init.el will be generated automatically!
+
+;; Allow chezmoi_config.el to define things:
+;;   msys2 paths and enviroments
+;;   java locations
+(condition-case err
+    (load "chezmoi_config")
+  (file-missing
+   (message "%s" (error-message-string err))))
 (setq gc-cons-threshold (* 50 1000 1000))
+
 ;; You will most likely need to adjust this font size for your system!
 (defvar efs/default-font-size 180)
 (defvar efs/default-variable-font-size 180)
