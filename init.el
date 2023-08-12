@@ -168,11 +168,6 @@
                         (getenv ,env-string)
                         (concat ,base ,new-path-string))))
 
-(fset 'convert-windows-filename
-      (if (fboundp 'cygwin-convert-file-name-from-windows)
-	  'cygwin-convert-file-name-from-windows
-	  'convert-standard-filename))
-
 (defun my-put-file-name-on-clipboard ()
   "Put the current file name on the clipboard"
   (interactive)
@@ -215,8 +210,6 @@
 
 (defun join-with-spaces (args)
    (mapconcat 'identity args " "))
-
-(setq +cygwin64-base-path+ "C:/cygwin64")
 
 (setq my-msys2-base "c:\devel\msys64")
 (setq msystem (getenv "MSYSTEM"))
@@ -264,9 +257,6 @@
 (if (getenv "MSYSTEM")
   (when (file-exists-p (expand-file-name "~/.roswell/helper.el"))
     (load (expand-file-name "~/.roswell/helper.el"))))
-
-(defun cygwin64-file-exists-p (file)
-  (file-exists-p (concat +cygwin64-base-path+ file)))
 
 (use-package modus-themes
     :config

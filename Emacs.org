@@ -343,18 +343,6 @@ Remove company in favor of Vertico
                           (concat ,base ,new-path-string))))
 #+END_SRC
 
-* Crossplatform filename
-Attempt specifiy filepaths in a cross platform way.
-
-Another strategy would be specify classes of base paths in one place and
-specify specific crossplatform functions and macros for path construction.
-#+BEGIN_SRC emacs-lisp
-(fset 'convert-windows-filename
-      (if (fboundp 'cygwin-convert-file-name-from-windows)
-	  'cygwin-convert-file-name-from-windows
-	  'convert-standard-filename))
-#+END_SRC
-
 * Copy Filename to Buffer
 #+BEGIN_SRC emacs-lisp
 (defun my-put-file-name-on-clipboard ()
@@ -414,11 +402,6 @@ Certain tools need java set that location here.
   (defun join-with-spaces (args)
      (mapconcat 'identity args " "))
 #+END_SRC
-* Initialize My cygwin emulation
-[2023-05-19] This likely unused and should be removed.
-  #+BEGIN_SRC emacs-lisp
-	(setq +cygwin64-base-path+ "C:/cygwin64")
-  #+END_SRC
 * Initialize My msys2 emulation
 [2023-05-19] [TBD] Replace the msys64 environement with ucrt64.
 First we need to test if we are running under a MSYSTEM
@@ -479,12 +462,6 @@ There are two use cases.
     (when (file-exists-p (expand-file-name "~/.roswell/helper.el"))
       (load (expand-file-name "~/.roswell/helper.el"))))
 #+end_src
-* Cygwin Enviroment Emulation
-[2023-05-19] This is likely unused.
- #+BEGIN_SRC emacs-lisp
-       (defun cygwin64-file-exists-p (file)
-	 (file-exists-p (concat +cygwin64-base-path+ file)))
- #+END_SRC
 * Modus Theme Configuration
 Main Page: [[https://protesilaos.com/emacs/modus-themes]]
 #+BEGIN_SRC emacs-lisp
@@ -553,41 +530,6 @@ Main Page: [[https://protesilaos.com/emacs/modus-themes]]
 	     (with-shell-interpreter-connection-local-vars
 	       (friendly-remote-shell :path path))))
 
-
-
-	  ;; (setq win-shell-implementaions
-		    ;;       `((cmd (shell))
-		    ;; 	(ming64 ((defun my-shell-setup ()
-		    ;;        "For Cygwin bash under Emacs 20"
-
-		    ;;          (setq comint-scroll-show-maximum-output 'this)
-		    ;;          (make-variable-buffer-local 'comint-completion-addsuffix))
-		    ;;            (setq comint-completion-addsuffix t)
-		    ;;            ;; (setq comint-process-echoes t) ;; reported that this is no longer needed
-		    ;;            (setq comint-eol-on-send t)
-		    ;;            (setq w32-quote-process-args ?\")
-		    ;;            (add-hook 'shell-mode-hook 'my-shell-setup)))))
-
-		    ;; (defun win-shell ())
-
-		    ;; ;;; The MSYS-SHELL
-
-		    ;; (defun msys-shell () 
-		    ;;   (interactive)
-		    ;;   (let ((explicit-shell-file-name (convert-standard-filename "c:/devel/msys64/usr/bin/bash.exe"))
-		    ;; 	(shell-file-name "bash")
-		    ;; 	(explicit-bash.exe-args '("--noediting" "--login" "-i"))) 
-		    ;;     (setenv "SHELL" shell-file-name)
-		    ;;     (add-hook 'comint-output-filter-functions 'comint-strip-ctrl-m)
-		    ;;     (shell)))
-
-		    ;; ;;; The MINGW64-SHELL
-
-		    ;; (defun msys64-shell () 
-		    ;;        (interactive)
-		    ;;        (let (( explicit-shell-file-name (convert-standard-filename  "c:/devel/msys64/mingw64/bin/bash.exe")))
-		    ;; 	 (shell "*bash*")
-		    ;; 	     (call-interactively 'shell)))
 #+END_SRC
 * Add shell extensions
 [TBD] If this is org shell extenstion then put this in org-mode section.
