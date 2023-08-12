@@ -24,9 +24,49 @@ Regularize the msys2 integration
 - Verify msys2 by enviroment check and file path check.
 - Compute the number of msys2 enviroments
 - Consider pacman and pacboy package management routines
-*** Revision Narative
+
+A focus on a cross platform interface.
+- A platform is my emacs configuration with
+  - support by msys2
+  - support by Git For Windows
+  - support for cygwin
+- My current emacs config is the msys2 version.
+  - I need to identify the the interfaces I use.
+  - java related
+    - my-jave is the java.exe
+    - my-java is used to define langtool-java-bin
+    - abcl uses a different way of finding java.exe
+  - msys2 related
+    - ispell-program-name
+    - the Header Initialize My msys2 emulation - this has a lot of msys2 stuff.
+    - pdf-tools  mentions msys2
+  - sbcl
+    - sbcl version are locally compiled and the pathnames are windows specific.
+  - pdflatex
+    - I add a path to find a perl in msys2.
+  - magit
+    - has some unresolved issue with msys2 versions of git.
+  - roswell
+    - has a MSYSTEM check
+  - slime
+    - There is an odd additon to the load path related to /usr/local/slime path.
+  - shcmd
+    - This org addition mentons msys in the documenation.
+  - Auto-tangle
+    - Has problem with msys launch
+***  Achieveable Task
+- Centralize A java interface
+  - Phase 1 make abcl consistent with Language Tool java config
+  - Phase 2 extract the interface/Separate the machine dependent part.
+  - Phase 3 plan separation
+  - Phase 4 implment and test.
+*** Revision Log
 ****  July 1, 2023 Summary/Narative
 This was largely an effort to use roswell under msys2.
+The general problem is that there is some fussyness related to magit configuration, and magit configuration is best under Git For Windows.
+- Configure magit under msys2 - requires research and testing.
+- Develop a Git-For-Windows based emacs configuration.
+
 The roswell team has largely abandoned Windows Distros outside of msys2.
 I fail to commit to a complete msys2 version of emacs, because I need a Windows native lanuch.
 Git is also in this position and Git For Windows and magit fail to nicely mesh with msys2 way of doing things.
@@ -58,7 +98,7 @@ An answer
   - This is largely a programmers-are-not-as-smart-as-they-think problem.
     - The future will split the one known fixed case into several.
     - The simple solutions is to have them emacs lanuch declare the OS configuration.
-**** July 30, 2023
+*** Revision Tagging
 #+begin_src emacs-lisp
   ;; Edited on 2023-07-30
   ;; Version 4
