@@ -70,8 +70,6 @@
 (setq use-package-verbose t)
 (setq use-package-always-defer t)
 
-(setenv "PATH" (concat (getenv  "PATH") ";" "c:/Users/zzzap/AppData/Local/Programs/MiKTeX/miktex/bin/x64"))
-
 ;;;; Emacs Debug On Error
    (setq debug-on-error t)
 
@@ -180,9 +178,13 @@
         (clipboard-kill-region (point-min) (point-max)))
       (message filename))))
 
-(setq ispell-program-name "c:/devel/msys64/usr/bin/aspell.exe")
+(setq ispell-program-name "aspell")
 
-(setq my-java "c:/Program Files/Java/jre1.8.0_341/bin/java.exe")
+;; The java interface assumption is you can execute the program "java"
+;; There is no jdk to be considered.
+  (if (executable-find "java")
+      (setq my-java "java")
+      (message "******** java not found *******"))
 
 (use-package langtool
   :ensure t
@@ -386,10 +388,10 @@
     (when ccl64 (add-to-list 'slime-lisp-implementations ccl64))))
 
 (defun provision-abcl()
-  (let ((java (concat "c:/Program Files/Java/" (if t "jdk-18.0.2.1" "jdk1.8.0_333") "/bin/java.exe"))
+  (let (
 	(abcl "c:/Program Files/ABCL/abcl-src-1.9.0/dist/abcl.jar"))
-	 (when (and (file-exists-p  java) (file-exists-p abcl))
-	   `(abcl  ,(list java "-jar" abcl)))))
+	 (when (file-exists-p abcl)
+	   `(abcl  ,(list my-java "-jar" abcl)))))
 (defun add-abcl ()
   (let ((abcl (provision-abcl)))
     (when abcl (add-to-list 'slime-lisp-implementations abcl))))

@@ -18,6 +18,7 @@ These are the configuration files.
   - [[file:~/.emacs.d/Testing-Appointment.txt]] capture template for Testing Appointments
   - [[file:~/.emacs.d/local-custom-agenda.org]] org-agenda stuff
   - [[file:~/.emacs.d/local-publishing.org]] org-publishing stuff
+** REVISIONS
 *** Revision Goals
 Regularize the msys2 integration
 - Manual definition of msys2 root
@@ -32,18 +33,20 @@ A focus on a cross platform interface.
   - support for cygwin
 - My current emacs config is the msys2 version.
   - I need to identify the the interfaces I use.
-  - java related
+  - java related - single word solution now cross platform
     - my-jave is the java.exe
     - my-java is used to define langtool-java-bin
     - abcl uses a different way of finding java.exe
   - msys2 related
-    - ispell-program-name
+    - ispell-program-name - changed to single word; cross platform
     - the Header Initialize My msys2 emulation - this has a lot of msys2 stuff.
     - pdf-tools  mentions msys2
   - sbcl
     - sbcl version are locally compiled and the pathnames are windows specific.
   - pdflatex
     - I add a path to find a perl in msys2.
+  - miktex
+    - Added path addtion to /etc/profile.d/miktex.sh
   - magit
     - has some unresolved issue with msys2 versions of git.
   - roswell
@@ -53,13 +56,16 @@ A focus on a cross platform interface.
   - shcmd
     - This org addition mentons msys in the documenation.
   - Auto-tangle
-    - Has problem with msys launch
+    - Has problem with msys launch - this is likely because of the symlink
 ***  Achieveable Task
 - Centralize A java interface
   - Phase 1 make abcl consistent with Language Tool java config
   - Phase 2 extract the interface/Separate the machine dependent part.
   - Phase 3 plan separation
   - Phase 4 implment and test.
+- The current solution is to execute a program called "java"
+- This is a cross platform solution.
+- miktex is now added to the PATH by /etc/profile.d/miktex.sh
 *** Revision Log
 ****  July 1, 2023 Summary/Narative
 This was largely an effort to use roswell under msys2.
@@ -78,7 +84,6 @@ The following are part of the this battle:
     - Run under msys2 shell mode needs work
     - Emulate msys2 shell mode needs consideration and work - this was current mode.
       - clickable windows launch.
-    - LanguageTool needed java specirficatiion.
     - magit hangs - likely inferrior git problem
     - magit fails on Windows launch.
     - The majority of the problems were due to pdf-tools failing initialization.
@@ -191,11 +196,6 @@ Add a heading to file about editing init.el.
   (setq use-package-always-defer t)
 
 #+end_src
-* MiKTex
-#+begin_src emacs-lisp
-(setenv "PATH" (concat (getenv  "PATH") ";" "c:/Users/zzzap/AppData/Local/Programs/MiKTeX/miktex/bin/x64"))
-#+end_src
-
 * Emacs debug-on-error
    [TBD] Should this be set from an enviroment variable.
    [TBD] Is there already a command line switch for this?
@@ -404,12 +404,16 @@ Fixed on 7/2/2022 moving to DESKER
   - The EOL of the .aspell configuration files got corrupted.
   - They should all be Unix (LF) ends of lines.
 #+BEGIN_SRC emacs-lisp
-  (setq ispell-program-name "c:/devel/msys64/usr/bin/aspell.exe")
+  (setq ispell-program-name "aspell")
 #+END_SRC
-* JAVA to use
+* JAVA Interface
 Certain tools need java set that location here.
 #+begin_src emacs-lisp
-(setq my-java "c:/Program Files/Java/jre1.8.0_341/bin/java.exe")
+  ;; The java interface assumption is you can execute the program "java"
+  ;; There is no jdk to be considered.
+    (if (executable-find "java")
+	(setq my-java "java")
+	(message "******** java not found *******"))
 #+end_src
 * Language Tool
 #+begin_src emacs-lisp
@@ -691,14 +695,14 @@ This is to startup  ucrt64 compiled versions of sbcl
 	  (when ccl64 (add-to-list 'slime-lisp-implementations ccl64))))	  
     #+END_SRC
 
-* Provision a ABCL entry for slime
+* ABCL
   When java and ABCL are located create an ABCL slime item.
   #+BEGIN_SRC emacs-lisp
     (defun provision-abcl()
-      (let ((java (concat "c:/Program Files/Java/" (if t "jdk-18.0.2.1" "jdk1.8.0_333") "/bin/java.exe"))
+      (let (
 	    (abcl "c:/Program Files/ABCL/abcl-src-1.9.0/dist/abcl.jar"))
-	     (when (and (file-exists-p  java) (file-exists-p abcl))
-	       `(abcl  ,(list java "-jar" abcl)))))
+	     (when (file-exists-p abcl)
+	       `(abcl  ,(list my-java "-jar" abcl)))))
     (defun add-abcl ()
       (let ((abcl (provision-abcl)))
 	(when abcl (add-to-list 'slime-lisp-implementations abcl))))
