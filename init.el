@@ -71,7 +71,7 @@
 (setq use-package-always-defer t)
 
 ;;;; Emacs Debug On Error
-   (setq debug-on-error t)
+   ;(setq debug-on-error t)
 
 ;;;; Macro to load user customizations from .emacs.d
 (defmacro local-custom-file (file description)
@@ -261,29 +261,37 @@
     (load (expand-file-name "~/.roswell/helper.el"))))
 
 (use-package modus-themes
-    :config
-    (set-face-attribute 'default nil :height 120)
-    (setq modus-themes-mode-line '(accented borderless))
-    (setq modus-themes-region '(bg-only))
+  :ensure t
+  :config
+  (set-face-attribute 'default nil :height 150)
+      ;; Subtle red background, red foreground, invisible border
+
+  (setq modus-themes-region '(bg-only))
   (setq modus-themes-paren-match '(bold intense))
   (setq modus-themes-lang-checkers '(background intense))
   (setq modus-themes-italic-constructs t)
   (setq modus-themes-bold-contructs t)
-;;; Org Mode
+  ;; Subtle blue background, neutral foreground, intense blue border
+  (setq modus-themes-common-palette-overrides
+    '((bg-mode-line-active bg-blue-subtle)
+      (fg-mode-line-active fg-main)
+      (border-mode-line-active blue-intense)))
+  (setq modus-themes-mode-line '(accented borderless))
+  ;;; Org Mode
   (setq modus-themes-heading
-      `((1 . (rainbow bold intense 1.7))
-	(2 . (rainbow bold intense 1.6))
-	(3 . (rainbow bold intense 1.5))
-	(4 . (rainbow bold intense 1.4))
-	(5 . (rainbow bold intense 1.3))
-	(6 . (rainbow bold intense 1.2))
-	(t . (rainbow bold background 1.0))))
+	`((1 . (rainbow bold intense 1.7))
+	  (2 . (rainbow bold intense 1.6))
+	  (3 . (rainbow bold intense 1.5))
+	  (4 . (rainbow bold intense 1.4))
+	  (5 . (rainbow bold intense 1.3))
+	  (6 . (rainbow bold intense 1.2))
+	  (t . (rainbow bold background 1.0))))
   (setq modus-themes-org-agenda
-    '((header-block . (variable-pitch 1.5))
-      (header-date . (grayscale workaholic bold-today 1.2))
-      (event . (accented italic varied))
-      (scheduled . uniform)
-      (habit . traffic-light)))
+	'((header-block . (variable-pitch 1.5))
+	  (header-date . (grayscale workaholic bold-today 1.2))
+	  (event . (accented italic varied))
+	  (scheduled . uniform)
+	  (habit . traffic-light)))
   (load-theme 'modus-vivendi t))
 
 (use-package rainbow-delimiters)
