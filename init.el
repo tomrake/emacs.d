@@ -323,86 +323,57 @@
  "The format of a standard slime entry for a lisp implenatation."
 `(list ,slime-tag (cons ,program ,program-args) :env ,environment))
 
+(defun add-slime-implementation (lisp-invoker)
+  "Add an specific lisp invoker to slime list"
+  (add-to-list 'slime-lisp-implementations lisp-invoker))
+
 ;;;; The standard options for SBCL
 (defun invoke-standard-sbcl (slime-tag program environment)
   (add-slime-lisp slime-tag program '("--noinform") environment))
 
-(message "Debug MARK")
-
 (defun get-sbcl-versions (base-address)
+  "Get all the directories under the base-address/win"
   (remove "." (remove ".." (directory-files (concat base-address "win")))))
 
 (defun make-sbcl-slime-version (prefix base-address version)
-   (invoke-standard-sbcl
-   (make-symbol (concat prefix version))
-   (concat base-address "win/" version "/bin/sbcl.exe")
-   (list (concat "SBCL_HOME=" base-address "win/" version "/lib/sbcl")
-	 "CC=c:/devel/msys64/ucrt64/bin/gcc")))
+  "Create a SBCL invoker for specific compiled version."
+  (invoke-standard-sbcl
+    (make-symbol (concat prefix version))
+    (concat base-address "win/" version "/bin/sbcl.exe")
+    (list (concat "SBCL_HOME=" base-address "win/" version "/lib/sbcl")
+	  "CC=c:/devel/msys64/ucrt64/bin/gcc")))
 
 (defun add-win64-sbcl (base-address)
-  "Add a smile implmentation for each base-address/win/version/bin/sbcl.exe"
+  "Add a SBCL invoker for all versions under the base-address"
   (let ((versions (get-sbcl-versions base-address)))
     (dolist (version versions)
 	(when (file-exists-p (concat base-address "win/" version "/bin/sbcl.exe"))
-	  (add-to-list 'slime-lisp-implementations (make-sbcl-slime-version "sbcl64-" base-address version))))))
+	  (add-slime-implementation (make-sbcl-slime-version "sbcl64-" base-address version))))))
 
 (defun add-sbcl ()
+  "Add all the slime invokers for SBCL 64bit compiled versions."
   (add-win64-sbcl "C:/Users/Public/Lispers/sbcl/"))
 
-(defun msys-sbcl (slime-tag version)
-  "Create a slime entry for the slime-tag if the sbcl.exe is found."
-;;; The path is the path to the sbcl-version container.
-;;;
-;;; The standard place I store sbcl that I compile are /usr/local/sbcl-version
-;;;
-;;; File System Template for a sbcl implemenation
-;;;
-;;; sbcl-version/
-;;;   bin/
-;;;     sbcl.exec ; The executable
-;;;   lib/
-;;;     sbcl/     ; SBCL_HOME
-;;;       contrib/
-;;;       sbcl.core ; the core image
-;;;       sbcl.mk
-
-   (let* ((versioned-path (concat "C:/Users/zzzap/Documents/Code/sbcl/win/" version "/"))
-	  (exec-path (concat versioned-path "bin/sbcl.exe"))
-	  (home-path (concat versioned-path "lib/sbcl/")))
-     (when (file-exists-p exec-path)
-	      (invoke-standard-sbcl slime-tag exec-path (list (concat "SBCL_HOME=" home-path) "CC=c:/devel/msys64/ucrt64/bin/gcc")))))
-
-(defun win64-sbcl (slime-tag version)
-  (let* ((versioned-path (concat "C:/Users/zzzap/Documents/Code/sbcl/win/" version "/"))
-	 (exec-path (concat versioned-path "sbcl.exe"))
-	 (home-path versioned-path))
-    (when (file-exists-p exec-path)
-      (invoke-standard-sbcl slime-tag exec-path (list (concat "SBCL_HOME=" home-path))))))
-
-  (defun win32-sbcl (slime-tag version)
-  (let* ((versioned-path (concat "C:/Users/zzzap/Documents/Code/sbcl/win-32/" version "/"))
-	 (exec-path (concat versioned-path "sbcl.exe"))
-	 (home-path versioned-path))
-    (when (file-exists-p exec-path)
-      (invoke-standard-sbcl slime-tag exec-path (list (concat "SBCL_HOME=" home-path))))))
-
-(defun provision-ccl (slime-tag path)
+(defun ccl-slime-invoker (slime-tag path)
+  "Return a slime invoker; nil if path does not exist"
     (when (file-exists-p path)
       `(,slime-tag (,path))))
 (defun add-ccl ()
-  (let ((ccl32 (provision-ccl 'ccl-32 "C:/Users/Public/Lispers/ccl/wx86cl.exe"))
-	(ccl64 (provision-ccl 'ccl-64 "C:/Users/Public/Lispers/ccl/wx86cl64.exe")))
-    (when ccl32 (add-to-list 'slime-lisp-implementations ccl32))
-    (when ccl64 (add-to-list 'slime-lisp-implementations ccl64))))
+  "Check of CCL implentations"
+  (let ((ccl32 (ccl-slime-invoker 'ccl-32 "C:/Users/Public/Lispers/ccl/wx86cl.exe"))
+	(ccl64 (ccl-slime-invoker 'ccl-64 "C:/Users/Public/Lispers/ccl/wx86cl64.exe")))
+    (when ccl32 (add-slime-implementation ccl32))
+    (when ccl64 (add-slime-implementation ccl64))))
 
-(defun provision-abcl()
-  (let (
-	(abcl "c:/Program Files/ABCL/abcl-src-1.9.0/dist/abcl.jar"))
-	 (when (file-exists-p abcl)
-	   `(abcl  ,(list my-java "-jar" abcl)))))
+(defun invoke-abcl()
+  "Return a slime invoker; nil if abcl is not found,"
+  (let ((abcl "c:/Program Files/ABCL/abcl-src-1.9.0/dist/abcl.jar"))
+    (when (file-exists-p abcl)
+      `(abcl  ,(list my-java "-jar" abcl)))))
 (defun add-abcl ()
-  (let ((abcl (provision-abcl)))
-    (when abcl (add-to-list 'slime-lisp-implementations abcl))))
+  "Check of abcl implmentations"
+  (let ((abcl (invoke-abcl)))
+    (when abcl (add-slime-implementation abcl))))
 
 ;;;; Build the implemenation lisp dynamically.
 ;;;; Remove all nil items from the list.
@@ -420,6 +391,8 @@
      (add-sbcl)
     (setq slime-contribs '(slime-fancy))
     (global-set-key "\C-cs" 'slime-selector)
+
+(message "Debug MARK")
 
 (setq auto-mode-alist
       (append '((".*\\.asd\\'" . lisp-mode))
