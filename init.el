@@ -1,11 +1,3 @@
-;; Edited on 2023-07-30
-;; Version 4
-;; Edited on 2023-08-01
-;; Version 1
-;; Edited on 2023-08-06
-;; chezmoi_config load with failure ok
-;; Version 1
-
 ;; NOTE: init.el is now generated from Emacs.org.  Please edit that file
 ;;       in Emacs and init.el will be generated automatically!
 
@@ -16,6 +8,7 @@
     (load "chezmoi_config")
   (file-missing
    (message "%s" (error-message-string err))))
+
 (setq gc-cons-threshold (* 50 1000 1000))
 
 ;; You will most likely need to adjust this font size for your system!
@@ -24,6 +17,8 @@
 
 ;; Make frame transparency overridable
 (defvar efs/frame-transparency '(90 . 90))
+
+(setq initial-buffer-choice (concat user-emacs-directory "startup-buffer.org"))
 
 (message "Debug START")
 
@@ -91,10 +86,10 @@
 (add-hook 'emacs-startup-hook 'toggle-frame-maximized)
 
 ;;;; Have a clean statup screen
-(setq inhibit-startup-screen t)
-(setq visible-bell 1)
-;;;; Turn off tool bar
-(tool-bar-mode 0)
+; (setq inhibit-startup-screen t)
+ (setq visible-bell 1)
+ ;;;; Turn off tool bar
+ (tool-bar-mode 0)
 
 (setq w32-use-visible-system-caret nil)
 
@@ -108,57 +103,18 @@
     :config
   (ido-mode t))
 
+(use-package which-key
+  :ensure t)
+
 ;; Enable vertico
-  (use-package vertico
-;    :ensure t
-    :config
-    (vertico-mode)
-    :custom
-    ;; Different scroll margin
-    (setq vertico-scroll-margin 0)
-
-    ;; Show more candidates
-    ;; (setq vertico-count 20)
-
-    ;; Grow and shrink the Vertico minibuffer
-     (setq vertico-resize t)
-
-    ;; Optionally enable cycling for `vertico-next' and `vertico-previous'.
-    ;; (setq vertico-cycle t)
-    )
-
-  ;; Persist history over Emacs restarts. Vertico sorts by history position.
-  ;; (use-package savehist
-  ;;   :ensure t
-  ;;   :init
-  ;;   (savehist-mode))
-
-  ;; ;; A few more useful configurations...
-  (use-package emacs
-    :init
-    ;; Add prompt indicator to `completing-read-multiple'.
-    ;; We display [CRM<separator>], e.g., [CRM,] if the separator is a comma.
-    (defun crm-indicator (args)
-      (cons (format "[CRM%s] %s"
-		    (replace-regexp-in-string
-		     "\\`\\[.*?]\\*\\|\\[.*?]\\*\\'" ""
-		     crm-separator)
-		    (car args))
-	    (cdr args)))
-    (advice-add #'completing-read-multiple :filter-args #'crm-indicator)
-
-    ;; Do not allow the cursor in the minibuffer prompt
-    (setq minibuffer-prompt-properties
-	  '(read-only t cursor-intangible t face minibuffer-prompt))
-    (add-hook 'minibuffer-setup-hook #'cursor-intangible-mode)
-
-    ;; Emacs 28: Hide commands in M-x which do not work in the current mode.
-    ;; Vertico commands are hidden in normal buffers.
-    ;; (setq read-extended-command-predicate
-    ;;       #'command-completion-default-include-p)
-
-    ;; Enable recursive minibuffers
-    (setq enable-recursive-minibuffers t))
+(use-package vertico
+  :ensure t
+  :init
+  (vertico-mode)
+  )
+(use-package savehist
+  :init
+  (savehist-mode))
 
 ;;; Specify a emacs variable from an environment variable env-string or  base,new-path-string
 (defmacro default-or-environment (emacs-var base new-path-string env-string) 
@@ -381,7 +337,7 @@
 (when (file-exists-p (expand-file-name "~/Documents/Code/quicklisp/slime-helper.el"))
   (load (expand-file-name "~/Documents/Code/quicklisp/slime-helper.el")))
 
-(add-to-list 'load-path "C:/devel/msys64/usr/local/slime")
+;(add-to-list 'load-path "C:/devel/msys64/usr/local/slime")
 ;;;; Configure slime from the above provisionsing
 ;;;; Remove any empty items
      (require 'slime)
@@ -723,8 +679,8 @@
 ;; Autommatically tangle our Emacs.org config file when we save it.
 (defun efs/org-babel-tangle-config ()
   (message "Checking after save for tangle.")
-  (when (string-equal (message (buffer-file-name))
-		      (message (expand-file-name "Emacs.org" user-emacs-directory)))
+  (when (string-equal (buffer-file-name)
+		      "c:/Users/Public/Lispers/standard-emacs.d/Emacs.org")
     (message "Begin efs/tangle")
 
     ;; Dynamic scoping to the rescue
