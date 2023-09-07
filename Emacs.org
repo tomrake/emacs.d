@@ -1,6 +1,7 @@
 #+STARTUP: overview
 #+TITLE: The Emacs configuration of Tom Rake  
 #+PROPERTY: header-args:emacs-lisp :tangle ./init.el :mkdirp yes
+#+OPTIONS: toc:3
 * Add Generated from Emacs.org warning.
 #+begin_src emacs-lisp
   ;; NOTE: init.el is now generated from Emacs.org.  Please edit that file
@@ -15,6 +16,10 @@
       (load "chezmoi_config")
     (file-missing
      (message "%s" (error-message-string err))))
+#+end_src
+* Adding the scripts directory  to path
+#+begin_src emacs-lisp
+  (add-to-list 'load-path (expand-file-name "scripts/" user-emacs-directory))
 #+end_src
 * Emacs Garbage Collection Tweeking
 #+begin_src emacs-lisp
@@ -233,20 +238,6 @@ Read up on [[https://www.gnu.org/software/emacs/manual/html_node/elisp/Completio
                           (concat ,base ,new-path-string))))
 #+END_SRC
 
-* Copy Filename to Buffer
-#+BEGIN_SRC emacs-lisp
-(defun my-put-file-name-on-clipboard ()
-  "Put the current file name on the clipboard"
-  (interactive)
-  (let ((filename (if (equal major-mode 'dired-mode)
-                      default-directory
-                    (buffer-file-name))))
-    (when filename
-      (with-temp-buffer
-        (insert filename)
-        (clipboard-kill-region (point-min) (point-max)))
-      (message filename))))
-#+END_SRC
 * Ispell configured with Aspell
 aspell configuration is in [[~/.aspell.conf]]
 Fixed on 7/2/2022 moving to DESKER
@@ -1092,6 +1083,10 @@ This is a tangel test,  does not tangle whtn msys launched. Windows launch neith
  #+END_SRC
 
  
+* Sourcing of Scripts
+#+BEGIN_SRC emacs-lisp
+(require 'filename2clipboard)
+#+END_SRC
 * Adjust for better GC
 #+begin_src emacs-lisp
 (setq gc-cons-threshold (* 2 1000 1000))  

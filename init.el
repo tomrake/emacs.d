@@ -9,6 +9,8 @@
   (file-missing
    (message "%s" (error-message-string err))))
 
+(add-to-list 'load-path (expand-file-name "scripts/" user-emacs-directory))
+
 (setq gc-cons-threshold (* 50 1000 1000))
 
 ;; You will most likely need to adjust this font size for your system!
@@ -121,18 +123,6 @@
   `(setq ,emacs-var (if (getenv ,env-string)
                         (getenv ,env-string)
                         (concat ,base ,new-path-string))))
-
-(defun my-put-file-name-on-clipboard ()
-  "Put the current file name on the clipboard"
-  (interactive)
-  (let ((filename (if (equal major-mode 'dired-mode)
-                      default-directory
-                    (buffer-file-name))))
-    (when filename
-      (with-temp-buffer
-        (insert filename)
-        (clipboard-kill-region (point-min) (point-max)))
-      (message filename))))
 
 (setq ispell-program-name "aspell")
 
@@ -690,6 +680,8 @@
 
 ;;;; Various user settings is a local configuration.
  (local-custom-file "local-settings.org" "Final user settings")
+
+(require 'filename2clipboard)
 
 (setq gc-cons-threshold (* 2 1000 1000))
 
