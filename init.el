@@ -22,8 +22,6 @@
 
 (setq initial-buffer-choice (concat user-emacs-directory "startup-buffer.org"))
 
-(message "Debug START")
-
 ;; UTF-8 as default encoding
 (set-language-environment "UTF-8")
 (set-default-coding-systems 'utf-8)
@@ -105,6 +103,8 @@
     :config
   (ido-mode t))
 
+(message "Debug START")
+
 (use-package which-key
   :ensure t)
 
@@ -144,47 +144,11 @@
      ("\C-x44" . langtool-show-message-at-point)
      ("\C-x4c" . langtool-correct-buffer)))
 
-(defun double-quote-string(s)
-   (concat "\"" s "\""))
+(require 'quoting-tools)
 
-(defun single-quote-string (s)
-   (concat "\'" s "\'"))
+(message "Debug MARK")
 
-(defun double-quote-list (l)
-  (mapcar 'double-quote-string l))
-
-(defun single-quote-list (l)
-  (mapcar 'single-quote-string l))
-
-(defun join-with-spaces (args)
-   (mapconcat 'identity args " "))
-
-(setq my-msys2-base "c:\devel\msys64")
-(setq msystem (getenv "MSYSTEM"))
-(setq old-msystem msystem)
-(setq old-msystem-prefix (getenv "MSYSTEM_PREFIX"))
-
-;; Paths to msys2 file root
-
-  (let ((msys64-root-mount "C:/devel/msys64")
-	(msys64-bin-mount "C:/devel/msys64/usr/bin"))
-    (add-to-list 'exec-path (concat msys64-root-mount (getenv "MSYSTEM_PREFIX") "/bin"))
-    (add-to-list 'exec-path (concat msys64-root-mount "/usr/local/bin"))
-    (add-to-list 'exec-path (concat msys64-root-mount "/usr/bin"))
-    (add-to-list 'exec-path msys64-bin-mount)
-
-
-    (defun msys-path (path)
-      (concat my-msys2-base path))
-
-    (defun msys64-file-exists-p (file)
-      (file-exists-p (msys-path file)))
-
-    (defun msys2-command (cmd params)
-      (join-with-spaces (cons (msys2-command-string cmd) params)))
-
-    (defun msys2-command-string (cmd)
-      (concat (msys-path "usr/bin") cmd ".exe")))
+(require 'gnu-tools)
 
 (use-package magit
   :defer 2
@@ -337,8 +301,6 @@
      (add-sbcl)
     (setq slime-contribs '(slime-fancy))
     (global-set-key "\C-cs" 'slime-selector)
-
-(message "Debug MARK")
 
 (setq auto-mode-alist
       (append '((".*\\.asd\\'" . lisp-mode))

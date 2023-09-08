@@ -39,12 +39,6 @@
 #+begin_src emacs-lisp
 (setq initial-buffer-choice (concat user-emacs-directory "startup-buffer.org"))
 #+end_src
-* Report Debug START  :noexport:
-Print Debug markers in *messages*
-#+BEGIN_SRC emacs-lisp :eval never-export
-(message "Debug START")
-#+END_SRC
-
 * Default Coding System
 #+begin_src emacs-lisp
   ;; UTF-8 as default encoding
@@ -182,6 +176,12 @@ I don't like the a messy startup screen.
     :config
   (ido-mode t))
 #+END_SRC
+* Report Debug START  :noexport:
+Print Debug markers in *messages*
+#+BEGIN_SRC emacs-lisp :eval never-export
+(message "Debug START")
+#+END_SRC
+
 * Which-Key
 #+begin_src emacs-lisp
   (use-package which-key
@@ -272,57 +272,17 @@ Certain tools need java set that location here.
 #+end_src
 * Joining items as strings with and without quoting
 #+BEGIN_SRC emacs-lisp
-  (defun double-quote-string(s)
-     (concat "\"" s "\""))
-
-  (defun single-quote-string (s)
-     (concat "\'" s "\'"))
-
-  (defun double-quote-list (l)
-    (mapcar 'double-quote-string l))
-
-  (defun single-quote-list (l)
-    (mapcar 'single-quote-string l))
-
-  (defun join-with-spaces (args)
-     (mapconcat 'identity args " "))
+(require 'quoting-tools)
 #+END_SRC
-* Initialize My msys2 emulation
-[2023-05-19] [TBD] Replace the msys64 environement with ucrt64.
-First we need to test if we are running under a MSYSTEM
-
-There are two use cases.
-- Startup from windows - the msystem need to be initialized
-- Startup from msystem shell - the msystem does not need to be initialized. 
+* Report Debug MARK                                                :noexport:
+Print Debug markers in *messages*
+#+BEGIN_SRC emacs-lisp :eval never-export
+(message "Debug MARK")
+#+END_SRC
+* Ensure gnu-tools
 #+begin_src emacs-lisp
-  (setq my-msys2-base "c:\devel\msys64")
-  (setq msystem (getenv "MSYSTEM"))
-  (setq old-msystem msystem)
-  (setq old-msystem-prefix (getenv "MSYSTEM_PREFIX"))
+(require 'gnu-tools)
 #+end_src
-#+BEGIN_SRC emacs-lisp
-  ;; Paths to msys2 file root
-
-    (let ((msys64-root-mount "C:/devel/msys64")
-	  (msys64-bin-mount "C:/devel/msys64/usr/bin"))
-      (add-to-list 'exec-path (concat msys64-root-mount (getenv "MSYSTEM_PREFIX") "/bin"))
-      (add-to-list 'exec-path (concat msys64-root-mount "/usr/local/bin"))
-      (add-to-list 'exec-path (concat msys64-root-mount "/usr/bin"))
-      (add-to-list 'exec-path msys64-bin-mount)
- 
-
-      (defun msys-path (path)
-	(concat my-msys2-base path))
-
-      (defun msys64-file-exists-p (file)
-	(file-exists-p (msys-path file)))
-
-      (defun msys2-command (cmd params)
-	(join-with-spaces (cons (msys2-command-string cmd) params)))
-
-      (defun msys2-command-string (cmd)
-	(concat (msys-path "usr/bin") cmd ".exe")))
- #+END_SRC
 * Magit
 #+BEGIN_SRC emacs-lisp
 	  (use-package magit
@@ -551,11 +511,6 @@ Note file-esists-p test if a file exists
        (setq slime-contribs '(slime-fancy))
        (global-set-key "\C-cs" 'slime-selector)
  #+END_SRC
-* Report Debug MARK                                                :noexport:
-Print Debug markers in *messages*
-#+BEGIN_SRC emacs-lisp :eval never-export
-(message "Debug MARK")
-#+END_SRC
 * Enable lisp-mode .lisp and .asd files
   #+BEGIN_SRC emacs-lisp
   (setq auto-mode-alist
