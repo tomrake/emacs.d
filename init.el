@@ -55,7 +55,7 @@
 (package-initialize)
 (unless package-archive-contents
   (package-refresh-contents))
-
+(package-install 'htmlize)
 ;;;; Initialize use-package on non-Linux platforms
 (unless (package-installed-p 'use-package)
   (package-install 'use-package))
@@ -189,12 +189,12 @@
   (setq modus-themes-mode-line '(accented borderless))
   ;;; Org Mode
   (setq modus-themes-heading
-	`((1 . (rainbow bold intense 1.7))
-	  (2 . (rainbow bold intense 1.6))
-	  (3 . (rainbow bold intense 1.5))
-	  (4 . (rainbow bold intense 1.4))
+	`((1 . (rainbow bold intense 2.3))
+	  (2 . (rainbow bold intense 1.9))
+	  (3 . (rainbow bold intense 1.7))
+	  (4 . (rainbow bold intense 1.5))
 	  (5 . (rainbow bold intense 1.3))
-	  (6 . (rainbow bold intense 1.2))
+	  (6 . (rainbow bold intense 1.1))
 	  (t . (rainbow bold background 1.0))))
   (setq modus-themes-org-agenda
 	'((header-block . (variable-pitch 1.5))
