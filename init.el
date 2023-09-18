@@ -155,16 +155,24 @@
   :ensure t
   :pin melpa
   :config
-  (if (getenv "MSYSTEM")
-  (setq magit-git-executable "C:/devel/msys64/usr/bin/git.exe"
-	with-editor-emacsclient-executable "C:/devel/msys64/ucrt64/bin/emacsclientw.exe")
+  ;; (if (getenv "MSYSTEM")
+  ;; (setq magit-git-executable "C:/devel/msys64/usr/bin/git.exe"
+  ;; 	with-editor-emacsclient-executable "C:/devel/msys64/ucrt64/bin/emacsclientw.exe")
 
-  (setq magit-git-executable "C:/Users/zzzap/AppData/Local/Programs/Git/cmd/git.exe"
-	with-editor-emacsclient-executable "C:/Program Files/Emacs/emacs-28.2/bin/emacsclient.exe")
-  )
-  :bind
-  (("C-x g" . magit-status)
+  ;; (setq magit-git-executable "C:/Program Files/Git/git-bash.exe"
+  ;; 	with-editor-emacsclient-executable "C:/Program Files/Emacs/emacs-28.2/bin/emacsclient.exe")
+  ;; )
+   :bind
+   (
+   ("C-x g" . magit-status)
    ("C-x M-d" . magit-dispatch-popup)))
+
+(use-package ssh-agency
+:ensure t
+:init
+(setenv "GIT_ASKPASS" "git-gui--askpass")
+(setenv "SSH_ASKPASS" "git-gui--askpass")
+:after (magit))
 
 (if (getenv "MSYSTEM")
   (when (file-exists-p (expand-file-name "~/.roswell/helper.el"))
@@ -346,9 +354,6 @@
 (add-to-list 'org-structure-template-alist '("sh" . "src shell"))
 (add-to-list 'org-structure-template-alist '("el" . "src emacs-lisp"))
 (add-to-list 'org-structure-template-alist '("qb" . "quote"))
-
-;; Where org-export latex can find perl
-(setenv "PATH" (concat (getenv "PATH") ";" (msys-path "usr/bin/")))
 
 (setf org-global-properties
     '(("Effort_ALL" . "0:05 0:10 0:15 0:30 1:00 2:00 4:00 6:00 8:00")))
