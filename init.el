@@ -635,7 +635,6 @@
 
 ;; Autommatically tangle our Emacs.org config file when we save it.
 (defun efs/org-babel-tangle-config ()
-  (message "Checking after save for tangle.")
   (when (string-equal (buffer-file-name)
 		      "c:/Users/Public/Lispers/standard-emacs.d/Emacs.org")
     (message "Begin efs/tangle")
