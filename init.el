@@ -11,6 +11,9 @@
 
 (add-to-list 'load-path (expand-file-name "scripts/" user-emacs-directory))
 
+(setq use-slime t
+      use-sly nil)
+
 (setq gc-cons-threshold (* 50 1000 1000))
 
 ;; You will most likely need to adjust this font size for your system!
@@ -66,7 +69,7 @@
 (setq use-package-always-defer t)
 
 ;;;; Emacs Debug On Error
-   ;(setq debug-on-error t)
+   (setq debug-on-error t)
 
 ;;;; Macro to load user customizations from .emacs.d
 (defmacro local-custom-file (file description)
@@ -102,8 +105,6 @@
 (use-package  ido
     :config
   (ido-mode t))
-
-(message "Debug START")
 
 (use-package which-key
   :ensure t)
@@ -145,8 +146,6 @@
      ("\C-x4c" . langtool-correct-buffer)))
 
 (require 'quoting-tools)
-
-(message "Debug MARK")
 
 (require 'gnu-tools)
 
@@ -237,28 +236,35 @@
   :ensure t
   :hook (lisp-mode . enable-paredit-mode))
 
-(defmacro add-slime-lisp (slime-tag program program-args environment)
- "The format of a standard slime entry for a lisp implenatation."
-`(list ,slime-tag (cons ,program ,program-args) :env ,environment))
+(setq my-lisp-implementations nil)
 
-(defun add-slime-implementation (lisp-invoker)
+(defmacro add-lisp (my-tag program program-args environment)
+ "The format of a standard slime entry for a lisp implenatation."
+`(list ,my-tag (cons ,program ,program-args) :env ,environment))
+
+(defmacro add-lisp-no-env (my-tag program program-args environment)
+ "The format of a standard slime entry for a lisp implenatation."
+`(list ,my-tag (cons ,program ,program-args)))
+
+
+(defun add-lisp-implementation (lisp-invoker)
   "Add an specific lisp invoker to slime list"
-  (add-to-list 'slime-lisp-implementations lisp-invoker))
+  (add-to-list 'my-lisp-implementations lisp-invoker))
 
 ;;;; The standard options for SBCL
-(defun invoke-standard-sbcl (slime-tag program environment)
-  (add-slime-lisp slime-tag program '("--noinform") environment))
+(defun invoke-standard-sbcl (my-tag program environment)
+  (add-lisp my-tag program '("--noinform") environment))
 
 (defun get-sbcl-versions (base-address)
   "Get all the directories under the base-address/win"
   (remove "." (remove ".." (directory-files (concat base-address "win")))))
 
-(defun make-sbcl-slime-version (prefix base-address version)
+(defun make-sbcl-version (prefix base-address version)
   "Create a SBCL invoker for specific compiled version."
   (invoke-standard-sbcl
-    (make-symbol (concat prefix version))
+    (intern (concat prefix version))
     (concat base-address "win/" version "/bin/sbcl.exe")
-    (list (concat "SBCL_HOME=" base-address "win/" version "/lib/sbcl")
+    (list (concat "SBCL_HOME=" base-address "win/" version "/lib/sbcl/")
 	  "CC=c:/devel/msys64/ucrt64/bin/gcc")))
 
 (defun add-win64-sbcl (base-address)
@@ -266,49 +272,55 @@
   (let ((versions (get-sbcl-versions base-address)))
     (dolist (version versions)
 	(when (file-exists-p (concat base-address "win/" version "/bin/sbcl.exe"))
-	  (add-slime-implementation (make-sbcl-slime-version "sbcl64-" base-address version))))))
+	  (add-lisp-implementation (make-sbcl-version "sbcl64-" base-address version))))))
 
 (defun add-sbcl ()
   "Add all the slime invokers for SBCL 64bit compiled versions."
   (add-win64-sbcl "C:/Users/Public/Lispers/sbcl/"))
+ ; (setf my-lisp-implementations (cddr my-lisp-implementations)))
 
-(defun ccl-slime-invoker (slime-tag path)
-  "Return a slime invoker; nil if path does not exist"
+(defun ccl-invoker (my-tag path)
+  "Return a lisp invoker; nil if path does not exist"
     (when (file-exists-p path)
-      `(,slime-tag (,path))))
+      `(,my-tag (,path))))
 (defun add-ccl ()
   "Check of CCL implentations"
-  (let ((ccl32 (ccl-slime-invoker 'ccl-32 "C:/Users/Public/Lispers/ccl/wx86cl.exe"))
-	(ccl64 (ccl-slime-invoker 'ccl-64 "C:/Users/Public/Lispers/ccl/wx86cl64.exe")))
-    (when ccl32 (add-slime-implementation ccl32))
-    (when ccl64 (add-slime-implementation ccl64))))
+  (let ((ccl32 (ccl-invoker 'ccl-32 "C:/Users/Public/Lispers/ccl/wx86cl.exe"))
+	(ccl64 (ccl-invoker 'ccl-64 "C:/Users/Public/Lispers/ccl/wx86cl64.exe")))
+    (when ccl32 (add-lisp-implementation ccl32))
+    (when ccl64 (add-lisp-implementation ccl64))))
 
 (defun invoke-abcl()
-  "Return a slime invoker; nil if abcl is not found,"
+  "Return a lisp invoker; nil if abcl is not found,"
   (let ((abcl "c:/Program Files/ABCL/abcl-src-1.9.0/dist/abcl.jar"))
     (when (file-exists-p abcl)
       `(abcl  ,(list my-java "-jar" abcl)))))
 (defun add-abcl ()
   "Check of abcl implmentations"
   (let ((abcl (invoke-abcl)))
-    (when abcl (add-slime-implementation abcl))))
+    (when abcl (add-lisp-implementation abcl))))
 
-;;;; Build the implemenation lisp dynamically.
-;;;; Remove all nil items from the list.
-;;;; Load slime helper
-(when (file-exists-p (expand-file-name "~/Documents/Code/quicklisp/slime-helper.el"))
-  (load (expand-file-name "~/Documents/Code/quicklisp/slime-helper.el")))
+(message "Debug START")
 
-;(add-to-list 'load-path "C:/devel/msys64/usr/local/slime")
-;;;; Configure slime from the above provisionsing
-;;;; Remove any empty items
-     (require 'slime)
-     (require 'slime-autoloads)
-     (add-abcl)
-     (add-ccl)
-     (add-sbcl)
-    (setq slime-contribs '(slime-fancy))
-    (global-set-key "\C-cs" 'slime-selector)
+(add-abcl)
+(add-ccl)
+(add-sbcl)
+
+(message "Debug MARK")
+
+(when use-slime
+  (add-to-list 'load-path "c:/Users/zzzap/Documents/Code/source-projects/ACTIVE/slime")
+  (require 'slime)
+  (require 'slime-autoloads)
+  ;; (when (file-exists-p "c:/Users/Public/Lispers/quicklisp/slime-helper.el")
+  ;;   (load "c:/Users/Public/Lispers/quicklisp/slime-helper.el"))
+  (setq slime-lisp-implementations my-lisp-implementations)
+  (setq slime-contribs '(slime-fancy))
+  (global-set-key "\C-cs" 'slime-selector))
+
+(when use-sly
+   (setq sly-lisp-implementations my-lisp-implementations)
+   (require 'sly))
 
 (setq auto-mode-alist
       (append '((".*\\.asd\\'" . lisp-mode))
