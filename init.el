@@ -257,26 +257,32 @@
 
 (defun get-sbcl-versions (base-address)
   "Get all the directories under the base-address/win"
-  (remove "." (remove ".." (directory-files (concat base-address "win")))))
+  (remove "." (remove ".." (directory-files  base-address ))))
 
-(defun make-sbcl-version (prefix base-address version)
+(defun get-sbcl-configs (version-address)
+  (remove "." (remove ".." (directory-files version-address))))
+
+(defun make-sbcl-version (prefix base-address version config)
   "Create a SBCL invoker for specific compiled version."
   (invoke-standard-sbcl
-    (intern (concat prefix version))
-    (concat base-address "win/" version "/bin/sbcl.exe")
-    (list (concat "SBCL_HOME=" base-address "win/" version "/lib/sbcl/")
+    (intern (concat prefix version "-" config))
+    (concat base-address "/" version "/" config "/bin/sbcl.exe")
+    (list (concat "SBCL_HOME=" base-address "/" version "/" config "/lib/sbcl/")
 	  "CC=c:/devel/msys64/ucrt64/bin/gcc")))
 
 (defun add-win64-sbcl (base-address)
   "Add a SBCL invoker for all versions under the base-address"
   (let ((versions (get-sbcl-versions base-address)))
     (dolist (version versions)
-	(when (file-exists-p (concat base-address "win/" version "/bin/sbcl.exe"))
-	  (add-lisp-implementation (make-sbcl-version "sbcl64-" base-address version))))))
+      (let ((configs (get-sbcl-configs (concat base-address "/" version))))
+	(dolist (config configs)
+	  (when (and (file-exists-p (concat base-address "/" version "/" config  "/bin/sbcl.exe"))
+		     (or (string= config "production") (file-exists-p (concat base-address "/" version "/" config "/.production"))))
+	    (add-lisp-implementation (make-sbcl-version "sbcl64-" base-address version config))))))))
 
 (defun add-sbcl ()
   "Add all the slime invokers for SBCL 64bit compiled versions."
-  (add-win64-sbcl "C:/Users/Public/Lispers/sbcl/"))
+  (add-win64-sbcl "C:/Users/Public/Lispers/sbcl/installed"))
  ; (setf my-lisp-implementations (cddr my-lisp-implementations)))
 
 (defun ccl-invoker (my-tag path)
