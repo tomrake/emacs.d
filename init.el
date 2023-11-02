@@ -11,8 +11,8 @@
 
 (add-to-list 'load-path (expand-file-name "scripts/" user-emacs-directory))
 
-(setq use-slime t
-      use-sly nil)
+(defvar use-slime t "Set true to use slime for superior lisp")
+(defvar use-sly nil "Set true to use sly for superior lisp")
 
 (setq gc-cons-threshold (* 50 1000 1000))
 
@@ -69,7 +69,7 @@
 (setq use-package-always-defer t)
 
 ;;;; Emacs Debug On Error
-   (setq debug-on-error t)
+   ;(setq debug-on-error t)
 
 ;;;; Macro to load user customizations from .emacs.d
 (defmacro local-custom-file (file description)
@@ -120,10 +120,13 @@
   (savehist-mode))
 
 ;;; Specify a emacs variable from an environment variable env-string or  base,new-path-string
-(defmacro default-or-environment (emacs-var base new-path-string env-string) 
-  `(setq ,emacs-var (if (getenv ,env-string)
-                        (getenv ,env-string)
-                        (concat ,base ,new-path-string))))
+(defun ensure-string (s)
+  (if s s ""))
+(defmacro default-or-environment (emacs-var base new-path-string env-string)
+  ;;`(concat ,base ,new-pathe-string))
+   `(setq ,emacs-var (if (getenv ,env-string)
+		      (getenv ,env-string)
+		      (concat (ensure-string ,base) (ensure-string ,new-path-string)))))
 
 (setq ispell-program-name "aspell")
 
@@ -219,13 +222,18 @@
 	(explicit-powershell.exe-args '()))
     (shell (generate-new-buffer-name "*powershell*"))))
 
+(setenv  "PATH" (concat
+		 "C:/devel/msys64/ucrt64/bin" ";"
+		 "C:/devel/msys64/bin" ";"
+		 (getenv "PATH")))
+
 (use-package shx
   :ensure t)
 
 (use-package tramp
   :config
     (when (eq  window-system 'w32)
-      (setq putty-directory "C:\\Program Files\\PuTTY\\")
+      (setq putty-directory "c:/Program Files/PuTTY/")
       (setq tramp-default-method "plink")
       (when (and (not (string-match putty-directory (getenv "PATH")))
 		 (file-directory-p putty-directory))
@@ -236,7 +244,7 @@
   :ensure t
   :hook (lisp-mode . enable-paredit-mode))
 
-(setq my-lisp-implementations nil)
+(defvar my-lisp-implementations nil "A list of all the lisp implemenations that are defined or discovered Emacs.org.")
 
 (defmacro add-lisp (my-tag program program-args environment)
  "The format of a standard slime entry for a lisp implenatation."
@@ -618,23 +626,27 @@
 
 
   (defun is-holiday (dt table)
+    "Check if a date is a holiday"
     (if table (or (and (= (nth 4 dt) (nth 0 (car table)))
 		       (= (nth 3 dt) (nth 1 (car table))))
 		  (is-holiday dt (cdr table)))))
 
   (defun is-ppl-holiday (dt)
+    "Check if a date is a PPL holiday"
     (if (/= (car ppl-holiday-table) (nth 5 dt)) 
 	(error "Update Date table") 
 	(is-holiday dt (cdr ppl-holiday-table))))
 
-  (defun summer (dt)
+  (defun ppl-summer (dt)
+    "Check if a date is PPL summer rate"
     (< 5 (nth 4 dt) 12))
 
 (defun ppl-high-rate (&optional dt)
+  "Check if a date and time are at PPL high rate"
   (unless dt (setq dt (decode-time)))
        (cond ((not (< 0 (nth 6 dt) 6))  nil)
 	     ((is-ppl-holiday dt)  nil)
-	     ((summer dt)  (<= 14 (nth 2 dt) 17))
+	     ((ppl-summer dt)  (<= 14 (nth 2 dt) 17))
 	      (t  ( <= 16 (nth 2 dt) 19))))
 
 (use-package yaml-mode)
@@ -653,6 +665,7 @@
 
 ;; Autommatically tangle our Emacs.org config file when we save it.
 (defun efs/org-babel-tangle-config ()
+  "Test if the buffer should be auto-tangled after save"
   (when (string-equal (buffer-file-name)
 		      "c:/Users/Public/Lispers/standard-emacs.d/Emacs.org")
     (message "Begin efs/tangle")

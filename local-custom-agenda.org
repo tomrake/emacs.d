@@ -36,7 +36,7 @@
  |              |       |           |                   |                  |
  
  #+BEGIN_SRC emacs-lisp
-   (setq org-agenda-files
+   (setq org-agenda-files-1
 	 (list (gtd-file "gtd.org")
 	       (gtd-file "Tickler.org")
 	       (gtd-file "Annual-Days.org")
@@ -53,10 +53,10 @@
 	       (gtd-file "Tickler.org")
 	       (gtd-file "Annual-Days.org")
 	       (gtd-file "Inbox.org")))
-   (setq full-agenda-files (cons (gtd-file "Someday.org") org-agenda-files))
+   (setq full-agenda-files (cons (gtd-file "Someday.org") org-agenda-files-1))
    (setq org-agenda-skip-scheduled-if-done t)
    (setq org-agenda-todo-list-sublevels t)
-
+   (setf org-agenda-files org-agenda-files-1)
    ;;;; The following two defuns are from Nicolas Petton
    ;;;; from https://emacs.cafe/emacs/orgmode/gtd/2017/06/30/orgmode-gtd.html
    (defun my-org-agenda-skip-all-siblings-but-first ()
@@ -91,7 +91,18 @@
 	   ("xy" "xy" agenda*)
 	   ("xn" "xn" todo "NEXT")
 	   ("xN" "xN" todo-tree "NEXT")
-	   ("xa" "All Appointments" tags "+APPOINTMENT")
+	   ("xa" "Daily Overview"
+	    ;; The first part is an agenda calendar view
+	    ((agenda* "" ((org-agenda-files org-agenda-files-1)
+			 (org-agenda-ndays 1)
+			 (org-agenda-sorting-strategy
+			  `((agenda time-up priority-down tag-up)))
+			 (org-deadline-warning-days 0)))
+				     ; exclude ticker files from todo list because they are covered in agenda
+	     (todo "WAITING" ((org-agenda-files org-non-appoinment-files)))
+	     (todo "NEXT" ((org-agenda-files org-non-appoinment-files)))
+	     (todo "TODO" ((org-agenda-files org-non-appoinment-files)))))
+	   ("xA" "All Appointments" tags "+APPOINTMENT")
 	   ("xj" "James Appointments" tags "+JAMES+APPOINTMENT")
 	   ("xJ" "James" tags "+JAMES")
 	   ("xc" "Weekly schedule" agenda ""
@@ -100,18 +111,19 @@
 	   ("xn" "Daily Next Task List" agenda ""
 	     ((org-agenda-skip-function #'my-org-agenda-skip-all-siblings-but-first)))
 	   ("xf" "Evaluate all Tasks" agenda ""
-	     ((org-agenda-files current-agenda-files)))
+	     ((org-agenda-files current-agenda-files-1)))
 	   ("xs" "Daily Overview"
 	    ;; The first part is an agenda calendar view
-	    ((agenda "" ((org-agenda-files org-agenda-files)
+	    ((agenda "" ((org-agenda-files org-agenda-files-1)
 			 (org-agenda-ndays 1)
 			 (org-agenda-sorting-strategy
 			  `((agenda time-up priority-down tag-up)))
 			 (org-deadline-warning-days 0)))
 				     ; exclude ticker files from todo list because they are covered in agenda
-	     (todo "TODO" ((org-agenda-files org-non-appoinment-files)))
 	     (todo "WAITING" ((org-agenda-files org-non-appoinment-files)))
-	     (todo "NEXT" ((org-agenda-files org-non-appoinment-files)))))
+	     (todo "NEXT" ((org-agenda-files org-non-appoinment-files)))
+	     (todo "TODO" ((org-agenda-files org-non-appoinment-files)))))
+
 	   ("H" "All Contexts"
 	    ((agenda)
 	     (tags-todo "CAR")
@@ -128,7 +140,7 @@
 		     ((org-deadline-warning-days 7)))
 	     (todo)))
 	   ("Da" "A Scheduled Project task"
-	    ((agenda "" ((org-agenda-files org-agenda-files)
+	    ((agenda "" ((org-agenda-files org-agenda-files-1)
 			 (org-agenda-ndays 1)
 			 (org-agenda-sorting-strategy
 			  `((agenda time-up priority-down tag-up)))
@@ -151,7 +163,6 @@
 	   ("c" "Weekly schedule" agenda ""
 	    ((org-agenda-span 7) ;; agenda will start in week view
 	     (org-agenda-repeating-timestamp-show-all t))))) ;; ensures that repeating events appear on all relevant dates
-
 
 
 

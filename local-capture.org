@@ -16,9 +16,9 @@
 	`(
        ;; Logs for Projects
 	  ("l" "Project Logging")
-	  ("li" "Inspiron E 1505"
-	   entry (file+datetree "c:/Users/zzzap/Documents/Code/quicklisp/local-projects/ACTIVE/dell-inspiron-1505/project-log.org" "Project Log")
-	   "* %U - %^{Activity} :NOTE:")
+	  ("ls" "sbcl-compile project"
+	   entry (file+datetree "c:/Users/zzzap/Documents/Code/source-projects/ACTIVE/sbcl-compile/project-log.org" "Project Log")
+	   "** %U - %^{Activity} :NOTE:")
        ;; Todo
 	  ("t" "Inbox Entry" entry (file+headline ,(concat org-gtd-dir "Inbox.org") "Tasks")
 	   "* TODO %^{Brief Description} %^g\n  OPENED: %U")
