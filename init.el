@@ -69,7 +69,7 @@
 (setq use-package-always-defer t)
 
 ;;;; Emacs Debug On Error
-   ;(setq debug-on-error t)
+   (setq debug-on-error t)
 
 ;;;; Macro to load user customizations from .emacs.d
 (defmacro local-custom-file (file description)
@@ -244,65 +244,75 @@
   :ensure t
   :hook (lisp-mode . enable-paredit-mode))
 
-(defvar my-lisp-implementations nil "A list of all the lisp implemenations that are defined or discovered Emacs.org.")
+(defvar my-lisp-implementations nil
+  "For various implemenations there are lisp invokers for slime and sly.")
 
-(defmacro add-lisp (my-tag program program-args environment)
+(defmacro assemble-invoker (my-tag program program-args environment)
  "The format of a standard slime entry for a lisp implenatation."
 `(list ,my-tag (cons ,program ,program-args) :env ,environment))
 
-(defmacro add-lisp-no-env (my-tag program program-args environment)
+(defmacro assemble-invoker-no-env (my-tag program program-args environment)
  "The format of a standard slime entry for a lisp implenatation."
 `(list ,my-tag (cons ,program ,program-args)))
 
 
-(defun add-lisp-implementation (lisp-invoker)
+(defun collect-this-lisp (lisp-invoker)
   "Add an specific lisp invoker to slime list"
   (add-to-list 'my-lisp-implementations lisp-invoker))
 
 ;;;; The standard options for SBCL
-(defun invoke-standard-sbcl (my-tag program environment)
-  (add-lisp my-tag program '("--noinform") environment))
+(defun assemble-sbcl-enviroment-invoker (my-tag program environment)
+  (assemble-invoker my-tag program '("--noinform") environment))
 
-(defun get-sbcl-versions (base-address)
-  "Get all the directories under the base-address/win"
-  (remove "." (remove ".." (directory-files  base-address ))))
+(defvar local-sbcl-base "C:/Users/Public/Lispers/sbcl/installed"
+    "All locally compiled and installed SBCL lisps are installed in directory,
+  by release version and a compiled name..
+I also add lisp version with a compiled name of 'production' or which contain a file '.production.'")
 
-(defun get-sbcl-configs (version-address)
-  (remove "." (remove ".." (directory-files version-address))))
+      (defun get-sbcl-versions (base-address)
+	  "Get all the directories under the base-address"
+	  (remove "." (remove ".." (directory-files  base-address ))))
 
-(defun make-sbcl-version (prefix base-address version config)
-  "Create a SBCL invoker for specific compiled version."
-  (invoke-standard-sbcl
-    (intern (concat prefix version "-" config))
-    (concat base-address "/" version "/" config "/bin/sbcl.exe")
-    (list (concat "SBCL_HOME=" base-address "/" version "/" config "/lib/sbcl/")
-	  "CC=c:/devel/msys64/ucrt64/bin/gcc")))
+	(defun get-sbcl-configs (version-address)
+	  (remove "." (remove ".." (directory-files version-address))))
 
-(defun add-win64-sbcl (base-address)
-  "Add a SBCL invoker for all versions under the base-address"
-  (let ((versions (get-sbcl-versions base-address)))
-    (dolist (version versions)
-      (let ((configs (get-sbcl-configs (concat base-address "/" version))))
-	(dolist (config configs)
-	  (when (and (file-exists-p (concat base-address "/" version "/" config  "/bin/sbcl.exe"))
-		     (or (string= config "production") (file-exists-p (concat base-address "/" version "/" config "/.production"))))
-	    (add-lisp-implementation (make-sbcl-version "sbcl64-" base-address version config))))))))
+	(defun assemble-named-sbcl-version (prefix base-address version config)
+	  "Create a SBCL invoker for specific compiled version."
+	  (assemble-sbcl-enviroment-invoker
+	    (intern (concat prefix version "-" config))
+	    (concat base-address "/" version "/" config "/bin/sbcl.exe")
+	    (list (concat "SBCL_HOME=" base-address "/" version "/" config "/lib/sbcl/")
+		  "CC=c:/devel/msys64/ucrt64/bin/gcc")))
 
-(defun add-sbcl ()
-  "Add all the slime invokers for SBCL 64bit compiled versions."
-  (add-win64-sbcl "C:/Users/Public/Lispers/sbcl/installed"))
- ; (setf my-lisp-implementations (cddr my-lisp-implementations)))
+	(defun add-win64-sbcl (base-address)
+	  "Add a SBCL invoker for all versions under the base-address"
+	  (let ((versions (get-sbcl-versions base-address)))
+	    (dolist (version versions)
+	      (let ((configs (get-sbcl-configs (concat base-address "/" version))))
+		(dolist (config configs)
+		  (when (and (file-exists-p (concat base-address "/" version "/" config  "/bin/sbcl.exe"))
+			     (or (string= config "production") (file-exists-p (concat base-address "/" version "/" config "/.production"))))
+		    (collect-this-lisp (assemble-named-sbcl-version "sbcl64-" base-address version config))))))))
+
+	(defun collect-sbcl ()
+	  "Add all the slime invokers for SBCL 64bit compiled versions."
+	  (add-win64-sbcl local-sbcl-base))
+	 ; (setf my-lisp-implementations (cddr my-lisp-implementations)))
 
 (defun ccl-invoker (my-tag path)
   "Return a lisp invoker; nil if path does not exist"
     (when (file-exists-p path)
       `(,my-tag (,path))))
+
 (defun add-ccl ()
-  "Check of CCL implentations"
+  "Collect any CCL Lisp versions"
   (let ((ccl32 (ccl-invoker 'ccl-32 "C:/Users/Public/Lispers/ccl/wx86cl.exe"))
 	(ccl64 (ccl-invoker 'ccl-64 "C:/Users/Public/Lispers/ccl/wx86cl64.exe")))
-    (when ccl32 (add-lisp-implementation ccl32))
-    (when ccl64 (add-lisp-implementation ccl64))))
+    (when ccl32 (collect-this-lisp ccl32))
+    (when ccl64 (collect-this-lisp ccl64))))
+
+(defvar abcl-jar "c:/program Files/ABCL/abcl-src-1.9.0/dist/abcl.jar"
+  "The location of the Armed Bear Common Lisp jar.")
 
 (defun invoke-abcl()
   "Return a lisp invoker; nil if abcl is not found,"
@@ -312,13 +322,18 @@
 (defun add-abcl ()
   "Check of abcl implmentations"
   (let ((abcl (invoke-abcl)))
-    (when abcl (add-lisp-implementation abcl))))
+    (when abcl (collect-this-lisp abcl))))
 
 (message "Debug START")
 
-(add-abcl)
-(add-ccl)
-(add-sbcl)
+(defun collect-lisp-invokers ()
+    "collect all lisp-invokers to my-lisp-implementations."
+  (setf my-lisp-implementations nil)
+  (add-abcl)
+  (add-ccl)
+  (collect-sbcl))
+;;;; Collect all right now
+(collect-lisp-invokers)
 
 (message "Debug MARK")
 
@@ -328,13 +343,15 @@
   (require 'slime-autoloads)
   ;; (when (file-exists-p "c:/Users/Public/Lispers/quicklisp/slime-helper.el")
   ;;   (load "c:/Users/Public/Lispers/quicklisp/slime-helper.el"))
+  (collect-lisp-invokers)
   (setq slime-lisp-implementations my-lisp-implementations)
   (setq slime-contribs '(slime-fancy))
   (global-set-key "\C-cs" 'slime-selector))
 
 (when use-sly
-   (setq sly-lisp-implementations my-lisp-implementations)
-   (require 'sly))
+    (collect-lisp-invokers)
+     (setq sly-lisp-implementations my-lisp-implementations)
+     (require 'sly))
 
 (setq auto-mode-alist
       (append '((".*\\.asd\\'" . lisp-mode))
