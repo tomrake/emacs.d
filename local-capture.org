@@ -45,9 +45,11 @@
 
 	  ("hw" "Weight (w)" table-line (file+headline ,(concat org-gtd-dir "Medical-Data.org") "Weight")
 	   "|%^{Person|TOM|JOANNE}|%U|%^{Weight}|")
-       ;; Shoppping Items
-	  ("s" "Shopping Request (s)" table-line (file+headline ,(concat org-gtd-dir "Shopping-Requests.org") "Requests")
-	   "|%U|%^{Needed Item}|")
+       ;; Car Related
+	  ("a" "Automotive (a)")
+
+	  ("ag" "Gas Receipt (g}" table-line (file+headline ,(concat org-gtd-dir "Auto-Receipt.org") "Gas Receipts")
+	  "|%^u|%^{mileage}|%^{gallons}|%^{total}|")
        ;; org-protocol 
 	  ("p" "Protocol" entry (file+headline ,(concat org-directory "gtd\notes.org") "Inbox")
      "* %^{Title}\nSource: %u, %c\n #+BEGIN_QUOTE\n%i\n#+END_QUOTE\n\n\n%?")
