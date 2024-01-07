@@ -544,12 +544,6 @@ I need to check that there is a java and
     (let ((abcl (invoke-abcl)))
       (when abcl (collect-this-lisp abcl))))
 #+END_SRC
-* Report Debug START                                               :noexport:
-Print Debug markers in *messages*
-#+BEGIN_SRC emacs-lisp :eval never-export
-(message "Debug START")
-#+END_SRC
-
 * Gather all my LISP invokers
 #+BEGIN_SRC emacs-lisp
   (defun collect-lisp-invokers ()
@@ -560,11 +554,6 @@ Print Debug markers in *messages*
     (collect-sbcl))
   ;;;; Collect all right now
   (collect-lisp-invokers)
-#+END_SRC
-* Report Debug MARK                                                :noexport:
-Print Debug markers in *messages*
-#+BEGIN_SRC emacs-lisp :eval never-export
-(message "Debug MARK")
 #+END_SRC
 * Maybe use SLIME
  #+BEGIN_SRC emacs-lisp
@@ -628,6 +617,13 @@ Print Debug markers in *messages*
 	      auto-mode-alist))
 #+END_SRC
 
+* Report Debug START                                               :noexport:
+Print Debug markers in *messages*
+#+BEGIN_SRC emacs-lisp :eval never-export
+(message "Debug START")
+#+END_SRC
+
+
 * Org Mode
 This is a large use-package config statement for org.
 
@@ -636,10 +632,19 @@ This is a large use-package config statement for org.
 #+begin_src emacs-lisp
   (use-package org
     :pin elpa
+    :catch
+    (lambda (keyword err)
+           (message (error-message-string err)))
     :config
 #+end_src
 
 Note that all items between the open and the close are added to the config.
+
+** Report Debug Org START                                          :noexport:
+Print Debug markers in *messages*
+#+BEGIN_SRC emacs-lisp :eval never-export
+(message "Debug ORG START")
+#+END_SRC
 
 ** Make tab act natively in org source blocks
 
@@ -706,7 +711,9 @@ Note that all items between the open and the close are added to the config.
     'org-babel-load-languages
     '((lisp . t)
       (emacs-lisp . t)
-      (shell . t)))
+      (shell . t)
+      ;(dot . t)
+      )
  #+END_SRC
 
 ** org modules needed
@@ -891,6 +898,11 @@ Then use it like this:
 
 This is a single ) to close it.
 
+* Report Debug MARK                                                :noexport:
+Print Debug markers in *messages*
+#+BEGIN_SRC emacs-lisp :eval never-export
+(message "Debug MARK")
+#+END_SRC
 * PS Print with GHOSTSCRIPT
 #+BEGIN_SRC emacs-lisp
    (setq ps-lpr-command "C:/Program Files/gs/gs9.56.1/bin/gswin64c.exe")

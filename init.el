@@ -222,6 +222,8 @@
 	(explicit-powershell.exe-args '()))
     (shell (generate-new-buffer-name "*powershell*"))))
 
+(setq explicit-shell-file-name "c:/devel/msys64/usr/bin/bash")
+
 (setenv  "PATH" (concat
 		 "C:/devel/msys64/ucrt64/bin" ";"
 		 "C:/devel/msys64/bin" ";"
@@ -261,8 +263,9 @@
   (add-to-list 'my-lisp-implementations lisp-invoker))
 
 ;;;; The standard options for SBCL
+(setq sbcl-program-arguments '("--dynamic-space-size" "4000" "--noinform"))
 (defun assemble-sbcl-enviroment-invoker (my-tag program environment)
-  (assemble-invoker my-tag program '("--noinform") environment))
+  (assemble-invoker my-tag program sbcl-program-arguments environment))
 
 (defvar local-sbcl-base "C:/Users/Public/Lispers/sbcl/installed"
     "All locally compiled and installed SBCL lisps are installed in directory,
@@ -324,8 +327,6 @@ I also add lisp version with a compiled name of 'production' or which contain a 
   (let ((abcl (invoke-abcl)))
     (when abcl (collect-this-lisp abcl))))
 
-(message "Debug START")
-
 (defun collect-lisp-invokers ()
     "collect all lisp-invokers to my-lisp-implementations."
   (setf my-lisp-implementations nil)
@@ -334,8 +335,6 @@ I also add lisp version with a compiled name of 'production' or which contain a 
   (collect-sbcl))
 ;;;; Collect all right now
 (collect-lisp-invokers)
-
-(message "Debug MARK")
 
 (when use-slime
   (add-to-list 'load-path "c:/Users/zzzap/Documents/Code/source-projects/ACTIVE/slime")
@@ -348,10 +347,11 @@ I also add lisp version with a compiled name of 'production' or which contain a 
   (setq slime-contribs '(slime-fancy))
   (global-set-key "\C-cs" 'slime-selector))
 
-(when use-sly
+(use-package sly
+  :disabled use-slime
+  :init
     (collect-lisp-invokers)
-     (setq sly-lisp-implementations my-lisp-implementations)
-     (require 'sly))
+    (setq sly-lisp-implementations my-lisp-implementations))
 
 (setq auto-mode-alist
       (append '((".*\\.asd\\'" . lisp-mode))
@@ -382,9 +382,16 @@ I also add lisp version with a compiled name of 'production' or which contain a 
       (append '((".*\\.yml\\'" . yaml-mode))
 	      auto-mode-alist))
 
+(message "Debug START")
+
 (use-package org
   :pin elpa
+  :catch
+  (lambda (keyword err)
+         (message (error-message-string err)))
   :config
+
+(message "Debug ORG START")
 
 (setq org-src-tab-acts-natively t)
 
@@ -431,7 +438,9 @@ I also add lisp version with a compiled name of 'production' or which contain a 
  'org-babel-load-languages
  '((lisp . t)
    (emacs-lisp . t)
-   (shell . t)))
+   (shell . t)
+   ;(dot . t)
+   )
 
 (setq org-modules '(org-habit))
 
@@ -527,7 +536,20 @@ I also add lisp version with a compiled name of 'production' or which contain a 
 (set-face-attribute 'org-meta-line nil :inherit '(font-lock-comment-face fixed-pitch))
 (set-face-attribute 'org-checkbox nil :inherit 'fixed-pitch)
 
+(org-add-link-type
+ "image-url"
+ (lambda (path)
+   (let ((img (expand-file-name
+           (concat (md5 path) "." (file-name-extension path))
+           temporary-file-directory)))
+     (if (file-exists-p img)
+     (find-file img)
+       (url-copy-file path img)
+       (find-file img)))))
+
 )
+
+(message "Debug MARK")
 
 (setq ps-lpr-command "C:/Program Files/gs/gs9.56.1/bin/gswin64c.exe")
 (setq ps-lpr-switches '("-q" "-dNOPAUSE" "-dBATCH" "-sDEVICE=mswinpr2" "-sOutputFile=\"%printer%Canon\ TS6000\ series\""))
