@@ -7,6 +7,8 @@
     (message (concat "INIT DID NOT FINISH!!!!!! " twr/init-loading-flag))))
 (add-hook 'after-init-hook 'twr/check-init-load)
 
+(message "Debug START")
+
 ;; Allow chezmoi_config.el to define things:
 ;;   msys2 paths and enviroments
 ;;   java locations
@@ -388,8 +390,6 @@ I also add lisp version with a compiled name of 'production' or which contain a 
       (append '((".*\\.yml\\'" . yaml-mode))
 	      auto-mode-alist))
 
-(message "Debug START")
-
 (use-package org
   :pin elpa
   :catch
@@ -445,8 +445,8 @@ I also add lisp version with a compiled name of 'production' or which contain a 
  '((lisp . t)
    (emacs-lisp . t)
    (shell . t)
-   ;(dot . t)
-   )
+   (dot . t)
+   ))
 
 (setq org-modules '(org-habit))
 

@@ -15,6 +15,13 @@
       (message (concat "INIT DID NOT FINISH!!!!!! " twr/init-loading-flag))))
   (add-hook 'after-init-hook 'twr/check-init-load)
 #+end_src
+* Report Debug START                                               :noexport:
+Print Debug markers in *messages*
+#+BEGIN_SRC emacs-lisp :eval never-export
+(message "Debug START")
+#+END_SRC
+
+
 * Platform specific items by Chezmoi_config
 #+begin_src emacs-lisp
   ;; Allow chezmoi_config.el to define things:
@@ -625,13 +632,6 @@ I need to check that there is a java and
 	      auto-mode-alist))
 #+END_SRC
 
-* Report Debug START                                               :noexport:
-Print Debug markers in *messages*
-#+BEGIN_SRC emacs-lisp :eval never-export
-(message "Debug START")
-#+END_SRC
-
-
 * Org Mode
 This is a large use-package config statement for org.
 
@@ -720,8 +720,8 @@ Print Debug markers in *messages*
     '((lisp . t)
       (emacs-lisp . t)
       (shell . t)
-      ;(dot . t)
-      )
+      (dot . t)
+      ))
  #+END_SRC
 
 ** org modules needed
