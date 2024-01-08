@@ -7,6 +7,14 @@
   ;; NOTE: init.el is now generated from Emacs.org.  Please edit that file
   ;;       in Emacs and init.el will be generated automatically!
 #+end_src
+* Set InitLoading Flag
+#+begin_src emacs-lisp
+  (setq twr/init-loading-flag "default")
+  (defun twr/check-init-load ()
+    (when twr/init-loading-flag
+      (message (concat "INIT DID NOT FINISH!!!!!! " twr/init-loading-flag))))
+  (add-hook 'after-init-hook 'twr/check-init-load)
+#+end_src
 * Platform specific items by Chezmoi_config
 #+begin_src emacs-lisp
   ;; Allow chezmoi_config.el to define things:
@@ -1153,6 +1161,10 @@ This is a tangel test,  does not tangle whtn msys launched. Windows launch neith
 * Adjust for better GC
 #+begin_src emacs-lisp
 (setq gc-cons-threshold (* 2 1000 1000))  
+#+end_src
+* Clear Init Loading Flag
+#+begin_src emacs-lisp
+  (setq twr/init-loading-flag nil)
 #+end_src
 * Report Debug END                                                 :noexport:
 Print Debug markers in *messages*

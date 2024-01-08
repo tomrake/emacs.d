@@ -1,6 +1,12 @@
 ;; NOTE: init.el is now generated from Emacs.org.  Please edit that file
 ;;       in Emacs and init.el will be generated automatically!
 
+(setq twr/init-loading-flag "default")
+(defun twr/check-init-load ()
+  (when twr/init-loading-flag
+    (message (concat "INIT DID NOT FINISH!!!!!! " twr/init-loading-flag))))
+(add-hook 'after-init-hook 'twr/check-init-load)
+
 ;; Allow chezmoi_config.el to define things:
 ;;   msys2 paths and enviroments
 ;;   java locations
@@ -720,5 +726,7 @@ I also add lisp version with a compiled name of 'production' or which contain a 
 (require 'filename2clipboard)
 
 (setq gc-cons-threshold (* 2 1000 1000))
+
+(setq twr/init-loading-flag nil)
 
 (message "Debug END")
