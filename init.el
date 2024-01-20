@@ -77,7 +77,7 @@
 (setq use-package-always-defer t)
 
 ;;;; Emacs Debug On Error
-   (setq debug-on-error t)
+   (setq debug-on-error nil )
 
 ;;;; Macro to load user customizations from .emacs.d
 (defmacro local-custom-file (file description)
@@ -280,35 +280,35 @@
   by release version and a compiled name..
 I also add lisp version with a compiled name of 'production' or which contain a file '.production.'")
 
-      (defun get-sbcl-versions (base-address)
-	  "Get all the directories under the base-address"
-	  (remove "." (remove ".." (directory-files  base-address ))))
+(defun get-sbcl-versions (base-address)
+  "Get all the directories under the base-address"
+  (remove "." (remove ".." (directory-files  base-address ))))
 
-	(defun get-sbcl-configs (version-address)
-	  (remove "." (remove ".." (directory-files version-address))))
+(defun get-sbcl-configs (version-address)
+  (remove "." (remove ".." (directory-files version-address))))
 
-	(defun assemble-named-sbcl-version (prefix base-address version config)
-	  "Create a SBCL invoker for specific compiled version."
-	  (assemble-sbcl-enviroment-invoker
-	    (intern (concat prefix version "-" config))
-	    (concat base-address "/" version "/" config "/bin/sbcl.exe")
-	    (list (concat "SBCL_HOME=" base-address "/" version "/" config "/lib/sbcl/")
-		  "CC=c:/devel/msys64/ucrt64/bin/gcc")))
+(defun assemble-named-sbcl-version (prefix base-address version config)
+  "Create a SBCL invoker for specific compiled version."
+  (assemble-sbcl-enviroment-invoker
+   (intern (concat prefix version "-" config))
+   (concat base-address "/" version "/" config "/bin/sbcl.exe")
+   (list (concat "SBCL_HOME=" base-address "/" version "/" config "/lib/sbcl/")
+	 "CC=c:/devel/msys64/ucrt64/bin/gcc")))
 
-	(defun add-win64-sbcl (base-address)
-	  "Add a SBCL invoker for all versions under the base-address"
-	  (let ((versions (get-sbcl-versions base-address)))
-	    (dolist (version versions)
-	      (let ((configs (get-sbcl-configs (concat base-address "/" version))))
-		(dolist (config configs)
-		  (when (and (file-exists-p (concat base-address "/" version "/" config  "/bin/sbcl.exe"))
-			     (or (string= config "production") (file-exists-p (concat base-address "/" version "/" config "/.production"))))
-		    (collect-this-lisp (assemble-named-sbcl-version "sbcl64-" base-address version config))))))))
+(defun add-win64-sbcl (base-address)
+  "Add a SBCL invoker for all versions under the base-address"
+  (let ((versions (get-sbcl-versions base-address)))
+    (dolist (version versions)
+      (let ((configs (get-sbcl-configs (concat base-address "/" version))))
+	(dolist (config configs)
+	  (when (and (file-exists-p (concat base-address "/" version "/" config  "/bin/sbcl.exe"))
+		     (or (string= config "production") (file-exists-p (concat base-address "/" version "/" config "/.production"))))
+	    (collect-this-lisp (assemble-named-sbcl-version "sbcl64-" base-address version config))))))))
 
-	(defun collect-sbcl ()
-	  "Add all the slime invokers for SBCL 64bit compiled versions."
-	  (add-win64-sbcl local-sbcl-base))
-	 ; (setf my-lisp-implementations (cddr my-lisp-implementations)))
+(defun collect-sbcl ()
+  "Add all the slime invokers for SBCL 64bit compiled versions."
+  (add-win64-sbcl local-sbcl-base))
+					; (setf my-lisp-implementations (cddr my-lisp-implementations)))
 
 (defun ccl-invoker (my-tag path)
   "Return a lisp invoker; nil if path does not exist"
@@ -657,17 +657,28 @@ I also add lisp version with a compiled name of 'production' or which contain a 
 (setq recentf-max-menu-items 25)
 (global-set-key "\C-x\ \C-r" 'recentf-open-files)
 
-(setq ppl-holiday-table '(2023					;year
-   (1 1)					;new years day
-   (2 20)				;presidents day
-   (4 7)					; Good Friday
-   (5 29)				; Memorial Day
-   (7 4)					; Independence Day
-   (9 4)					; Labor Day
-   (11 24)				; Thanksgiving
-   (11 25)				; Next Day
-   (12 24)				; Christmas Eve
-   (12 25)))                              ; Christmas
+(setq ppl-holiday-table ;; '(2023					;year
+ ;;   (1 1)					;new years day
+ ;;   (2 20)				;presidents day
+ ;;   (4 7)					; Good Friday
+ ;;   (5 29)				; Memorial Day
+ ;;   (7 4)					; Independence Day
+ ;;   (9 4)					; Labor Day
+ ;;   (11 24)				; Thanksgiving
+ ;;   (11 25)				; Next Day
+ ;;   (12 24)				; Christmas Eve
+ ;;   (12 25))
+ '(2024					;year
+  (1 1)					;new years day
+ (2 19)				;presidents day
+ (3 29)					; Good Friday
+ (5 27)				; Memorial Day
+ (7 4)					; Independence Day
+ (9 2)					; Labor Day
+ (11 28)				; Thanksgiving
+ (11 29)				; Next Day
+ (12 24)				; Christmas Eve
+ (12 25)))                              ; Christmas
 
 
   (defun is-holiday (dt table)
