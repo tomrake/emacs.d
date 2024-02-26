@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2024-01-19 Fri 19:29 -->
+<!-- 2024-02-08 Thu 10:44 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>The Emacs configuration of Tom Rake</title>
@@ -200,127 +200,127 @@
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents" role="doc-toc">
 <ul>
-<li><a href="#orgb643126">Add Generated from Emacs.org warning.</a></li>
-<li><a href="#orgc93d352">Set InitLoading Flag</a></li>
-<li><a href="#orgdbdc1a2">Platform specific items by Chezmoi_config</a></li>
-<li><a href="#orge3575dc">Adding the scripts directory  to path</a></li>
-<li><a href="#org2bddbd3">SLIME v SLY switch</a></li>
-<li><a href="#org3a5403f">Emacs Garbage Collection Tweeking</a></li>
-<li><a href="#orgbe7610a">Font and Frame Tweeking</a></li>
-<li><a href="#org8aae939">Initial Buffer Choice</a></li>
-<li><a href="#orgf66188e">Default Coding System</a></li>
-<li><a href="#org855a68a">Report Startup Time</a></li>
-<li><a href="#org393697b">The emacs customization file.</a></li>
-<li><a href="#orgdb4f7bd">Package Archives and use-package</a></li>
-<li><a href="#orgc57eebb">Emacs debug-on-error</a></li>
-<li><a href="#orgf1c6d19">Allow loading of a file from .emacs.d/</a>
+<li><a href="#org6fdc956">Add Generated from Emacs.org warning.</a></li>
+<li><a href="#orgb2e6aa9">Set InitLoading Flag</a></li>
+<li><a href="#org927bc68">Platform specific items by Chezmoi_config</a></li>
+<li><a href="#orgc5ae4ef">Adding the scripts directory  to path</a></li>
+<li><a href="#orge93857e">SLIME v SLY switch</a></li>
+<li><a href="#org784e4de">Emacs Garbage Collection Tweeking</a></li>
+<li><a href="#org7f25258">Font and Frame Tweeking</a></li>
+<li><a href="#orgb09146a">Initial Buffer Choice</a></li>
+<li><a href="#orgb36ed93">Default Coding System</a></li>
+<li><a href="#orge3b8e25">Report Startup Time</a></li>
+<li><a href="#orgb9ae2e6">The emacs customization file.</a></li>
+<li><a href="#orga4b1e7a">Package Archives and use-package</a></li>
+<li><a href="#org13393b6">Emacs debug-on-error</a></li>
+<li><a href="#org8c416b0">Allow loading of a file from .emacs.d/</a>
 <ul>
 <li>
 <ul>
-<li><a href="#orgaaac523">[TBD] Once the init.el generation is working</a></li>
+<li><a href="#org165c46a">[TBD] Once the init.el generation is working</a></li>
 </ul>
 </li>
-<li><a href="#orgeada139">User custom setting from .emacs.d files.</a></li>
+<li><a href="#orgcd90cbc">User custom setting from .emacs.d files.</a></li>
 </ul>
 </li>
-<li><a href="#org546a45d">Magic Modes</a></li>
-<li><a href="#org02a79a7">Initial Frame Size</a></li>
-<li><a href="#org7b5b287">Basic Look and feel</a></li>
-<li><a href="#org121b4a9">Fix Windows 10 cursor problem</a></li>
-<li><a href="#org168478e">Buffer Auto reverting</a></li>
-<li><a href="#orgc60270b">IDO</a></li>
-<li><a href="#org063f4e4">Which-Key</a></li>
-<li><a href="#orgd56cd6f">Vertico</a></li>
-<li><a href="#org3d234a0">org-roam NO TANGLE</a></li>
-<li><a href="#orgb6f16c0">Default Pathnames with Enviroment Overrides</a></li>
-<li><a href="#orgf1d8f75">Ispell configured with Aspell</a></li>
-<li><a href="#org298ecaa">JAVA Interface</a></li>
-<li><a href="#org895e141">Language Tool</a></li>
-<li><a href="#org4d00113">Joining items as strings with and without quoting</a></li>
-<li><a href="#org3315094">Ensure gnu-tools</a></li>
-<li><a href="#org7599a5a">Magit</a></li>
-<li><a href="#org40577cd">SSH Agency</a></li>
-<li><a href="#org2ad4c20">Roswell</a></li>
-<li><a href="#orgb5e4240">Modus Theme Configuration</a></li>
-<li><a href="#org845d3e5">Rainbow Delimeters</a></li>
-<li><a href="#orgea00209">Powershell</a></li>
-<li><a href="#org5d10b8e">Shells</a></li>
-<li><a href="#orgda63e62">Eshell</a></li>
-<li><a href="#orgd91ea39">Add shell extensions</a></li>
-<li><a href="#org7892885">Tramp</a></li>
-<li><a href="#org138e7c4">Paredit mode</a></li>
-<li><a href="#org15d6fe6">Taging of Inferior Invokers</a></li>
-<li><a href="#orgf938bb8">SBCL  Invoker</a></li>
-<li><a href="#orgd879757">CCL Invokers</a></li>
-<li><a href="#orgfbc36a0">ABCL</a></li>
-<li><a href="#orga456f16">Gather all my LISP invokers</a></li>
-<li><a href="#org486aea1">Maybe use SLIME</a></li>
-<li><a href="#org18cf666">Maybe use SLY</a></li>
-<li><a href="#org6b8fecb">Enable lisp-mode .lisp and .asd files</a></li>
-<li><a href="#org86aa525">Common Lisp HyperSpec</a></li>
-<li><a href="#org9f004e0">Hyperspec Root is loaded from Enviroment location</a></li>
-<li><a href="#org746c02c">Pascal Setup</a></li>
-<li><a href="#org5ae4978">Org Mode</a>
+<li><a href="#orgc12c64c">Magic Modes</a></li>
+<li><a href="#orgbc783be">Initial Frame Size</a></li>
+<li><a href="#org228bd18">Basic Look and feel</a></li>
+<li><a href="#orgbcd79ec">Fix Windows 10 cursor problem</a></li>
+<li><a href="#orgaf58543">Buffer Auto reverting</a></li>
+<li><a href="#org224024b">IDO</a></li>
+<li><a href="#orgf7953b5">Which-Key</a></li>
+<li><a href="#org85b14ca">Vertico</a></li>
+<li><a href="#org33d8fce">org-roam NO TANGLE</a></li>
+<li><a href="#org565ba5a">Default Pathnames with Enviroment Overrides</a></li>
+<li><a href="#org4c6e84b">Ispell configured with Aspell</a></li>
+<li><a href="#org1c7ea00">JAVA Interface</a></li>
+<li><a href="#org19585b7">Language Tool</a></li>
+<li><a href="#org2fbef80">Joining items as strings with and without quoting</a></li>
+<li><a href="#orgfb510b2">Ensure gnu-tools</a></li>
+<li><a href="#orgb86775c">Magit</a></li>
+<li><a href="#org5df4c32">SSH Agency</a></li>
+<li><a href="#orgfd53f97">Roswell</a></li>
+<li><a href="#org824268f">Modus Theme Configuration</a></li>
+<li><a href="#org2eb1de2">Rainbow Delimeters</a></li>
+<li><a href="#orgc7cf034">Powershell</a></li>
+<li><a href="#orgcc5956b">Shells</a></li>
+<li><a href="#org39b0a7a">Eshell</a></li>
+<li><a href="#orgec20275">Add shell extensions</a></li>
+<li><a href="#orgb9419a1">Tramp</a></li>
+<li><a href="#org4541dd8">Paredit mode</a></li>
+<li><a href="#orga0dda0b">Taging of Inferior Invokers</a></li>
+<li><a href="#orgf40cc88">SBCL  Invoker</a></li>
+<li><a href="#orgc6d5cc9">CCL Invokers</a></li>
+<li><a href="#orge13efeb">ABCL</a></li>
+<li><a href="#org306dfcd">Gather all my LISP invokers</a></li>
+<li><a href="#orgbdcd448">Maybe use SLIME</a></li>
+<li><a href="#org86c4dea">Maybe use SLY</a></li>
+<li><a href="#org8d57d9d">Enable lisp-mode .lisp and .asd files</a></li>
+<li><a href="#org5667688">Common Lisp HyperSpec</a></li>
+<li><a href="#orga8f46cf">Hyperspec Root is loaded from Enviroment location</a></li>
+<li><a href="#org069822b">Pascal Setup</a></li>
+<li><a href="#orgc602f1c">Org Mode</a>
 <ul>
-<li><a href="#org6efb70b">&lt;&lt; The Open  ( use-package for org</a></li>
-<li><a href="#org6d97505">Make tab act natively in org source blocks</a></li>
-<li><a href="#orgeaf827e">Configure org-export</a></li>
-<li><a href="#org01d5855">Org Structure Templates</a></li>
-<li><a href="#orgbcad50a">org global properties - efforts</a></li>
-<li><a href="#org5690033">killing frame for org-protcol capture</a></li>
-<li><a href="#orge49c741">org mode location</a></li>
-<li><a href="#orgb7a401d">gtd location</a></li>
-<li><a href="#org49c3e37">Org Key Binding</a></li>
-<li><a href="#org17fdd8d">Configure BABEL languages</a></li>
-<li><a href="#orgeadace9">org modules needed</a></li>
-<li><a href="#org6065a97">Header Text Ignore</a></li>
-<li><a href="#org6f36f93">org-habit</a></li>
-<li><a href="#org49c7778">Org link abbreviations</a></li>
-<li><a href="#orgac1a752">Ensure there are standard user ~/org directories</a></li>
-<li><a href="#orgd47fc40">Standard Notes file</a></li>
-<li><a href="#org5fa609a">org TODOs types</a></li>
-<li><a href="#orgf625028">org TODO colors</a></li>
-<li><a href="#orgc456566">Task agenda context</a></li>
-<li><a href="#orge33ca27">Capture Templates</a></li>
-<li><a href="#orgde0b88b">org mode add :shcmd to sh blocks</a></li>
-<li><a href="#org2e3d83e">org-publish</a></li>
-<li><a href="#orgfed4888">org-present</a></li>
-<li><a href="#org3edc917">Bullets and fonts for org mode</a></li>
-<li><a href="#orgb35aac2">Add web image links</a></li>
-<li><a href="#orgcf60575">&gt;&gt;The close of the (use-package org config</a></li>
+<li><a href="#org2eeac59">&lt;&lt; The Open  ( use-package for org</a></li>
+<li><a href="#orgc522d5d">Make tab act natively in org source blocks</a></li>
+<li><a href="#org02b8c1e">Configure org-export</a></li>
+<li><a href="#orgda71217">Org Structure Templates</a></li>
+<li><a href="#org11d07b3">org global properties - efforts</a></li>
+<li><a href="#orgecd987f">killing frame for org-protcol capture</a></li>
+<li><a href="#org56b310c">org mode location</a></li>
+<li><a href="#org5a321c8">gtd location</a></li>
+<li><a href="#org5611e41">Org Key Binding</a></li>
+<li><a href="#orgd84e595">Configure BABEL languages</a></li>
+<li><a href="#org2dde3fa">org modules needed</a></li>
+<li><a href="#org7daa869">Header Text Ignore</a></li>
+<li><a href="#orgb2c7bdc">org-habit</a></li>
+<li><a href="#org8ee4bb0">Org link abbreviations</a></li>
+<li><a href="#orgf7cb0f9">Ensure there are standard user ~/org directories</a></li>
+<li><a href="#org1f86648">Standard Notes file</a></li>
+<li><a href="#org86bac95">org TODOs types</a></li>
+<li><a href="#org169b830">org TODO colors</a></li>
+<li><a href="#orgfb81ca6">Task agenda context</a></li>
+<li><a href="#orgbda9c89">Capture Templates</a></li>
+<li><a href="#org35ff880">org mode add :shcmd to sh blocks</a></li>
+<li><a href="#org1036575">org-publish</a></li>
+<li><a href="#org125eaad">org-present</a></li>
+<li><a href="#orgf45a42b">Bullets and fonts for org mode</a></li>
+<li><a href="#org54c4b4a">Add web image links</a></li>
+<li><a href="#org2d0650a">&gt;&gt;The close of the (use-package org config</a></li>
 </ul>
 </li>
-<li><a href="#org2be6b1c">PS Print with GHOSTSCRIPT</a></li>
-<li><a href="#orgf61bd0c">Emacs Backup Files</a></li>
-<li><a href="#org1ca22a4">Eshell</a></li>
-<li><a href="#orgd83e15c">Dired</a>
+<li><a href="#org0ca5b76">PS Print with GHOSTSCRIPT</a></li>
+<li><a href="#orgd4b03c5">Emacs Backup Files</a></li>
+<li><a href="#org7e1abb6">Eshell</a></li>
+<li><a href="#orgf96ee8d">Dired</a>
 <ul>
-<li><a href="#org8704d8e">dired hook</a></li>
-<li><a href="#org1521996">Single Dired buffer</a></li>
-<li><a href="#org56e748a">All the icons</a></li>
-<li><a href="#org67cc25e">File Sort Order</a></li>
-<li><a href="#orgbe9e9fc">diredc - NOT TANGLED</a></li>
-<li><a href="#orgf9f28d2">Peep Dired - NOT TANGLED</a></li>
+<li><a href="#org1c43f76">dired hook</a></li>
+<li><a href="#orgede1ff4">Single Dired buffer</a></li>
+<li><a href="#org67b926b">All the icons</a></li>
+<li><a href="#orgf5efb84">File Sort Order</a></li>
+<li><a href="#orgc19777e">diredc - NOT TANGLED</a></li>
+<li><a href="#org7244ac7">Peep Dired - NOT TANGLED</a></li>
 </ul>
 </li>
-<li><a href="#org22f33f0">Mastodon</a></li>
-<li><a href="#orgfc8a41a">Openwith</a></li>
-<li><a href="#org9bae476">Recentf</a></li>
-<li><a href="#org7aed121">PDF-TOOLS</a></li>
-<li><a href="#orgcd1f508">PPL Time of Day</a></li>
-<li><a href="#org936b230">YAML Mode</a></li>
-<li><a href="#org94144ba">JSON to Single line</a></li>
-<li><a href="#org0971e76">Auto-tangle configuratioqn files.</a></li>
-<li><a href="#org468dce7">load per user settings</a></li>
-<li><a href="#org887c9d3">Sourcing of Scripts</a></li>
-<li><a href="#org734a8f4">Adjust for better GC</a></li>
-<li><a href="#org5e3a25d">Clear Init Loading Flag</a></li>
+<li><a href="#org821b9a8">Mastodon</a></li>
+<li><a href="#org40c4251">Openwith</a></li>
+<li><a href="#orga81111f">Recentf</a></li>
+<li><a href="#orga8cef63">PDF-TOOLS</a></li>
+<li><a href="#org9045940">PPL Time of Day</a></li>
+<li><a href="#orgb69a296">YAML Mode</a></li>
+<li><a href="#orgd6424b8">JSON to Single line</a></li>
+<li><a href="#org228a67c">Auto-tangle configuratioqn files.</a></li>
+<li><a href="#orgbf251e7">load per user settings</a></li>
+<li><a href="#org67fe912">Sourcing of Scripts</a></li>
+<li><a href="#orgb8a89ee">Adjust for better GC</a></li>
+<li><a href="#org0e250c1">Clear Init Loading Flag</a></li>
 </ul>
 </div>
 </div>
-<div id="outline-container-orgb643126" class="outline-2">
-<h2 id="orgb643126">Add Generated from Emacs.org warning.</h2>
-<div class="outline-text-2" id="text-orgb643126">
+<div id="outline-container-org6fdc956" class="outline-2">
+<h2 id="org6fdc956">Add Generated from Emacs.org warning.</h2>
+<div class="outline-text-2" id="text-org6fdc956">
 <div class="org-src-container">
 <pre class="src src-emacs-lisp"><span style="color: #989898; font-style: italic;">;; </span><span style="color: #989898; font-style: italic;">NOTE: init.el is now generated from Emacs.org.  Please edit that file</span>
 <span style="color: #989898; font-style: italic;">;;       </span><span style="color: #989898; font-style: italic;">in Emacs and init.el will be generated automatically!</span>
@@ -328,9 +328,9 @@
 </div>
 </div>
 </div>
-<div id="outline-container-orgc93d352" class="outline-2">
-<h2 id="orgc93d352">Set InitLoading Flag</h2>
-<div class="outline-text-2" id="text-orgc93d352">
+<div id="outline-container-orgb2e6aa9" class="outline-2">
+<h2 id="orgb2e6aa9">Set InitLoading Flag</h2>
+<div class="outline-text-2" id="text-orgb2e6aa9">
 <div class="org-src-container">
 <pre class="src src-emacs-lisp">(<span style="color: #b6a0ff;">setq</span> twr/init-loading-flag <span style="color: #79a8ff;">"default"</span>)
 (<span style="color: #b6a0ff;">defun</span> <span style="color: #feacd0;">twr/check-init-load</span> ()
@@ -341,9 +341,9 @@
 </div>
 </div>
 </div>
-<div id="outline-container-orgdbdc1a2" class="outline-2">
-<h2 id="orgdbdc1a2">Platform specific items by Chezmoi_config</h2>
-<div class="outline-text-2" id="text-orgdbdc1a2">
+<div id="outline-container-org927bc68" class="outline-2">
+<h2 id="org927bc68">Platform specific items by Chezmoi_config</h2>
+<div class="outline-text-2" id="text-org927bc68">
 <div class="org-src-container">
 <pre class="src src-emacs-lisp"><span style="color: #989898; font-style: italic;">;; </span><span style="color: #989898; font-style: italic;">Allow chezmoi_config.el to define things:</span>
 <span style="color: #989898; font-style: italic;">;;   </span><span style="color: #989898; font-style: italic;">msys2 paths and enviroments</span>
@@ -356,18 +356,18 @@
 </div>
 </div>
 </div>
-<div id="outline-container-orge3575dc" class="outline-2">
-<h2 id="orge3575dc">Adding the scripts directory  to path</h2>
-<div class="outline-text-2" id="text-orge3575dc">
+<div id="outline-container-orgc5ae4ef" class="outline-2">
+<h2 id="orgc5ae4ef">Adding the scripts directory  to path</h2>
+<div class="outline-text-2" id="text-orgc5ae4ef">
 <div class="org-src-container">
 <pre class="src src-emacs-lisp">(add-to-list 'load-path (expand-file-name <span style="color: #79a8ff;">"scripts/"</span> user-emacs-directory))
 </pre>
 </div>
 </div>
 </div>
-<div id="outline-container-org2bddbd3" class="outline-2">
-<h2 id="org2bddbd3">SLIME v SLY switch</h2>
-<div class="outline-text-2" id="text-org2bddbd3">
+<div id="outline-container-orge93857e" class="outline-2">
+<h2 id="orge93857e">SLIME v SLY switch</h2>
+<div class="outline-text-2" id="text-orge93857e">
 <div class="org-src-container">
 <pre class="src src-emacs-lisp">(<span style="color: #b6a0ff;">defvar</span> <span style="color: #00d3d0;">use-slime</span> t <span style="color: #9ac8e0; font-style: italic;">"Set true to use slime for superior lisp"</span>)
 (<span style="color: #b6a0ff;">defvar</span> <span style="color: #00d3d0;">use-sly</span> nil <span style="color: #9ac8e0; font-style: italic;">"Set true to use sly for superior lisp"</span>)
@@ -376,18 +376,18 @@
 </div>
 </div>
 </div>
-<div id="outline-container-org3a5403f" class="outline-2">
-<h2 id="org3a5403f">Emacs Garbage Collection Tweeking</h2>
-<div class="outline-text-2" id="text-org3a5403f">
+<div id="outline-container-org784e4de" class="outline-2">
+<h2 id="org784e4de">Emacs Garbage Collection Tweeking</h2>
+<div class="outline-text-2" id="text-org784e4de">
 <div class="org-src-container">
 <pre class="src src-emacs-lisp">(<span style="color: #b6a0ff;">setq</span> gc-cons-threshold (* 50 1000 1000))
 </pre>
 </div>
 </div>
 </div>
-<div id="outline-container-orgbe7610a" class="outline-2">
-<h2 id="orgbe7610a">Font and Frame Tweeking</h2>
-<div class="outline-text-2" id="text-orgbe7610a">
+<div id="outline-container-org7f25258" class="outline-2">
+<h2 id="org7f25258">Font and Frame Tweeking</h2>
+<div class="outline-text-2" id="text-org7f25258">
 <div class="org-src-container">
 <pre class="src src-emacs-lisp"><span style="color: #989898; font-style: italic;">;; </span><span style="color: #989898; font-style: italic;">You will most likely need to adjust this font size for your system!</span>
 (<span style="color: #b6a0ff;">defvar</span> <span style="color: #00d3d0;">efs/default-font-size</span> 180)
@@ -400,18 +400,18 @@
 </div>
 </div>
 
-<div id="outline-container-org8aae939" class="outline-2">
-<h2 id="org8aae939">Initial Buffer Choice</h2>
-<div class="outline-text-2" id="text-org8aae939">
+<div id="outline-container-orgb09146a" class="outline-2">
+<h2 id="orgb09146a">Initial Buffer Choice</h2>
+<div class="outline-text-2" id="text-orgb09146a">
 <div class="org-src-container">
 <pre class="src src-emacs-lisp">(<span style="color: #b6a0ff;">setq</span> initial-buffer-choice (concat user-emacs-directory <span style="color: #79a8ff;">"startup-buffer.org"</span>))
 </pre>
 </div>
 </div>
 </div>
-<div id="outline-container-orgf66188e" class="outline-2">
-<h2 id="orgf66188e">Default Coding System</h2>
-<div class="outline-text-2" id="text-orgf66188e">
+<div id="outline-container-orgb36ed93" class="outline-2">
+<h2 id="orgb36ed93">Default Coding System</h2>
+<div class="outline-text-2" id="text-orgb36ed93">
 <div class="org-src-container">
 <pre class="src src-emacs-lisp"><span style="color: #989898; font-style: italic;">;; </span><span style="color: #989898; font-style: italic;">UTF-8 as default encoding</span>
 (set-language-environment <span style="color: #79a8ff;">"UTF-8"</span>)
@@ -424,9 +424,9 @@
 </div>
 </div>
 </div>
-<div id="outline-container-org855a68a" class="outline-2">
-<h2 id="org855a68a">Report Startup Time</h2>
-<div class="outline-text-2" id="text-org855a68a">
+<div id="outline-container-orge3b8e25" class="outline-2">
+<h2 id="orge3b8e25">Report Startup Time</h2>
+<div class="outline-text-2" id="text-orge3b8e25">
 <div class="org-src-container">
 <pre class="src src-emacs-lisp"><span style="color: #989898; font-style: italic;">;;;; </span><span style="color: #989898; font-style: italic;">Reporting Startup Time</span>
   (<span style="color: #b6a0ff;">defun</span> <span style="color: #feacd0;">efs/display-startup-time</span> ()
@@ -441,9 +441,9 @@
 </div>
 </div>
 </div>
-<div id="outline-container-org393697b" class="outline-2">
-<h2 id="org393697b">The emacs customization file.</h2>
-<div class="outline-text-2" id="text-org393697b">
+<div id="outline-container-orgb9ae2e6" class="outline-2">
+<h2 id="orgb9ae2e6">The emacs customization file.</h2>
+<div class="outline-text-2" id="text-orgb9ae2e6">
 <p>
 Define were emacs cusomization is saved and restored.
 </p>
@@ -455,9 +455,9 @@ Define were emacs cusomization is saved and restored.
 </div>
 </div>
 </div>
-<div id="outline-container-orgdb4f7bd" class="outline-2">
-<h2 id="orgdb4f7bd">Package Archives and use-package</h2>
-<div class="outline-text-2" id="text-orgdb4f7bd">
+<div id="outline-container-orga4b1e7a" class="outline-2">
+<h2 id="orga4b1e7a">Package Archives and use-package</h2>
+<div class="outline-text-2" id="text-orga4b1e7a">
 <div class="org-src-container">
 <pre class="src src-emacs-lisp"><span style="color: #989898; font-style: italic;">;;;; </span><span style="color: #989898; font-style: italic;">Initialize package sources</span>
 (<span style="color: #b6a0ff;">require</span> '<span style="color: #00bcff;">package</span>)
@@ -484,9 +484,9 @@ Define were emacs cusomization is saved and restored.
 </div>
 </div>
 </div>
-<div id="outline-container-orgc57eebb" class="outline-2">
-<h2 id="orgc57eebb">Emacs debug-on-error</h2>
-<div class="outline-text-2" id="text-orgc57eebb">
+<div id="outline-container-org13393b6" class="outline-2">
+<h2 id="org13393b6">Emacs debug-on-error</h2>
+<div class="outline-text-2" id="text-org13393b6">
 <p>
 [TBD] Should this be set from an enviroment variable.
 [TBD] Is there already a command line switch for this?
@@ -499,13 +499,13 @@ Define were emacs cusomization is saved and restored.
 </div>
 </div>
 
-<div id="outline-container-orgf1c6d19" class="outline-2">
-<h2 id="orgf1c6d19">Allow loading of a file from .emacs.d/</h2>
-<div class="outline-text-2" id="text-orgf1c6d19">
+<div id="outline-container-org8c416b0" class="outline-2">
+<h2 id="org8c416b0">Allow loading of a file from .emacs.d/</h2>
+<div class="outline-text-2" id="text-org8c416b0">
 </div>
-<div id="outline-container-orgaaac523" class="outline-4">
-<h4 id="orgaaac523">[TBD] Once the init.el generation is working</h4>
-<div class="outline-text-4" id="text-orgaaac523">
+<div id="outline-container-org165c46a" class="outline-4">
+<h4 id="org165c46a">[TBD] Once the init.el generation is working</h4>
+<div class="outline-text-4" id="text-org165c46a">
 <ul class="org-ul">
 <li>autosaving other .emacs.d/ configuration files could be done
 the following macro will need to be reconsidered.</li>
@@ -513,9 +513,9 @@ the following macro will need to be reconsidered.</li>
 </div>
 </div>
 
-<div id="outline-container-orgeada139" class="outline-3">
-<h3 id="orgeada139">User custom setting from .emacs.d files.</h3>
-<div class="outline-text-3" id="text-orgeada139">
+<div id="outline-container-orgcd90cbc" class="outline-3">
+<h3 id="orgcd90cbc">User custom setting from .emacs.d files.</h3>
+<div class="outline-text-3" id="text-orgcd90cbc">
 <div class="org-src-container">
 <pre class="src src-emacs-lisp"><span style="color: #989898; font-style: italic;">;;;; </span><span style="color: #989898; font-style: italic;">Macro to load user customizations from .emacs.d</span>
 (<span style="color: #b6a0ff;">defmacro</span> <span style="color: #feacd0;">local-custom-file</span> (file description)
@@ -534,9 +534,9 @@ the following macro will need to be reconsidered.</li>
 </div>
 </div>
 </div>
-<div id="outline-container-org546a45d" class="outline-2">
-<h2 id="org546a45d">Magic Modes</h2>
-<div class="outline-text-2" id="text-org546a45d">
+<div id="outline-container-orgc12c64c" class="outline-2">
+<h2 id="orgc12c64c">Magic Modes</h2>
+<div class="outline-text-2" id="text-orgc12c64c">
 <div class="org-src-container">
 <pre class="src src-emacs-lisp"><span style="color: #989898; font-style: italic;">;;;; </span><span style="color: #989898; font-style: italic;">Magic File modes</span>
 (<span style="color: #b6a0ff;">setq</span> magic-mode-alist '((<span style="color: #79a8ff;">"*.org"</span> . org)))
@@ -544,9 +544,9 @@ the following macro will need to be reconsidered.</li>
 </div>
 </div>
 </div>
-<div id="outline-container-org02a79a7" class="outline-2">
-<h2 id="org02a79a7">Initial Frame Size</h2>
-<div class="outline-text-2" id="text-org02a79a7">
+<div id="outline-container-orgbc783be" class="outline-2">
+<h2 id="orgbc783be">Initial Frame Size</h2>
+<div class="outline-text-2" id="text-orgbc783be">
 <p>
 <a href="https://www.gnu.org/software/emacs/manual/html_node/efaq/Fullscreen-mode-on-MS_002dWindows.html">https://www.gnu.org/software/emacs/manual/html_node/efaq/Fullscreen-mode-on-MS_002dWindows.html</a>
 </p>
@@ -574,9 +574,9 @@ Fix initial window position.
 </div>
 </div>
 
-<div id="outline-container-org7b5b287" class="outline-2">
-<h2 id="org7b5b287">Basic Look and feel</h2>
-<div class="outline-text-2" id="text-org7b5b287">
+<div id="outline-container-org228bd18" class="outline-2">
+<h2 id="org228bd18">Basic Look and feel</h2>
+<div class="outline-text-2" id="text-org228bd18">
 <p>
 I don't like the a messy startup screen.
 </p>
@@ -591,9 +591,9 @@ I don't like the a messy startup screen.
 </div>
 </div>
 </div>
-<div id="outline-container-org121b4a9" class="outline-2">
-<h2 id="org121b4a9">Fix Windows 10 cursor problem</h2>
-<div class="outline-text-2" id="text-org121b4a9">
+<div id="outline-container-orgbcd79ec" class="outline-2">
+<h2 id="orgbcd79ec">Fix Windows 10 cursor problem</h2>
+<div class="outline-text-2" id="text-orgbcd79ec">
 <div class="org-src-container">
 <pre class="src src-emacs-lisp">(<span style="color: #b6a0ff;">setq</span> w32-use-visible-system-caret nil)
 </pre>
@@ -601,9 +601,9 @@ I don't like the a messy startup screen.
 </div>
 </div>
 
-<div id="outline-container-org168478e" class="outline-2">
-<h2 id="org168478e">Buffer Auto reverting</h2>
-<div class="outline-text-2" id="text-org168478e">
+<div id="outline-container-orgaf58543" class="outline-2">
+<h2 id="orgaf58543">Buffer Auto reverting</h2>
+<div class="outline-text-2" id="text-orgaf58543">
 <div class="org-src-container">
 <pre class="src src-emacs-lisp"><span style="color: #989898; font-style: italic;">;;;; </span><span style="color: #989898; font-style: italic;">auto revert mode</span>
 (global-auto-revert-mode 1)
@@ -614,9 +614,9 @@ I don't like the a messy startup screen.
 </div>
 </div>
 </div>
-<div id="outline-container-orgc60270b" class="outline-2">
-<h2 id="orgc60270b">IDO</h2>
-<div class="outline-text-2" id="text-orgc60270b">
+<div id="outline-container-org224024b" class="outline-2">
+<h2 id="org224024b">IDO</h2>
+<div class="outline-text-2" id="text-org224024b">
 <div class="org-src-container">
 <pre class="src src-emacs-lisp">(<span style="color: #b6a0ff;">use-package</span>  <span style="color: #00bcff;">ido</span>
     <span style="color: #f78fe7;">:config</span>
@@ -625,9 +625,9 @@ I don't like the a messy startup screen.
 </div>
 </div>
 </div>
-<div id="outline-container-org063f4e4" class="outline-2">
-<h2 id="org063f4e4">Which-Key</h2>
-<div class="outline-text-2" id="text-org063f4e4">
+<div id="outline-container-orgf7953b5" class="outline-2">
+<h2 id="orgf7953b5">Which-Key</h2>
+<div class="outline-text-2" id="text-orgf7953b5">
 <div class="org-src-container">
 <pre class="src src-emacs-lisp">(<span style="color: #b6a0ff;">use-package</span> <span style="color: #00bcff;">which-key</span>
   <span style="color: #f78fe7;">:ensure</span> t)
@@ -635,9 +635,9 @@ I don't like the a messy startup screen.
 </div>
 </div>
 </div>
-<div id="outline-container-orgd56cd6f" class="outline-2">
-<h2 id="orgd56cd6f">Vertico</h2>
-<div class="outline-text-2" id="text-orgd56cd6f">
+<div id="outline-container-org85b14ca" class="outline-2">
+<h2 id="org85b14ca">Vertico</h2>
+<div class="outline-text-2" id="text-org85b14ca">
 <p>
 This is recommended setup from  <a href="https://github.com/minad/vertico">https://github.com/minad/vertico</a>
 I have the following issues
@@ -668,9 +668,9 @@ Read up on <a href="https://www.gnu.org/software/emacs/manual/html_node/elisp/Co
 </div>
 </div>
 </div>
-<div id="outline-container-org3d234a0" class="outline-2">
-<h2 id="org3d234a0">org-roam NO TANGLE</h2>
-<div class="outline-text-2" id="text-org3d234a0">
+<div id="outline-container-org33d8fce" class="outline-2">
+<h2 id="org33d8fce">org-roam NO TANGLE</h2>
+<div class="outline-text-2" id="text-org33d8fce">
 <p>
 I am setting up org-roam
 </p>
@@ -697,9 +697,9 @@ I am setting up org-roam
 </div>
 </div>
 
-<div id="outline-container-orgb6f16c0" class="outline-2">
-<h2 id="orgb6f16c0">Default Pathnames with Enviroment Overrides</h2>
-<div class="outline-text-2" id="text-orgb6f16c0">
+<div id="outline-container-org565ba5a" class="outline-2">
+<h2 id="org565ba5a">Default Pathnames with Enviroment Overrides</h2>
+<div class="outline-text-2" id="text-org565ba5a">
 <p>
 Check and/or Revise this trickery!!!!!
 </p>
@@ -717,9 +717,9 @@ Check and/or Revise this trickery!!!!!
 </div>
 </div>
 
-<div id="outline-container-orgf1d8f75" class="outline-2">
-<h2 id="orgf1d8f75">Ispell configured with Aspell</h2>
-<div class="outline-text-2" id="text-orgf1d8f75">
+<div id="outline-container-org4c6e84b" class="outline-2">
+<h2 id="org4c6e84b">Ispell configured with Aspell</h2>
+<div class="outline-text-2" id="text-org4c6e84b">
 <p>
 aspell configuration is in <a href="file:///c:/Users/zzzap/.aspell.conf">file:///c:/Users/zzzap/.aspell.conf</a>
 Fixed on 7/2/2022 moving to DESKER
@@ -735,9 +735,9 @@ Fixed on 7/2/2022 moving to DESKER
 </div>
 </div>
 </div>
-<div id="outline-container-org298ecaa" class="outline-2">
-<h2 id="org298ecaa">JAVA Interface</h2>
-<div class="outline-text-2" id="text-org298ecaa">
+<div id="outline-container-org1c7ea00" class="outline-2">
+<h2 id="org1c7ea00">JAVA Interface</h2>
+<div class="outline-text-2" id="text-org1c7ea00">
 <p>
 Certain tools need java set that location here.
 </p>
@@ -751,9 +751,9 @@ Certain tools need java set that location here.
 </div>
 </div>
 </div>
-<div id="outline-container-org895e141" class="outline-2">
-<h2 id="org895e141">Language Tool</h2>
-<div class="outline-text-2" id="text-org895e141">
+<div id="outline-container-org19585b7" class="outline-2">
+<h2 id="org19585b7">Language Tool</h2>
+<div class="outline-text-2" id="text-org19585b7">
 <div class="org-src-container">
 <pre class="src src-emacs-lisp">(<span style="color: #b6a0ff;">use-package</span> <span style="color: #00bcff;">langtool</span>
   <span style="color: #f78fe7;">:ensure</span> t
@@ -770,27 +770,27 @@ Certain tools need java set that location here.
 </div>
 </div>
 </div>
-<div id="outline-container-org4d00113" class="outline-2">
-<h2 id="org4d00113">Joining items as strings with and without quoting</h2>
-<div class="outline-text-2" id="text-org4d00113">
+<div id="outline-container-org2fbef80" class="outline-2">
+<h2 id="org2fbef80">Joining items as strings with and without quoting</h2>
+<div class="outline-text-2" id="text-org2fbef80">
 <div class="org-src-container">
 <pre class="src src-emacs-lisp">(<span style="color: #b6a0ff;">require</span> '<span style="color: #00bcff;">quoting-tools</span>)
 </pre>
 </div>
 </div>
 </div>
-<div id="outline-container-org3315094" class="outline-2">
-<h2 id="org3315094">Ensure gnu-tools</h2>
-<div class="outline-text-2" id="text-org3315094">
+<div id="outline-container-orgfb510b2" class="outline-2">
+<h2 id="orgfb510b2">Ensure gnu-tools</h2>
+<div class="outline-text-2" id="text-orgfb510b2">
 <div class="org-src-container">
 <pre class="src src-emacs-lisp">(<span style="color: #b6a0ff;">require</span> '<span style="color: #00bcff;">gnu-tools</span>)
 </pre>
 </div>
 </div>
 </div>
-<div id="outline-container-org7599a5a" class="outline-2">
-<h2 id="org7599a5a">Magit</h2>
-<div class="outline-text-2" id="text-org7599a5a">
+<div id="outline-container-orgb86775c" class="outline-2">
+<h2 id="orgb86775c">Magit</h2>
+<div class="outline-text-2" id="text-orgb86775c">
 <div class="org-src-container">
 <pre class="src src-emacs-lisp">(<span style="color: #b6a0ff;">use-package</span> <span style="color: #00bcff;">magit</span>
   <span style="color: #f78fe7;">:defer</span> 2
@@ -812,9 +812,9 @@ Certain tools need java set that location here.
 </div>
 </div>
 </div>
-<div id="outline-container-org40577cd" class="outline-2">
-<h2 id="org40577cd">SSH Agency</h2>
-<div class="outline-text-2" id="text-org40577cd">
+<div id="outline-container-org5df4c32" class="outline-2">
+<h2 id="org5df4c32">SSH Agency</h2>
+<div class="outline-text-2" id="text-org5df4c32">
 <div class="org-src-container">
 <pre class="src src-emacs-lisp">(<span style="color: #b6a0ff;">use-package</span> <span style="color: #00bcff;">ssh-agency</span>
 <span style="color: #f78fe7;">:ensure</span> t
@@ -826,9 +826,9 @@ Certain tools need java set that location here.
 </div>
 </div>
 </div>
-<div id="outline-container-org2ad4c20" class="outline-2">
-<h2 id="org2ad4c20">Roswell</h2>
-<div class="outline-text-2" id="text-org2ad4c20">
+<div id="outline-container-orgfd53f97" class="outline-2">
+<h2 id="orgfd53f97">Roswell</h2>
+<div class="outline-text-2" id="text-orgfd53f97">
 <div class="org-src-container">
 <pre class="src src-emacs-lisp">(<span style="color: #b6a0ff;">if</span> (getenv <span style="color: #79a8ff;">"MSYSTEM"</span>)
   (<span style="color: #b6a0ff;">when</span> (file-exists-p (expand-file-name <span style="color: #79a8ff;">"~/.roswell/helper.el"</span>))
@@ -837,9 +837,9 @@ Certain tools need java set that location here.
 </div>
 </div>
 </div>
-<div id="outline-container-orgb5e4240" class="outline-2">
-<h2 id="orgb5e4240">Modus Theme Configuration</h2>
-<div class="outline-text-2" id="text-orgb5e4240">
+<div id="outline-container-org824268f" class="outline-2">
+<h2 id="org824268f">Modus Theme Configuration</h2>
+<div class="outline-text-2" id="text-org824268f">
 <p>
 Main Page: <a href="https://protesilaos.com/emacs/modus-themes">https://protesilaos.com/emacs/modus-themes</a>
 </p>
@@ -882,18 +882,18 @@ Main Page: <a href="https://protesilaos.com/emacs/modus-themes">https://protesil
 </div>
 </div>
 
-<div id="outline-container-org845d3e5" class="outline-2">
-<h2 id="org845d3e5">Rainbow Delimeters</h2>
-<div class="outline-text-2" id="text-org845d3e5">
+<div id="outline-container-org2eb1de2" class="outline-2">
+<h2 id="org2eb1de2">Rainbow Delimeters</h2>
+<div class="outline-text-2" id="text-org2eb1de2">
 <div class="org-src-container">
 <pre class="src src-emacs-lisp">(<span style="color: #b6a0ff;">use-package</span> <span style="color: #00bcff;">rainbow-delimiters</span>)
 </pre>
 </div>
 </div>
 </div>
-<div id="outline-container-orgea00209" class="outline-2">
-<h2 id="orgea00209">Powershell</h2>
-<div class="outline-text-2" id="text-orgea00209">
+<div id="outline-container-orgc7cf034" class="outline-2">
+<h2 id="orgc7cf034">Powershell</h2>
+<div class="outline-text-2" id="text-orgc7cf034">
 <div class="org-src-container">
 <pre class="src src-emacs-lisp">(<span style="color: #b6a0ff;">defun</span> <span style="color: #feacd0;">powershell</span>()
   (<span style="color: #b6a0ff;">interactive</span>)
@@ -904,9 +904,9 @@ Main Page: <a href="https://protesilaos.com/emacs/modus-themes">https://protesil
 </div>
 </div>
 </div>
-<div id="outline-container-org5d10b8e" class="outline-2">
-<h2 id="org5d10b8e">Shells</h2>
-<div class="outline-text-2" id="text-org5d10b8e">
+<div id="outline-container-orgcc5956b" class="outline-2">
+<h2 id="orgcc5956b">Shells</h2>
+<div class="outline-text-2" id="text-orgcc5956b">
 <p>
 [TBD] Decide what is CRUFF here.
 I am attempting to use the friendly-shell infrastructure.
@@ -944,9 +944,9 @@ shell/git-bash works but has prompt problems.
 </div>
 </div>
 </div>
-<div id="outline-container-orgda63e62" class="outline-2">
-<h2 id="orgda63e62">Eshell</h2>
-<div class="outline-text-2" id="text-orgda63e62">
+<div id="outline-container-org39b0a7a" class="outline-2">
+<h2 id="org39b0a7a">Eshell</h2>
+<div class="outline-text-2" id="text-org39b0a7a">
 <div class="org-src-container">
 <pre class="src src-emacs-lisp">(setenv  <span style="color: #79a8ff;">"PATH"</span> (concat
                  <span style="color: #79a8ff;">"C:/devel/msys64/ucrt64/bin"</span> <span style="color: #79a8ff;">";"</span>
@@ -956,9 +956,9 @@ shell/git-bash works but has prompt problems.
 </div>
 </div>
 </div>
-<div id="outline-container-orgd91ea39" class="outline-2">
-<h2 id="orgd91ea39">Add shell extensions</h2>
-<div class="outline-text-2" id="text-orgd91ea39">
+<div id="outline-container-orgec20275" class="outline-2">
+<h2 id="orgec20275">Add shell extensions</h2>
+<div class="outline-text-2" id="text-orgec20275">
 <p>
 [TBD] If this is org shell extenstion then put this in org-mode section.
 </p>
@@ -969,9 +969,9 @@ shell/git-bash works but has prompt problems.
 </div>
 </div>
 </div>
-<div id="outline-container-org7892885" class="outline-2">
-<h2 id="org7892885">Tramp</h2>
-<div class="outline-text-2" id="text-org7892885">
+<div id="outline-container-orgb9419a1" class="outline-2">
+<h2 id="orgb9419a1">Tramp</h2>
+<div class="outline-text-2" id="text-orgb9419a1">
 <p>
 Make plink the default tramp method if running on Windows when plink.exe exists.
 </p>
@@ -989,9 +989,9 @@ Make plink the default tramp method if running on Windows when plink.exe exists.
 </div>
 </div>
 </div>
-<div id="outline-container-org138e7c4" class="outline-2">
-<h2 id="org138e7c4">Paredit mode</h2>
-<div class="outline-text-2" id="text-org138e7c4">
+<div id="outline-container-org4541dd8" class="outline-2">
+<h2 id="org4541dd8">Paredit mode</h2>
+<div class="outline-text-2" id="text-org4541dd8">
 <div class="org-src-container">
 <pre class="src src-emacs-lisp">(<span style="color: #b6a0ff;">use-package</span> <span style="color: #00bcff;">paredit</span>
   <span style="color: #f78fe7;">:ensure</span> t
@@ -1000,9 +1000,9 @@ Make plink the default tramp method if running on Windows when plink.exe exists.
 </div>
 </div>
 </div>
-<div id="outline-container-org15d6fe6" class="outline-2">
-<h2 id="org15d6fe6">Taging of Inferior Invokers</h2>
-<div class="outline-text-2" id="text-org15d6fe6">
+<div id="outline-container-orga0dda0b" class="outline-2">
+<h2 id="orga0dda0b">Taging of Inferior Invokers</h2>
+<div class="outline-text-2" id="text-orga0dda0b">
 <p>
 Create a windows standalone startup for a lisp version.
 </p>
@@ -1027,9 +1027,9 @@ Create a windows standalone startup for a lisp version.
 </div>
 </div>
 
-<div id="outline-container-orgf938bb8" class="outline-2">
-<h2 id="orgf938bb8">SBCL  Invoker</h2>
-<div class="outline-text-2" id="text-orgf938bb8">
+<div id="outline-container-orgf40cc88" class="outline-2">
+<h2 id="orgf40cc88">SBCL  Invoker</h2>
+<div class="outline-text-2" id="text-orgf40cc88">
 <p>
 Start all SBCL lisps with a &#x2013;noinform argument and standart arguments.
 </p>
@@ -1063,47 +1063,47 @@ I collect all sbcl version of lisp from a base directory which is structured
 
 
 <div class="org-src-container">
-<pre class="src src-emacs-lisp">    (<span style="color: #b6a0ff;">defvar</span> <span style="color: #00d3d0;">local-sbcl-base</span> <span style="color: #79a8ff;">"C:/Users/Public/Lispers/sbcl/installed"</span>
+<pre class="src src-emacs-lisp">(<span style="color: #b6a0ff;">defvar</span> <span style="color: #00d3d0;">local-sbcl-base</span> <span style="color: #79a8ff;">"C:/Users/Public/Lispers/sbcl/installed"</span>
     <span style="color: #9ac8e0; font-style: italic;">"All locally compiled and installed SBCL lisps are installed in directory,</span>
 <span style="color: #9ac8e0; font-style: italic;">  by release version and a compiled name..</span>
 <span style="color: #9ac8e0; font-style: italic;">I also add lisp version with a compiled name of '</span><span style="color: #00bcff; font-style: italic;">production</span><span style="color: #9ac8e0; font-style: italic;">' or which contain a file '</span><span style="color: #00bcff; font-style: italic;">.production.</span><span style="color: #9ac8e0; font-style: italic;">'"</span>)
 
-      (<span style="color: #b6a0ff;">defun</span> <span style="color: #feacd0;">get-sbcl-versions</span> (base-address)
-          <span style="color: #9ac8e0; font-style: italic;">"Get all the directories under the base-address"</span>
-          (remove <span style="color: #79a8ff;">"."</span> (remove <span style="color: #79a8ff;">".."</span> (directory-files  base-address ))))
+(<span style="color: #b6a0ff;">defun</span> <span style="color: #feacd0;">get-sbcl-versions</span> (base-address)
+  <span style="color: #9ac8e0; font-style: italic;">"Get all the directories under the base-address"</span>
+  (remove <span style="color: #79a8ff;">"."</span> (remove <span style="color: #79a8ff;">".."</span> (directory-files  base-address ))))
 
-        (<span style="color: #b6a0ff;">defun</span> <span style="color: #feacd0;">get-sbcl-configs</span> (version-address)
-          (remove <span style="color: #79a8ff;">"."</span> (remove <span style="color: #79a8ff;">".."</span> (directory-files version-address))))
+(<span style="color: #b6a0ff;">defun</span> <span style="color: #feacd0;">get-sbcl-configs</span> (version-address)
+  (remove <span style="color: #79a8ff;">"."</span> (remove <span style="color: #79a8ff;">".."</span> (directory-files version-address))))
 
-        (<span style="color: #b6a0ff;">defun</span> <span style="color: #feacd0;">assemble-named-sbcl-version</span> (prefix base-address version config)
-          <span style="color: #9ac8e0; font-style: italic;">"Create a SBCL invoker for specific compiled version."</span>
-          (assemble-sbcl-enviroment-invoker
-            (intern (concat prefix version <span style="color: #79a8ff;">"-"</span> config))
-            (concat base-address <span style="color: #79a8ff;">"/"</span> version <span style="color: #79a8ff;">"/"</span> config <span style="color: #79a8ff;">"/bin/sbcl.exe"</span>)
-            (list (concat <span style="color: #79a8ff;">"SBCL_HOME="</span> base-address <span style="color: #79a8ff;">"/"</span> version <span style="color: #79a8ff;">"/"</span> config <span style="color: #79a8ff;">"/lib/sbcl/"</span>)
-                  <span style="color: #79a8ff;">"CC=c:/devel/msys64/ucrt64/bin/gcc"</span>)))
+(<span style="color: #b6a0ff;">defun</span> <span style="color: #feacd0;">assemble-named-sbcl-version</span> (prefix base-address version config)
+  <span style="color: #9ac8e0; font-style: italic;">"Create a SBCL invoker for specific compiled version."</span>
+  (assemble-sbcl-enviroment-invoker
+   (intern (concat prefix version <span style="color: #79a8ff;">"-"</span> config))
+   (concat base-address <span style="color: #79a8ff;">"/"</span> version <span style="color: #79a8ff;">"/"</span> config <span style="color: #79a8ff;">"/bin/sbcl.exe"</span>)
+   (list (concat <span style="color: #79a8ff;">"SBCL_HOME="</span> base-address <span style="color: #79a8ff;">"/"</span> version <span style="color: #79a8ff;">"/"</span> config <span style="color: #79a8ff;">"/lib/sbcl/"</span>)
+         <span style="color: #79a8ff;">"CC=c:/devel/msys64/ucrt64/bin/gcc"</span>)))
 
-        (<span style="color: #b6a0ff;">defun</span> <span style="color: #feacd0;">add-win64-sbcl</span> (base-address)
-          <span style="color: #9ac8e0; font-style: italic;">"Add a SBCL invoker for all versions under the base-address"</span>
-          (<span style="color: #b6a0ff;">let</span> ((versions (get-sbcl-versions base-address)))
-            (<span style="color: #b6a0ff;">dolist</span> (version versions)
-              (<span style="color: #b6a0ff;">let</span> ((configs (get-sbcl-configs (concat base-address <span style="color: #79a8ff;">"/"</span> version))))
-                (<span style="color: #b6a0ff;">dolist</span> (config configs)
-                  (<span style="color: #b6a0ff;">when</span> (<span style="color: #b6a0ff;">and</span> (file-exists-p (concat base-address <span style="color: #79a8ff;">"/"</span> version <span style="color: #79a8ff;">"/"</span> config  <span style="color: #79a8ff;">"/bin/sbcl.exe"</span>))
-                             (<span style="color: #b6a0ff;">or</span> (string= config <span style="color: #79a8ff;">"production"</span>) (file-exists-p (concat base-address <span style="color: #79a8ff;">"/"</span> version <span style="color: #79a8ff;">"/"</span> config <span style="color: #79a8ff;">"/.production"</span>))))
-                    (collect-this-lisp (assemble-named-sbcl-version <span style="color: #79a8ff;">"sbcl64-"</span> base-address version config))))))))
+(<span style="color: #b6a0ff;">defun</span> <span style="color: #feacd0;">add-win64-sbcl</span> (base-address)
+  <span style="color: #9ac8e0; font-style: italic;">"Add a SBCL invoker for all versions under the base-address"</span>
+  (<span style="color: #b6a0ff;">let</span> ((versions (get-sbcl-versions base-address)))
+    (<span style="color: #b6a0ff;">dolist</span> (version versions)
+      (<span style="color: #b6a0ff;">let</span> ((configs (get-sbcl-configs (concat base-address <span style="color: #79a8ff;">"/"</span> version))))
+        (<span style="color: #b6a0ff;">dolist</span> (config configs)
+          (<span style="color: #b6a0ff;">when</span> (<span style="color: #b6a0ff;">and</span> (file-exists-p (concat base-address <span style="color: #79a8ff;">"/"</span> version <span style="color: #79a8ff;">"/"</span> config  <span style="color: #79a8ff;">"/bin/sbcl.exe"</span>))
+                     (<span style="color: #b6a0ff;">or</span> (string= config <span style="color: #79a8ff;">"production"</span>) (file-exists-p (concat base-address <span style="color: #79a8ff;">"/"</span> version <span style="color: #79a8ff;">"/"</span> config <span style="color: #79a8ff;">"/.production"</span>))))
+            (collect-this-lisp (assemble-named-sbcl-version <span style="color: #79a8ff;">"sbcl64-"</span> base-address version config))))))))
 
-        (<span style="color: #b6a0ff;">defun</span> <span style="color: #feacd0;">collect-sbcl</span> ()
-          <span style="color: #9ac8e0; font-style: italic;">"Add all the slime invokers for SBCL 64bit compiled versions."</span>
-          (add-win64-sbcl local-sbcl-base))
-         <span style="color: #989898; font-style: italic;">; </span><span style="color: #989898; font-style: italic;">(setf my-lisp-implementations (cddr my-lisp-implementations)))</span>
+(<span style="color: #b6a0ff;">defun</span> <span style="color: #feacd0;">collect-sbcl</span> ()
+  <span style="color: #9ac8e0; font-style: italic;">"Add all the slime invokers for SBCL 64bit compiled versions."</span>
+  (add-win64-sbcl local-sbcl-base))
+                                        <span style="color: #989898; font-style: italic;">; </span><span style="color: #989898; font-style: italic;">(setf my-lisp-implementations (cddr my-lisp-implementations)))</span>
 </pre>
 </div>
 </div>
 </div>
-<div id="outline-container-orgd879757" class="outline-2">
-<h2 id="orgd879757">CCL Invokers</h2>
-<div class="outline-text-2" id="text-orgd879757">
+<div id="outline-container-orgc6d5cc9" class="outline-2">
+<h2 id="orgc6d5cc9">CCL Invokers</h2>
+<div class="outline-text-2" id="text-orgc6d5cc9">
 <p>
 Clozure Common Lisp from <a href="https://ccl.clozure.com/">https://ccl.clozure.com/</a>
 </p>
@@ -1125,9 +1125,9 @@ Clozure Common Lisp from <a href="https://ccl.clozure.com/">https://ccl.clozure.
 </div>
 </div>
 
-<div id="outline-container-orgfbc36a0" class="outline-2">
-<h2 id="orgfbc36a0">ABCL</h2>
-<div class="outline-text-2" id="text-orgfbc36a0">
+<div id="outline-container-orge13efeb" class="outline-2">
+<h2 id="orge13efeb">ABCL</h2>
+<div class="outline-text-2" id="text-orge13efeb">
 <p>
 Supporting the Right to Arm Bears!
 </p>
@@ -1157,9 +1157,9 @@ I need to check that there is a java and
 </div>
 </div>
 </div>
-<div id="outline-container-orga456f16" class="outline-2">
-<h2 id="orga456f16">Gather all my LISP invokers</h2>
-<div class="outline-text-2" id="text-orga456f16">
+<div id="outline-container-org306dfcd" class="outline-2">
+<h2 id="org306dfcd">Gather all my LISP invokers</h2>
+<div class="outline-text-2" id="text-org306dfcd">
 <div class="org-src-container">
 <pre class="src src-emacs-lisp">(<span style="color: #b6a0ff;">defun</span> <span style="color: #feacd0;">collect-lisp-invokers</span> ()
     <span style="color: #9ac8e0; font-style: italic;">"collect all lisp-invokers to my-lisp-implementations."</span>
@@ -1173,9 +1173,9 @@ I need to check that there is a java and
 </div>
 </div>
 </div>
-<div id="outline-container-org486aea1" class="outline-2">
-<h2 id="org486aea1">Maybe use SLIME</h2>
-<div class="outline-text-2" id="text-org486aea1">
+<div id="outline-container-orgbdcd448" class="outline-2">
+<h2 id="orgbdcd448">Maybe use SLIME</h2>
+<div class="outline-text-2" id="text-orgbdcd448">
 <div class="org-src-container">
 <pre class="src src-emacs-lisp">(<span style="color: #b6a0ff;">when</span> use-slime
   (add-to-list 'load-path <span style="color: #79a8ff;">"c:/Users/zzzap/Documents/Code/source-projects/ACTIVE/slime"</span>)
@@ -1192,9 +1192,9 @@ I need to check that there is a java and
 </div>
 </div>
 
-<div id="outline-container-org18cf666" class="outline-2">
-<h2 id="org18cf666">Maybe use SLY</h2>
-<div class="outline-text-2" id="text-org18cf666">
+<div id="outline-container-org86c4dea" class="outline-2">
+<h2 id="org86c4dea">Maybe use SLY</h2>
+<div class="outline-text-2" id="text-org86c4dea">
 <div class="org-src-container">
 <pre class="src src-emacs-lisp">(<span style="color: #b6a0ff;">use-package</span> <span style="color: #00bcff;">sly</span>
   <span style="color: #f78fe7;">:disabled</span> use-slime
@@ -1205,9 +1205,9 @@ I need to check that there is a java and
 </div>
 </div>
 </div>
-<div id="outline-container-org6b8fecb" class="outline-2">
-<h2 id="org6b8fecb">Enable lisp-mode .lisp and .asd files</h2>
-<div class="outline-text-2" id="text-org6b8fecb">
+<div id="outline-container-org8d57d9d" class="outline-2">
+<h2 id="org8d57d9d">Enable lisp-mode .lisp and .asd files</h2>
+<div class="outline-text-2" id="text-org8d57d9d">
 <div class="org-src-container">
 <pre class="src src-emacs-lisp">(<span style="color: #b6a0ff;">setq</span> auto-mode-alist
       (append '((<span style="color: #79a8ff;">".*\\.asd\\'"</span> . lisp-mode))
@@ -1221,17 +1221,17 @@ I need to check that there is a java and
 </div>
 </div>
 
-<div id="outline-container-org86aa525" class="outline-2">
-<h2 id="org86aa525">Common Lisp HyperSpec</h2>
-<div class="outline-text-2" id="text-org86aa525">
+<div id="outline-container-org5667688" class="outline-2">
+<h2 id="org5667688">Common Lisp HyperSpec</h2>
+<div class="outline-text-2" id="text-org5667688">
 <p>
 I use my local clone of the Hyperspec
 </p>
 </div>
 </div>
-<div id="outline-container-org9f004e0" class="outline-2">
-<h2 id="org9f004e0">Hyperspec Root is loaded from Enviroment location</h2>
-<div class="outline-text-2" id="text-org9f004e0">
+<div id="outline-container-orga8f46cf" class="outline-2">
+<h2 id="orga8f46cf">Hyperspec Root is loaded from Enviroment location</h2>
+<div class="outline-text-2" id="text-orga8f46cf">
 <div class="org-src-container">
 <pre class="src src-emacs-lisp">(<span style="color: #b6a0ff;">when</span> (getenv <span style="color: #79a8ff;">"HyperSpec"</span>)
  (<span style="color: #b6a0ff;">setq</span> common-lisp-hyperspec-root (convert-standard-filename (getenv <span style="color: #79a8ff;">"HyperSpec"</span>))))
@@ -1239,9 +1239,9 @@ I use my local clone of the Hyperspec
 </div>
 </div>
 </div>
-<div id="outline-container-org746c02c" class="outline-2">
-<h2 id="org746c02c">Pascal Setup</h2>
-<div class="outline-text-2" id="text-org746c02c">
+<div id="outline-container-org069822b" class="outline-2">
+<h2 id="org069822b">Pascal Setup</h2>
+<div class="outline-text-2" id="text-org069822b">
 <p>
 [TBD] I have no pascal compiler configured.
 </p>
@@ -1268,17 +1268,17 @@ I use my local clone of the Hyperspec
 </div>
 </div>
 
-<div id="outline-container-org5ae4978" class="outline-2">
-<h2 id="org5ae4978">Org Mode</h2>
-<div class="outline-text-2" id="text-org5ae4978">
+<div id="outline-container-orgc602f1c" class="outline-2">
+<h2 id="orgc602f1c">Org Mode</h2>
+<div class="outline-text-2" id="text-orgc602f1c">
 <p>
 This is a large use-package config statement for org.
 </p>
 </div>
 
-<div id="outline-container-org6efb70b" class="outline-3">
-<h3 id="org6efb70b">&lt;&lt; The Open  ( use-package for org</h3>
-<div class="outline-text-3" id="text-org6efb70b">
+<div id="outline-container-org2eeac59" class="outline-3">
+<h3 id="org2eeac59">&lt;&lt; The Open  ( use-package for org</h3>
+<div class="outline-text-3" id="text-org2eeac59">
 <div class="org-src-container">
 <pre class="src src-emacs-lisp">(<span style="color: #b6a0ff;">use-package</span> <span style="color: #00bcff;">org</span>
   <span style="color: #f78fe7;">:pin</span> elpa
@@ -1295,18 +1295,18 @@ Note that all items between the open and the close are added to the config.
 </div>
 </div>
 
-<div id="outline-container-org6d97505" class="outline-3">
-<h3 id="org6d97505">Make tab act natively in org source blocks</h3>
-<div class="outline-text-3" id="text-org6d97505">
+<div id="outline-container-orgc522d5d" class="outline-3">
+<h3 id="orgc522d5d">Make tab act natively in org source blocks</h3>
+<div class="outline-text-3" id="text-orgc522d5d">
 <div class="org-src-container">
 <pre class="src src-emacs-lisp">(<span style="color: #b6a0ff;">setq</span> org-src-tab-acts-natively t)
 </pre>
 </div>
 </div>
 </div>
-<div id="outline-container-orgeaf827e" class="outline-3">
-<h3 id="orgeaf827e">Configure org-export</h3>
-<div class="outline-text-3" id="text-orgeaf827e">
+<div id="outline-container-org02b8c1e" class="outline-3">
+<h3 id="org02b8c1e">Configure org-export</h3>
+<div class="outline-text-3" id="text-org02b8c1e">
 <div class="org-src-container">
 <pre class="src src-emacs-lisp"><span style="color: #989898; font-style: italic;">;; </span><span style="color: #989898; font-style: italic;">org-export with no TOC, no NUM and no SUB/SUPERSCRIPTS</span>
 (<span style="color: #b6a0ff;">setf</span> org-export-with-toc nil)
@@ -1316,9 +1316,9 @@ Note that all items between the open and the close are added to the config.
 </div>
 </div>
 </div>
-<div id="outline-container-org01d5855" class="outline-3">
-<h3 id="org01d5855">Org Structure Templates</h3>
-<div class="outline-text-3" id="text-org01d5855">
+<div id="outline-container-orgda71217" class="outline-3">
+<h3 id="orgda71217">Org Structure Templates</h3>
+<div class="outline-text-3" id="text-orgda71217">
 <div class="org-src-container">
 <pre class="src src-emacs-lisp">(<span style="color: #b6a0ff;">require</span> '<span style="color: #00bcff;">org-tempo</span>)
 (add-to-list 'org-structure-template-alist '(<span style="color: #79a8ff;">"sh"</span> . <span style="color: #79a8ff;">"src shell"</span>))
@@ -1328,9 +1328,9 @@ Note that all items between the open and the close are added to the config.
 </div>
 </div>
 </div>
-<div id="outline-container-orgbcad50a" class="outline-3">
-<h3 id="orgbcad50a">org global properties - efforts</h3>
-<div class="outline-text-3" id="text-orgbcad50a">
+<div id="outline-container-org11d07b3" class="outline-3">
+<h3 id="org11d07b3">org global properties - efforts</h3>
+<div class="outline-text-3" id="text-org11d07b3">
 <div class="org-src-container">
 <pre class="src src-emacs-lisp">(<span style="color: #b6a0ff;">setf</span> org-global-properties
     '((<span style="color: #79a8ff;">"Effort_ALL"</span> . <span style="color: #79a8ff;">"0:05 0:10 0:15 0:30 1:00 2:00 4:00 6:00 8:00"</span>)))
@@ -1338,9 +1338,9 @@ Note that all items between the open and the close are added to the config.
 </div>
 </div>
 </div>
-<div id="outline-container-org5690033" class="outline-3">
-<h3 id="org5690033">killing frame for org-protcol capture</h3>
-<div class="outline-text-3" id="text-org5690033">
+<div id="outline-container-orgecd987f" class="outline-3">
+<h3 id="orgecd987f">killing frame for org-protcol capture</h3>
+<div class="outline-text-3" id="text-orgecd987f">
 <div class="org-src-container">
 <pre class="src src-emacs-lisp"><span style="color: #989898; font-style: italic;">;; </span><span style="color: #989898; font-style: italic;">Kill the frame if one was created for the capture</span>
 (<span style="color: #b6a0ff;">defvar</span> <span style="color: #00d3d0;">kk/delete-frame-after-capture</span> 0 <span style="color: #9ac8e0; font-style: italic;">"Whether to delete the last frame after the current capture"</span>)
@@ -1361,27 +1361,27 @@ Note that all items between the open and the close are added to the config.
 </div>
 </div>
 </div>
-<div id="outline-container-orge49c741" class="outline-3">
-<h3 id="orge49c741">org mode location</h3>
-<div class="outline-text-3" id="text-orge49c741">
+<div id="outline-container-org56b310c" class="outline-3">
+<h3 id="org56b310c">org mode location</h3>
+<div class="outline-text-3" id="text-org56b310c">
 <div class="org-src-container">
 <pre class="src src-emacs-lisp">(<span style="color: #b6a0ff;">setf</span> org-mode-base-dir <span style="color: #79a8ff;">"~/org/"</span>)
 </pre>
 </div>
 </div>
 </div>
-<div id="outline-container-orgb7a401d" class="outline-3">
-<h3 id="orgb7a401d">gtd location</h3>
-<div class="outline-text-3" id="text-orgb7a401d">
+<div id="outline-container-org5a321c8" class="outline-3">
+<h3 id="org5a321c8">gtd location</h3>
+<div class="outline-text-3" id="text-org5a321c8">
 <div class="org-src-container">
 <pre class="src src-emacs-lisp">(<span style="color: #b6a0ff;">setf</span> org-gtd-dir (concat org-mode-base-dir <span style="color: #79a8ff;">"gtd/"</span>))
 </pre>
 </div>
 </div>
 </div>
-<div id="outline-container-org49c3e37" class="outline-3">
-<h3 id="org49c3e37">Org Key Binding</h3>
-<div class="outline-text-3" id="text-org49c3e37">
+<div id="outline-container-org5611e41" class="outline-3">
+<h3 id="org5611e41">Org Key Binding</h3>
+<div class="outline-text-3" id="text-org5611e41">
 <div class="org-src-container">
 <pre class="src src-emacs-lisp"><span style="color: #989898; font-style: italic;">;;;; </span><span style="color: #989898; font-style: italic;">Org Mode key bindings.</span>
 (global-set-key (kbd <span style="color: #79a8ff;">"C-c l"</span>) 'org-store-link)
@@ -1393,9 +1393,9 @@ Note that all items between the open and the close are added to the config.
 </div>
 </div>
 
-<div id="outline-container-org17fdd8d" class="outline-3">
-<h3 id="org17fdd8d">Configure BABEL languages</h3>
-<div class="outline-text-3" id="text-org17fdd8d">
+<div id="outline-container-orgd84e595" class="outline-3">
+<h3 id="orgd84e595">Configure BABEL languages</h3>
+<div class="outline-text-3" id="text-orgd84e595">
 <div class="org-src-container">
 <pre class="src src-emacs-lisp">(org-babel-do-load-languages
  'org-babel-load-languages
@@ -1409,18 +1409,18 @@ Note that all items between the open and the close are added to the config.
 </div>
 </div>
 
-<div id="outline-container-orgeadace9" class="outline-3">
-<h3 id="orgeadace9">org modules needed</h3>
-<div class="outline-text-3" id="text-orgeadace9">
+<div id="outline-container-org2dde3fa" class="outline-3">
+<h3 id="org2dde3fa">org modules needed</h3>
+<div class="outline-text-3" id="text-org2dde3fa">
 <div class="org-src-container">
 <pre class="src src-emacs-lisp">(<span style="color: #b6a0ff;">setq</span> org-modules '(org-habit))
 </pre>
 </div>
 </div>
 </div>
-<div id="outline-container-org6065a97" class="outline-3">
-<h3 id="org6065a97">Header Text Ignore</h3>
-<div class="outline-text-3" id="text-org6065a97">
+<div id="outline-container-org7daa869" class="outline-3">
+<h3 id="org7daa869">Header Text Ignore</h3>
+<div class="outline-text-3" id="text-org7daa869">
 <p>
 This code is bugged can't load ox-extras
 </p>
@@ -1431,9 +1431,9 @@ This code is bugged can't load ox-extras
 </div>
 </div>
 </div>
-<div id="outline-container-org6f36f93" class="outline-3">
-<h3 id="org6f36f93">org-habit</h3>
-<div class="outline-text-3" id="text-org6f36f93">
+<div id="outline-container-orgb2c7bdc" class="outline-3">
+<h3 id="orgb2c7bdc">org-habit</h3>
+<div class="outline-text-3" id="text-orgb2c7bdc">
 <p>
 [TBD] Find out why I Should not delete this.
 </p>
@@ -1443,9 +1443,9 @@ This code is bugged can't load ox-extras
 </div>
 </div>
 </div>
-<div id="outline-container-org49c7778" class="outline-3">
-<h3 id="org49c7778">Org link abbreviations</h3>
-<div class="outline-text-3" id="text-org49c7778">
+<div id="outline-container-org8ee4bb0" class="outline-3">
+<h3 id="org8ee4bb0">Org link abbreviations</h3>
+<div class="outline-text-3" id="text-org8ee4bb0">
 <div class="org-src-container">
 <pre class="src src-emacs-lisp">(<span style="color: #b6a0ff;">setq</span> org-link-abbrev-alist
       '((<span style="color: #79a8ff;">"bugzilla"</span> . <span style="color: #79a8ff;">"http://192.168.1.50/bugzilla/show_bug.cgi?id="</span>)
@@ -1456,9 +1456,9 @@ This code is bugged can't load ox-extras
 </div>
 </div>
 </div>
-<div id="outline-container-orgac1a752" class="outline-3">
-<h3 id="orgac1a752">Ensure there are standard user ~/org directories</h3>
-<div class="outline-text-3" id="text-orgac1a752">
+<div id="outline-container-orgf7cb0f9" class="outline-3">
+<h3 id="orgf7cb0f9">Ensure there are standard user ~/org directories</h3>
+<div class="outline-text-3" id="text-orgf7cb0f9">
 <p>
 [TBD] is this how I am configured now?
 How to define the standard HOME org directory.
@@ -1481,9 +1481,9 @@ Under windows and linux this is ~/org.
 </div>
 </div>
 
-<div id="outline-container-orgd47fc40" class="outline-3">
-<h3 id="orgd47fc40">Standard Notes file</h3>
-<div class="outline-text-3" id="text-orgd47fc40">
+<div id="outline-container-org1f86648" class="outline-3">
+<h3 id="org1f86648">Standard Notes file</h3>
+<div class="outline-text-3" id="text-org1f86648">
 <p>
 [TBD] Is this still relavent?
 This is a standard per User notes file.
@@ -1499,18 +1499,18 @@ Unser windows and linux this ~/org/notes/notes.org
 </div>
 </div>
 
-<div id="outline-container-org5fa609a" class="outline-3">
-<h3 id="org5fa609a">org TODOs types</h3>
-<div class="outline-text-3" id="text-org5fa609a">
+<div id="outline-container-org86bac95" class="outline-3">
+<h3 id="org86bac95">org TODOs types</h3>
+<div class="outline-text-3" id="text-org86bac95">
 <div class="org-src-container">
 <pre class="src src-emacs-lisp">(<span style="color: #b6a0ff;">setq</span> org-todo-keywords '((sequence <span style="color: #79a8ff;">"TODO(t)"</span> <span style="color: #79a8ff;">"NEXT(n)"</span> <span style="color: #79a8ff;">"WAITING(w@/!)"</span> <span style="color: #79a8ff;">"|"</span> <span style="color: #79a8ff;">"DONE(d!)"</span> <span style="color: #79a8ff;">"CANCELLED(c@)"</span>)))
 </pre>
 </div>
 </div>
 </div>
-<div id="outline-container-orgf625028" class="outline-3">
-<h3 id="orgf625028">org TODO colors</h3>
-<div class="outline-text-3" id="text-orgf625028">
+<div id="outline-container-org169b830" class="outline-3">
+<h3 id="org169b830">org TODO colors</h3>
+<div class="outline-text-3" id="text-org169b830">
 <div class="org-src-container">
 <pre class="src src-emacs-lisp">(<span style="color: #b6a0ff;">setq</span> org-todo-keyword-faces '((<span style="color: #79a8ff;">"TODO"</span> . <span style="color: #79a8ff;">"red"</span>)
                                (<span style="color: #79a8ff;">"NEXT"</span> . <span style="color: #79a8ff;">"magenta"</span>)
@@ -1521,9 +1521,9 @@ Unser windows and linux this ~/org/notes/notes.org
 </div>
 </div>
 </div>
-<div id="outline-container-orgc456566" class="outline-3">
-<h3 id="orgc456566">Task agenda context</h3>
-<div class="outline-text-3" id="text-orgc456566">
+<div id="outline-container-orgfb81ca6" class="outline-3">
+<h3 id="orgfb81ca6">Task agenda context</h3>
+<div class="outline-text-3" id="text-orgfb81ca6">
 <ul class="org-ul">
 <li>This starts an agenda context</li>
 </ul>
@@ -1538,9 +1538,9 @@ Unser windows and linux this ~/org/notes/notes.org
 </div>
 </div>
 
-<div id="outline-container-orge33ca27" class="outline-3">
-<h3 id="orge33ca27">Capture Templates</h3>
-<div class="outline-text-3" id="text-orge33ca27">
+<div id="outline-container-orgbda9c89" class="outline-3">
+<h3 id="orgbda9c89">Capture Templates</h3>
+<div class="outline-text-3" id="text-orgbda9c89">
 <p>
 Use <a href="file:///c:/Users/zzzap/.emacs.d/local-capture.html">file:///c:/Users/zzzap/.emacs.d/local-capture.html</a> to change the capture template.
 </p>
@@ -1553,9 +1553,9 @@ Use <a href="file:///c:/Users/zzzap/.emacs.d/local-capture.html">file:///c:/User
 </div>
 </div>
 </div>
-<div id="outline-container-orgde0b88b" class="outline-3">
-<h3 id="orgde0b88b">org mode add :shcmd to sh blocks</h3>
-<div class="outline-text-3" id="text-orgde0b88b">
+<div id="outline-container-org35ff880" class="outline-3">
+<h3 id="org35ff880">org mode add :shcmd to sh blocks</h3>
+<div class="outline-text-3" id="text-org35ff880">
 <ul class="org-ul">
 <li>Using :shcmd "cmdproxy.exe" on Windows uses the emacs version of cmd.</li>
 <li>Using :shcmd   msys2-base / "bin/bash.exe" will run a shell under msys2 bash.</li>
@@ -1565,7 +1565,7 @@ Use <a href="file:///c:/Users/zzzap/.emacs.d/local-capture.html">file:///c:/User
 
 <li>Example how to use, note "cmdproxy.exe" is a Windows Emacs file.</li>
 </ul>
-<pre class="example" id="org3d1b484">
+<pre class="example" id="org75e8867">
 \#+BEGIN_SRC sh :shcmd "cmdproxy.exe"
 dir
 \#+END_SRC
@@ -1581,9 +1581,9 @@ dir
 </div>
 </div>
 </div>
-<div id="outline-container-org2e3d83e" class="outline-3">
-<h3 id="org2e3d83e">org-publish</h3>
-<div class="outline-text-3" id="text-org2e3d83e">
+<div id="outline-container-org1036575" class="outline-3">
+<h3 id="org1036575">org-publish</h3>
+<div class="outline-text-3" id="text-org1036575">
 <div class="org-src-container">
 <pre class="src src-emacs-lisp"><span style="color: #989898; font-style: italic;">;;;; </span><span style="color: #989898; font-style: italic;">org-publishing is a local configuration.</span>
 (<span style="color: #b6a0ff;">local-custom-file</span> <span style="color: #79a8ff;">"local-publishing.org"</span> <span style="color: #79a8ff;">"Configuration of org-publishing"</span>)
@@ -1592,9 +1592,9 @@ dir
 </div>
 </div>
 
-<div id="outline-container-orgfed4888" class="outline-3">
-<h3 id="orgfed4888">org-present</h3>
-<div class="outline-text-3" id="text-orgfed4888">
+<div id="outline-container-org125eaad" class="outline-3">
+<h3 id="org125eaad">org-present</h3>
+<div class="outline-text-3" id="text-org125eaad">
 <p>
 A mode to show org files as a presentation.
 </p>
@@ -1616,9 +1616,9 @@ A mode to show org files as a presentation.
 </div>
 </div>
 </div>
-<div id="outline-container-org3edc917" class="outline-3">
-<h3 id="org3edc917">Bullets and fonts for org mode</h3>
-<div class="outline-text-3" id="text-org3edc917">
+<div id="outline-container-orgf45a42b" class="outline-3">
+<h3 id="orgf45a42b">Bullets and fonts for org mode</h3>
+<div class="outline-text-3" id="text-orgf45a42b">
 <div class="org-src-container">
 <pre class="src src-emacs-lisp">(<span style="color: #b6a0ff;">use-package</span> <span style="color: #00bcff;">org-bullets</span>
   <span style="color: #f78fe7;">:after</span> org
@@ -1656,9 +1656,9 @@ A mode to show org files as a presentation.
 </div>
 </div>
 </div>
-<div id="outline-container-orgb35aac2" class="outline-3">
-<h3 id="orgb35aac2">Add web image links</h3>
-<div class="outline-text-3" id="text-orgb35aac2">
+<div id="outline-container-org54c4b4a" class="outline-3">
+<h3 id="org54c4b4a">Add web image links</h3>
+<div class="outline-text-3" id="text-org54c4b4a">
 <p>
 Copied from: <a href="https://emacs.stackexchange.com/questions/26613/is-it-possible-to-insert-images-from-the-web-with-its-url">https://emacs.stackexchange.com/questions/26613/is-it-possible-to-insert-images-from-the-web-with-its-url</a>
 </p>
@@ -1682,9 +1682,9 @@ Then use it like this:
 </p>
 </div>
 </div>
-<div id="outline-container-orgcf60575" class="outline-3">
-<h3 id="orgcf60575">&gt;&gt;The close of the (use-package org config</h3>
-<div class="outline-text-3" id="text-orgcf60575">
+<div id="outline-container-org2d0650a" class="outline-3">
+<h3 id="org2d0650a">&gt;&gt;The close of the (use-package org config</h3>
+<div class="outline-text-3" id="text-org2d0650a">
 <div class="org-src-container">
 <pre class="src src-emacs-lisp">)
 </pre>
@@ -1697,9 +1697,9 @@ This is a single ) to close it.
 </div>
 </div>
 
-<div id="outline-container-org2be6b1c" class="outline-2">
-<h2 id="org2be6b1c">PS Print with GHOSTSCRIPT</h2>
-<div class="outline-text-2" id="text-org2be6b1c">
+<div id="outline-container-org0ca5b76" class="outline-2">
+<h2 id="org0ca5b76">PS Print with GHOSTSCRIPT</h2>
+<div class="outline-text-2" id="text-org0ca5b76">
 <div class="org-src-container">
 <pre class="src src-emacs-lisp">(<span style="color: #b6a0ff;">setq</span> ps-lpr-command <span style="color: #79a8ff;">"C:/Program Files/gs/gs9.56.1/bin/gswin64c.exe"</span>)
 (<span style="color: #b6a0ff;">setq</span> ps-lpr-switches '(<span style="color: #79a8ff;">"-q"</span> <span style="color: #79a8ff;">"-dNOPAUSE"</span> <span style="color: #79a8ff;">"-dBATCH"</span> <span style="color: #79a8ff;">"-sDEVICE=mswinpr2"</span> <span style="color: #79a8ff;">"-sOutputFile=\"%printer%Canon\ TS6000\ series\""</span>))
@@ -1713,9 +1713,9 @@ This is a single ) to close it.
 </div>
 </div>
 
-<div id="outline-container-orgf61bd0c" class="outline-2">
-<h2 id="orgf61bd0c">Emacs Backup Files</h2>
-<div class="outline-text-2" id="text-orgf61bd0c">
+<div id="outline-container-orgd4b03c5" class="outline-2">
+<h2 id="orgd4b03c5">Emacs Backup Files</h2>
+<div class="outline-text-2" id="text-orgd4b03c5">
 <div class="org-src-container">
 <pre class="src src-emacs-lisp">(<span style="color: #b6a0ff;">setq</span> backup-directory-alist `((<span style="color: #79a8ff;">"."</span> . ,(expand-file-name <span style="color: #79a8ff;">"tmp/backups/"</span> user-emacs-directory))))
 </pre>
@@ -1723,9 +1723,9 @@ This is a single ) to close it.
 </div>
 </div>
 
-<div id="outline-container-org1ca22a4" class="outline-2">
-<h2 id="org1ca22a4">Eshell</h2>
-<div class="outline-text-2" id="text-org1ca22a4">
+<div id="outline-container-org7e1abb6" class="outline-2">
+<h2 id="org7e1abb6">Eshell</h2>
+<div class="outline-text-2" id="text-org7e1abb6">
 <div class="org-src-container">
 <pre class="src src-emacs-lisp">(<span style="color: #b6a0ff;">defun</span> <span style="color: #feacd0;">efs/configure-eshell</span> ()
          <span style="color: #989898; font-style: italic;">;; </span><span style="color: #989898; font-style: italic;">Save command history when commands are entered</span>
@@ -1750,16 +1750,16 @@ This is a single ) to close it.
 </div>
 </div>
 </div>
-<div id="outline-container-orgd83e15c" class="outline-2">
-<h2 id="orgd83e15c">Dired</h2>
-<div class="outline-text-2" id="text-orgd83e15c">
+<div id="outline-container-orgf96ee8d" class="outline-2">
+<h2 id="orgf96ee8d">Dired</h2>
+<div class="outline-text-2" id="text-orgf96ee8d">
 <ul class="org-ul">
 <li>dired is configured as a file manager.</li>
 </ul>
 </div>
-<div id="outline-container-org8704d8e" class="outline-3">
-<h3 id="org8704d8e">dired hook</h3>
-<div class="outline-text-3" id="text-org8704d8e">
+<div id="outline-container-org1c43f76" class="outline-3">
+<h3 id="org1c43f76">dired hook</h3>
+<div class="outline-text-3" id="text-org1c43f76">
 <div class="org-src-container">
 <pre class="src src-emacs-lisp">(<span style="color: #b6a0ff;">use-package</span> <span style="color: #00bcff;">dired</span>
   <span style="color: #f78fe7;">:ensure</span> nil
@@ -1770,9 +1770,9 @@ This is a single ) to close it.
 </div>
 </div>
 </div>
-<div id="outline-container-org1521996" class="outline-3">
-<h3 id="org1521996">Single Dired buffer</h3>
-<div class="outline-text-3" id="text-org1521996">
+<div id="outline-container-orgede1ff4" class="outline-3">
+<h3 id="orgede1ff4">Single Dired buffer</h3>
+<div class="outline-text-3" id="text-orgede1ff4">
 <div class="org-src-container">
 <pre class="src src-emacs-lisp">(<span style="color: #b6a0ff;">use-package</span> <span style="color: #00bcff;">dired-single</span>
   <span style="color: #f78fe7;">:after</span>
@@ -1800,9 +1800,9 @@ This is a single ) to close it.
 </div>
 </div>
 </div>
-<div id="outline-container-org56e748a" class="outline-3">
-<h3 id="org56e748a">All the icons</h3>
-<div class="outline-text-3" id="text-org56e748a">
+<div id="outline-container-org67b926b" class="outline-3">
+<h3 id="org67b926b">All the icons</h3>
+<div class="outline-text-3" id="text-org67b926b">
 <div class="org-src-container">
 <pre class="src src-emacs-lisp">(<span style="color: #b6a0ff;">use-package</span> <span style="color: #00bcff;">all-the-icons-dired</span>
       <span style="color: #f78fe7;">:ensure</span> t
@@ -1813,9 +1813,9 @@ This is a single ) to close it.
 </div>
 </div>
 </div>
-<div id="outline-container-org67cc25e" class="outline-3">
-<h3 id="org67cc25e">File Sort Order</h3>
-<div class="outline-text-3" id="text-org67cc25e">
+<div id="outline-container-orgf5efb84" class="outline-3">
+<h3 id="orgf5efb84">File Sort Order</h3>
+<div class="outline-text-3" id="text-orgf5efb84">
 <div class="org-src-container">
 <pre class="src src-emacs-lisp">(<span style="color: #b6a0ff;">defun</span> <span style="color: #feacd0;">mydired-sort</span> ()
         <span style="color: #9ac8e0; font-style: italic;">"Sort dired listings with directories first."</span>
@@ -1833,18 +1833,18 @@ This is a single ) to close it.
 </div>
 </div>
 </div>
-<div id="outline-container-orgbe9e9fc" class="outline-3">
-<h3 id="orgbe9e9fc">diredc - NOT TANGLED</h3>
-<div class="outline-text-3" id="text-orgbe9e9fc">
+<div id="outline-container-orgc19777e" class="outline-3">
+<h3 id="orgc19777e">diredc - NOT TANGLED</h3>
+<div class="outline-text-3" id="text-orgc19777e">
 <div class="org-src-container">
 <pre class="src src-emacs-lisp">(<span style="color: #b6a0ff;">use-package</span> <span style="color: #00bcff;">diredc</span>)
 </pre>
 </div>
 </div>
 </div>
-<div id="outline-container-orgf9f28d2" class="outline-3">
-<h3 id="orgf9f28d2">Peep Dired - NOT TANGLED</h3>
-<div class="outline-text-3" id="text-orgf9f28d2">
+<div id="outline-container-org7244ac7" class="outline-3">
+<h3 id="org7244ac7">Peep Dired - NOT TANGLED</h3>
+<div class="outline-text-3" id="text-org7244ac7">
 <div class="org-src-container">
 <pre class="src src-emacs-lisp">(<span style="color: #b6a0ff;">use-package</span> <span style="color: #00bcff;">peep-dired</span>
 <span style="color: #f78fe7;">:config</span>
@@ -1861,9 +1861,9 @@ This is a single ) to close it.
 </div>
 </div>
 </div>
-<div id="outline-container-org22f33f0" class="outline-2">
-<h2 id="org22f33f0">Mastodon</h2>
-<div class="outline-text-2" id="text-org22f33f0">
+<div id="outline-container-org821b9a8" class="outline-2">
+<h2 id="org821b9a8">Mastodon</h2>
+<div class="outline-text-2" id="text-org821b9a8">
 <div class="org-src-container">
 <pre class="src src-emacs-lisp"><span style="color: #989898; font-style: italic;">;;;; </span><span style="color: #989898; font-style: italic;">mastodon</span>
   (<span style="color: #b6a0ff;">use-package</span> <span style="color: #00bcff;">mastodon</span>
@@ -1874,9 +1874,9 @@ This is a single ) to close it.
 </div>
 </div>
 </div>
-<div id="outline-container-orgfc8a41a" class="outline-2">
-<h2 id="orgfc8a41a">Openwith</h2>
-<div class="outline-text-2" id="text-orgfc8a41a">
+<div id="outline-container-org40c4251" class="outline-2">
+<h2 id="org40c4251">Openwith</h2>
+<div class="outline-text-2" id="text-org40c4251">
 <p>
 NOTE:
 On Windows 11, this only opens the file by the Windows extension
@@ -1898,9 +1898,9 @@ So configure it there.
 </div>
 </div>
 </div>
-<div id="outline-container-org9bae476" class="outline-2">
-<h2 id="org9bae476">Recentf</h2>
-<div class="outline-text-2" id="text-org9bae476">
+<div id="outline-container-orga81111f" class="outline-2">
+<h2 id="orga81111f">Recentf</h2>
+<div class="outline-text-2" id="text-orga81111f">
 <div class="org-src-container">
 <pre class="src src-emacs-lisp">(<span style="color: #b6a0ff;">require</span> '<span style="color: #00bcff;">recentf</span>)
 (recentf-mode 1)
@@ -1910,9 +1910,9 @@ So configure it there.
 </div>
 </div>
 </div>
-<div id="outline-container-org7aed121" class="outline-2">
-<h2 id="org7aed121">PDF-TOOLS</h2>
-<div class="outline-text-2" id="text-org7aed121">
+<div id="outline-container-orga8cef63" class="outline-2">
+<h2 id="orga8cef63">PDF-TOOLS</h2>
+<div class="outline-text-2" id="text-orga8cef63">
 <p>
 org-noter hangs on msys2 launch
 I am not tangleing this to see of msys2 launch is sucessful.
@@ -1929,21 +1929,32 @@ I remove noter loading, tangle again.
 </div>
 </div>
 </div>
-<div id="outline-container-orgcd1f508" class="outline-2">
-<h2 id="orgcd1f508">PPL Time of Day</h2>
-<div class="outline-text-2" id="text-orgcd1f508">
+<div id="outline-container-org9045940" class="outline-2">
+<h2 id="org9045940">PPL Time of Day</h2>
+<div class="outline-text-2" id="text-org9045940">
 <div class="org-src-container">
-<pre class="src src-emacs-lisp"> (<span style="color: #b6a0ff;">setq</span> ppl-holiday-table '(2023                                 <span style="color: #989898; font-style: italic;">;</span><span style="color: #989898; font-style: italic;">year</span>
-   (1 1)                                        <span style="color: #989898; font-style: italic;">;</span><span style="color: #989898; font-style: italic;">new years day</span>
-   (2 20)                               <span style="color: #989898; font-style: italic;">;</span><span style="color: #989898; font-style: italic;">presidents day</span>
-   (4 7)                                        <span style="color: #989898; font-style: italic;">; </span><span style="color: #989898; font-style: italic;">Good Friday</span>
-   (5 29)                               <span style="color: #989898; font-style: italic;">; </span><span style="color: #989898; font-style: italic;">Memorial Day</span>
-   (7 4)                                        <span style="color: #989898; font-style: italic;">; </span><span style="color: #989898; font-style: italic;">Independence Day</span>
-   (9 4)                                        <span style="color: #989898; font-style: italic;">; </span><span style="color: #989898; font-style: italic;">Labor Day</span>
-   (11 24)                              <span style="color: #989898; font-style: italic;">; </span><span style="color: #989898; font-style: italic;">Thanksgiving</span>
-   (11 25)                              <span style="color: #989898; font-style: italic;">; </span><span style="color: #989898; font-style: italic;">Next Day</span>
-   (12 24)                              <span style="color: #989898; font-style: italic;">; </span><span style="color: #989898; font-style: italic;">Christmas Eve</span>
-   (12 25)))                              <span style="color: #989898; font-style: italic;">; </span><span style="color: #989898; font-style: italic;">Christmas</span>
+<pre class="src src-emacs-lisp"> (<span style="color: #b6a0ff;">setq</span> ppl-holiday-table <span style="color: #989898; font-style: italic;">;; </span><span style="color: #989898; font-style: italic;">'(2023                                      ;year</span>
+ <span style="color: #989898; font-style: italic;">;;   </span><span style="color: #989898; font-style: italic;">(1 1)                                     ;new years day</span>
+ <span style="color: #989898; font-style: italic;">;;   </span><span style="color: #989898; font-style: italic;">(2 20)                            ;presidents day</span>
+ <span style="color: #989898; font-style: italic;">;;   </span><span style="color: #989898; font-style: italic;">(4 7)                                     ; Good Friday</span>
+ <span style="color: #989898; font-style: italic;">;;   </span><span style="color: #989898; font-style: italic;">(5 29)                            ; Memorial Day</span>
+ <span style="color: #989898; font-style: italic;">;;   </span><span style="color: #989898; font-style: italic;">(7 4)                                     ; Independence Day</span>
+ <span style="color: #989898; font-style: italic;">;;   </span><span style="color: #989898; font-style: italic;">(9 4)                                     ; Labor Day</span>
+ <span style="color: #989898; font-style: italic;">;;   </span><span style="color: #989898; font-style: italic;">(11 24)                           ; Thanksgiving</span>
+ <span style="color: #989898; font-style: italic;">;;   </span><span style="color: #989898; font-style: italic;">(11 25)                           ; Next Day</span>
+ <span style="color: #989898; font-style: italic;">;;   </span><span style="color: #989898; font-style: italic;">(12 24)                           ; Christmas Eve</span>
+ <span style="color: #989898; font-style: italic;">;;   </span><span style="color: #989898; font-style: italic;">(12 25))</span>
+ '(2024                                 <span style="color: #989898; font-style: italic;">;</span><span style="color: #989898; font-style: italic;">year</span>
+  (1 1)                                 <span style="color: #989898; font-style: italic;">;</span><span style="color: #989898; font-style: italic;">new years day</span>
+ (2 19)                         <span style="color: #989898; font-style: italic;">;</span><span style="color: #989898; font-style: italic;">presidents day</span>
+ (3 29)                                 <span style="color: #989898; font-style: italic;">; </span><span style="color: #989898; font-style: italic;">Good Friday</span>
+ (5 27)                         <span style="color: #989898; font-style: italic;">; </span><span style="color: #989898; font-style: italic;">Memorial Day</span>
+ (7 4)                                  <span style="color: #989898; font-style: italic;">; </span><span style="color: #989898; font-style: italic;">Independence Day</span>
+ (9 2)                                  <span style="color: #989898; font-style: italic;">; </span><span style="color: #989898; font-style: italic;">Labor Day</span>
+ (11 28)                                <span style="color: #989898; font-style: italic;">; </span><span style="color: #989898; font-style: italic;">Thanksgiving</span>
+ (11 29)                                <span style="color: #989898; font-style: italic;">; </span><span style="color: #989898; font-style: italic;">Next Day</span>
+ (12 24)                                <span style="color: #989898; font-style: italic;">; </span><span style="color: #989898; font-style: italic;">Christmas Eve</span>
+ (12 25)))                              <span style="color: #989898; font-style: italic;">; </span><span style="color: #989898; font-style: italic;">Christmas</span>
 
 
   (<span style="color: #b6a0ff;">defun</span> <span style="color: #feacd0;">is-holiday</span> (dt table)
@@ -1974,9 +1985,9 @@ I remove noter loading, tangle again.
 </div>
 </div>
 </div>
-<div id="outline-container-org936b230" class="outline-2">
-<h2 id="org936b230">YAML Mode</h2>
-<div class="outline-text-2" id="text-org936b230">
+<div id="outline-container-orgb69a296" class="outline-2">
+<h2 id="orgb69a296">YAML Mode</h2>
+<div class="outline-text-2" id="text-orgb69a296">
 <p>
 Add yaml mode
 </p>
@@ -1986,9 +1997,9 @@ Add yaml mode
 </div>
 </div>
 </div>
-<div id="outline-container-org94144ba" class="outline-2">
-<h2 id="org94144ba">JSON to Single line</h2>
-<div class="outline-text-2" id="text-org94144ba">
+<div id="outline-container-orgd6424b8" class="outline-2">
+<h2 id="orgd6424b8">JSON to Single line</h2>
+<div class="outline-text-2" id="text-orgd6424b8">
 <p>
 This was found on <a href="https://stackoverflow.com/questions/39861580/emacs-program-to-collapse-json-to-single-line">https://stackoverflow.com/questions/39861580/emacs-program-to-collapse-json-to-single-line</a> and is Justin Schell response.
 </p>
@@ -2012,9 +2023,9 @@ I am using to add icons to the icons.json file derived from feathericons.
 </div>
 </div>
 </div>
-<div id="outline-container-org0971e76" class="outline-2">
-<h2 id="org0971e76">Auto-tangle configuratioqn files.</h2>
-<div class="outline-text-2" id="text-org0971e76">
+<div id="outline-container-org228a67c" class="outline-2">
+<h2 id="org228a67c">Auto-tangle configuratioqn files.</h2>
+<div class="outline-text-2" id="text-org228a67c">
 <p>
 This is a tangel test,  does not tangle whtn msys launched. Windows launch neither.
 </p>
@@ -2036,9 +2047,9 @@ This is a tangel test,  does not tangle whtn msys launched. Windows launch neith
 </div>
 </div>
 </div>
-<div id="outline-container-org468dce7" class="outline-2">
-<h2 id="org468dce7">load per user settings</h2>
-<div class="outline-text-2" id="text-org468dce7">
+<div id="outline-container-orgbf251e7" class="outline-2">
+<h2 id="orgbf251e7">load per user settings</h2>
+<div class="outline-text-2" id="text-orgbf251e7">
 <div class="org-src-container">
 <pre class="src src-emacs-lisp"><span style="color: #989898; font-style: italic;">;;;; </span><span style="color: #989898; font-style: italic;">Various user settings is a local configuration.</span>
  (<span style="color: #b6a0ff;">local-custom-file</span> <span style="color: #79a8ff;">"local-settings.org"</span> <span style="color: #79a8ff;">"Final user settings"</span>)
@@ -2048,27 +2059,27 @@ This is a tangel test,  does not tangle whtn msys launched. Windows launch neith
 </div>
 
 
-<div id="outline-container-org887c9d3" class="outline-2">
-<h2 id="org887c9d3">Sourcing of Scripts</h2>
-<div class="outline-text-2" id="text-org887c9d3">
+<div id="outline-container-org67fe912" class="outline-2">
+<h2 id="org67fe912">Sourcing of Scripts</h2>
+<div class="outline-text-2" id="text-org67fe912">
 <div class="org-src-container">
 <pre class="src src-emacs-lisp">(<span style="color: #b6a0ff;">require</span> '<span style="color: #00bcff;">filename2clipboard</span>)
 </pre>
 </div>
 </div>
 </div>
-<div id="outline-container-org734a8f4" class="outline-2">
-<h2 id="org734a8f4">Adjust for better GC</h2>
-<div class="outline-text-2" id="text-org734a8f4">
+<div id="outline-container-orgb8a89ee" class="outline-2">
+<h2 id="orgb8a89ee">Adjust for better GC</h2>
+<div class="outline-text-2" id="text-orgb8a89ee">
 <div class="org-src-container">
 <pre class="src src-emacs-lisp">(<span style="color: #b6a0ff;">setq</span> gc-cons-threshold (* 2 1000 1000))  
 </pre>
 </div>
 </div>
 </div>
-<div id="outline-container-org5e3a25d" class="outline-2">
-<h2 id="org5e3a25d">Clear Init Loading Flag</h2>
-<div class="outline-text-2" id="text-org5e3a25d">
+<div id="outline-container-org0e250c1" class="outline-2">
+<h2 id="org0e250c1">Clear Init Loading Flag</h2>
+<div class="outline-text-2" id="text-org0e250c1">
 <div class="org-src-container">
 <pre class="src src-emacs-lisp">(<span style="color: #b6a0ff;">setq</span> twr/init-loading-flag nil)
 </pre>
@@ -2077,7 +2088,7 @@ This is a tangel test,  does not tangle whtn msys launched. Windows launch neith
 </div>
 </div>
 <div id="postamble" class="status">
-<p class="date">Created: 2024-01-19 Fri 19:29</p>
+<p class="date">Created: 2024-02-08 Thu 10:44</p>
 <p class="validation"><a href="https://validator.w3.org/check?uri=referer">Validate</a></p>
 </div>
 </body>

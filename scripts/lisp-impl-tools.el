@@ -1,6 +1,52 @@
-;;;; With lisp-impl-tools each lisp can be defined as per the slime manual.
-;;;; lisp-impl-tools maintains a list of all the  specifications along with
+;;;; With lisp-impl-tools each inferior lisp candidate can be defined as per the slime manual.
+;;;; lisp-impl-tools maintains a list of all the specifications along with metadata.
 
+;;;; SLIME can be configured to use multiple lisps.
+;;;; A typical use would be define an slime entry for SBCL and CCL. You add a 'slime-entry' for
+;;;; each both lisps to the 'slime-lisp-implementations'.
+;;;; Startup either lisp my doing M-0 M-slime <TAB> and select from the completion list.
+;;;;
+;;;; When abused this approach leads to long completion lists with programatically created ids.
+;;;; But sometimes you want these messy cases when debugging.
+;;;;
+;;;; With a three phase strategy you can switch between both options.
+;;;;
+;;;; Phase 1, define all configurations with a meta tag strategy.
+;;;; At some point in you init.el you are going to iterate over all the lisp implemenations and
+;;;; There various startup options. You at metadata to each case based on how you want those cases selected.
+;;;; Phase 2, define selection strategy based on the metadata.
+;;;; Phase 3, use a strategy to create the lisp-implentations.
+;;;; Basically production cases for real work and testing case for the trivial stuff.
+;;;; Next you define filters based on your marking strategy.
+
+;;;;
+;;;; SLIME, “Superior Lisp Interaction Mode for Emacs,” and i't fork SLY both accept a list of elements.
+;;;; to specify which Common Lisp implemenation will be the inferior to emacs.
+;;;; I first used a simple approach and hand coded this list, for say SBCL, ABCL, CCL and CLISP.
+;;;; SBCL leads to a number of startup cases with monthly releases combined with various startup options.
+;;;;
+;;;; When testing SBCL, I may have various configurations where some represent various Startup Options and
+;;;; other represent various compilation and configuration options. Sometimes I just want reliable items
+;;;; on my slime startup list from SBCL and CCL. Other times I am testing and tweeking a specific version of SBCL. 
+;;;;
+;;;; By dividing the creation of the various lisps and options in the creationg and tagging of the master lisp.
+;;;; And next designing extraction filters  based on specific tags various purposes could be accomplished.
+
+
+;;;; Slime and Sly each take similar lists of information to decribe inferior lisp processes.
+;;;; I use the term *invoker* to describe each element of those lists.
+;;;; For Slime See:  https://slime.common-lisp.dev/doc/html/Multiple-Lisps.html#Multiple-Lisps
+;;;; For Sly See: https://joaotavora.github.io/sly/#Multiple-Lisps
+
+;;;; The functional design.
+;;;; 1) meta tag various lisp implmentations creating a master-list
+;;;;  Because there are various lisp implmentations and there could be various start up options for those implemenations.
+;;;;  You create an inferior lisp invoker for each all with metadata about the variations. This could be a very long list.
+;;;; 2) filter the list by metadata
+;;;;  You create various filters by metadata, such as 'production', 'testing' or 'custom'.
+;;;; 3) you set 'slime-lisp-implementations' or 'sly-lisp-implemenatations' to the selected output of the filters to the master-list.
+
+(defvar lisp-impl-master-list nil "This is a list of all lisp implmentations candidates. If set this to nil the list is made empty")
 
 ;;;; The following are elements decribed in slime manual on how to configure a lisp
 (defvar lisp-impl-name nil "See slime manual 2.5.2 Multiple Lisps, is a symbol and is used to identify the program.")
@@ -23,24 +69,35 @@
   (setq lisp-impl-env nil)
   (setq lisp-impl-meta nil))
 
-(defun tag (id val)
-  (when val `(id val)))
+(defmacro _tag (id val)
+  (let ((_val (gensym))
+	(_id (gensym)))
+    `(let ((,_val ,val)
+	   (,_id ,id))
+	(if ,_val (list ,_id ,_val)))))
 
 (defun render-lisp-impl()
   "Return an sexp for the lisp-impl"
   `(,lisp-impl-meta
     (,lisp-impl-name
      ((,lisp-impl-program ,@lisp-impl-program-args)
-      ,@(tag :CODING-SYSTEM lisp-impl-coding-system)
-      ,@(tag :INIT lisp-impl-init)
-      ,@(tag :INIT-FUNCTION lisp-impl-init-function)
-      ,@(tag :ENV lisp-impl-env)))))
+      ,@(_tag :CODING-SYSTEM lisp-impl-coding-system)
+      ,@(_tag :INIT lisp-impl-init)
+      ,@(_tag :INIT-FUNCTION lisp-impl-init-function)
+      ,@(_tag :ENV lisp-impl-env)))))
+
+(defun render-to-list ()
+  "Render am implmenatons and add it to the master list."
+  (setf lisp-impl-master-list (cons (render-lisp-impl) lisp-impl-master-list)))
 
 (defun test-render-lisp-impl()
   (reset-lisp-impl)
-  (setq lisp-impl-name 'tester)
+  (setq lisp-impl-name 'imagino-test-lisp)
   (setq lisp-impl-program "sbcl.exe")
   (setq lisp-impl-program-args '("hello" "there"))
   (setq lisp-impl-coding-system :utf8)
-  (setq lisp-impl-meta '((:use-slime t)))
+  (setq lisp-impl-init '(the-initer))
+  (setq lisp-impl-init-function "(defun swanko-starto() (do-init))  (swanko-starto)")
+  (setq lisp-impl-env "((SBCL_HOME=\"/home/zzzap/sbcl/\"))")
+  (setq lisp-impl-meta '(("use-slime" t)("production" t)))
   (render-lisp-impl))
