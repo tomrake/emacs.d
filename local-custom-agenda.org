@@ -42,7 +42,8 @@ Add macro to construction block agenda components of TODO items.
      `(list '(todo "WAITING" ((org-agenda-files ,file-list)))
        '(todo "NEXT" ((org-agenda-files ,file-list)))
        '(todo "CANCELLED" ((org-agenda-files ,file-list)))
-       '(todo "TODO" ((org-agenda-files ,file-list)))))
+       '(todo "TODO" ((org-agenda-files ,file-list)))
+       '(todo "DONE" ((org-agenda-files ,file-list)))))
  #+end_src
  
  #+BEGIN_SRC emacs-lisp
