@@ -570,6 +570,11 @@ I need to check that there is a java and
   ;;;; Collect all right now
   (collect-lisp-invokers)
 #+END_SRC
+* Report Debug SLIME MARK                                          :noexport:
+Print Debug markers in *messages*
+#+BEGIN_SRC emacs-lisp :eval never-export
+(message "Debug SLIME MARK")
+#+END_SRC
 * Maybe use SLIME
  #+BEGIN_SRC emacs-lisp
    (when use-slime
@@ -592,6 +597,11 @@ I need to check that there is a java and
        (collect-lisp-invokers)
        (setq sly-lisp-implementations my-lisp-implementations))
  #+END_SRC
+* Report Debug SLIME END MARK                                      :noexport:
+Print Debug markers in *messages*
+#+BEGIN_SRC emacs-lisp :eval never-export
+(message "Debug SLIME END MARK")
+#+END_SRC
 * Enable lisp-mode .lisp and .asd files
   #+BEGIN_SRC emacs-lisp
   (setq auto-mode-alist
@@ -906,11 +916,6 @@ Then use it like this:
 
 This is a single ) to close it.
 
-* Report Debug MARK                                                :noexport:
-Print Debug markers in *messages*
-#+BEGIN_SRC emacs-lisp :eval never-export
-(message "Debug MARK")
-#+END_SRC
 * PS Print with GHOSTSCRIPT
 #+BEGIN_SRC emacs-lisp
    (setq ps-lpr-command "C:/Program Files/gs/gs9.56.1/bin/gswin64c.exe")

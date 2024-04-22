@@ -344,6 +344,8 @@ I also add lisp version with a compiled name of 'production' or which contain a 
 ;;;; Collect all right now
 (collect-lisp-invokers)
 
+(message "Debug SLIME MARK")
+
 (when use-slime
   (add-to-list 'load-path "c:/Users/zzzap/Documents/Code/source-projects/ACTIVE/slime")
   (require 'slime)
@@ -360,6 +362,8 @@ I also add lisp version with a compiled name of 'production' or which contain a 
   :init
     (collect-lisp-invokers)
     (setq sly-lisp-implementations my-lisp-implementations))
+
+(message "Debug SLIME END MARK")
 
 (setq auto-mode-alist
       (append '((".*\\.asd\\'" . lisp-mode))
@@ -554,8 +558,6 @@ I also add lisp version with a compiled name of 'production' or which contain a 
        (find-file img)))))
 
 )
-
-(message "Debug MARK")
 
 (setq ps-lpr-command "C:/Program Files/gs/gs9.56.1/bin/gswin64c.exe")
 (setq ps-lpr-switches '("-q" "-dNOPAUSE" "-dBATCH" "-sDEVICE=mswinpr2" "-sOutputFile=\"%printer%Canon\ TS6000\ series\""))
