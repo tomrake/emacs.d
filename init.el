@@ -354,7 +354,8 @@ I also add lisp version with a compiled name of 'production' or which contain a 
   ;;   (load "c:/Users/Public/Lispers/quicklisp/slime-helper.el"))
   (collect-lisp-invokers)
   (setq slime-lisp-implementations my-lisp-implementations)
-  (setq slime-contribs '(slime-fancy))
+  (setq slime-contribs '(slime-fancy slime-repl-ansi-color))
+  (setf slime-repl-ansi-color-mode 1) 
   (global-set-key "\C-cs" 'slime-selector))
 
 (use-package sly

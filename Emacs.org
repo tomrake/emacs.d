@@ -576,6 +576,8 @@ Print Debug markers in *messages*
 (message "Debug SLIME MARK")
 #+END_SRC
 * Maybe use SLIME
+Upgraded slime to 2.29.1
+This add the ansi colors to the slime REPL.
  #+BEGIN_SRC emacs-lisp
    (when use-slime
      (add-to-list 'load-path "c:/Users/zzzap/Documents/Code/source-projects/ACTIVE/slime")
@@ -585,7 +587,8 @@ Print Debug markers in *messages*
      ;;   (load "c:/Users/Public/Lispers/quicklisp/slime-helper.el"))
      (collect-lisp-invokers)
      (setq slime-lisp-implementations my-lisp-implementations)
-     (setq slime-contribs '(slime-fancy))
+     (setq slime-contribs '(slime-fancy slime-repl-ansi-color))
+     (setf slime-repl-ansi-color-mode 1) 
      (global-set-key "\C-cs" 'slime-selector))
  #+END_SRC
 
