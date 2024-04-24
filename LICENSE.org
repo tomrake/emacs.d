@@ -1,0 +1,5 @@
+GPL, emacs is GPL.
+
+init.el code is very user specific.
+
+In a few cases I have noted where is cribbed small sections of code.
