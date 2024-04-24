@@ -1,6 +1,17 @@
 ;; NOTE: init.el is now generated from Emacs.org.  Please edit that file
 ;;       in Emacs and init.el will be generated automatically!
 
+;;;; Emacs Debug On Error
+   (setq debug-on-error nil )
+
+;;;; load the user-custom-startup file.
+(when chemacs-profile-name
+(message (concat "chemacs-profile-name: " chemacs-profile-name)))
+(let ((uc (getenv "USERINITCUSTOM")))
+  (if uc
+      (load uc)
+    (message "USERINITCUSTOM is NIL.")))
+
 (setq twr/init-loading-flag "default")
 (defun twr/check-init-load ()
   (when twr/init-loading-flag
@@ -75,9 +86,6 @@
 (setq use-package-always-ensure t)
 (setq use-package-verbose t)
 (setq use-package-always-defer t)
-
-;;;; Emacs Debug On Error
-   (setq debug-on-error nil )
 
 ;;;; Macro to load user customizations from .emacs.d
 (defmacro local-custom-file (file description)

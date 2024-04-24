@@ -7,6 +7,43 @@
   ;; NOTE: init.el is now generated from Emacs.org.  Please edit that file
   ;;       in Emacs and init.el will be generated automatically!
 #+end_src
+
+* Emacs debug-on-error
+   [TBD] Should this be set from an enviroment variable.
+   [TBD] Is there already a command line switch for this?
+  #+BEGIN_SRC emacs-lisp
+	;;;; Emacs Debug On Error
+	   (setq debug-on-error nil )
+  #+END_SRC
+
+* Chemacs2 Startup policy
+I use the [[https://github.com/plexus/chemacs2][chemacs2]] emacs config switcher.
+I like to control the .emacs.d/init.el which is written from this file by org-bable-tangle.
+Chemac2 reads the ~/.emacs-profiles.el which could be
+#+begin_example emacs-lisp
+  (("DESKER-DEFAULT" .((user-emacs-directory . "~/.standard-emacs.d")
+		(env . (("USERINITCUSTOM" . "~/.standard-emacs.d/scripts/DESKER-DEFAULT-user-startup"))))))
+#+end_example
+
+#+begin_src emacs-lisp
+    ;;;; load the user-custom-startup file.
+  (when chemacs-profile-name
+  (message (concat "chemacs-profile-name: " chemacs-profile-name)))
+  (let ((uc (getenv "USERINITCUSTOM")))
+    (if uc
+	(load uc)
+      (message "USERINITCUSTOM is NIL.")))
+#+end_src
+
+** The intent
+I wish to run various .emacs configuration some just to test features.
+I sometimes wish to run emacs in a specific msys2 enviroment.
+Various of my subsystem need to be initialized with specific paths.
+The remainder of Emacs.org and init.el should be written with standard configuration values set in the  user-custom-startup files.
+The protocol is to name the file COMPUTER_SUBCASE-user-statup.el where the name COMPUTER_SUBCASE is the .emacs-profiles.el key.
+
+The main git repo for this protocol will have various COMPUTER_SUBCASE-user-startup.el files to cover all use cases.
+
 * Set InitLoading Flag
 #+begin_src emacs-lisp
   (setq twr/init-loading-flag "default")
@@ -114,14 +151,6 @@ Print Debug markers in *messages*
   (setq use-package-always-defer t)
 
 #+end_src
-* Emacs debug-on-error
-   [TBD] Should this be set from an enviroment variable.
-   [TBD] Is there already a command line switch for this?
-  #+BEGIN_SRC emacs-lisp
-	;;;; Emacs Debug On Error
-	   (setq debug-on-error nil )
-  #+END_SRC
-
 * Allow loading of a file from .emacs.d/
 ***  [TBD] Once the init.el generation is working
     - autosaving other .emacs.d/ configuration files could be done
