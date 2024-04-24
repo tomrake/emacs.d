@@ -1,11 +1,16 @@
-* Emacs init restructure
-  - Based on
-    - [[https://github.com/daviwil/emacs-from-scratch/blob/master/show-notes/Emacs-07.org]]
-    - [[https://systemcrafters.cc/emacs-from-scratch/configure-everything-with-org-babel/]]
-  - Settings.org is renamed emacs.org
-  - init.el is placed under version control
+* The emacs.d of Tom Rake
+** Philosophy
+- Avoid chapter 11 Bankruptcy
+  - Reorganize
+  - Document
+  - Regular cruft needs to be cut.
 
-** Steps
-   - place init.el under version control
-   - modify settings.org to test when it is being saved.
-   * change settings.org to write init.el
+** Rough Design description
+- init.el is written from Emacs.org on save. Or M-x org-babel-tangle when init.el get hung up.
+- the scripts/ directory is intended to hold code to paper over OS variation.
+  - The msys2 subsystem supplied many of the GNU tools on Windors that emacs uses on 'nix platorms.
+- In a computer/user cases the scripts/ will likely need to be initialized with base-directories.
+** Thanks
+- David Wilson at systemcrafters.net
+
+

@@ -1181,13 +1181,14 @@ This is a tangel test,  does not tangle whtn msys launched. Windows launch neith
 #+begin_src emacs-lisp
 (setq gc-cons-threshold (* 2 1000 1000))  
 #+end_src
-* Clear Init Loading Flag
-#+begin_src emacs-lisp
-  (setq twr/init-loading-flag nil)
-#+end_src
 * Report Debug END                                                 :noexport:
 Print Debug markers in *messages*
 #+BEGIN_SRC emacs-lisp  :eval never-export
 (message "Debug END")
 #+END_SRC
  
+* Report no init hangs
+#+begin_src emacs-lisp
+  (setq twr/init-loading-flag nil)
+  (message "NO INIT HANGS, IT DID FINISH!!!!!! ")
+#+end_src

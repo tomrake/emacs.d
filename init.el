@@ -741,6 +741,7 @@ I also add lisp version with a compiled name of 'production' or which contain a 
 
 (setq gc-cons-threshold (* 2 1000 1000))
 
-(setq twr/init-loading-flag nil)
-
 (message "Debug END")
+
+(setq twr/init-loading-flag nil)
+(message "NO INIT HANGS, IT DID FINISH!!!!!! ")
