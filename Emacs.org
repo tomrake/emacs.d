@@ -2,6 +2,7 @@
 #+TITLE: The Emacs configuration of Tom Rake  
 #+PROPERTY: header-args:emacs-lisp :tangle ./init.el :mkdirp yes
 #+OPTIONS: toc:3
+
 * Add Generated from Emacs.org warning.
 #+begin_src emacs-lisp
   ;; NOTE: init.el is now generated from Emacs.org.  Please edit that file
@@ -13,7 +14,7 @@
    [TBD] Is there already a command line switch for this?
   #+BEGIN_SRC emacs-lisp
 	;;;; Emacs Debug On Error
-	   (setq debug-on-error nil )
+	   (setq debug-on-error t )
   #+END_SRC
 
 * Chemacs2 Startup policy
@@ -52,12 +53,31 @@ The main git repo for this protocol will have various COMPUTER_SUBCASE-user-star
       (message (concat "INIT DID NOT FINISH!!!!!! " twr/init-loading-flag))))
   (add-hook 'after-init-hook 'twr/check-init-load)
 #+end_src
+* Auto-tangle Emacs.org .
+#+begin_src emacs-lisp :tangle nil
+  (message (concat "Init buffer: :" (buffer-file-name)))
+  (unless (string-equal (buffer-file-name)
+		      (concat local-config-emacs-d "/init.el"))
+    (error "local-config-emacs-d not set for auto-tangle"))
+#+end_src
+#+begin_src emacs-lisp
+  ;; Autommatically tangle our Emacs.org config file when we save it.
+  (defun efs/org-babel-tangle-config ()
+    "Test if the buffer should be auto-tangled after save"
+    (when (string-equal (buffer-file-name)
+			(concat local-config-emacs-d "/Emacs.org"))
+      (message "Begin efs/tangle")
+
+      ;; Dynamic scoping to the rescue
+      (let ((org-confirm-babel-evaluate nil))
+	(org-babel-tangle))))
+  (add-hook 'org-mode-hook (lambda () (add-hook 'after-save-hook #'efs/org-babel-tangle-config)))
+#+end_src
 * Report Debug START                                               :noexport:
 Print Debug markers in *messages*
 #+BEGIN_SRC emacs-lisp :eval never-export
 (message "Debug START")
 #+END_SRC
-
 
 * Platform specific items by Chezmoi_config
 #+begin_src emacs-lisp
@@ -73,6 +93,20 @@ Print Debug markers in *messages*
 #+begin_src emacs-lisp
   (add-to-list 'load-path (expand-file-name "scripts/" user-emacs-directory))
 #+end_src
+* Default Pathnames with Enviroment
+Overrides
+Check and/or Revise this trickery!!!!!
+#+BEGIN_SRC emacs-lisp
+  ;;; Specify a emacs variable from an environment variable env-string or  base,new-path-string
+  (defun ensure-string (s)
+    (if s s ""))
+  (defmacro default-or-environment (emacs-var base new-path-string env-string)
+    ;;`(concat ,base ,new-pathe-string))
+     `(setq ,emacs-var (if (getenv ,env-string)
+			(getenv ,env-string)
+			(concat (ensure-string ,base) (ensure-string ,new-path-string)))))
+#+END_SRC
+
 * SLIME v SLY switch
 #+BEGIN_SRC emacs-lisp
   (defvar use-slime t "Set true to use slime for superior lisp")
@@ -172,20 +206,6 @@ Print Debug markers in *messages*
 	   (message (concat "Custom file is missing " file-and-path))))))
 
 #+END_SRC
-* Default Pathnames with Enviroment
-Overrides
-Check and/or Revise this trickery!!!!!
-#+BEGIN_SRC emacs-lisp
-  ;;; Specify a emacs variable from an environment variable env-string or  base,new-path-string
-  (defun ensure-string (s)
-    (if s s ""))
-  (defmacro default-or-environment (emacs-var base new-path-string env-string)
-    ;;`(concat ,base ,new-pathe-string))
-     `(setq ,emacs-var (if (getenv ,env-string)
-			(getenv ,env-string)
-			(concat (ensure-string ,base) (ensure-string ,new-path-string)))))
-#+END_SRC
-
 * Magic Modes
 #+BEGIN_SRC emacs-lisp
   ;;;; Magic File modes
@@ -1189,23 +1209,6 @@ I am using to add icons to the icons.json file derived from feathericons.
           (while (re-search-forward "[[:space:]\n]+" nil t)
             (replace-match " "))))
     (print "This function operates on a region")))
-#+end_src
-* Auto-tangle configuratioqn files.
-This is a tangel test,  does not tangle whtn msys launched. Windows launch neither.
-
-
-#+begin_src emacs-lisp
-  ;; Autommatically tangle our Emacs.org config file when we save it.
-  (defun efs/org-babel-tangle-config ()
-    "Test if the buffer should be auto-tangled after save"
-    (when (string-equal (buffer-file-name)
-			"c:/Users/Public/Lispers/standard-emacs.d/Emacs.org")
-      (message "Begin efs/tangle")
-
-      ;; Dynamic scoping to the rescue
-      (let ((org-confirm-babel-evaluate nil))
-	(org-babel-tangle))))
-  (add-hook 'org-mode-hook (lambda () (add-hook 'after-save-hook #'efs/org-babel-tangle-config)))
 #+end_src
 * load per user settings
  #+BEGIN_SRC emacs-lisp

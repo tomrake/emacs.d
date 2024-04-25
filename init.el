@@ -2,7 +2,7 @@
 ;;       in Emacs and init.el will be generated automatically!
 
 ;;;; Emacs Debug On Error
-   (setq debug-on-error nil )
+   (setq debug-on-error t )
 
 ;;;; load the user-custom-startup file.
 (when chemacs-profile-name
@@ -18,6 +18,18 @@
     (message (concat "INIT DID NOT FINISH!!!!!! " twr/init-loading-flag))))
 (add-hook 'after-init-hook 'twr/check-init-load)
 
+;; Autommatically tangle our Emacs.org config file when we save it.
+(defun efs/org-babel-tangle-config ()
+  "Test if the buffer should be auto-tangled after save"
+  (when (string-equal (buffer-file-name)
+		      (concat local-config-emacs-d "/Emacs.org"))
+    (message "Begin efs/tangle")
+
+    ;; Dynamic scoping to the rescue
+    (let ((org-confirm-babel-evaluate nil))
+      (org-babel-tangle))))
+(add-hook 'org-mode-hook (lambda () (add-hook 'after-save-hook #'efs/org-babel-tangle-config)))
+
 (message "Debug START")
 
 ;; Allow chezmoi_config.el to define things:
@@ -29,6 +41,15 @@
    (message "%s" (error-message-string err))))
 
 (add-to-list 'load-path (expand-file-name "scripts/" user-emacs-directory))
+
+;;; Specify a emacs variable from an environment variable env-string or  base,new-path-string
+(defun ensure-string (s)
+  (if s s ""))
+(defmacro default-or-environment (emacs-var base new-path-string env-string)
+  ;;`(concat ,base ,new-pathe-string))
+   `(setq ,emacs-var (if (getenv ,env-string)
+		      (getenv ,env-string)
+		      (concat (ensure-string ,base) (ensure-string ,new-path-string)))))
 
 (defvar use-slime t "Set true to use slime for superior lisp")
 (defvar use-sly nil "Set true to use sly for superior lisp")
@@ -98,15 +119,6 @@
 	          (require 'org)
 		  (org-babel-load-file file-and-path))
 	 (message (concat "Custom file is missing " file-and-path))))))
-
-;;; Specify a emacs variable from an environment variable env-string or  base,new-path-string
-(defun ensure-string (s)
-  (if s s ""))
-(defmacro default-or-environment (emacs-var base new-path-string env-string)
-  ;;`(concat ,base ,new-pathe-string))
-   `(setq ,emacs-var (if (getenv ,env-string)
-		      (getenv ,env-string)
-		      (concat (ensure-string ,base) (ensure-string ,new-path-string)))))
 
 ;;;; Magic File modes
 (setq magic-mode-alist '(("*.org" . org)))
@@ -732,18 +744,6 @@ I also add lisp version with a compiled name of 'production' or which contain a 
           (while (re-search-forward "[[:space:]\n]+" nil t)
             (replace-match " "))))
     (print "This function operates on a region")))
-
-;; Autommatically tangle our Emacs.org config file when we save it.
-(defun efs/org-babel-tangle-config ()
-  "Test if the buffer should be auto-tangled after save"
-  (when (string-equal (buffer-file-name)
-		      "c:/Users/Public/Lispers/standard-emacs.d/Emacs.org")
-    (message "Begin efs/tangle")
-
-    ;; Dynamic scoping to the rescue
-    (let ((org-confirm-babel-evaluate nil))
-      (org-babel-tangle))))
-(add-hook 'org-mode-hook (lambda () (add-hook 'after-save-hook #'efs/org-babel-tangle-config)))
 
 ;;;; Various user settings is a local configuration.
  (local-custom-file "local-settings.org" "Final user settings")

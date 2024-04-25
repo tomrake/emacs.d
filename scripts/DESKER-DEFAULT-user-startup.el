@@ -1,5 +1,8 @@
 (message "DESKER-DEFAULT-user-startup")
 
+(defvar local-config-emacs-d "c:/Users/zzzap/Documents/Code/Emacs-Configs/testing/emacs.d"
+  "This is the org file Emacs.org used to generate init.el by tangle.")
+
 (defvar local-config-sbcl-location "C:/Users/Public/Lispers/sbcl/installed"
   "All locally compiled and installed SBCL lisps are installed in directory,
     by release version and a compiled name..
