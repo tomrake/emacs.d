@@ -2,7 +2,7 @@
 ;;       in Emacs and init.el will be generated automatically!
 
 ;;;; Emacs Debug On Error
-   (setq debug-on-error nil )
+   (setq debug-on-error t )
 
 ;;;; load the user-custom-startup file.
 (when chemacs-profile-name
@@ -262,6 +262,8 @@
   :ensure t
   :hook (lisp-mode . enable-paredit-mode))
 
+(message "Debug <<<<<<<<< START COMMONLISP STUFF")
+
 (defvar my-lisp-implementations nil
   "For various implemenations there are lisp invokers for slime and sly.")
 
@@ -283,7 +285,7 @@
 (defun assemble-sbcl-enviroment-invoker (my-tag program environment)
   (assemble-invoker my-tag program sbcl-program-arguments environment))
 
-(defvar local-sbcl-base "C:/Users/Public/Lispers/sbcl/installed"
+(defvar local-config-sbcl-location "C:/Users/Public/Lispers/sbcl/installed"
     "All locally compiled and installed SBCL lisps are installed in directory,
   by release version and a compiled name..
 I also add lisp version with a compiled name of 'production' or which contain a file '.production.'")
@@ -315,8 +317,8 @@ I also add lisp version with a compiled name of 'production' or which contain a 
 
 (defun collect-sbcl ()
   "Add all the slime invokers for SBCL 64bit compiled versions."
-  (add-win64-sbcl local-sbcl-base))
-					; (setf my-lisp-implementations (cddr my-lisp-implementations)))
+  (when (and (boundp 'local-config-sbcl-location) local-config-sbcl-location)
+    (add-win64-sbcl local-config-sbcl-location)))
 
 (defun ccl-invoker (my-tag path)
   "Return a lisp invoker; nil if path does not exist"
@@ -325,23 +327,22 @@ I also add lisp version with a compiled name of 'production' or which contain a 
 
 (defun add-ccl ()
   "Collect any CCL Lisp versions"
-  (let ((ccl32 (ccl-invoker 'ccl-32 "C:/Users/Public/Lispers/ccl/wx86cl.exe"))
-	(ccl64 (ccl-invoker 'ccl-64 "C:/Users/Public/Lispers/ccl/wx86cl64.exe")))
+  (let ((ccl32 (ccl-invoker 'ccl-32 local-config-ccl32-location))
+	(ccl64 (ccl-invoker 'ccl-64 local-config-ccl64-location)))
     (when ccl32 (collect-this-lisp ccl32))
     (when ccl64 (collect-this-lisp ccl64))))
 
-(defvar abcl-jar "c:/program Files/ABCL/abcl-src-1.9.0/dist/abcl.jar"
-  "The location of the Armed Bear Common Lisp jar.")
-
 (defun invoke-abcl()
   "Return a lisp invoker; nil if abcl is not found,"
-  (let ((abcl "c:/Program Files/ABCL/abcl-src-1.9.0/dist/abcl.jar"))
+  (let ((abcl local-config-abcl-location))
     (when (file-exists-p abcl)
       `(abcl  ,(list my-java "-jar" abcl)))))
 (defun add-abcl ()
   "Check of abcl implmentations"
   (let ((abcl (invoke-abcl)))
     (when abcl (collect-this-lisp abcl))))
+
+(message "Debug  START GATHERING INVOKERS")
 
 (defun collect-lisp-invokers ()
     "collect all lisp-invokers to my-lisp-implementations."
@@ -354,16 +355,18 @@ I also add lisp version with a compiled name of 'production' or which contain a 
 
 (message "Debug SLIME MARK")
 
-(when use-slime
-  (add-to-list 'load-path "c:/Users/zzzap/Documents/Code/source-projects/ACTIVE/slime")
-  (require 'slime)
-  (require 'slime-autoloads)
-  ;; (when (file-exists-p "c:/Users/Public/Lispers/quicklisp/slime-helper.el")
-  ;;   (load "c:/Users/Public/Lispers/quicklisp/slime-helper.el"))
+(when (and use-slime (boundp 'local-config-slime-location) local-config-slime-location (file-directory-p local-config-slime-location))
+  (add-to-list 'load-path local-config-slime-location)
   (collect-lisp-invokers)
   (setq slime-lisp-implementations my-lisp-implementations)
+  ;; (when (file-exists-p "c:/Users/Public/Lispers/quicklisp/slime-helper.el")
+  ;;   (load "c:/Users/Public/Lispers/quicklisp/slime-helper.el"))
+  (require 'slime)
+  (require 'slime-autoloads)
+
   (setq slime-contribs '(slime-fancy slime-repl-ansi-color))
-  (setf slime-repl-ansi-color-mode 1) 
+
+  (setq slime-repl-ansi-color-mode 1)
   (global-set-key "\C-cs" 'slime-selector))
 
 (use-package sly

@@ -472,6 +472,11 @@ Make plink the default tramp method if running on Windows when plink.exe exists.
       :ensure t
       :hook (lisp-mode . enable-paredit-mode))
     #+END_SRC
+* Report Debug START COMMONLISP STUFF                              :noexport:
+Print Debug markers in *messages*
+#+BEGIN_SRC emacs-lisp :eval never-export
+(message "Debug <<<<<<<<< START COMMONLISP STUFF")
+#+END_SRC
 * Taging of Inferior Invokers
 Create a windows standalone startup for a lisp version.
 #+BEGIN_SRC emacs-lisp
@@ -503,7 +508,7 @@ Start all SBCL lisps with a --noinform argument and standart arguments.
 
 I collect all sbcl version of lisp from a base directory which is structured
 
-- local-sbcl-base
+- local-config-sbcl-location
   - version
     - name
       - .production  - need to be collected unless name is 'production'
@@ -513,7 +518,7 @@ I collect all sbcl version of lisp from a base directory which is structured
 
 	
 #+BEGIN_SRC emacs-lisp
-  (defvar local-sbcl-base "C:/Users/Public/Lispers/sbcl/installed"
+  (defvar local-config-sbcl-location "C:/Users/Public/Lispers/sbcl/installed"
       "All locally compiled and installed SBCL lisps are installed in directory,
     by release version and a compiled name..
   I also add lisp version with a compiled name of 'production' or which contain a file '.production.'")
@@ -545,8 +550,9 @@ I collect all sbcl version of lisp from a base directory which is structured
 
   (defun collect-sbcl ()
     "Add all the slime invokers for SBCL 64bit compiled versions."
-    (add-win64-sbcl local-sbcl-base))
-					  ; (setf my-lisp-implementations (cddr my-lisp-implementations)))
+    (when (and (boundp 'local-config-sbcl-location) local-config-sbcl-location)
+      (add-win64-sbcl local-config-sbcl-location)))
+
 #+END_SRC
 * CCL Invokers
 
@@ -560,8 +566,8 @@ Clozure Common Lisp from [[https://ccl.clozure.com/]]
 
   (defun add-ccl ()
     "Collect any CCL Lisp versions"
-    (let ((ccl32 (ccl-invoker 'ccl-32 "C:/Users/Public/Lispers/ccl/wx86cl.exe"))
-	  (ccl64 (ccl-invoker 'ccl-64 "C:/Users/Public/Lispers/ccl/wx86cl64.exe")))
+    (let ((ccl32 (ccl-invoker 'ccl-32 local-config-ccl32-location))
+	  (ccl64 (ccl-invoker 'ccl-64 local-config-ccl64-location)))
       (when ccl32 (collect-this-lisp ccl32))
       (when ccl64 (collect-this-lisp ccl64))))	  
 #+END_SRC
@@ -575,18 +581,21 @@ Armed Bear Common Lisp from  [[https://www.abcl.org/doc/abcl-user.html]]
 I need to check that there is a java and 
 
 #+BEGIN_SRC emacs-lisp
-  (defvar abcl-jar "c:/program Files/ABCL/abcl-src-1.9.0/dist/abcl.jar"
-    "The location of the Armed Bear Common Lisp jar.")
-
   (defun invoke-abcl()
     "Return a lisp invoker; nil if abcl is not found,"
-    (let ((abcl "c:/Program Files/ABCL/abcl-src-1.9.0/dist/abcl.jar"))
+    (let ((abcl local-config-abcl-location))
       (when (file-exists-p abcl)
 	`(abcl  ,(list my-java "-jar" abcl)))))
   (defun add-abcl ()
     "Check of abcl implmentations"
     (let ((abcl (invoke-abcl)))
       (when abcl (collect-this-lisp abcl))))
+#+END_SRC
+
+* Report Debug START GATHERING INVOKERS                            :noexport:
+Print Debug markers in *messages*
+#+BEGIN_SRC emacs-lisp :eval never-export
+(message "Debug  START GATHERING INVOKERS")
 #+END_SRC
 * Gather all my LISP invokers
 #+BEGIN_SRC emacs-lisp
@@ -607,17 +616,19 @@ Print Debug markers in *messages*
 * Maybe use SLIME
 Upgraded slime to 2.29.1
 This add the ansi colors to the slime REPL.
- #+BEGIN_SRC emacs-lisp
-   (when use-slime
-     (add-to-list 'load-path "c:/Users/zzzap/Documents/Code/source-projects/ACTIVE/slime")
-     (require 'slime)
-     (require 'slime-autoloads)
-     ;; (when (file-exists-p "c:/Users/Public/Lispers/quicklisp/slime-helper.el")
-     ;;   (load "c:/Users/Public/Lispers/quicklisp/slime-helper.el"))
+ #+BEGIN_SRC emacs-lisp 
+   (when (and use-slime (boundp 'local-config-slime-location) local-config-slime-location (file-directory-p local-config-slime-location))
+     (add-to-list 'load-path local-config-slime-location)
      (collect-lisp-invokers)
      (setq slime-lisp-implementations my-lisp-implementations)
+     ;; (when (file-exists-p "c:/Users/Public/Lispers/quicklisp/slime-helper.el")
+     ;;   (load "c:/Users/Public/Lispers/quicklisp/slime-helper.el"))
+     (require 'slime)
+     (require 'slime-autoloads)
+
      (setq slime-contribs '(slime-fancy slime-repl-ansi-color))
-     (setf slime-repl-ansi-color-mode 1) 
+
+     (setq slime-repl-ansi-color-mode 1)
      (global-set-key "\C-cs" 'slime-selector))
  #+END_SRC
 
