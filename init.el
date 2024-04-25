@@ -2,7 +2,7 @@
 ;;       in Emacs and init.el will be generated automatically!
 
 ;;;; Emacs Debug On Error
-   (setq debug-on-error t )
+   (setq debug-on-error nil )
 
 ;;;; load the user-custom-startup file.
 (when chemacs-profile-name
@@ -99,6 +99,15 @@
 		  (org-babel-load-file file-and-path))
 	 (message (concat "Custom file is missing " file-and-path))))))
 
+;;; Specify a emacs variable from an environment variable env-string or  base,new-path-string
+(defun ensure-string (s)
+  (if s s ""))
+(defmacro default-or-environment (emacs-var base new-path-string env-string)
+  ;;`(concat ,base ,new-pathe-string))
+   `(setq ,emacs-var (if (getenv ,env-string)
+		      (getenv ,env-string)
+		      (concat (ensure-string ,base) (ensure-string ,new-path-string)))))
+
 ;;;; Magic File modes
 (setq magic-mode-alist '(("*.org" . org)))
 
@@ -134,15 +143,6 @@
 (use-package savehist
   :init
   (savehist-mode))
-
-;;; Specify a emacs variable from an environment variable env-string or  base,new-path-string
-(defun ensure-string (s)
-  (if s s ""))
-(defmacro default-or-environment (emacs-var base new-path-string env-string)
-  ;;`(concat ,base ,new-pathe-string))
-   `(setq ,emacs-var (if (getenv ,env-string)
-		      (getenv ,env-string)
-		      (concat (ensure-string ,base) (ensure-string ,new-path-string)))))
 
 (setq ispell-program-name "aspell")
 

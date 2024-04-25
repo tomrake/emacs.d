@@ -172,6 +172,20 @@ Print Debug markers in *messages*
 	   (message (concat "Custom file is missing " file-and-path))))))
 
 #+END_SRC
+* Default Pathnames with Enviroment
+Overrides
+Check and/or Revise this trickery!!!!!
+#+BEGIN_SRC emacs-lisp
+  ;;; Specify a emacs variable from an environment variable env-string or  base,new-path-string
+  (defun ensure-string (s)
+    (if s s ""))
+  (defmacro default-or-environment (emacs-var base new-path-string env-string)
+    ;;`(concat ,base ,new-pathe-string))
+     `(setq ,emacs-var (if (getenv ,env-string)
+			(getenv ,env-string)
+			(concat (ensure-string ,base) (ensure-string ,new-path-string)))))
+#+END_SRC
+
 * Magic Modes
 #+BEGIN_SRC emacs-lisp
   ;;;; Magic File modes
@@ -271,19 +285,6 @@ Read up on [[https://www.gnu.org/software/emacs/manual/html_node/elisp/Completio
     (org-roam-db-autosync-mode)
     ;; If using org-roam-protocol
     (require 'org-roam-protocol))
-#+END_SRC
-
-* Default Pathnames with Enviroment Overrides
-Check and/or Revise this trickery!!!!!
-#+BEGIN_SRC emacs-lisp
-  ;;; Specify a emacs variable from an environment variable env-string or  base,new-path-string
-  (defun ensure-string (s)
-    (if s s ""))
-  (defmacro default-or-environment (emacs-var base new-path-string env-string)
-    ;;`(concat ,base ,new-pathe-string))
-     `(setq ,emacs-var (if (getenv ,env-string)
-			(getenv ,env-string)
-			(concat (ensure-string ,base) (ensure-string ,new-path-string)))))
 #+END_SRC
 
 * Ispell configured with Aspell
