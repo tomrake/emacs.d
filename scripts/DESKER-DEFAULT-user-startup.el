@@ -19,3 +19,22 @@
 
 (defvar local-config-slime-location "c:/Users/zzzap/Documents/Code/source-projects/ACTIVE/slime"
   "The location of the slime for common lisp.")
+
+(defvar local-config-org-user-dir "~/Document/Code/org"
+  "The local org directory")
+
+(defvar local-config-org-public-dir "c:/Users/Public/Documents/org"
+  "My Public org directory")
+
+(defvar local-config-org-notes-file "~/Documents/Code/org/nodes/notes.org"
+  "The org notes file - this look like a bad or unused path. [TBD] Check this.")
+
+(defvar local-config-gtd-template-dir "~/Documents/Code/Emacs-Config/test/emacs.d/"
+  "Where the GTD temples are located.")
+
+
+(defvar local-config-src-base-path "~/Documents/Code/org-web/"
+  "Where the published source is located.")
+
+(defvar local-config-publish-base-path "c:/Users/Public/org-web/"
+  "Where the publish html files are located here.")

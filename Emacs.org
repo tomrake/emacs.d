@@ -17,14 +17,25 @@
 	   (setq debug-on-error t )
   #+END_SRC
 
-* Chemacs2 Startup policy
-I use the [[https://github.com/plexus/chemacs2][chemacs2]] emacs config switcher.
-I like to control the .emacs.d/init.el which is written from this file by org-bable-tangle.
+* USER INIT CUSTOM policy
+
+
+I use the [[https://github.com/plexus/chemacs2][chemacs2]] emacs config switcher, .emacs-profiles.el selects from a series of configuration types.
+Emacs.org and script, do the right thing when not configured. 
+
 Chemac2 reads the ~/.emacs-profiles.el which could be
 #+begin_example emacs-lisp
   (("DESKER-DEFAULT" .((user-emacs-directory . "~/.standard-emacs.d")
 		(env . (("USERINITCUSTOM" . "~/.standard-emacs.d/scripts/DESKER-DEFAULT-user-startup"))))))
 #+end_example
+
+emacs is started with a --with-profile COMPUTER-SUBSYSTEM parameter.
+chemacs2 set the environment USERINITCUSTOM to the location of a user-startup.el file.
+
+The environment variable USERINITCUSTOM which file to load to configure Emacs.org for a COMPUTER and a SUBCASE.
+scripts/ contains various scripts in the form of COMPUTER-SUBCASE-user-start.el.
+
+This is how the USERINITCUSTOM is loaded:
 
 #+begin_src emacs-lisp
     ;;;; load the user-custom-startup file.
@@ -36,16 +47,46 @@ Chemac2 reads the ~/.emacs-profiles.el which could be
       (message "USERINITCUSTOM is NIL.")))
 #+end_src
 
-** The intent
-I wish to run various .emacs configuration some just to test features.
-I sometimes wish to run emacs in a specific msys2 enviroment.
-Various of my subsystem need to be initialized with specific paths.
-The remainder of Emacs.org and init.el should be written with standard configuration values set in the  user-custom-startup files.
-The protocol is to name the file COMPUTER_SUBCASE-user-statup.el where the name COMPUTER_SUBCASE is the .emacs-profiles.el key.
+The intent is to move hard coded initialization paths into the COMPUTER-SUBCASE-user-start.el files.
+While the majority of the code in Emacs.org and scripts does the right thing when configuratio is missing or in error.
 
-The main git repo for this protocol will have various COMPUTER_SUBCASE-user-startup.el files to cover all use cases.
+DO THE RIGHT THING
+#+begin_src emacs-lisp
+  (defmacro when-defined (sym &rest body)
+    "Execute the body when the symbol is defined."
+    `(when (boundp ,sym)
+       ,@body))
 
-* Set InitLoading Flag
+  (defmacro when-not-nil (sym &rest body)
+    "Execute the body when the symbol is not nil"
+    (let ((_sym (gensym)))
+      `(let ((,_sym ,sym))
+	 (when (and (boundp ,_sym) ,_sym)
+	   ,@body))))
+  (defmacro when-not-empty-string (sym &rest body)
+    "Exexute the body when the symbol is bound to an non-empty string."
+    (let ((_sym (gensym)))
+      `(let ((,_sym ,sym))
+	 (when (and (boundp ,_sym) ,_sym (stringp ,_sym) (< 0 (length ,_sym)))
+	 ,@body))))
+
+  (defmacro when-existing-file (sym &rest body)
+    "Execute the body when the symbol is bound to an existing filename"
+    (let ((_sym (gensym)))
+      `(let ((,_sym ,sym))
+	 (when (and (boundp ,_sym) ,_sym (stringp ,_sym) (< 0 (length ,_sym)) (file-exists-p ,_sym))
+	 ,@body))))
+
+  (defmacro when-existing-directory (sym &rest body)
+    "Execute the body when the symbol is bound to an existing directory name"
+    (let ((_sym (gensym)))
+      `(let ((,_sym ,sym))
+	 (when (and (boundp ,_sym) ,_sym (stringp ,_sym) (< 0 (length ,_sym)) (file-directory-p ,_sym))
+	 ,@body))))
+#+end_src
+
+* Track init.el completion
+Set a init loading flag, check and report if the flag is not clear in the after init-hook.
 #+begin_src emacs-lisp
   (setq twr/init-loading-flag "default")
   (defun twr/check-init-load ()
@@ -89,11 +130,11 @@ Print Debug markers in *messages*
     (file-missing
      (message "%s" (error-message-string err))))
 #+end_src
-* Adding the scripts directory  to path
+* Some of our routines are in scripts/
 #+begin_src emacs-lisp
   (add-to-list 'load-path (expand-file-name "scripts/" user-emacs-directory))
 #+end_src
-* Default Pathnames with Enviroment
+* Default Pathnames with Enviroment - NEEDS REVISON
 Overrides
 Check and/or Revise this trickery!!!!!
 #+BEGIN_SRC emacs-lisp
@@ -106,6 +147,20 @@ Check and/or Revise this trickery!!!!!
 			(getenv ,env-string)
 			(concat (ensure-string ,base) (ensure-string ,new-path-string)))))
 #+END_SRC
+
+These are the default-or-environment call that need to be replaced:
+
+# Emacs.org
+# 103:  (defmacro default-or-environment (emacs-var base new-path-string env-string)
+# 835:    (default-or-environment org-user-dir (getenv "HOME") "/org" "ORG-USER-DIR")
+# 839:    (default-or-environment org-public-dir "c:/Users/Public/Documents" "/org" "ORG-PUBLIC-DIR")
+# 849:    (default-or-environment org-notes-file org-user-dir "/nodes/notes.org" "ORG-NOTES-FILE")
+# 878:     (default-or-environment gtd-template-dir base  "" "ORG-TEMPLATE-DIR")
+
+# local-publishing.org
+#  9:      (default-or-environment src-base-path org-mode-base-dir "org-web/" "ORG-PUBLISH-SRC")
+# 10:      (default-or-environment publish-base-path "" "c:/Users/Public/org-web/" "ORG-PUBLIC-TARGET")
+
 
 * SLIME v SLY switch
 #+BEGIN_SRC emacs-lisp
@@ -1231,7 +1286,8 @@ Print Debug markers in *messages*
 (message "Debug END")
 #+END_SRC
  
-* Report no init hangs
+* Test for init.el completion
+Clear to during init flag.
 #+begin_src emacs-lisp
   (setq twr/init-loading-flag nil)
   (message "NO INIT HANGS, IT DID FINISH!!!!!! ")

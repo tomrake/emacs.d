@@ -12,6 +12,38 @@
       (load uc)
     (message "USERINITCUSTOM is NIL.")))
 
+(defmacro when-defined (sym &rest body)
+  "Execute the body when the symbol is defined."
+  `(when (boundp ,sym)
+     ,@body))
+
+(defmacro when-not-nil (sym &rest body)
+  "Execute the body when the symbol is not nil"
+  (let ((_sym (gensym)))
+    `(let ((,_sym ,sym))
+       (when (and (boundp ,_sym) ,_sym)
+	 ,@body))))
+(defmacro when-not-empty-string (sym &rest body)
+  "Exexute the body when the symbol is bound to an non-empty string."
+  (let ((_sym (gensym)))
+    `(let ((,_sym ,sym))
+       (when (and (boundp ,_sym) ,_sym (stringp ,_sym) (< 0 (length ,_sym)))
+       ,@body))))
+
+(defmacro when-existing-file (sym &rest body)
+  "Execute the body when the symbol is bound to an existing filename"
+  (let ((_sym (gensym)))
+    `(let ((,_sym ,sym))
+       (when (and (boundp ,_sym) ,_sym (stringp ,_sym) (< 0 (length ,_sym)) (file-exists-p ,_sym))
+       ,@body))))
+
+(defmacro when-existing-directory (sym &rest body)
+  "Execute the body when the symbol is bound to an existing directory name"
+  (let ((_sym (gensym)))
+    `(let ((,_sym ,sym))
+       (when (and (boundp ,_sym) ,_sym (stringp ,_sym) (< 0 (length ,_sym)) (file-directory-p ,_sym))
+       ,@body))))
+
 (setq twr/init-loading-flag "default")
 (defun twr/check-init-load ()
   (when twr/init-loading-flag
