@@ -12,37 +12,53 @@
       (load uc)
     (message "USERINITCUSTOM is NIL.")))
 
-(defmacro when-defined (sym &rest body)
-  "Execute the body when the symbol is defined."
-  `(when (boundp ,sym)
-     ,@body))
+(defmacro checksym-defined (name &rest body)
+  "Anaphoric - it macro, where the body can us *it* when symbol name is defined."
+  (let ((_sym (gensym)))
+    `(let ((,_sym (intern-soft ,name)))
+       (when ,_sym
+	 (let ((it (symbol-value ,_sym)))
+	   ,@body)))))
 
-(defmacro when-not-nil (sym &rest body)
+(defmacro checksym-not-nil (name &rest body)
+  "Anaphoric - it macro, where the body can us *it* when symbol name is defined."
   "Execute the body when the symbol is not nil"
   (let ((_sym (gensym)))
-    `(let ((,_sym ,sym))
-       (when (and (boundp ,_sym) ,_sym)
-	 ,@body))))
-(defmacro when-not-empty-string (sym &rest body)
-  "Exexute the body when the symbol is bound to an non-empty string."
-  (let ((_sym (gensym)))
-    `(let ((,_sym ,sym))
-       (when (and (boundp ,_sym) ,_sym (stringp ,_sym) (< 0 (length ,_sym)))
-       ,@body))))
+    `(let ((,_sym (intern-soft ,name)))
+       (when (,_sym (symbol-value ,_sym))
+	 (let ((it (symbol-value ,_sym)))
+	   ,@body)))))
 
-(defmacro when-existing-file (sym &rest body)
-  "Execute the body when the symbol is bound to an existing filename"
+(defmacro checksym-not-empty-string (name &rest body)
+  "Anaphoric - it macro, where the body can us *it* when symbol name is a string that is not empty."
   (let ((_sym (gensym)))
-    `(let ((,_sym ,sym))
-       (when (and (boundp ,_sym) ,_sym (stringp ,_sym) (< 0 (length ,_sym)) (file-exists-p ,_sym))
-       ,@body))))
+    `(let ((,_sym (intern-soft ,name)))
+       (when ,_sym
+	 (let ((it (symbol-value ,_sym)))
+	   (when (and (stringp it) (< 0 (length it)))
+	     ,@body))))))
 
-(defmacro when-existing-directory (sym &rest body)
-  "Execute the body when the symbol is bound to an existing directory name"
+
+
+
+(defmacro checksym-existing-file (name &rest body)
+  "Anaphoric - it macro, where the body can us *it* when symbol name is a the name of an existing file."
   (let ((_sym (gensym)))
-    `(let ((,_sym ,sym))
-       (when (and (boundp ,_sym) ,_sym (stringp ,_sym) (< 0 (length ,_sym)) (file-directory-p ,_sym))
-       ,@body))))
+    `(let ((,_sym (intern-soft ,name)))
+       (when ,_sym
+	 (let ((it (symbol-value ,_sym)))
+	   (when (and (stringp it) (file-exists-p it))
+	       ,@body))))))
+
+
+(defmacro checksym-existing-directory (name &rest body)
+      "Anaphoric - it macro, where the body can us *it* when symbol name is a the name of an existing directory."
+  (let ((_sym (gensym)))
+    `(let ((,_sym (intern-soft ,name)))
+       (when ,_sym
+	 (let ((it (symbol-value ,_sym)))
+	   (when (and (stringp it) (file-directory-p it))
+	       ,@body))))))
 
 (setq twr/init-loading-flag "default")
 (defun twr/check-init-load ()
@@ -361,8 +377,8 @@ I also add lisp version with a compiled name of 'production' or which contain a 
 
 (defun collect-sbcl ()
   "Add all the slime invokers for SBCL 64bit compiled versions."
-  (when (and (boundp 'local-config-sbcl-location) local-config-sbcl-location)
-    (add-win64-sbcl local-config-sbcl-location)))
+  (checksym-existing-directory "local-config-sbcl-location"
+	    (add-win64-sbcl it)))
 
 (defun ccl-invoker (my-tag path)
   "Return a lisp invoker; nil if path does not exist"
@@ -371,20 +387,20 @@ I also add lisp version with a compiled name of 'production' or which contain a 
 
 (defun add-ccl ()
   "Collect any CCL Lisp versions"
-  (let ((ccl32 (ccl-invoker 'ccl-32 local-config-ccl32-location))
-	(ccl64 (ccl-invoker 'ccl-64 local-config-ccl64-location)))
-    (when ccl32 (collect-this-lisp ccl32))
-    (when ccl64 (collect-this-lisp ccl64))))
+  (checksym-existing-file "local-config-ccl32-location" (collect-this-lisp (ccl-invoker 'ccl-32 it)))
+  (checksym-existing-file "local-config-ccl64-location" (collect-this-lisp (ccl-invoker 'ccl-64 it))))
 
 (defun invoke-abcl()
   "Return a lisp invoker; nil if abcl is not found,"
   (let ((abcl local-config-abcl-location))
     (when (file-exists-p abcl)
       `(abcl  ,(list my-java "-jar" abcl)))))
+
 (defun add-abcl ()
   "Check of abcl implmentations"
-  (let ((abcl (invoke-abcl)))
-    (when abcl (collect-this-lisp abcl))))
+  (when my-java
+    (checksym-existing-file "local-config-abcl-location"
+			    (collect-this-lisp `(abcl ,(list my-java "-jar" it))))))
 
 (message "Debug  START GATHERING INVOKERS")
 
@@ -787,4 +803,4 @@ I also add lisp version with a compiled name of 'production' or which contain a 
 (message "Debug END")
 
 (setq twr/init-loading-flag nil)
-(message "NO INIT HANGS, IT DID FINISH!!!!!! ")
+(message "<<<<  !!!     INIT.EL FINISHED   !!!   >>>>> ")

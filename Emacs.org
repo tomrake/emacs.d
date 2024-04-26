@@ -50,39 +50,58 @@ This is how the USERINITCUSTOM is loaded:
 The intent is to move hard coded initialization paths into the COMPUTER-SUBCASE-user-start.el files.
 While the majority of the code in Emacs.org and scripts does the right thing when configuratio is missing or in error.
 
-DO THE RIGHT THING
+* Anaphoric - it macros that do-the-right-thing
+Express various configuration contingent of certain conditions being met.
+Code is executed based on certain tests based on COMPUTER-SUBCASE-user-start symbol values.
 #+begin_src emacs-lisp
-  (defmacro when-defined (sym &rest body)
-    "Execute the body when the symbol is defined."
-    `(when (boundp ,sym)
-       ,@body))
+  (defmacro checksym-defined (name &rest body)
+    "Anaphoric - it macro, where the body can us *it* when symbol name is defined."
+    (let ((_sym (gensym)))
+      `(let ((,_sym (intern-soft ,name)))
+	 (when ,_sym
+	   (let ((it (symbol-value ,_sym)))
+	     ,@body)))))
 
-  (defmacro when-not-nil (sym &rest body)
+  (defmacro checksym-not-nil (name &rest body)
+    "Anaphoric - it macro, where the body can us *it* when symbol name is defined."
     "Execute the body when the symbol is not nil"
     (let ((_sym (gensym)))
-      `(let ((,_sym ,sym))
-	 (when (and (boundp ,_sym) ,_sym)
-	   ,@body))))
-  (defmacro when-not-empty-string (sym &rest body)
-    "Exexute the body when the symbol is bound to an non-empty string."
-    (let ((_sym (gensym)))
-      `(let ((,_sym ,sym))
-	 (when (and (boundp ,_sym) ,_sym (stringp ,_sym) (< 0 (length ,_sym)))
-	 ,@body))))
+      `(let ((,_sym (intern-soft ,name)))
+	 (when (,_sym (symbol-value ,_sym))
+	   (let ((it (symbol-value ,_sym)))
+	     ,@body)))))
 
-  (defmacro when-existing-file (sym &rest body)
-    "Execute the body when the symbol is bound to an existing filename"
+  (defmacro checksym-not-empty-string (name &rest body)
+    "Anaphoric - it macro, where the body can us *it* when symbol name is a string that is not empty."
     (let ((_sym (gensym)))
-      `(let ((,_sym ,sym))
-	 (when (and (boundp ,_sym) ,_sym (stringp ,_sym) (< 0 (length ,_sym)) (file-exists-p ,_sym))
-	 ,@body))))
+      `(let ((,_sym (intern-soft ,name)))
+	 (when ,_sym
+	   (let ((it (symbol-value ,_sym)))
+	     (when (and (stringp it) (< 0 (length it)))
+	       ,@body))))))
 
-  (defmacro when-existing-directory (sym &rest body)
-    "Execute the body when the symbol is bound to an existing directory name"
+
+
+
+  (defmacro checksym-existing-file (name &rest body)
+    "Anaphoric - it macro, where the body can us *it* when symbol name is a the name of an existing file."
     (let ((_sym (gensym)))
-      `(let ((,_sym ,sym))
-	 (when (and (boundp ,_sym) ,_sym (stringp ,_sym) (< 0 (length ,_sym)) (file-directory-p ,_sym))
-	 ,@body))))
+      `(let ((,_sym (intern-soft ,name)))
+	 (when ,_sym
+	   (let ((it (symbol-value ,_sym)))
+	     (when (and (stringp it) (file-exists-p it))
+		 ,@body))))))
+
+
+  (defmacro checksym-existing-directory (name &rest body)
+	"Anaphoric - it macro, where the body can us *it* when symbol name is a the name of an existing directory."
+    (let ((_sym (gensym)))
+      `(let ((,_sym (intern-soft ,name)))
+	 (when ,_sym
+	   (let ((it (symbol-value ,_sym)))
+	     (when (and (stringp it) (file-directory-p it))
+		 ,@body))))))
+
 #+end_src
 
 * Track init.el completion
@@ -626,9 +645,8 @@ I collect all sbcl version of lisp from a base directory which is structured
 
   (defun collect-sbcl ()
     "Add all the slime invokers for SBCL 64bit compiled versions."
-    (when (and (boundp 'local-config-sbcl-location) local-config-sbcl-location)
-      (add-win64-sbcl local-config-sbcl-location)))
-
+    (checksym-existing-directory "local-config-sbcl-location"
+	      (add-win64-sbcl it)))
 #+END_SRC
 * CCL Invokers
 
@@ -642,10 +660,8 @@ Clozure Common Lisp from [[https://ccl.clozure.com/]]
 
   (defun add-ccl ()
     "Collect any CCL Lisp versions"
-    (let ((ccl32 (ccl-invoker 'ccl-32 local-config-ccl32-location))
-	  (ccl64 (ccl-invoker 'ccl-64 local-config-ccl64-location)))
-      (when ccl32 (collect-this-lisp ccl32))
-      (when ccl64 (collect-this-lisp ccl64))))	  
+    (checksym-existing-file "local-config-ccl32-location" (collect-this-lisp (ccl-invoker 'ccl-32 it)))
+    (checksym-existing-file "local-config-ccl64-location" (collect-this-lisp (ccl-invoker 'ccl-64 it))))	  
 #+END_SRC
 
 * ABCL
@@ -662,10 +678,12 @@ I need to check that there is a java and
     (let ((abcl local-config-abcl-location))
       (when (file-exists-p abcl)
 	`(abcl  ,(list my-java "-jar" abcl)))))
+
   (defun add-abcl ()
     "Check of abcl implmentations"
-    (let ((abcl (invoke-abcl)))
-      (when abcl (collect-this-lisp abcl))))
+    (when my-java
+      (checksym-existing-file "local-config-abcl-location"
+			      (collect-this-lisp `(abcl ,(list my-java "-jar" it))))))
 #+END_SRC
 
 * Report Debug START GATHERING INVOKERS                            :noexport:
@@ -1290,5 +1308,5 @@ Print Debug markers in *messages*
 Clear to during init flag.
 #+begin_src emacs-lisp
   (setq twr/init-loading-flag nil)
-  (message "NO INIT HANGS, IT DID FINISH!!!!!! ")
+  (message "<<<<  !!!     INIT.EL FINISHED   !!!   >>>>> ")
 #+end_src
