@@ -1,0 +1,7 @@
+* Conversion to MMIV
+- The Cantarell font need to found.
+  - [[https://fonts.google.com/specimen/Cantarell]]
+  - Select Get Font in blue button.
+  - Download all fonts
+  - Extract the fonts from the .zip
+  - Right click on the fonts and Install for all Users.
