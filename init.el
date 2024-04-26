@@ -208,14 +208,13 @@
 
 ;; The java interface assumption is you can execute the program "java"
 ;; There is no jdk to be considered.
-  (if (executable-find "java")
-      (setq my-java "java")
-      (message "******** java not found *******"))
+(defvar java-executable (executable-find "java")
+  "The java-executable to use for java.")
 
 (use-package langtool
   :ensure t
   :config
-    (setq langtool-java-bin my-java)
+    (setq langtool-java-bin java-executable)
     (setq langtool-language-tool-jar  "c:/Users/Public/Documents/LanguageTool-5.9/languagetool-commandline.jar")
   :bind
     (( "\C-x4w" . langtool-check)
@@ -394,13 +393,14 @@ I also add lisp version with a compiled name of 'production' or which contain a 
   "Return a lisp invoker; nil if abcl is not found,"
   (let ((abcl local-config-abcl-location))
     (when (file-exists-p abcl)
-      `(abcl  ,(list my-java "-jar" abcl)))))
+      `(abcl  ,(list java-executable "-jar" abcl)))))
 
 (defun add-abcl ()
   "Check of abcl implmentations"
-  (when my-java
-    (checksym-existing-file "local-config-abcl-location"
-			    (collect-this-lisp `(abcl ,(list my-java "-jar" it))))))
+  (let ((has-java (checksym-existing-file "java-executable" it)))
+    (when has-java
+      (checksym-existing-file "local-config-abcl-location"
+			      (collect-this-lisp `(abcl ,(list has-java "-jar" it)))))))
 
 (message "Debug  START GATHERING INVOKERS")
 
