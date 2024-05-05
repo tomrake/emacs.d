@@ -535,20 +535,12 @@ I also add lisp version with a compiled name of 'production' or which contain a 
 	("common-docs" . "file:///C:/Users/zzzap/Documents/Common-Document-Store/%s")))
 
 ;; Create stadard org directories if not already present.
-;; The standard user directory is ~/org in the HOME directory.
-;; Override with the var ORG-USER-DIR.
-;; The org-public-dir is a legacy model for shared tasks across all users.
-;; The public shared model is to be deprecated in the light of the task-agenda model.
-(default-or-environment org-user-dir (getenv "HOME") "/org" "ORG-USER-DIR")
-   (unless (file-directory-p org-user-dir)
-     (make-directory  org-user-dir))
-;; Define a global org directory
-(default-or-environment org-public-dir "c:/Users/Public/Documents" "/org" "ORG-PUBLIC-DIR")
+;; The standard user directory is ~/Documents/org .
 
-;; The Standard org note file is ~/org/notes/notes.
-;; This can be set by the environment variable ORG-NOTES-FILE
-(default-or-environment org-notes-file org-user-dir "/nodes/notes.org" "ORG-NOTES-FILE")
-(setq org-default-notes-file org-notes-file)
+(checksym-defined "local-config-org-user-dir"
+		  (defvar org-user-dir it "The base of org user files.")
+		  (unless (file-directory-p org-user-dir)
+		    (make-directory  org-user-dir)))
 
 (setq org-todo-keywords '((sequence "TODO(t)" "NEXT(n)" "WAITING(w@/!)" "|" "DONE(d!)" "CANCELLED(c@)")))
 
@@ -794,7 +786,7 @@ I also add lisp version with a compiled name of 'production' or which contain a 
     (print "This function operates on a region")))
 
 ;;;; Various user settings is a local configuration.
- (local-custom-file "local-settings.org" "Final user settings")
+(local-custom-file "local-settings.org" "Final user settings")
 
 (require 'filename2clipboard)
 

@@ -169,6 +169,8 @@ Check and/or Revise this trickery!!!!!
 
 These are the default-or-environment call that need to be replaced:
 
+#+begin_example
+
 # Emacs.org
 # 103:  (defmacro default-or-environment (emacs-var base new-path-string env-string)
 # 835:    (default-or-environment org-user-dir (getenv "HOME") "/org" "ORG-USER-DIR")
@@ -180,6 +182,7 @@ These are the default-or-environment call that need to be replaced:
 #  9:      (default-or-environment src-base-path org-mode-base-dir "org-web/" "ORG-PUBLISH-SRC")
 # 10:      (default-or-environment publish-base-path "" "c:/Users/Public/org-web/" "ORG-PUBLIC-TARGET")
 
+#+end_example
 
 * SLIME v SLY switch
 #+BEGIN_SRC emacs-lisp
@@ -901,26 +904,12 @@ This code is bugged can't load ox-extras
  
   #+BEGIN_SRC emacs-lisp
     ;; Create stadard org directories if not already present.
-    ;; The standard user directory is ~/org in the HOME directory.
-    ;; Override with the var ORG-USER-DIR.
-    ;; The org-public-dir is a legacy model for shared tasks across all users.
-    ;; The public shared model is to be deprecated in the light of the task-agenda model.
-    (default-or-environment org-user-dir (getenv "HOME") "/org" "ORG-USER-DIR")
-       (unless (file-directory-p org-user-dir)
-	 (make-directory  org-user-dir))
-    ;; Define a global org directory
-    (default-or-environment org-public-dir "c:/Users/Public/Documents" "/org" "ORG-PUBLIC-DIR")
-  #+END_SRC
+    ;; The standard user directory is ~/Documents/org .
 
-** Standard Notes file
- [TBD] Is this still relavent?
- This is a standard per User notes file.
- Unser windows and linux this ~/org/notes/notes.org
-  #+BEGIN_SRC emacs-lisp
-    ;; The Standard org note file is ~/org/notes/notes.
-    ;; This can be set by the environment variable ORG-NOTES-FILE
-    (default-or-environment org-notes-file org-user-dir "/nodes/notes.org" "ORG-NOTES-FILE")
-    (setq org-default-notes-file org-notes-file)
+    (checksym-defined "local-config-org-user-dir"
+		      (defvar org-user-dir it "The base of org user files.")
+		      (unless (file-directory-p org-user-dir)
+			(make-directory  org-user-dir)))
   #+END_SRC
 
 ** org TODOs types
@@ -1285,8 +1274,8 @@ I am using to add icons to the icons.json file derived from feathericons.
 #+end_src
 * load per user settings
  #+BEGIN_SRC emacs-lisp
-;;;; Various user settings is a local configuration.
- (local-custom-file "local-settings.org" "Final user settings")
+   ;;;; Various user settings is a local configuration.
+   (local-custom-file "local-settings.org" "Final user settings")
  #+END_SRC
 
  
