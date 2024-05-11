@@ -1,6 +1,11 @@
 (message "DESKER-DEVEL-user-startup")
 
-(defvar local-config-emacs-d "c:/Users/zzzap/Documents/Code/Emacs-Configs/devel/emacs.d"
+
+
+(defvar  local-config-emacs-configs "c:/Users/zzzap/Documents/Code/Emacs-Configs/"
+  "Where the various emacs configs are stored on this machine")
+
+(defvar local-config-emacs-d (concat local-config-emacs-configs chemacs-profile-name "/emacs.d") ; "c:/Users/zzzap/Documents/Code/Emacs-Configs/devel/emacs.d"
   "This is the org file Emacs.org used to generate init.el by tangle.")
 
 (defvar local-config-sbcl-location "C:/Users/Public/Lispers/sbcl/installed"
@@ -20,11 +25,11 @@
 (defvar local-config-slime-location "c:/Users/zzzap/Documents/Code/source-projects/ACTIVE/slime"
   "The location of the slime for common lisp.")
 
-(defvar local-config-org-user-dir "~/Document/Code/org"
+(defvar local-config-org-user-dir "~/Documents/Code/org"
   "The local org directory")
 
 
-(defvar local-config-gtd-template-dir "~/Documents/Code/Emacs-Config/test/emacs.d/"
+(defvar local-config-gtd-template-dir (concat local-config-emacs-configs chemacs-profile-name "/emacs.d/");; "~/Documents/Code/Emacs-Config/testing/emacs.d/"
   "Where the GTD temples are located.")
 
 (defvar local-config-src-base-path "~/Documents/Code/org-web/"
