@@ -75,12 +75,9 @@
 ;; Autommatically tangle our Emacs.org config file when we save it.
 (defun efs/org-babel-tangle-config ()
   "Test if the buffer should be auto-tangled after save"
-  ;; [TBD] the string-equal comparison need to ensure absolute, ~ path construction agree.
-  ;; https://www.gnu.org/software/emacs/manual/html_node/elisp/Buffer-File-Name.html says this is an absolute filename.
-  ;; There is confusion over ~ which represents an absolute filename. However - expand-file-name does expand the ~ to HOME.
-  ;; see https://www.gnu.org/software/emacs/manual/html_node/elisp/File-Name-Expansion.html#index-expand_002dfile_002dname for expand-file-name
+  (message "string-equal: %s %s" (buffer-file-name) (expand-file-name (concat user-emacs-directory "Emacs.org")))
   (when (string-equal (buffer-file-name)
-		      (concat local-config-emacs-d "/Emacs.org"))
+		      (expand-file-name (concat user-emacs-directory "Emacs.org")))
     (message "Begin efs/tangle")
 
     ;; Dynamic scoping to the rescue
@@ -90,26 +87,7 @@
 
 (message "Debug START")
 
-;; Allow chezmoi_config.el to define things:
-;;   msys2 paths and enviroments
-;;   java locations
-(condition-case err
-    (load "chezmoi_config")
-  (file-missing
-   (message "%s" (error-message-string err))))
-
 (add-to-list 'load-path (expand-file-name "scripts/" user-emacs-directory))
-
-;; [TBD] This macro should also be removed
-;;; Specify a emacs variable from an environment variable env-string or  base,new-path-string
-(defun ensure-string (s)
-  (if s s ""))
-;; [TBD] This macro needs to be removed
-(defmacro default-or-environment (emacs-var base new-path-string env-string)
-  ;;`(concat ,base ,new-pathe-string))
-   `(setq ,emacs-var (if (getenv ,env-string)
-		      (getenv ,env-string)
-		      (concat (ensure-string ,base) (ensure-string ,new-path-string)))))
 
 (defvar use-slime t "Set true to use slime for superior lisp")
 (defvar use-sly nil "Set true to use sly for superior lisp")
@@ -518,10 +496,6 @@ I also add lisp version with a compiled name of 'production' or which contain a 
 (advice-add 'org-capture-kill :after 'kk/delete-frame-if-neccessary)
 (advice-add 'org-capture-refile :after 'kk/delete-frame-if-neccessary)
 
-(setf org-mode-base-dir "~/org/")
-
-(setf org-gtd-dir (concat org-mode-base-dir "gtd/"))
-
 ;;;; Org Mode key bindings.
 (global-set-key (kbd "C-c l") 'org-store-link)
 (global-set-key (kbd "C-c a") 'org-agenda)
@@ -566,9 +540,7 @@ I also add lisp version with a compiled name of 'production' or which contain a 
 (local-custom-file "local-custom-agenda.org" "Customize org-agenda")
 
 ;;;; Customize the agenda locally
-(let ((base (file-name-directory (or load-file-name (buffer-file-name)))))
-  (default-or-environment gtd-template-dir base  "" "ORG-TEMPLATE-DIR")
-  (local-custom-file "local-capture.org" "Customize org-capture"))
+(local-custom-file "local-capture.org" "Customize org-capture")
 
 (require 'ob-shell)
 (defadvice org-babel-sh-evaluate (around set-shell activate)

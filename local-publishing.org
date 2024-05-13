@@ -5,10 +5,6 @@
   This file is to be included when .emacs.d/settings.org is loaded.
 #+BEGIN_SRC emacs-lisp
   (require 'ox-publish)
-  ;; [TBD] Remove both these default-or-environment calls
-  
-
-  (default-or-environment publish-base-path "" "c:/Users/Public/org-web/" "ORG-PUBLIC-TARGET")
 
   (defun publish-source-path (path)
 	     (concat local-config-src-base-path "source/" path))

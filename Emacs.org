@@ -128,23 +128,21 @@ Set a init loading flag, check and report if the flag is not clear in the after 
       (message (concat "INIT DID NOT FINISH!!!!!! " twr/init-loading-flag))))
   (add-hook 'after-init-hook 'twr/check-init-load)
 #+end_src
-* Auto-tangle Emacs.org .
+* Auto-tangle Emacs.org
+This is a modifed concept from systemcrafters.
 #+begin_src emacs-lisp :tangle nil
   (message (concat "Init buffer: :" (buffer-file-name)))
   (unless (string-equal (buffer-file-name)
-		      (concat local-config-emacs-d "/init.el"))
-    (error "local-config-emacs-d not set for auto-tangle"))
+			(expand-file-name (concat user-emacs-directory "init.el")))
+    (error "init.el tangle check failed"))
 #+end_src
 #+begin_src emacs-lisp
   ;; Autommatically tangle our Emacs.org config file when we save it.
   (defun efs/org-babel-tangle-config ()
     "Test if the buffer should be auto-tangled after save"
-    ;; [TBD] the string-equal comparison need to ensure absolute, ~ path construction agree.
-    ;; https://www.gnu.org/software/emacs/manual/html_node/elisp/Buffer-File-Name.html says this is an absolute filename.
-    ;; There is confusion over ~ which represents an absolute filename. However - expand-file-name does expand the ~ to HOME.
-    ;; see https://www.gnu.org/software/emacs/manual/html_node/elisp/File-Name-Expansion.html#index-expand_002dfile_002dname for expand-file-name
+    (message "string-equal: %s %s" (buffer-file-name) (expand-file-name (concat user-emacs-directory "Emacs.org")))
     (when (string-equal (buffer-file-name)
-			(concat local-config-emacs-d "/Emacs.org"))
+			(expand-file-name (concat user-emacs-directory "Emacs.org")))
       (message "Begin efs/tangle")
 
       ;; Dynamic scoping to the rescue
@@ -158,53 +156,10 @@ Print Debug markers in *messages*
 (message "Debug START")
 #+END_SRC
 
-* Platform specific items by Chezmoi_config
-#+begin_src emacs-lisp
-  ;; Allow chezmoi_config.el to define things:
-  ;;   msys2 paths and enviroments
-  ;;   java locations
-  (condition-case err
-      (load "chezmoi_config")
-    (file-missing
-     (message "%s" (error-message-string err))))
-#+end_src
 * Some of our routines are in scripts/
 #+begin_src emacs-lisp
   (add-to-list 'load-path (expand-file-name "scripts/" user-emacs-directory))
 #+end_src
-* Default Pathnames with Enviroment - NEEDS REVISON
-Overrides
-Check and/or Revise this trickery!!!!!
-#+BEGIN_SRC emacs-lisp
-  ;; [TBD] This macro should also be removed
-  ;;; Specify a emacs variable from an environment variable env-string or  base,new-path-string
-  (defun ensure-string (s)
-    (if s s ""))
-  ;; [TBD] This macro needs to be removed
-  (defmacro default-or-environment (emacs-var base new-path-string env-string)
-    ;;`(concat ,base ,new-pathe-string))
-     `(setq ,emacs-var (if (getenv ,env-string)
-			(getenv ,env-string)
-			(concat (ensure-string ,base) (ensure-string ,new-path-string)))))
-#+END_SRC
-
-These are the default-or-environment call that need to be replaced:
-
-#+begin_example
-
-# Emacs.org
-# 103:  (defmacro default-or-environment (emacs-var base new-path-string env-string)
-# 835:    (default-or-environment org-user-dir (getenv "HOME") "/org" "ORG-USER-DIR")
-# 839:    (default-or-environment org-public-dir "c:/Users/Public/Documents" "/org" "ORG-PUBLIC-DIR")
-# 849:    (default-or-environment org-notes-file org-user-dir "/nodes/notes.org" "ORG-NOTES-FILE")
-# 878:     (default-or-environment gtd-template-dir base  "" "ORG-TEMPLATE-DIR")
-
-# local-publishing.org
-#  9:      (default-or-environment src-base-path org-mode-base-dir "org-web/" "ORG-PUBLISH-SRC")
-# 10:      (default-or-environment publish-base-path "" "c:/Users/Public/org-web/" "ORG-PUBLIC-TARGET")
-
-#+end_example
-
 * SLIME v SLY switch
 #+BEGIN_SRC emacs-lisp
   (defvar use-slime t "Set true to use slime for superior lisp")
@@ -867,14 +822,6 @@ Print Debug markers in *messages*
   (advice-add 'org-capture-kill :after 'kk/delete-frame-if-neccessary)
   (advice-add 'org-capture-refile :after 'kk/delete-frame-if-neccessary)
 #+END_SRC
-** org mode location
-#+BEGIN_SRC emacs-lisp
-  (setf org-mode-base-dir "~/org/")
-#+END_SRC
-** gtd location
-#+BEGIN_SRC emacs-lisp
-  (setf org-gtd-dir (concat org-mode-base-dir "gtd/"))
-#+END_SRC
 ** Org Key Binding
 #+BEGIN_SRC emacs-lisp
   ;;;; Org Mode key bindings.
@@ -955,13 +902,9 @@ This code is bugged can't load ox-extras
     
 ** Capture Templates
 Use [[~/.emacs.d/local-capture.org]] to change the capture template.
-[TBD] This should be reconsidered and default-or-environment removed.
-At this point the templates are located in the user-emacs-directory
  #+BEGIN_SRC emacs-lisp
    ;;;; Customize the agenda locally
-   (let ((base (file-name-directory (or load-file-name (buffer-file-name)))))
-     (default-or-environment gtd-template-dir base  "" "ORG-TEMPLATE-DIR")
-     (local-custom-file "local-capture.org" "Customize org-capture"))
+   (local-custom-file "local-capture.org" "Customize org-capture")
  #+END_SRC
 ** org mode add :shcmd to sh blocks
   - Using :shcmd "cmdproxy.exe" on Windows uses the emacs version of cmd.

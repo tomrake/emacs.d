@@ -1,13 +1,6 @@
 (message "DESKER-zzzap-TESTING-user-startup")
 
 
-;;;; [TBD] Remove this
-(defvar  local-config-emacs-configs "c:/Users/zzzap/Documents/Code/Emacs-Configs/"
-  "Where the various emacs configs are stored on this machine")
-;;;; [TBD] Remove this and replace it with user-emacs-directory in Emacs.org
-(defvar local-config-emacs-d (concat local-config-emacs-configs chemacs-profile-name "/emacs.d")
-  "This is the org file Emacs.org used to generate init.el by tangle.")
-
 (defvar local-config-sbcl-location "C:/Users/Public/Lispers/sbcl/installed"
   "All locally compiled and installed SBCL lisps are installed in directory,
     by release version and a compiled name..
@@ -25,12 +18,11 @@
 (defvar local-config-slime-location "c:/Users/zzzap/Documents/Code/source-projects/ACTIVE/slime"
   "The location of the slime for common lisp.")
 
-(defvar local-config-org-user-dir "~/Documents/Code/org"
+(defvar local-config-org-user-dir "~/Documents/Code/org/"
   "The local org directory")
 
-;;;; [TBD] this really is user-emacs-directory
-(defvar local-config-gtd-template-dir (concat local-config-emacs-configs chemacs-profile-name "/emacs.d/")
-  "Where the GTD temples are located.")
+(defvar local-config-gtd-dir "~/Documents/Code/org/gtd/"
+  "Where the Get Things Done files are stored.")
 
 (defvar local-config-src-base-path "~/Documents/Code/org-web/"
   "Where the published source is located.")

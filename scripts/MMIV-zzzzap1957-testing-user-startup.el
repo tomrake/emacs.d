@@ -1,11 +1,5 @@
 (message "MMIV-TESTING-user-startup")
 
-(defvar  local-config-emacs-configs "c:/Users/zzzzap1957/Code/Emacs-Configs/"
-  "Where the various emacs configs are stored on this machine")
-
-(defvar local-config-emacs-d (concat local-config-emacs-configs chemacs-profile-name "/emacs.d") ; "c:/Users/zzzap/Documents/Code/Emacs-Configs/devel/emacs.d"
-  "This is the org file Emacs.org used to generate init.el by tangle.")
-
 
 (defvar local-config-slime-location "c:/Users/zzzzap1957/Code/slime"
   "The location of the slime for common lisp.")
