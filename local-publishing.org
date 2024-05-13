@@ -6,14 +6,15 @@
 #+BEGIN_SRC emacs-lisp
   (require 'ox-publish)
   ;; [TBD] Remove both these default-or-environment calls
-  (default-or-environment src-base-path org-mode-base-dir "org-web/" "ORG-PUBLISH-SRC")
+  
+
   (default-or-environment publish-base-path "" "c:/Users/Public/org-web/" "ORG-PUBLIC-TARGET")
 
   (defun publish-source-path (path)
-	     (concat src-base-path "source/" path))
+	     (concat local-config-src-base-path "source/" path))
 
 	   (defun publish-path (path)
-	     (concat publish-base-path path))
+	     (concat local-config-publish-base-path path))
 
 	   (defmacro src-publish-pair (path)
 	     "Return a source and publish path pair."
