@@ -5,12 +5,18 @@
    (setq debug-on-error t )
 
 ;;;; load the user-custom-startup file.
-(when chemacs-profile-name
-(message (concat "chemacs-profile-name: " chemacs-profile-name)))
-(let ((uc (getenv "USERINITCUSTOM")))
-  (if uc
-      (load uc)
-    (message "USERINITCUSTOM is NIL.")))
+(if chemacs-profile-name
+    (progn
+      (defvar local-config-name (concat system-name "-" user-login-name "-" chemacs-profile-name "-user-startup")
+	"The name of local-config file.")
+      (defvar local-config-pathname (concat user-emacs-directory "scripts/" local-config-name)
+	"The filename to load the local-config.")
+      (message "local config to load: %s" local-config-pathname)
+      (load local-config-pathname)
+      )
+    (progn
+      (message "This config should be executed by chemacs2 and chemacs-profile-name is not defined ")
+      (error "Bad chemacs config.")))
 
 (defmacro checksym-defined (name &rest body)
   "Anaphoric - it macro, where the body can us *it* when symbol name is defined."
@@ -69,6 +75,10 @@
 ;; Autommatically tangle our Emacs.org config file when we save it.
 (defun efs/org-babel-tangle-config ()
   "Test if the buffer should be auto-tangled after save"
+  ;; [TBD] the string-equal comparison need to ensure absolute, ~ path construction agree.
+  ;; https://www.gnu.org/software/emacs/manual/html_node/elisp/Buffer-File-Name.html says this is an absolute filename.
+  ;; There is confusion over ~ which represents an absolute filename. However - expand-file-name does expand the ~ to HOME.
+  ;; see https://www.gnu.org/software/emacs/manual/html_node/elisp/File-Name-Expansion.html#index-expand_002dfile_002dname for expand-file-name
   (when (string-equal (buffer-file-name)
 		      (concat local-config-emacs-d "/Emacs.org"))
     (message "Begin efs/tangle")
@@ -90,9 +100,11 @@
 
 (add-to-list 'load-path (expand-file-name "scripts/" user-emacs-directory))
 
+;; [TBD] This macro should also be removed
 ;;; Specify a emacs variable from an environment variable env-string or  base,new-path-string
 (defun ensure-string (s)
   (if s s ""))
+;; [TBD] This macro needs to be removed
 (defmacro default-or-environment (emacs-var base new-path-string env-string)
   ;;`(concat ,base ,new-pathe-string))
    `(setq ,emacs-var (if (getenv ,env-string)

@@ -17,8 +17,16 @@
 	   (setq debug-on-error t )
   #+END_SRC
 
-* USER INIT CUSTOM policy
+* MULTI-INIT policy
+The multi-init policy is to have local configuration files named COMPUTER-USER-BRANCH.
 
+BRANCH should be the chemacs-profile-name
+USER should be user-login-name
+COMPUTER is system-name
+
+This removes the need for the USERINITCUSTOM environment hack. All that is needed from ~/.emacs-profiles.el is that the profile is named correctly.
+The USERINITCUSTOM contained a absolute pathname to the custom unit to load.
+The replacement value should be (concat user-emacs-directory "/scripts/" 
 
 I use the [[https://github.com/plexus/chemacs2][chemacs2]] emacs config switcher, .emacs-profiles.el selects from a series of configuration types.
 Emacs.org and script, do the right thing when not configured. 
@@ -39,12 +47,19 @@ This is how the USERINITCUSTOM is loaded:
 
 #+begin_src emacs-lisp
     ;;;; load the user-custom-startup file.
-  (when chemacs-profile-name
-  (message (concat "chemacs-profile-name: " chemacs-profile-name)))
-  (let ((uc (getenv "USERINITCUSTOM")))
-    (if uc
-	(load uc)
-      (message "USERINITCUSTOM is NIL.")))
+  (if chemacs-profile-name
+      (progn
+	(defvar local-config-name (concat system-name "-" user-login-name "-" chemacs-profile-name "-user-startup")
+	  "The name of local-config file.")
+	(defvar local-config-pathname (concat user-emacs-directory "scripts/" local-config-name)
+	  "The filename to load the local-config.")
+	(message "local config to load: %s" local-config-pathname)
+	(load local-config-pathname)
+	)
+      (progn
+	(message "This config should be executed by chemacs2 and chemacs-profile-name is not defined ")
+	(error "Bad chemacs config.")))
+
 #+end_src
 
 The intent is to move hard coded initialization paths into the COMPUTER-SUBCASE-user-start.el files.
@@ -124,6 +139,10 @@ Set a init loading flag, check and report if the flag is not clear in the after 
   ;; Autommatically tangle our Emacs.org config file when we save it.
   (defun efs/org-babel-tangle-config ()
     "Test if the buffer should be auto-tangled after save"
+    ;; [TBD] the string-equal comparison need to ensure absolute, ~ path construction agree.
+    ;; https://www.gnu.org/software/emacs/manual/html_node/elisp/Buffer-File-Name.html says this is an absolute filename.
+    ;; There is confusion over ~ which represents an absolute filename. However - expand-file-name does expand the ~ to HOME.
+    ;; see https://www.gnu.org/software/emacs/manual/html_node/elisp/File-Name-Expansion.html#index-expand_002dfile_002dname for expand-file-name
     (when (string-equal (buffer-file-name)
 			(concat local-config-emacs-d "/Emacs.org"))
       (message "Begin efs/tangle")
@@ -157,9 +176,11 @@ Print Debug markers in *messages*
 Overrides
 Check and/or Revise this trickery!!!!!
 #+BEGIN_SRC emacs-lisp
+  ;; [TBD] This macro should also be removed
   ;;; Specify a emacs variable from an environment variable env-string or  base,new-path-string
   (defun ensure-string (s)
     (if s s ""))
+  ;; [TBD] This macro needs to be removed
   (defmacro default-or-environment (emacs-var base new-path-string env-string)
     ;;`(concat ,base ,new-pathe-string))
      `(setq ,emacs-var (if (getenv ,env-string)
@@ -934,6 +955,8 @@ This code is bugged can't load ox-extras
     
 ** Capture Templates
 Use [[~/.emacs.d/local-capture.org]] to change the capture template.
+[TBD] This should be reconsidered and default-or-environment removed.
+At this point the templates are located in the user-emacs-directory
  #+BEGIN_SRC emacs-lisp
    ;;;; Customize the agenda locally
    (let ((base (file-name-directory (or load-file-name (buffer-file-name)))))

@@ -1,11 +1,11 @@
-(message "DESKER-TESTING-user-startup")
+(message "DESKER-zzzap-TESTING-user-startup")
 
 
-
+;;;; [TBD] Remove this
 (defvar  local-config-emacs-configs "c:/Users/zzzap/Documents/Code/Emacs-Configs/"
   "Where the various emacs configs are stored on this machine")
-
-(defvar local-config-emacs-d (concat local-config-emacs-configs chemacs-profile-name "/emacs.d") ; "c:/Users/zzzap/Documents/Code/Emacs-Configs/devel/emacs.d"
+;;;; [TBD] Remove this and replace it with user-emacs-directory in Emacs.org
+(defvar local-config-emacs-d (concat local-config-emacs-configs chemacs-profile-name "/emacs.d")
   "This is the org file Emacs.org used to generate init.el by tangle.")
 
 (defvar local-config-sbcl-location "C:/Users/Public/Lispers/sbcl/installed"
@@ -28,8 +28,8 @@
 (defvar local-config-org-user-dir "~/Documents/Code/org"
   "The local org directory")
 
-
-(defvar local-config-gtd-template-dir (concat local-config-emacs-configs chemacs-profile-name "/emacs.d/");; "~/Documents/Code/Emacs-Config/testing/emacs.d/"
+;;;; [TBD] this really is user-emacs-directory
+(defvar local-config-gtd-template-dir (concat local-config-emacs-configs chemacs-profile-name "/emacs.d/")
   "Where the GTD temples are located.")
 
 (defvar local-config-src-base-path "~/Documents/Code/org-web/"
