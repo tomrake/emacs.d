@@ -68,20 +68,6 @@ Add macro to construction block agenda components of TODO items.
    (setq org-agenda-skip-scheduled-if-done t)
    (setq org-agenda-todo-list-sublevels t)
    (setf org-agenda-files org-agenda-files-1)
-   ;;;; The following two defuns are from Nicolas Petton
-   ;;;; from https://emacs.cafe/emacs/orgmode/gtd/2017/06/30/orgmode-gtd.html
-   (defun my-org-agenda-skip-all-siblings-but-first ()
-	  "Skip all but the first non-done entry."
-     (let (should-skip-entry)
-       (unless (org-current-is-todo)
-	 (setq should-skip-entry t))
-       (save-excursion
-	 (while (and (not should-skip-entry) (org-goto-sibling t))
-		(when (org-current-is-todo)
-		      (setq should-skip-entry t))))
-       (when should-skip-entry
-	 (or (outline-next-heading)
-	     (goto-char (point-max))))))
 
    (defun org-current-is-todo ()
      (string= "TODO" (org-get-todo-state)))
@@ -119,8 +105,6 @@ Add macro to construction block agenda components of TODO items.
 		("xc" "Weekly schedule" agenda ""
 		  ((org-agenda-span 7) ;; agenda will start in week view
 		   (org-agenda-repeating-timestamp-show-all t)))
-		("xn" "Daily Next Task List" agenda ""
-		  ((org-agenda-skip-function #'my-org-agenda-skip-all-siblings-but-first)))
 		("xf" "Evaluate all Tasks" agenda ""
 		  ((org-agenda-files current-agenda-files-1)))
 
