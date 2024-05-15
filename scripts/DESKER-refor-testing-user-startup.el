@@ -17,15 +17,15 @@
 
 (defvar local-config-slime-location "c:/Users/zzzap/Documents/Code/source-projects/ACTIVE/slime"
   "The location of the slime for common lisp.")
-
-(defvar local-config-org-user-dir "~/Documents/Code/org/"
+;; [TBD] Reconsider This was created to stop an error
+(defvar local-config-org-user-dir "~/Code/org/"
   "The local org directory")
-
-(defvar local-config-gtd-dir "~/Documents/Code/org/gtd/"
+;; [TBD] Reconsider This should be removed?
+(defvar local-config-gtd-dir "~/Code/org/gtd/"
   "Where the Get Things Done files are stored.")
-
-(defvar local-config-src-base-path "~/Documents/Code/org-web/"
+;; [TBD] Reconsider This was created to stop an error
+(defvar local-config-src-base-path "~/Code/org-web/"
   "Where the published source is located.")
-
+;; [TBD] Reconsider
 (defvar local-config-publish-base-path "c:/Users/Public/org-web/"
   "Where the publish html files are located here.")
