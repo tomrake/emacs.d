@@ -9,12 +9,6 @@
     by release version and a compiled name..
   I also add lisp version with a compiled name of 'production' or which contain a file '.production.'")
 
-(defvar local-config-org-user-dir "~/Documents/org/"
-  "The local org directory")
-
-(defvar local-config-gtd-dir "~/Documents/org/gtd/"
-  "Where the Get Things Done files are stored.")
-
 (defvar local-config-src-base-path "~/Code/org-web/"
   "Where the published source is located.")
 

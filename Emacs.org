@@ -793,13 +793,12 @@ There need to be an org directory to place certain org files.
   #+BEGIN_SRC emacs-lisp
     ;; Create stadard org directories if not already present.
     ;; The standard user directory is ~/Documents/org .
-
-    (checksym-defined "local-config-org-user-dir"
-		      (defvar org-user-dir it "The base of org user files.")
-		      (unless (file-directory-p org-user-dir)
-			(make-directory  org-user-dir)))
+    (message "!!!! DO NOT CREATE org directories!!!")
+    ;; (checksym-defined "local-config-org-user-dir"
+    ;; 		  (defvar org-user-dir it "The base of org user files.")
+    ;; 		  (unless (file-directory-p org-user-dir)
+    ;; 		    (make-directory  org-user-dir)))
   #+END_SRC
-
 ** The exact form of org files largely from this file Emacs.org
 #+BEGIN_SRC emacs-lisp
   (use-package org-bullets
