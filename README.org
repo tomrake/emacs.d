@@ -13,4 +13,26 @@
 ** Thanks
 - David Wilson at systemcrafters.net
 
-
+** Retrospect
+*** Pressing
+[2024-04-28]
+- I want to add code hacking elements to a new laptop MMIV for travel.
+- I think it is time to merge testing changes back into main for production on DESKER.
+*** Multiple Uses
+- Task Tracking - org-agenda
+  - gtd agenda focus
+  - care giving - Somya, Uncle jim
+  - life tracking
+  - bookeeping - Uncle Jim
+- Lisp Hacking - slime/sly
+  - git, editing, compiling focus
+  - Maintaining self compiled sbcl
+  - Building the sbcl compile tool
+  - clog experiments
+  - Windows compatibilty
+  - msys2 use cases
+- Note Publishing - org-publish
+  - Creating a body of knowledge based on small notes
+- Recievership
+  - All tasks need to be balanced
+  - cruft and experimental code that crept in main need to be cut.

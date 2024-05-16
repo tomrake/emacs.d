@@ -1,0 +1,16 @@
+* Conversion to MMIV
+- The Cantarell font need to found.
+  - [[https://fonts.google.com/specimen/Cantarell]]
+  - Select Get Font in blue button.
+  - Download all fonts
+  - Extract the fonts from the .zip
+  - Right click on the fonts and choose Install for all Users.
+* Emacs.org tangle on save
+ - Added location to local-config-emacs-d
+* slime
+ - [[https://github.com/slime/slime]] downloaded to ~/Code/slime
+ - Added location to 
+ - local-config-slime-location
+
+* slime-repl-ansi-color
+ - Load this from package-list-packages

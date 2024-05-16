@@ -1,0 +1,5 @@
+* When porting Emacs.org  to MMIV
+
+Code fails during Gather all my LISP invokers
+
+I suspect collect-sbcl. I Should analysis this for no sbcl or any lisps and conditionally  to SLIME and SLY and stuff.
