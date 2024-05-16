@@ -18,6 +18,10 @@
       (message "This config should be executed by chemacs2 and chemacs-profile-name is not defined ")
       (error "Bad chemacs config.")))
 
+(when global-config-base-path
+  (defun global-org-path (r-path)
+    (format "%s%s" global-config-base-path r-path)))
+
 (defmacro checksym-defined (name &rest body)
   "Anaphoric - it macro, where the body can us *it* when symbol name is defined."
   (let ((_sym (gensym)))
@@ -549,61 +553,6 @@ I also add lisp version with a compiled name of 'production' or which contain a 
       (setq visual-fill-column-width 110
 	    visual-fill-column-center-text t)))
 
-;;;
-    (defun transform-square-brackets-to-round-ones(string-to-transform)
-   "Transforms [ into ( and ] into ), other chars left unchanged."
-   (concat 
-   (mapcar #'(lambda (c) (if (equal c ?\[) ?\( (if (equal c ?\]) ?\) c))) string-to-transform)))
-
-
-    ;; ;;; See: http://cachestocaches.com/2016/9/my-workflow-org-agenda/
-    (setq org-capture-templates
-     `(
-    ;; Logs for Projects
-       ("l" "Project Logging")
-       ("ls" "sbcl-compile project"
-	entry (file+datetree "c:/Users/zzzap/Documents/Code/source-projects/ACTIVE/sbcl-compile/project-log.org" "Project Log")
-	"** %U - %^{Activity} :NOTE:")
-    ;; Todo
-       ("t" "Inbox Entry" entry (file+headline ,(concat local-config-gtd-dir "Inbox.org") "Tasks")
-	"* TODO %^{Brief Description} %^g\n  OPENED: %U")
-    ;; Tickler
-       ("T" "Tickler Entry" entry (file+headline ,(concat local-config-gtd-dir "Tickler.org") "TICKLERS")
-	"* TODO %^{Brief Description} %^g\n  OPENED: %U")
-    ;; Journal Capture
-       ("j" "Journal" entry (file+datetree ,(concat local-config-gtd-dir "Journal.org") )
-	  "* %?\nEntered on %U\n  %i\n  %a")
-    ;; Medical Appointments  (m) Medical template
-       ("m" "Medical Appointments")
-       ("mo" "(o) Office Appointent" entry (file+headline ,(concat local-config-gtd-dir "Appointments.org") "APPOINTMENTS")
-	(file ,(concat user-emacs-directory "Office-Appointment.txt")) :empty-lines 1 :time-prompt t)
-       ("mt" "(t) Testing Appointent" entry (file+headline ,(concat local-config-gtd-dir "Appointments.org") "APPOINTMENTS")
-	(file ,(concat user-emacs-directory "Testing-Appointment.txt")) :empty-lines 1 :time-prompt t)
-    ;; Health Data Capture
-       ("h" "Health Data Capture (h)")
-
-       ("hb" "Blood Pressure (b)" table-line (file+headline ,(concat local-config-gtd-dir "Medical-Data.org") "Blood Pressure")
-	 "|%^{Person|TOM|JOANNE}|%U|%^{Systtolic}|%^{Diastolic}|%^{Pulse}|")
-
-       ("ht" "Temperature (t)" table-line (file+headline ,(concat local-config-gtd-dir "Medical-Data.org") "Temperature")
-	"|%^{Person|TOM|JOANNE}|%U|%^{Temperature}|")
-
-       ("hw" "Weight (w)" table-line (file+headline ,(concat local-config-gtd-dir "Medical-Data.org") "Weight")
-	"|%^{Person|TOM|JOANNE}|%U|%^{Weight}|")
-    ;; Car Related
-       ("a" "Automotive (a)")
-
-       ("ag" "Gas Receipt (g}" table-line (file+headline ,(concat local-config-gtd-dir "Auto-Receipt.org") "Gas Receipts")
-       "|%^u|%^{mileage}|%^{gallons}|%^{total}|")
-    ;; org-protocol 
-       ("p" "Protocol" entry (file+headline ,(concat org-directory "gtd\notes.org") "Inbox")
-  "* %^{Title}\nSource: %u, %c\n #+BEGIN_QUOTE\n%i\n#+END_QUOTE\n\n\n%?")
-
-       ("L" "Protocol Link" entry (file+headline ,(concat org-directory "gtd\notes.org") "Inbox")
-"* %? [[%:link][%:description]] %(progn (setq kk/delete-frame-after-capture 2) \"\")\nCaptured On: %U"
-:empty-lines 1)
-       ))
-
 (require 'ox-publish)
 
 (defun publish-source-path (path)
@@ -776,12 +725,75 @@ text and copying to the killring."
 			       ("DONE" . "green")));
 
 (defun gtd-file (name)
-  (concat local-config-gtd-dir name))
+  "Where to find a gtd file."
+  (global-org-path (concat "gtd/" name)))
+
+(defun med-file (name)
+  "Where to find a medical file."
+  (global-org-path (concat "medical/" name)))
+
+(defun car-file (name)
+  "Where to find a car data file."
+   (global-org-path (concat "car/" name)))
 
 (setq org-refile-targets `((,(gtd-file "gtd.org") :maxlevel . 3)
 			   (,(gtd-file "Someday.org") :maxlevel . 3)
 			   (,(gtd-file "Tickler.org") :maxlevel . 3)
 			   (,(gtd-file "Appointments.org") :maxlevel . 1)))
+
+(defun transform-square-brackets-to-round-ones(string-to-transform)
+  "Transforms [ into ( and ] into ), other chars left unchanged."
+  (concat 
+   (mapcar #'(lambda (c) (if (equal c ?\[) ?\( (if (equal c ?\]) ?\) c))) string-to-transform)))
+
+
+    ;; ;;; See: http://cachestocaches.com/2016/9/my-workflow-org-agenda/
+(setq org-capture-templates
+      `(
+    ;; Logs for Projects
+	("l" "Project Logging")
+	("ls" "sbcl-compile project"
+	entry (file+datetree "c:/Users/zzzap/Documents/Code/source-projects/ACTIVE/sbcl-compile/project-log.org" "Project Log")
+	"** %U - %^{Activity} :NOTE:")
+    ;; Todo
+       ("t" "Inbox Entry" entry (file+headline ,(gtd-file "Inbox.org") "Tasks")
+	"* TODO %^{Brief Description} %^g\n  OPENED: %U")
+    ;; Tickler
+       ("T" "Tickler Entry" entry (file+headline ,(gtd-file "Tickler.org") "TICKLERS")
+	"* TODO %^{Brief Description} %^g\n  OPENED: %U")
+    ;; Journal Capture
+       ("j" "Journal" entry (file+datetree ,(gtd-file "Journal.org") )
+	  "* %?\nEntered on %U\n  %i\n  %a")
+    ;; Medical Appointments  (m) Medical template
+       ("m" "Medical Appointments")
+       ("mo" "(o) Office Appointent" entry (file+headline ,(gtd-file "Appointments.org") "APPOINTMENTS")
+	(file ,(concat user-emacs-directory "Office-Appointment.txt")) :empty-lines 1 :time-prompt t)
+       ("mt" "(t) Testing Appointent" entry (file+headline ,(gtd-file "Appointments.org") "APPOINTMENTS")
+	(file ,(concat user-emacs-directory "Testing-Appointment.txt")) :empty-lines 1 :time-prompt t)
+    ;; Health Data Capture
+       ("h" "Health Data Capture (h)")
+
+       ("hb" "Blood Pressure (b)" table-line (file+headline ,(med-file "Medical-Data.org") "Blood Pressure")
+	 "|%^{Person|TOM|JOANNE}|%U|%^{Systtolic}|%^{Diastolic}|%^{Pulse}|")
+
+       ("ht" "Temperature (t)" table-line (file+headline ,(med-file "Medical-Data.org") "Temperature")
+	"|%^{Person|TOM|JOANNE}|%U|%^{Temperature}|")
+
+       ("hw" "Weight (w)" table-line (file+headline ,(med-file "Medical-Data.org") "Weight")
+	"|%^{Person|TOM|JOANNE}|%U|%^{Weight}|")
+    ;; Car Related
+       ("a" "Automotive (a)")
+
+       ("ag" "Gas Receipt (g}" table-line (file+headline ,(car-file "Auto-Receipt.org") "Gas Receipts")
+       "|%^u|%^{mileage}|%^{gallons}|%^{total}|")
+    ;; org-protocol 
+       ("p" "Protocol" entry (file+headline ,(gtd-file "notes.org") "Inbox")
+  "* %^{Title}\nSource: %u, %c\n #+BEGIN_QUOTE\n%i\n#+END_QUOTE\n\n\n%?")
+
+       ("L" "Protocol Link" entry (file+headline ,(gtd-file  "notes.org") "Inbox")
+"* %? [[%:link][%:description]] %(progn (setq kk/delete-frame-after-capture 2) \"\")\nCaptured On: %U"
+:empty-lines 1)
+       ))
 
 (setq org-agenda-start-with-log-mode t)
 (setq org-log-done 'time)
