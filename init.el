@@ -465,61 +465,6 @@ I also add lisp version with a compiled name of 'production' or which contain a 
 
 (message "Debug ORG START")
 
-(setq org-src-tab-acts-natively t)
-
-;; org-export with no TOC, no NUM and no SUB/SUPERSCRIPTS
-(setf org-export-with-toc nil)
-(setf org-export-with-section-numbers nil)
-(setf org-export-with-sub-superscripts nil)
-
-(require 'org-tempo)
-(add-to-list 'org-structure-template-alist '("sh" . "src shell"))
-(add-to-list 'org-structure-template-alist '("el" . "src emacs-lisp"))
-(add-to-list 'org-structure-template-alist '("qb" . "quote"))
-
-(setf org-global-properties
-    '(("Effort_ALL" . "0:05 0:10 0:15 0:30 1:00 2:00 4:00 6:00 8:00")))
-
-;; Kill the frame if one was created for the capture
-(defvar kk/delete-frame-after-capture 0 "Whether to delete the last frame after the current capture")
-
-(defun kk/delete-frame-if-neccessary (&rest r)
-  (cond
-   ((= kk/delete-frame-after-capture 0) nil)
-   ((> kk/delete-frame-after-capture 1)
-    (setq kk/delete-frame-after-capture (- kk/delete-frame-after-capture 1)))
-   (t
-    (setq kk/delete-frame-after-capture 0)
-    (delete-frame))))
-
-(advice-add 'org-capture-finalize :after 'kk/delete-frame-if-neccessary)
-(advice-add 'org-capture-kill :after 'kk/delete-frame-if-neccessary)
-(advice-add 'org-capture-refile :after 'kk/delete-frame-if-neccessary)
-
-;;;; Org Mode key bindings.
-(global-set-key (kbd "C-c l") 'org-store-link)
-(global-set-key (kbd "C-c a") 'org-agenda)
-(global-set-key (kbd "C-c c") 'org-capture)
-(global-set-key (kbd "C-c b") 'org-switchb)
-
-(org-babel-do-load-languages
- 'org-babel-load-languages
- '((lisp . t)
-   (emacs-lisp . t)
-   (shell . t)
-   (dot . t)
-   ))
-
-(setq org-modules '(org-habit))
-
-(setq org-habit-graph-column 50)
-
-(setq org-link-abbrev-alist
-      '(("bugzilla" . "http://192.168.1.50/bugzilla/show_bug.cgi?id=")
-	("bugzilla-comp" . "http://192.168.1.50/bugzilla/describecomponents.cgi?product=")
-	("code" . "file:///C:/Users/zzzap/Documents/Code/quicklisp/local-projects/%s")
-	("common-docs" . "file:///C:/Users/zzzap/Documents/Common-Document-Store/%s")))
-
 ;; Create stadard org directories if not already present.
 ;; The standard user directory is ~/Documents/org .
 
@@ -527,39 +472,6 @@ I also add lisp version with a compiled name of 'production' or which contain a 
 		  (defvar org-user-dir it "The base of org user files.")
 		  (unless (file-directory-p org-user-dir)
 		    (make-directory  org-user-dir)))
-
-(setq org-todo-keywords '((sequence "TODO(t)" "NEXT(n)" "WAITING(w@/!)" "|" "DONE(d!)" "CANCELLED(c@)")))
-
-(setq org-todo-keyword-faces '(("TODO" . "red")
-			       ("NEXT" . "magenta")
-			       ("WAITING" ."yellow1")
-			       ("CANCELLED"."green")
-			       ("DONE" . "green")));
-
-;;;; Customize the agenda locally
-(local-custom-file "local-custom-agenda.org" "Customize org-agenda")
-
-;;;; Customize the agenda locally
-(local-custom-file "local-capture.org" "Customize org-capture")
-
-(require 'ob-shell)
-(defadvice org-babel-sh-evaluate (around set-shell activate)
-  "Add header argument :shcmd that determines the shell to be called."
-  (defvar org-babel-sh-command)
-  (let* ((org-babel-sh-command (or (cdr (assoc :shcmd params)) org-babel-sh-command)))
-    ad-do-it))
-
-;;;; org-publishing is a local configuration.
-(local-custom-file "local-publishing.org" "Configuration of org-publishing")
-
-(use-package org-present
-  :ensure t
-  :config
-    (use-package visual-fill-column
-      :ensure t
-      :config
-      (setq visual-fill-column-width 110
-	    visual-fill-column-center-text t)))
 
 (use-package org-bullets
   :after org
@@ -594,6 +506,223 @@ I also add lisp version with a compiled name of 'production' or which contain a 
 (set-face-attribute 'org-meta-line nil :inherit '(font-lock-comment-face fixed-pitch))
 (set-face-attribute 'org-checkbox nil :inherit 'fixed-pitch)
 
+;;;; Org Mode key bindings.
+(global-set-key (kbd "C-c l") 'org-store-link)
+(global-set-key (kbd "C-c a") 'org-agenda)
+(global-set-key (kbd "C-c c") 'org-capture)
+(global-set-key (kbd "C-c b") 'org-switchb)
+
+(setq org-src-tab-acts-natively t)
+
+;; org-export with no TOC, no NUM and no SUB/SUPERSCRIPTS
+(setf org-export-with-toc nil)
+(setf org-export-with-section-numbers nil)
+(setf org-export-with-sub-superscripts nil)
+
+(require 'org-tempo)
+(add-to-list 'org-structure-template-alist '("sh" . "src shell"))
+(add-to-list 'org-structure-template-alist '("el" . "src emacs-lisp"))
+(add-to-list 'org-structure-template-alist '("qb" . "quote"))
+
+;; Kill the frame if one was created for the capture
+(defvar kk/delete-frame-after-capture 0 "Whether to delete the last frame after the current capture")
+
+(defun kk/delete-frame-if-neccessary (&rest r)
+  (cond
+   ((= kk/delete-frame-after-capture 0) nil)
+   ((> kk/delete-frame-after-capture 1)
+    (setq kk/delete-frame-after-capture (- kk/delete-frame-after-capture 1)))
+   (t
+    (setq kk/delete-frame-after-capture 0)
+    (delete-frame))))
+
+(advice-add 'org-capture-finalize :after 'kk/delete-frame-if-neccessary)
+(advice-add 'org-capture-kill :after 'kk/delete-frame-if-neccessary)
+(advice-add 'org-capture-refile :after 'kk/delete-frame-if-neccessary)
+
+(use-package org-present
+  :ensure t
+  :config
+    (use-package visual-fill-column
+      :ensure t
+      :config
+      (setq visual-fill-column-width 110
+	    visual-fill-column-center-text t)))
+
+;;;
+    (defun transform-square-brackets-to-round-ones(string-to-transform)
+   "Transforms [ into ( and ] into ), other chars left unchanged."
+   (concat 
+   (mapcar #'(lambda (c) (if (equal c ?\[) ?\( (if (equal c ?\]) ?\) c))) string-to-transform)))
+
+
+    ;; ;;; See: http://cachestocaches.com/2016/9/my-workflow-org-agenda/
+    (setq org-capture-templates
+     `(
+    ;; Logs for Projects
+       ("l" "Project Logging")
+       ("ls" "sbcl-compile project"
+	entry (file+datetree "c:/Users/zzzap/Documents/Code/source-projects/ACTIVE/sbcl-compile/project-log.org" "Project Log")
+	"** %U - %^{Activity} :NOTE:")
+    ;; Todo
+       ("t" "Inbox Entry" entry (file+headline ,(concat local-config-gtd-dir "Inbox.org") "Tasks")
+	"* TODO %^{Brief Description} %^g\n  OPENED: %U")
+    ;; Tickler
+       ("T" "Tickler Entry" entry (file+headline ,(concat local-config-gtd-dir "Tickler.org") "TICKLERS")
+	"* TODO %^{Brief Description} %^g\n  OPENED: %U")
+    ;; Journal Capture
+       ("j" "Journal" entry (file+datetree ,(concat local-config-gtd-dir "Journal.org") )
+	  "* %?\nEntered on %U\n  %i\n  %a")
+    ;; Medical Appointments  (m) Medical template
+       ("m" "Medical Appointments")
+       ("mo" "(o) Office Appointent" entry (file+headline ,(concat local-config-gtd-dir "Appointments.org") "APPOINTMENTS")
+	(file ,(concat user-emacs-directory "Office-Appointment.txt")) :empty-lines 1 :time-prompt t)
+       ("mt" "(t) Testing Appointent" entry (file+headline ,(concat local-config-gtd-dir "Appointments.org") "APPOINTMENTS")
+	(file ,(concat user-emacs-directory "Testing-Appointment.txt")) :empty-lines 1 :time-prompt t)
+    ;; Health Data Capture
+       ("h" "Health Data Capture (h)")
+
+       ("hb" "Blood Pressure (b)" table-line (file+headline ,(concat local-config-gtd-dir "Medical-Data.org") "Blood Pressure")
+	 "|%^{Person|TOM|JOANNE}|%U|%^{Systtolic}|%^{Diastolic}|%^{Pulse}|")
+
+       ("ht" "Temperature (t)" table-line (file+headline ,(concat local-config-gtd-dir "Medical-Data.org") "Temperature")
+	"|%^{Person|TOM|JOANNE}|%U|%^{Temperature}|")
+
+       ("hw" "Weight (w)" table-line (file+headline ,(concat local-config-gtd-dir "Medical-Data.org") "Weight")
+	"|%^{Person|TOM|JOANNE}|%U|%^{Weight}|")
+    ;; Car Related
+       ("a" "Automotive (a)")
+
+       ("ag" "Gas Receipt (g}" table-line (file+headline ,(concat local-config-gtd-dir "Auto-Receipt.org") "Gas Receipts")
+       "|%^u|%^{mileage}|%^{gallons}|%^{total}|")
+    ;; org-protocol 
+       ("p" "Protocol" entry (file+headline ,(concat org-directory "gtd\notes.org") "Inbox")
+  "* %^{Title}\nSource: %u, %c\n #+BEGIN_QUOTE\n%i\n#+END_QUOTE\n\n\n%?")
+
+       ("L" "Protocol Link" entry (file+headline ,(concat org-directory "gtd\notes.org") "Inbox")
+"* %? [[%:link][%:description]] %(progn (setq kk/delete-frame-after-capture 2) \"\")\nCaptured On: %U"
+:empty-lines 1)
+       ))
+
+(require 'ox-publish)
+
+(defun publish-source-path (path)
+	   (concat local-config-src-base-path "source/" path))
+
+	 (defun publish-path (path)
+	   (concat local-config-publish-base-path path))
+
+	 (defmacro src-publish-pair (path)
+	   "Return a source and publish path pair."
+	   (let ((_path (gensym)))
+	      `(let ((,_path ,path))
+		(list (publish-source-path  ,_path) (publish-path ,_path)))))
+
+
+	 (defmacro publish-project (name srcdir webdir)
+	   "Create  publication name generated from srcdir and browseable at webdir.
+	    This publication has two components -notes and -static.
+	    the -notes part is indexed."
+	  (let ((name% (gensym))
+		(webdir% (gensym))
+		(srcdir% (gensym))
+		(notes-part% (gensym))
+		(static-part% (gensym)))
+	  `(let* ((,name% ,name)
+		 (,srcdir% ,srcdir)
+		 (,webdir% ,webdir)
+		 (,notes-part% (concat ,name% "-notes"))
+		 (,static-part% (concat ,name% "-static")))
+		 ;(message "name: %s" ,name%)
+		 ;(message "notes-part %s" ,notes-part%)
+		 ;(message "static-part %s" ,static-part%)
+		 (list `(,,notes-part%
+		  :base-directory ,,srcdir%
+		  :base-extension "org"
+		  :publishing-directory ,,webdir%
+		  :recursive t
+		  :exclude ".*/\.git/.*|.*/.*~"
+		  :publishing-function org-html-publish-to-html
+		  :headline-levels 4             ; Just the default for this project.
+		  :auto-preamble t
+		  :with-sub-superscript nil
+		  :section-numbers nil
+		  :auto-sitemap t
+		  :makeindex t)
+		 `(,,static-part%
+		  :base-directory ,,srcdir%
+		  :base-extension "css\\|js\\|png\\|jpg\\|gif\\|pdf\\|mp3\\|ogg\\|swf"
+		  :publishing-directory ,,webdir%
+		  :auto-sitemap nil
+		  :recursive t
+		  :exclude ".*/\.git/.*|.*/.*~"
+		  :publishing-function org-publish-attachment)
+		 `(,,name% :components (,,notes-part% ,,static-part%))))))
+
+(defun make-project (name)
+    (publish-project name (publish-source-path name) (publish-path name)))
+
+
+	 (setq org-publish-project-alist
+		`(
+		 ("org-text"
+		  :base-directory "~/Documents/Code/org-web/content"
+		  :base-extension "org"
+		  :publishing-directory "c:/Users/Public/org-web"
+		  :recursive t
+		  :exclude ".*/\.git/.*|.*/.*~"
+		  :publishing-function org-html-publish-to-html
+		  :headline-levels 4             ; Just the default for this project.
+		  :auto-preamble t
+		  :auto-sitemap t
+		  :section-numbers nil
+		  :makeindex t)
+		 ("org-parts"
+		  :base-directory "~/Documents/Code/org-web/content"
+		  :base-extension "css\\|js\\|png\\|jpg\\|gif\\|pdf\\|mp3\\|ogg\\|swf"
+		  :publishing-directory "c:/Users/Public/org-web"
+		  :auto-sitemap nil
+		  :recursive t
+		  :exclude ".*/\.git/.*|.*/.*~"
+		  :publishing-function org-publish-attachment)		      
+		 ("emacs-config"
+		  :base-directory "~/.emacs.d"
+		  :base-extension "org"
+		  :publishing-directory ,(publish-path "emacs-config")
+		  :recursive nil
+		  :publishing-function org-html-publish-to-html
+		  :headline-levels 9             ; Just the default for this project.
+		  :auto-sitemap t
+		  :makeindex t
+		  :section-numbers nil
+		  :auto-preamble t)
+		 ; Removed because of info: links in xelf
+		 ;,@(publish-project "code-projects" "~/Documents/Code/quicklisp/local-projects"(publish-path "code-projects"))
+
+		 ("org-web" :components ( "org-text" "org-parts"
+					  ;"code-projects"
+					  "emacs-config"))
+		 ("blog-src"
+		  ;; Path to org files.
+		  :base-directory "~/Documents/Code/blog/org-source"
+		  :base-extension "org"
+
+		  ;; Path to Jekyll Posts
+		  :publishing-directory "~/Documents/Code/blog/tomrake.github.io/_drafts/"
+		  :recursive t
+		  :publishing-function org-html-publish-to-html
+		  :headline-levels 4
+		  :html-extension "html"
+		  :body-only t)
+		 ("blog" :components ("blog-src"))))
+
+(require 'ob-shell)
+(defadvice org-babel-sh-evaluate (around set-shell activate)
+  "Add header argument :shcmd that determines the shell to be called."
+  (defvar org-babel-sh-command)
+  (let* ((org-babel-sh-command (or (cdr (assoc :shcmd params)) org-babel-sh-command)))
+    ad-do-it))
+
 (org-add-link-type
  "image-url"
  (lambda (path)
@@ -604,6 +733,157 @@ I also add lisp version with a compiled name of 'production' or which contain a 
      (find-file img)
        (url-copy-file path img)
        (find-file img)))))
+
+(org-babel-do-load-languages
+ 'org-babel-load-languages
+ '((lisp . t)
+   (emacs-lisp . t)
+   (shell . t)
+   (dot . t)
+   ))
+
+(setq org-modules '(org-habit))
+
+(setq org-habit-graph-column 50)
+
+(setq org-todo-keywords '((sequence "TODO(t)" "NEXT(n)" "WAITING(w@/!)" "|" "DONE(d!)" "CANCELLED(c@)")))
+
+(setq org-todo-keyword-faces '(("TODO" . "red")
+			       ("NEXT" . "magenta")
+			       ("WAITING" ."yellow1")
+			       ("CANCELLED"."green")
+			       ("DONE" . "green")));
+
+(defun gtd-file (name)
+  (concat local-config-gtd-dir name))
+
+(setq org-refile-targets `((,(gtd-file "gtd.org") :maxlevel . 3)
+			   (,(gtd-file "Someday.org") :maxlevel . 3)
+			   (,(gtd-file "Tickler.org") :maxlevel . 3)
+			   (,(gtd-file "Appointments.org") :maxlevel . 1)))
+
+(setq org-agenda-start-with-log-mode t)
+(setq org-log-done 'time)
+(setq org-log-into-drawer "LOGBOOK")
+
+(defmacro twr-todo-overview (file-list)
+  `(list '(todo "WAITING" ((org-agenda-files ,file-list)))
+    '(todo "NEXT" ((org-agenda-files ,file-list)))
+    '(todo "CANCELLED" ((org-agenda-files ,file-list)))
+    '(todo "TODO" ((org-agenda-files ,file-list)))
+    '(todo "DONE" ((org-agenda-files ,file-list)))))
+
+(setq org-agenda-files-1
+      (list (gtd-file "gtd.org")
+	    (gtd-file "Tickler.org")
+	    (gtd-file "Annual-Days.org")
+	    (gtd-file "Appointments.org")
+	    (gtd-file "Inbox.org")))
+(setq current-agenda-files
+      (list (gtd-file "gtd.org")
+	    (gtd-file "Inbox.org")
+	    (gtd-file "Appointments.org")
+	    (gtd-file "Tickler.org")))
+;;; All items except for appointments
+(setq org-non-appoinment-files
+      (list (gtd-file "gtd.org")
+	    (gtd-file "Tickler.org")
+	    (gtd-file "Annual-Days.org")
+	    (gtd-file "Inbox.org")))
+(setq full-agenda-files (cons (gtd-file "Someday.org") org-agenda-files-1))
+(setq org-agenda-skip-scheduled-if-done t)
+(setq org-agenda-todo-list-sublevels t)
+(setf org-agenda-files org-agenda-files-1)
+
+(defun org-current-is-todo ()
+  (string= "TODO" (org-get-todo-state)))
+
+;;;; Define Custom Agenda views
+     (setq org-agenda-custom-commands
+	   `(
+	     ("x" . "Experimental")
+	     ("xx" "xx" agenda)
+	     ("xy" "xy" agenda*)
+	     ("xn" "xn" todo "NEXT")
+	     ("xN" "xN" todo-tree "NEXT")
+	     ("xa" "Daily Overview"
+	      ;; The first part is an agenda calendar view
+	      ((agenda* "" ((org-agenda-files org-agenda-files-1)
+			   (org-agenda-ndays 1)
+			   (org-agenda-sorting-strategy
+			    `((agenda time-up priority-down tag-up)))
+			   (org-deadline-warning-days 0)))
+				       ; exclude ticker files from todo list because they are covered in agenda
+	       (todo "WAITING" ((org-agenda-files org-non-appoinment-files)))
+	       (todo "NEXT" ((org-agenda-files org-non-appoinment-files)))
+
+  (todo "TODO" ((org-agenda-files org-non-appoinment-files)))))
+	     ("xA" "All Appointments" tags "+APPOINTMENT")
+	     ("xj" "James Appointments" tags "+JAMES+APPOINTMENT")
+	     ("xJ" "James" tags "+JAMES")
+	     ("xc" "Weekly schedule" agenda ""
+	       ((org-agenda-span 7) ;; agenda will start in week view
+		(org-agenda-repeating-timestamp-show-all t)))
+	     ("xf" "Evaluate all Tasks" agenda ""
+	       ((org-agenda-files current-agenda-files-1)))
+
+	     ("H" 
+	      "All Contexts"
+	      ((agenda)
+	       (tags-todo "CAR")
+	       (tags-todo "JAMES")
+	       (tags-todo "TOM")
+	       (tags-todo "JOANNE")
+	       (tags-todo "ATTIC")
+	       (tags-todo "HOME")
+	       (tags-todo "COMPUTER")
+	       (tags-todo "OUTDOOR")))
+	     ("D" . "Daily Tasks")
+	     ("Dt" "Any Project Task"
+	      ((agenda ""
+		       ((org-deadline-warning-days 7)))
+	       (todo)))
+	     ("Da" "A Scheduled Project task"
+	      ((agenda "" ((org-agenda-files org-agenda-files-1)
+			   (org-agenda-ndays 1)
+			   (org-agenda-sorting-strategy
+			    `((agenda time-up priority-down tag-up)))
+			   (org-deadline-warning-days 0)))
+				       ; exclude ticker files from todo list because they are covered in agenda
+	       (todo "NEXT" ((org-agenda-files current-agenda-files)))))
+	     ("Do" "Daily Overview"
+	      ;; The first part is an agenda calendar view
+	      ((agenda "" ((org-agenda-files org-agenda-files-1)
+			   (org-agenda-ndays 1)
+			   (org-agenda-sorting-strategy
+			    `((agenda time-up priority-down tag-up)))
+			   (org-deadline-warning-days 0)))
+	       ,@(twr-todo-overview org-non-appoinment-files)))
+	     ("W" . "Weekly Tasks")
+	     ("Wo" "Weekly Overview"
+	       ;; The first part is an agenda calendar view
+	       ((agenda "" ((org-agenda-files full-agenda-files)
+			(org-agenda-ndays 1)
+			(org-agenda-sorting-strategy
+			 `((agenda time-up priority-down tag-up)))
+			(org-deadline-warning-days 0)))
+		,@(twr-todo-overview full-agenda-files)))
+	     ("g" . "GTD contexts")
+	     ("ga" "Attic" tags-todo "ATTIC")
+	     ("gh" "Home" tags-todo "HOME")
+	     ("gc" "Computer" tags-todo "COMPUTER")
+	     ("go" "Outdoor" tag-toto "OUTDOOR")
+	     ("gp" "Projects" tags-todo "PROJECTS")
+	     ("gf" "Financial" tags-todo "FINANCIAL")
+
+	     ("p" . "Priorities")
+	     ("pa" "A items" tags-todo "+PRIORITY=\"A\"")
+	     ("pb" "B items" tags-todo "+PRIORITY=\"B\"")
+	     ("pc" "C items" tags-todo "+PRIORITY=\"C\"")
+	     ("y" agenda*)
+	     ("c" "Weekly schedule" agenda ""
+	      ((org-agenda-span 7) ;; agenda will start in week view
+	       (org-agenda-repeating-timestamp-show-all t))))) ;; ensures that repeating events appear on all relevant dates
 
 )
 
