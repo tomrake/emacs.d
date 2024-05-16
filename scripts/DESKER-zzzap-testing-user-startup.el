@@ -1,4 +1,4 @@
-(message "DESKER-zzzap-TESTING-user-startup")
+(message "DESKER-zzzap-testing-user-startup")
 
 
 (defvar local-config-sbcl-location "C:/Users/Public/Lispers/sbcl/installed"
@@ -22,12 +22,6 @@
 (defvar global-config-base-path
   "c:/Users/Public/Documents/org/"
   "All org stuff that need multiuser access are located relative this path.")
-
-(defvar local-config-org-user-dir "~/Documents/Code/org/"
-  "The local org directory")
-
-(defvar local-config-gtd-dir "~/Documents/Code/org/gtd/"
-  "Where the Get Things Done files are stored.")
 
 (defvar local-config-src-base-path "~/Documents/Code/org-web/"
   "Where the published source is located.")

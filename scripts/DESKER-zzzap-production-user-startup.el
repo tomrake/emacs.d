@@ -1,4 +1,4 @@
-(message "DESKER-refor-testing-user-startup")
+(message "DESKER-zzzap-producton-user-startup")
 
 
 (defvar local-config-sbcl-location "C:/Users/Public/Lispers/sbcl/installed"
@@ -18,9 +18,13 @@
 (defvar local-config-slime-location "c:/Users/zzzap/Documents/Code/source-projects/ACTIVE/slime"
   "The location of the slime for common lisp.")
 
-;; [TBD] Reconsider This was created to stop an error
-(defvar local-config-src-base-path "~/Code/org-web/"
+
+(defvar global-config-base-path
+  "c:/Users/Public/Documents/org/"
+  "All org stuff that need multiuser access are located relative this path.")
+
+(defvar local-config-src-base-path "~/Documents/Code/org-web/"
   "Where the published source is located.")
-;; [TBD] Reconsider
+
 (defvar local-config-publish-base-path "c:/Users/Public/org-web/"
   "Where the publish html files are located here.")

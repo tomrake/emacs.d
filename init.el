@@ -471,11 +471,11 @@ I also add lisp version with a compiled name of 'production' or which contain a 
 
 ;; Create stadard org directories if not already present.
 ;; The standard user directory is ~/Documents/org .
-
-(checksym-defined "local-config-org-user-dir"
-		  (defvar org-user-dir it "The base of org user files.")
-		  (unless (file-directory-p org-user-dir)
-		    (make-directory  org-user-dir)))
+(message "!!!! DO NOT CREATE org directories!!!")
+;; (checksym-defined "local-config-org-user-dir"
+;; 		  (defvar org-user-dir it "The base of org user files.")
+;; 		  (unless (file-directory-p org-user-dir)
+;; 		    (make-directory  org-user-dir)))
 
 (use-package org-bullets
   :after org
