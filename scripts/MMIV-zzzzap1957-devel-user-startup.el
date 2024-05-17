@@ -1,4 +1,4 @@
-(message "MMIV-zzzzap1957-testing-user-startup")
+(message "MMIV-zzzzap1957-devel-user-startup")
 
 
 (defvar local-config-slime-location "c:/Users/zzzzap1957/Code/slime"
