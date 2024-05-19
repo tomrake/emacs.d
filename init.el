@@ -716,9 +716,9 @@ text and copying to the killring."
 
 (setq org-habit-graph-column 50)
 
-(setq org-todo-keywords '((sequence "TODO(t)" "NEXT(n)" "WAITING(w@/!)" "|" "DONE(d!)" "CANCELLED(c@)")))
+(setq gtd-todo-keywords '((sequence "TODO(t)" "NEXT(n)" "WAITING(w@/!)" "|" "DONE(d!)" "CANCELLED(c@)")))
 
-(setq org-todo-keyword-faces '(("TODO" . "red")
+(setq gtd-todo-keyword-faces '(("TODO" . "red")
 			       ("NEXT" . "magenta")
 			       ("WAITING" ."yellow1")
 			       ("CANCELLED"."green")
@@ -736,7 +736,7 @@ text and copying to the killring."
   "Where to find a car data file."
    (global-org-path (concat "car/" name)))
 
-(setq org-refile-targets `((,(gtd-file "gtd.org") :maxlevel . 3)
+(setq gtd-refile-targets `((,(gtd-file "gtd.org") :maxlevel . 3)
 			   (,(gtd-file "Someday.org") :maxlevel . 3)
 			   (,(gtd-file "Tickler.org") :maxlevel . 3)
 			   (,(gtd-file "Appointments.org") :maxlevel . 1)))
@@ -748,7 +748,7 @@ text and copying to the killring."
 
 
     ;; ;;; See: http://cachestocaches.com/2016/9/my-workflow-org-agenda/
-(setq org-capture-templates
+(setq gtd-capture-templates
       `(
     ;; Logs for Projects
 	("l" "Project Logging")
@@ -806,6 +806,7 @@ text and copying to the killring."
     '(todo "TODO" ((org-agenda-files ,file-list)))
     '(todo "DONE" ((org-agenda-files ,file-list)))))
 
+(message "[TBD] %s" "Fix GTD Agenda file calculation. ")
 (setq org-agenda-files-1
       (list (gtd-file "gtd.org")
 	    (gtd-file "Tickler.org")
@@ -832,7 +833,7 @@ text and copying to the killring."
   (string= "TODO" (org-get-todo-state)))
 
 ;;;; Define Custom Agenda views
-     (setq org-agenda-custom-commands
+     (setq gtd-custom-agenda-commands
 	   `(
 	     ("x" . "Experimental")
 	     ("xx" "xx" agenda)
@@ -917,6 +918,24 @@ text and copying to the killring."
 	     ("c" "Weekly schedule" agenda ""
 	      ((org-agenda-span 7) ;; agenda will start in week view
 	       (org-agenda-repeating-timestamp-show-all t))))) ;; ensures that repeating events appear on all relevant dates
+
+(defun clear-gtd-switch()
+  "Remove the gtd customizations." 
+       (setf org-agenda-custom-commands nil
+	org-capture-templates nil
+	org-refile-targets nil
+	org-todo-keywords  nil
+	org-todo-keyword-faces nil))
+
+(defun make-gtd-switch()
+  "Add the gtd customizations."
+  (setf org-agenda-custom-commands gtd-custom-agenda-commands
+	org-capture-templates gtd-capture-templates
+	org-refile-targets gtd-refile-targets
+	org-todo-keywords  gtd-todo-keywords
+	org-todo-keyword-faces gtd-todo-keyword-faces))
+;; And throw the switch
+(make-gtd-switch)
 
 )
 

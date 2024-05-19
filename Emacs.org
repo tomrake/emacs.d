@@ -1108,10 +1108,10 @@ This should be a complete optional component.
 ** The highly strcuctured "Big Agends"
 Define TODO types and colors
 #+BEGIN_SRC emacs-lisp
-  (setq org-todo-keywords '((sequence "TODO(t)" "NEXT(n)" "WAITING(w@/!)" "|" "DONE(d!)" "CANCELLED(c@)")))
+  (setq gtd-todo-keywords '((sequence "TODO(t)" "NEXT(n)" "WAITING(w@/!)" "|" "DONE(d!)" "CANCELLED(c@)")))
 #+END_SRC
 #+BEGIN_SRC emacs-lisp
-  (setq org-todo-keyword-faces '(("TODO" . "red")
+  (setq gtd-todo-keyword-faces '(("TODO" . "red")
 			         ("NEXT" . "magenta")
 				 ("WAITING" ."yellow1")
 				 ("CANCELLED"."green")
@@ -1135,7 +1135,7 @@ Define TODO types and colors
  #+BEGIN_SRC emacs-lisp
 
 
-   (setq org-refile-targets `((,(gtd-file "gtd.org") :maxlevel . 3)
+   (setq gtd-refile-targets `((,(gtd-file "gtd.org") :maxlevel . 3)
 			      (,(gtd-file "Someday.org") :maxlevel . 3)
 			      (,(gtd-file "Tickler.org") :maxlevel . 3)
 			      (,(gtd-file "Appointments.org") :maxlevel . 1)))
@@ -1153,7 +1153,7 @@ Define TODO types and colors
 
 
        ;; ;;; See: http://cachestocaches.com/2016/9/my-workflow-org-agenda/
-   (setq org-capture-templates
+   (setq gtd-capture-templates
 	 `(
        ;; Logs for Projects
 	   ("l" "Project Logging")
@@ -1236,6 +1236,7 @@ Add macro to construction block agenda components of TODO items.
  
  
  #+BEGIN_SRC emacs-lisp
+   (message "[TBD] %s" "Fix GTD Agenda file calculation. ")
    (setq org-agenda-files-1
 	 (list (gtd-file "gtd.org")
 	       (gtd-file "Tickler.org")
@@ -1273,7 +1274,7 @@ Add macro to construction block agenda components of TODO items.
 
  #+BEGIN_SRC emacs-lisp
    ;;;; Define Custom Agenda views
-	(setq org-agenda-custom-commands
+	(setq gtd-custom-agenda-commands
 	      `(
 		("x" . "Experimental")
 		("xx" "xx" agenda)
@@ -1362,7 +1363,26 @@ Add macro to construction block agenda components of TODO items.
 
 
  #+END_SRC
+** GTD Switch
+ #+begin_src emacs-lisp
+   (defun clear-gtd-switch()
+     "Remove the gtd customizations." 
+	  (setf org-agenda-custom-commands nil
+	   org-capture-templates nil
+	   org-refile-targets nil
+	   org-todo-keywords  nil
+	   org-todo-keyword-faces nil))
 
+   (defun make-gtd-switch()
+     "Add the gtd customizations."
+     (setf org-agenda-custom-commands gtd-custom-agenda-commands
+	   org-capture-templates gtd-capture-templates
+	   org-refile-targets gtd-refile-targets
+	   org-todo-keywords  gtd-todo-keywords
+	   org-todo-keyword-faces gtd-todo-keyword-faces))
+   ;; And throw the switch
+   (make-gtd-switch)
+ #+end_src
 ** >>The close of the (use-package org config
 
 #+begin_src emacs-lisp
