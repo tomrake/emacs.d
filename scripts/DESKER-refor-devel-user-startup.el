@@ -1,4 +1,4 @@
-(message "DESKER-refor-testing-user-startup")
+(message "DESKER-refor-devel-user-startup")
 
 
 (defvar local-config-sbcl-location "C:/Users/Public/Lispers/sbcl/installed"
