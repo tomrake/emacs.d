@@ -909,112 +909,67 @@ A mode to show org files as a presentation.
   (defun publish-source-path (path)
 	     (concat local-config-src-base-path "source/" path))
 
-	   (defun publish-path (path)
-	     (concat local-config-publish-base-path path))
+  (defun publish-path (path)
+    (concat local-config-publish-base-path path))
 
-	   (defmacro src-publish-pair (path)
-	     "Return a source and publish path pair."
-	     (let ((_path (gensym)))
-		`(let ((,_path ,path))
-		  (list (publish-source-path  ,_path) (publish-path ,_path)))))
-
-
-	   (defmacro publish-project (name srcdir webdir)
-	     "Create  publication name generated from srcdir and browseable at webdir.
-	      This publication has two components -notes and -static.
-	      the -notes part is indexed."
-	    (let ((name% (gensym))
-		  (webdir% (gensym))
-		  (srcdir% (gensym))
-		  (notes-part% (gensym))
-		  (static-part% (gensym)))
-	    `(let* ((,name% ,name)
-		   (,srcdir% ,srcdir)
-		   (,webdir% ,webdir)
-		   (,notes-part% (concat ,name% "-notes"))
-		   (,static-part% (concat ,name% "-static")))
-		   ;(message "name: %s" ,name%)
-		   ;(message "notes-part %s" ,notes-part%)
-		   ;(message "static-part %s" ,static-part%)
-		   (list `(,,notes-part%
-		    :base-directory ,,srcdir%
-		    :base-extension "org"
-		    :publishing-directory ,,webdir%
-		    :recursive t
-		    :exclude ".*/\.git/.*|.*/.*~"
-		    :publishing-function org-html-publish-to-html
-		    :headline-levels 4             ; Just the default for this project.
-		    :auto-preamble t
-		    :with-sub-superscript nil
-		    :section-numbers nil
-		    :auto-sitemap t
-		    :makeindex t)
-		   `(,,static-part%
-		    :base-directory ,,srcdir%
-		    :base-extension "css\\|js\\|png\\|jpg\\|gif\\|pdf\\|mp3\\|ogg\\|swf"
-		    :publishing-directory ,,webdir%
-		    :auto-sitemap nil
-		    :recursive t
-		    :exclude ".*/\.git/.*|.*/.*~"
-		    :publishing-function org-publish-attachment)
-		   `(,,name% :components (,,notes-part% ,,static-part%))))))
-
-  (defun make-project (name)
-      (publish-project name (publish-source-path name) (publish-path name)))
+  (defmacro src-publish-pair (path)
+    "Return a source and publish path pair."
+    (let ((_path (gensym)))
+      `(let ((,_path ,path))
+	 (list (publish-source-path  ,_path) (publish-path ,_path)))))
 
 
-	   (setq org-publish-project-alist
-		  `(
-		   ("org-text"
-		    :base-directory "~/Documents/Code/org-web/content"
-		    :base-extension "org"
-		    :publishing-directory "c:/Users/Public/org-web"
-		    :recursive t
-		    :exclude ".*/\.git/.*|.*/.*~"
-		    :publishing-function org-html-publish-to-html
-		    :headline-levels 4             ; Just the default for this project.
-		    :auto-preamble t
-		    :auto-sitemap t
-		    :section-numbers nil
-		    :makeindex t)
-		   ("org-parts"
-		    :base-directory "~/Documents/Code/org-web/content"
-		    :base-extension "css\\|js\\|png\\|jpg\\|gif\\|pdf\\|mp3\\|ogg\\|swf"
-		    :publishing-directory "c:/Users/Public/org-web"
-		    :auto-sitemap nil
-		    :recursive t
-		    :exclude ".*/\.git/.*|.*/.*~"
-		    :publishing-function org-publish-attachment)		      
-		   ("emacs-config"
-		    :base-directory "~/.emacs.d"
-		    :base-extension "org"
-		    :publishing-directory ,(publish-path "emacs-config")
-		    :recursive nil
-		    :publishing-function org-html-publish-to-html
-		    :headline-levels 9             ; Just the default for this project.
-		    :auto-sitemap t
-		    :makeindex t
-		    :section-numbers nil
-		    :auto-preamble t)
-		   ; Removed because of info: links in xelf
-		   ;,@(publish-project "code-projects" "~/Documents/Code/quicklisp/local-projects"(publish-path "code-projects"))
 
-		   ("org-web" :components ( "org-text" "org-parts"
-					    ;"code-projects"
-					    "emacs-config"))
-		   ("blog-src"
-		    ;; Path to org files.
-		    :base-directory "~/Documents/Code/blog/org-source"
-		    :base-extension "org"
+  (setq org-publish-project-alist
+	`(
+	  ("org-text"
+	   :base-directory "~/Documents/Code/org-web/content"
+	   :base-extension "org"
+	   :publishing-directory "c:/Users/Public/org-web"
+	   :recursive t
+	   :exclude ".*/\.git/.*|.*/.*~"
+	   :publishing-function org-html-publish-to-html
+	   :headline-levels 4             ; Just the default for this project.
+	   :auto-preamble t
+	   :auto-sitemap t
+	   :section-numbers nil
+	   :makeindex t)
+	  ("org-parts"
+	   :base-directory "~/Documents/Code/org-web/content"
+	   :base-extension "css\\|js\\|png\\|jpg\\|gif\\|pdf\\|mp3\\|ogg\\|swf"
+	   :publishing-directory "c:/Users/Public/org-web"
+	   :auto-sitemap nil
+	   :recursive t
+	   :exclude ".*/\.git/.*|.*/.*~"
+	   :publishing-function org-publish-attachment)		      
+	  ("emacs-config"
+	   :base-directory "~/.emacs.d"
+	   :base-extension "org"
+	   :publishing-directory ,(publish-path "emacs-config")
+	   :recursive nil
+	   :publishing-function org-html-publish-to-html
+	   :headline-levels 9             ; Just the default for this project.
+	   :auto-sitemap t
+	   :makeindex t
+	   :section-numbers nil
+	   :auto-preamble t)
 
-		    ;; Path to Jekyll Posts
-		    :publishing-directory "~/Documents/Code/blog/tomrake.github.io/_drafts/"
-		    :recursive t
-		    :publishing-function org-html-publish-to-html
-		    :headline-levels 4
-		    :html-extension "html"
-		    :body-only t)
-		   ("blog" :components ("blog-src"))))
+	  ("org-web" :components ( "org-text" "org-parts"
+					  ;"code-projects"
+				   "emacs-config"))
+	  ("blog-src"
+	   ;; Path to org files.
+	   :base-directory "~/Documents/Code/blog/org-source"
+	   :base-extension "org"
+
+	   ;; Path to Jekyll Posts
+	   :publishing-directory "~/Documents/Code/blog/tomrake.github.io/_drafts/"
+	   :recursive t
+	   :publishing-function org-html-publish-to-html
+	   :headline-levels 4
+	   :html-extension "html"
+	   :body-only t)
+	  ("blog" :components ("blog-src"))))
 #+END_SRC  
 
 ** org mode add :shcmd to sh blocks
@@ -1236,31 +1191,43 @@ Add macro to construction block agenda components of TODO items.
  
  
  #+BEGIN_SRC emacs-lisp
-   (message "[TBD] %s" "Fix GTD Agenda file calculation. ")
-   (setq org-agenda-files-1
-	 (list (gtd-file "gtd.org")
-	       (gtd-file "Tickler.org")
-	       (gtd-file "Annual-Days.org")
-	       (gtd-file "Appointments.org")
-	       (gtd-file "Inbox.org")))
-   (setq current-agenda-files
-	 (list (gtd-file "gtd.org")
-	       (gtd-file "Inbox.org")
-	       (gtd-file "Appointments.org")
-	       (gtd-file "Tickler.org")))
-   ;;; All items except for appointments
-   (setq org-non-appoinment-files
-	 (list (gtd-file "gtd.org")
-	       (gtd-file "Tickler.org")
-	       (gtd-file "Annual-Days.org")
-	       (gtd-file "Inbox.org")))
-   (setq full-agenda-files (cons (gtd-file "Someday.org") org-agenda-files-1))
-   (setq org-agenda-skip-scheduled-if-done t)
-   (setq org-agenda-todo-list-sublevels t)
-   (setf org-agenda-files org-agenda-files-1)
+      (message "[TBD] %s" "Fix GTD Agenda file calculation. ")
+    ;; There are current available tasks and Annual Events
+   (setq gtd-tasks-and-events
+	    (mapcar #'gtd-file ' ("gtd.org" "Tickler.org" "Annual-Days.org" "Appointments.org" "Inbox.org")))
 
-   (defun org-current-is-todo ()
-     (string= "TODO" (org-get-todo-state)))
+	  ;;   (list (gtd-file "gtd.org")
+      ;; 	    (gtd-file "Tickler.org")
+      ;; 	    (gtd-file "Annual-Days.org")
+      ;; 	    (gtd-file "Appointments.org")
+      ;; 	    (gtd-file "Inbox.org"))
+     
+      ;; These are current available tasks	 
+      (setq gtd-tasks
+	    (mapcar #'gtd-file '("gtd.org" "Inbox.org" "Appointments.org" "Tickler.org")))
+
+      ;;   (list (gtd-file "gtd.org")
+      ;; 	    (gtd-file "Inbox.org")
+      ;; 	    (gtd-file "Appointments.org")
+      ;; 	    (gtd-file "Tickler.org")))
+
+
+      ;;; All items except for appointments
+      (setq gtd-no-appointments
+	    (mapcar #'gtd-file '("gtd.org" "Tickler.org" "Annual-Days.org" "Inbox.org")))
+   ;;	 (list (gtd-file "gtd.org")
+   ;;	       (gtd-file "Tickler.org")
+   ;;	       (gtd-file "Annual-Days.org")
+   ;;	       (gtd-file "Inbox.org")))
+
+      ;; Full Events include Someday tasks which are long term and not scheduled.
+      (setq full-agenda-files (cons (gtd-file "Someday.org") gtd-tasks-and-events))
+      (setq org-agenda-skip-scheduled-if-done t)
+      (setq org-agenda-todo-list-sublevels t)
+      (setf org-agenda-files gtd-tasks-and-events)
+
+      (defun org-current-is-todo ()
+	(string= "TODO" (org-get-todo-state)))
 
  #+END_SRC
 
@@ -1283,24 +1250,22 @@ Add macro to construction block agenda components of TODO items.
 		("xN" "xN" todo-tree "NEXT")
 		("xa" "Daily Overview"
 		 ;; The first part is an agenda calendar view
-		 ((agenda* "" ((org-agenda-files org-agenda-files-1)
+		 ((agenda* "" ((org-agenda-files gtd-tasks-and-events)
 			      (org-agenda-ndays 1)
 			      (org-agenda-sorting-strategy
 			       `((agenda time-up priority-down tag-up)))
 			      (org-deadline-warning-days 0)))
 					  ; exclude ticker files from todo list because they are covered in agenda
-		  (todo "WAITING" ((org-agenda-files org-non-appoinment-files)))
-		  (todo "NEXT" ((org-agenda-files org-non-appoinment-files)))
+		  (todo "WAITING" ((org-agenda-files gtd-no-appointments)))
+		  (todo "NEXT" ((org-agenda-files gtd-no-appointments)))
 
-     (todo "TODO" ((org-agenda-files org-non-appoinment-files)))))
+     (todo "TODO" ((org-agenda-files gtd-no-appointments)))))
 		("xA" "All Appointments" tags "+APPOINTMENT")
-		("xj" "James Appointments" tags "+JAMES+APPOINTMENT")
-		("xJ" "James" tags "+JAMES")
 		("xc" "Weekly schedule" agenda ""
 		  ((org-agenda-span 7) ;; agenda will start in week view
 		   (org-agenda-repeating-timestamp-show-all t)))
 		("xf" "Evaluate all Tasks" agenda ""
-		  ((org-agenda-files current-agenda-files-1)))
+		  ((org-agenda-files gtd-tasks-and-events)))
 
 		("H" 
 		 "All Contexts"
@@ -1319,21 +1284,21 @@ Add macro to construction block agenda components of TODO items.
 			  ((org-deadline-warning-days 7)))
 		  (todo)))
 		("Da" "A Scheduled Project task"
-		 ((agenda "" ((org-agenda-files org-agenda-files-1)
+		 ((agenda "" ((org-agenda-files gtd-tasks-and-events)
 			      (org-agenda-ndays 1)
 			      (org-agenda-sorting-strategy
 			       `((agenda time-up priority-down tag-up)))
 			      (org-deadline-warning-days 0)))
 					  ; exclude ticker files from todo list because they are covered in agenda
-		  (todo "NEXT" ((org-agenda-files current-agenda-files)))))
+		  (todo "NEXT" ((org-agenda-files gtd-tasks)))))
 		("Do" "Daily Overview"
 		 ;; The first part is an agenda calendar view
-		 ((agenda "" ((org-agenda-files org-agenda-files-1)
+		 ((agenda "" ((org-agenda-files gtd-tasks-and-events)
 			      (org-agenda-ndays 1)
 			      (org-agenda-sorting-strategy
 			       `((agenda time-up priority-down tag-up)))
 			      (org-deadline-warning-days 0)))
-		  ,@(twr-todo-overview org-non-appoinment-files)))
+		  ,@(twr-todo-overview gtd-no-appointments)))
 		("W" . "Weekly Tasks")
 		("Wo" "Weekly Overview"
 		  ;; The first part is an agenda calendar view
