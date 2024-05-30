@@ -20,11 +20,3 @@
 (defvar global-config-base-path
   "c:/Users/Public/Documents/org/"
   "All org stuff that need multiuser access are located relative this path.")
-
-;; [TBD] Reconsider This was created to stop an error
-(defvar local-config-src-base-path "~/Code/org-web/"
-  "Where the published source is located.")
-
-;; [TBD] Reconsider
-(defvar local-config-publish-base-path "c:/Users/Public/org-web/"
-  "Where the publish html files are located here.")
