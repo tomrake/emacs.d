@@ -912,51 +912,35 @@ A mode to show org files as a presentation.
   (defun publish-path (path)
     (concat local-config-publish-base-path path))
 
-  (defmacro src-publish-pair (path)
-    "Return a source and publish path pair."
-    (let ((_path (gensym)))
-      `(let ((,_path ,path))
-	 (list (publish-source-path  ,_path) (publish-path ,_path)))))
 
+
+
+  (defun dual-org-data (name org-part data-part common-part)
+    "Creates a name publishing project with org files and data files in the same directory."
+    `((,(concat name "-text")  ,@common-part ,@org-part)
+      (,(concat name "-data")  ,@common-part ,@data-part)
+      (,name :components (,(concat name "-text") ,(concat name "-data")))))
 
 
   (setq org-publish-project-alist
 	`(
-	  ("org-text"
-	   :base-directory "~/Documents/Code/org-web/content"
+	  ,@(dual-org-data      "org-web" '(
 	   :base-extension "org"
-	   :publishing-directory "c:/Users/Public/org-web"
-	   :recursive t
-	   :exclude ".*/\.git/.*|.*/.*~"
 	   :publishing-function org-html-publish-to-html
 	   :headline-levels 4             ; Just the default for this project.
 	   :auto-preamble t
 	   :auto-sitemap t
 	   :section-numbers nil
 	   :makeindex t)
-	  ("org-parts"
-	   :base-directory "~/Documents/Code/org-web/content"
+	   '(
 	   :base-extension "css\\|js\\|png\\|jpg\\|gif\\|pdf\\|mp3\\|ogg\\|swf"
-	   :publishing-directory "c:/Users/Public/org-web"
 	   :auto-sitemap nil
-	   :recursive t
-	   :exclude ".*/\.git/.*|.*/.*~"
-	   :publishing-function org-publish-attachment)		      
-	  ("emacs-config"
-	   :base-directory "~/.emacs.d"
-	   :base-extension "org"
-	   :publishing-directory ,(publish-path "emacs-config")
-	   :recursive nil
-	   :publishing-function org-html-publish-to-html
-	   :headline-levels 9             ; Just the default for this project.
-	   :auto-sitemap t
-	   :makeindex t
-	   :section-numbers nil
-	   :auto-preamble t)
-
-	  ("org-web" :components ( "org-text" "org-parts"
-					  ;"code-projects"
-				   "emacs-config"))
+	   :publishing-function org-publish-attachment)
+	   '(:base-directory "~/Documents/Code/org-web/content"
+			      :publishing-directory "c:/Users/Public/org-web"
+			     :recursive t
+			     :exclude ".*/\.git/.*|.*/.*~"
+			     ))
 	  ("blog-src"
 	   ;; Path to org files.
 	   :base-directory "~/Documents/Code/blog/org-source"
