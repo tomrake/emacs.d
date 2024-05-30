@@ -901,61 +901,6 @@ A mode to show org files as a presentation.
 	      visual-fill-column-center-text t)))
 #+END_SRC
 
-** org-publish
-  This file is to be included when .emacs.d/settings.org is loaded.
-#+BEGIN_SRC emacs-lisp
-  (require 'ox-publish)
-
-  (defun publish-source-path (path)
-	     (concat local-config-src-base-path "source/" path))
-
-  (defun publish-path (path)
-    (concat local-config-publish-base-path path))
-
-
-
-
-  (defun dual-org-data (name org-part data-part common-part)
-    "Creates a name publishing project with org files and data files in the same directory."
-    `((,(concat name "-text")  ,@common-part ,@org-part)
-      (,(concat name "-data")  ,@common-part ,@data-part)
-      (,name :components (,(concat name "-text") ,(concat name "-data")))))
-
-
-  (setq org-publish-project-alist
-	`(
-	  ,@(dual-org-data      "org-web" '(
-	   :base-extension "org"
-	   :publishing-function org-html-publish-to-html
-	   :headline-levels 4             ; Just the default for this project.
-	   :auto-preamble t
-	   :auto-sitemap t
-	   :section-numbers nil
-	   :makeindex t)
-	   '(
-	   :base-extension "css\\|js\\|png\\|jpg\\|gif\\|pdf\\|mp3\\|ogg\\|swf"
-	   :auto-sitemap nil
-	   :publishing-function org-publish-attachment)
-	   '(:base-directory "~/Documents/Code/org-web/content"
-			      :publishing-directory "c:/Users/Public/org-web"
-			     :recursive t
-			     :exclude ".*/\.git/.*|.*/.*~"
-			     ))
-	  ("blog-src"
-	   ;; Path to org files.
-	   :base-directory "~/Documents/Code/blog/org-source"
-	   :base-extension "org"
-
-	   ;; Path to Jekyll Posts
-	   :publishing-directory "~/Documents/Code/blog/tomrake.github.io/_drafts/"
-	   :recursive t
-	   :publishing-function org-html-publish-to-html
-	   :headline-levels 4
-	   :html-extension "html"
-	   :body-only t)
-	  ("blog" :components ("blog-src"))))
-#+END_SRC  
-
 ** org mode add :shcmd to sh blocks
 Allow formating of various shell types.
 
@@ -1339,6 +1284,52 @@ Add macro to construction block agenda components of TODO items.
 #+end_src
 
 This is a single ) to close it.
+
+* org-publish
+Tom Rake's Notes
+#+BEGIN_SRC emacs-lisp
+  (require 'ox-publish)
+
+  (defun dual-org-data (name org-part data-part common-part)
+    "Creates a name publishing project with org files and data files in the same directory."
+    `((,(concat name "-text")  ,@common-part ,@org-part)
+      (,(concat name "-data")  ,@common-part ,@data-part)
+      (,name :components (,(concat name "-text") ,(concat name "-data")))))
+
+
+  (setq org-publish-project-alist
+	`(
+	  ,@(dual-org-data      "org-web" '(
+	   :base-extension "org"
+	   :publishing-function org-html-publish-to-html
+	   :headline-levels 4             ; Just the default for this project.
+	   :auto-preamble t
+	   :auto-sitemap t
+	   :section-numbers nil
+	   :makeindex t)
+	   '(
+	   :base-extension "css\\|js\\|png\\|jpg\\|gif\\|pdf\\|mp3\\|ogg\\|swf"
+	   :auto-sitemap nil
+	   :publishing-function org-publish-attachment)
+	   '(:base-directory "~/Documents/Code/org-web/content"
+			      :publishing-directory "c:/Users/Public/org-web"
+			     :recursive t
+			     :exclude ".*/\.git/.*|.*/.*~"
+			     ))
+	  ("blog-src"
+	   ;; Path to org files.
+	   :base-directory "~/Documents/Code/blog/org-source"
+	   :base-extension "org"
+
+	   ;; Path to Jekyll Posts
+	   :publishing-directory "~/Documents/Code/blog/tomrake.github.io/_drafts/"
+	   :recursive t
+	   :publishing-function org-html-publish-to-html
+	   :headline-levels 4
+	   :html-extension "html"
+	   :body-only t)
+	  ("blog" :components ("blog-src"))))
+#+END_SRC  
 
 * PS Print with GHOSTSCRIPT
 #+BEGIN_SRC emacs-lisp

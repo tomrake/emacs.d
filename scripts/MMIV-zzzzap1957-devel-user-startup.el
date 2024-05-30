@@ -12,9 +12,3 @@
 (defvar global-config-base-path
   "c:/Users/Public/Documents/org/"
   "All org stuff that need multiuser access are located relative this path.")
-
-(defvar local-config-src-base-path "~/Code/org-web/"
-  "Where the published source is located.")
-
-(defvar local-config-publish-base-path "c:/Users/Public/org-web/"
-  "Where the publish html files are located here.")

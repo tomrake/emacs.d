@@ -553,57 +553,6 @@ I also add lisp version with a compiled name of 'production' or which contain a 
       (setq visual-fill-column-width 110
 	    visual-fill-column-center-text t)))
 
-(require 'ox-publish)
-
-(defun publish-source-path (path)
-	   (concat local-config-src-base-path "source/" path))
-
-(defun publish-path (path)
-  (concat local-config-publish-base-path path))
-
-
-
-
-(defun dual-org-data (name org-part data-part common-part)
-  "Creates a name publishing project with org files and data files in the same directory."
-  `((,(concat name "-text")  ,@common-part ,@org-part)
-    (,(concat name "-data")  ,@common-part ,@data-part)
-    (,name :components (,(concat name "-text") ,(concat name "-data")))))
-
-
-(setq org-publish-project-alist
-      `(
-	,@(dual-org-data      "org-web" '(
-	 :base-extension "org"
-	 :publishing-function org-html-publish-to-html
-	 :headline-levels 4             ; Just the default for this project.
-	 :auto-preamble t
-	 :auto-sitemap t
-	 :section-numbers nil
-	 :makeindex t)
-	 '(
-	 :base-extension "css\\|js\\|png\\|jpg\\|gif\\|pdf\\|mp3\\|ogg\\|swf"
-	 :auto-sitemap nil
-	 :publishing-function org-publish-attachment)
-	 '(:base-directory "~/Documents/Code/org-web/content"
-			    :publishing-directory "c:/Users/Public/org-web"
-			   :recursive t
-			   :exclude ".*/\.git/.*|.*/.*~"
-			   ))
-	("blog-src"
-	 ;; Path to org files.
-	 :base-directory "~/Documents/Code/blog/org-source"
-	 :base-extension "org"
-
-	 ;; Path to Jekyll Posts
-	 :publishing-directory "~/Documents/Code/blog/tomrake.github.io/_drafts/"
-	 :recursive t
-	 :publishing-function org-html-publish-to-html
-	 :headline-levels 4
-	 :html-extension "html"
-	 :body-only t)
-	("blog" :components ("blog-src"))))
-
 (require 'ob-shell)
 (defadvice org-babel-sh-evaluate (around set-shell activate)
   "Add header argument :shcmd that determines the shell to be called."
@@ -887,6 +836,48 @@ text and copying to the killring."
 (make-gtd-switch)
 
 )
+
+(require 'ox-publish)
+
+(defun dual-org-data (name org-part data-part common-part)
+  "Creates a name publishing project with org files and data files in the same directory."
+  `((,(concat name "-text")  ,@common-part ,@org-part)
+    (,(concat name "-data")  ,@common-part ,@data-part)
+    (,name :components (,(concat name "-text") ,(concat name "-data")))))
+
+
+(setq org-publish-project-alist
+      `(
+	,@(dual-org-data      "org-web" '(
+	 :base-extension "org"
+	 :publishing-function org-html-publish-to-html
+	 :headline-levels 4             ; Just the default for this project.
+	 :auto-preamble t
+	 :auto-sitemap t
+	 :section-numbers nil
+	 :makeindex t)
+	 '(
+	 :base-extension "css\\|js\\|png\\|jpg\\|gif\\|pdf\\|mp3\\|ogg\\|swf"
+	 :auto-sitemap nil
+	 :publishing-function org-publish-attachment)
+	 '(:base-directory "~/Documents/Code/org-web/content"
+			    :publishing-directory "c:/Users/Public/org-web"
+			   :recursive t
+			   :exclude ".*/\.git/.*|.*/.*~"
+			   ))
+	("blog-src"
+	 ;; Path to org files.
+	 :base-directory "~/Documents/Code/blog/org-source"
+	 :base-extension "org"
+
+	 ;; Path to Jekyll Posts
+	 :publishing-directory "~/Documents/Code/blog/tomrake.github.io/_drafts/"
+	 :recursive t
+	 :publishing-function org-html-publish-to-html
+	 :headline-levels 4
+	 :html-extension "html"
+	 :body-only t)
+	("blog" :components ("blog-src"))))
 
 (setq ps-lpr-command "C:/Program Files/gs/gs9.56.1/bin/gswin64c.exe")
 (setq ps-lpr-switches '("-q" "-dNOPAUSE" "-dBATCH" "-sDEVICE=mswinpr2" "-sOutputFile=\"%printer%Canon\ TS6000\ series\""))
