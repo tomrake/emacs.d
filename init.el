@@ -879,6 +879,9 @@ text and copying to the killring."
 	 :body-only t)
 	("blog" :components ("blog-src"))))
 
+(use-package simple-httpd
+  :ensure t)
+
 (setq ps-lpr-command "C:/Program Files/gs/gs9.56.1/bin/gswin64c.exe")
 (setq ps-lpr-switches '("-q" "-dNOPAUSE" "-dBATCH" "-sDEVICE=mswinpr2" "-sOutputFile=\"%printer%Canon\ TS6000\ series\""))
 (setq ps-printer-name t)

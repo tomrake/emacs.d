@@ -1331,6 +1331,12 @@ Tom Rake's Notes
 	  ("blog" :components ("blog-src"))))
 #+END_SRC  
 
+* simple httpd
+Use simple-httpd to preview a site from emacs.
+#+begin_src emacs-lisp
+  (use-package simple-httpd
+    :ensure t)
+#+end_src
 * PS Print with GHOSTSCRIPT
 #+BEGIN_SRC emacs-lisp
    (setq ps-lpr-command "C:/Program Files/gs/gs9.56.1/bin/gswin64c.exe")
