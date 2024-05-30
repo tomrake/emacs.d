@@ -12,7 +12,7 @@
  '(lpr-command "lpr.exe")
  '(lpr-headers-switches nil t)
  '(package-selected-packages
-   '(slime-repl-ansi-color slime org paredit modus-themes nov djvu org-noter-pdftools keypression yaml-mode org-bullets dired eshell-git-prompt all-the-icons-dired emojify mastodon languagetool langtool ## openwith dired-single diredc visual-fill-column org-present slime-company htmlize shx friendly-remote-shell friendly-shell tramp dockerfile-mode docker-tramp anaconda-mode popup cyberpunk-theme ac-slime rainbow-delimiters epc auto-complete flx-ido))
+   '(simple-httpd slime-repl-ansi-color slime org paredit modus-themes nov djvu org-noter-pdftools keypression yaml-mode org-bullets dired eshell-git-prompt all-the-icons-dired emojify mastodon languagetool langtool ## openwith dired-single diredc visual-fill-column org-present slime-company htmlize shx friendly-remote-shell friendly-shell tramp dockerfile-mode docker-tramp anaconda-mode popup cyberpunk-theme ac-slime rainbow-delimiters epc auto-complete flx-ido))
  '(safe-local-variable-values '((org-use-property-inheritance . t)))
  '(warning-suppress-log-types '((auto-save) (initialization) (use-package)))
  '(warning-suppress-types '((initialization) (use-package))))
