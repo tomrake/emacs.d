@@ -15,7 +15,7 @@
 (defvar local-config-abcl-location "c:/program Files/ABCL/abcl-src-1.9.0/dist/abcl.jar"
   "The location of the Armed Bear Common Lisp installation")
 
-(defvar local-config-slime-location "c:/Users/zzzap/Documents/Code/source-projects/ACTIVE/slime"
+(defvar local-config-slime-location "c:/Users/Buba/Documents/Code/slime/slime"
   "The location of the slime for common lisp.")
 
 
