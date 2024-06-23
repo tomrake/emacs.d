@@ -2,7 +2,6 @@
 #+TITLE: The Emacs configuration of Tom Rake  
 #+PROPERTY: header-args:emacs-lisp :tangle ./init.el :mkdirp yes
 #+OPTIONS: toc:3
-
 * Add Generated from Emacs.org warning.
 #+begin_src emacs-lisp
   ;; NOTE: init.el is now generated from Emacs.org.  Please edit that file
@@ -33,8 +32,8 @@ Emacs.org and script, do the right thing when not configured.
 
 Chemac2 reads the ~/.emacs-profiles.el which could be
 #+begin_example emacs-lisp
-  (("DESKER-DEFAULT" .((user-emacs-directory . "~/.standard-emacs.d")
-		(env . (("USERINITCUSTOM" . "~/.standard-emacs.d/scripts/DESKER-DEFAULT-user-startup"))))))
+  (("DESKER-DEFAULT" .((user-emacs-directory . "c:/User/zzzap/.standard-emacs.d")
+		(env . (("USERINITCUSTOM" . "c:/User/zzzap/.standard-emacs.d/scripts/DESKER-DEFAULT-user-startup"))))))
 #+end_example
 
 emacs is started with a --with-profile COMPUTER-SUBSYSTEM parameter.
@@ -148,7 +147,7 @@ This is a modifed concept from systemcrafters.
   ;; Autommatically tangle our Emacs.org config file when we save it.
   (defun efs/org-babel-tangle-config ()
     "Test if the buffer should be auto-tangled after save"
-    ;(message "string-equal: %s %s" (buffer-file-name) (expand-file-name (concat user-emacs-directory "Emacs.org")))
+    ;; (message "string-equal: %s %s" (buffer-file-name) (expand-file-name (concat user-emacs-directory "Emacs.org")))
     (when (string-equal (buffer-file-name)
 			(expand-file-name (concat user-emacs-directory "Emacs.org")))
       (message "Begin efs/tangle")
@@ -583,6 +582,7 @@ Start all SBCL lisps with a --noinform argument and standart arguments.
 #+BEGIN_SRC emacs-lisp
   ;;;; The standard options for SBCL
   (setq sbcl-program-arguments '("--dynamic-space-size" "4000" "--noinform"))
+
   (defun assemble-sbcl-enviroment-invoker (my-tag program environment)
     (assemble-invoker my-tag program sbcl-program-arguments environment))
 #+END_SRC
@@ -599,11 +599,6 @@ I collect all sbcl version of lisp from a base directory which is structured
 
 	
 #+BEGIN_SRC emacs-lisp
-  (defvar local-config-sbcl-location "C:/Users/Public/Lispers/sbcl/installed"
-      "All locally compiled and installed SBCL lisps are installed in directory,
-    by release version and a compiled name..
-  I also add lisp version with a compiled name of 'production' or which contain a file '.production.'")
-
   (defun get-sbcl-versions (base-address)
     "Get all the directories under the base-address"
     (remove "." (remove ".." (directory-files  base-address ))))

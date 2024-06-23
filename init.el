@@ -79,7 +79,7 @@
 ;; Autommatically tangle our Emacs.org config file when we save it.
 (defun efs/org-babel-tangle-config ()
   "Test if the buffer should be auto-tangled after save"
-  ;(message "string-equal: %s %s" (buffer-file-name) (expand-file-name (concat user-emacs-directory "Emacs.org")))
+  ;; (message "string-equal: %s %s" (buffer-file-name) (expand-file-name (concat user-emacs-directory "Emacs.org")))
   (when (string-equal (buffer-file-name)
 		      (expand-file-name (concat user-emacs-directory "Emacs.org")))
     (message "Begin efs/tangle")
@@ -335,13 +335,9 @@
 
 ;;;; The standard options for SBCL
 (setq sbcl-program-arguments '("--dynamic-space-size" "4000" "--noinform"))
+
 (defun assemble-sbcl-enviroment-invoker (my-tag program environment)
   (assemble-invoker my-tag program sbcl-program-arguments environment))
-
-(defvar local-config-sbcl-location "C:/Users/Public/Lispers/sbcl/installed"
-    "All locally compiled and installed SBCL lisps are installed in directory,
-  by release version and a compiled name..
-I also add lisp version with a compiled name of 'production' or which contain a file '.production.'")
 
 (defun get-sbcl-versions (base-address)
   "Get all the directories under the base-address"
