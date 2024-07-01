@@ -9,6 +9,42 @@
 | emacs.d               | [[c:/Users/Public/Lispers/standard-emacs.d/]]          |                                                             |
 | Common-Document-Store | [[~/Documents/Common-Document-Store/]]                 |                                                             |
 
+* About Configuration and Emacs Configuration
+
+- [[https://github.com/tomrake/dotfiles/tree/main]] contains dotfiles VC.
+- Use config which is an alias for git.
+- The local git repo is bare [[~/.cng/]]
+
+** Chemacs2 is used
+- [[~/.emacs.d]] is the chemacs2 clone
+- [[~/.emacs-profiles.el]] list the chemacs profiles.
+
+** There are MULTI-INIT profiles
+- For this user the MULTI-INIT profiles are located at [[~/Documents/Code/Emacs-Configs/]]
+- Under MULTI-INIT there are three main profiles production, testing and devel
+- Under MUTLI-INIT init.el is build from Emacs.org inside emacs.d/ within the profile.
+- MULTI-INIT dispatches to a file in emacs.d/scripts to configure init.el based on the current machine, user and profile.
+*** This profile is production.
+
+Execute following to verify  
+#+begin_src emacs-lisp
+(message chemacs-profile-name)
+#+end_src
+
+#+RESULTS:
+: production
+
+*** To customize this instance's lcoal config
+  - The local configuration of init.el is by [[~/Documents/Code/Emacs-Configs/production/emacs.d/scripts/DESKER-zzzap-production-user-startup]]
+
+Execute following to verify  
+#+begin_src emacs-lisp
+(message local-config-pathname)
+#+end_src
+
+#+RESULTS:
+: ~/Documents/Code/Emacs-Configs/production/emacs.d/scripts/DESKER-zzzap-production-user-startup
+
 
 * Astro
 - T Coronae Borealis period nova
