@@ -6,17 +6,25 @@
 
 ;;;; This code will error for any non-multi-init-cluster profiles.
 ;;;; load the user-custom-startup file.
+;;;; The local-config is
+;;;; loaded from the file <user-emacs-directory>/multi-init-cluster/<system-name>-<user-login-name>-<chemacs-profile-name>-user-startup.el
+;;;; That file must exist.
+;;;; the user-emacs-directory and chemacs-profile-names are defined in ~/.emacs-profiles.el
+(message "chemacs-profile-name   : %s" chemacs-profile-name)
+(message "system-name            : %s" system-name)
+(message "chemacs-user-login-name: %s" user-login-name)
 (if chemacs-profile-name
     (progn
       (defvar local-config-name (concat system-name "-" user-login-name "-" chemacs-profile-name "-user-startup")
 	"The name of local-config file.")
       (defvar local-config-pathname (concat user-emacs-directory "multi-init-cluster/" local-config-name)
 	"The filename to load the local-config.")
-      (message "local config to load: %s" local-config-pathname)
+      (message "local-config-pathname  : %s" local-config-pathname)
       (load local-config-pathname))
   (progn
     (message "This config should be executed by chemacs2 and chemacs-profile-name is not defined ")
     (error "Bad chemacs config.")))
+(message "---------- Done with multi-init-cluster startup -------")
 
 (when global-config-base-path
   (defun global-org-path (r-path)
