@@ -1,6 +1,8 @@
 * The emacs.d of Tom Rake
 ** Philosophy
 - Avoid chapter 11 Bankruptcy
+  - Code for reuse
+  - Simple Configuration on per computer/user basis
   - Reorganize
   - Document
   - Regular cruft needs to be cut.
@@ -10,29 +12,19 @@
 - the scripts/ directory is intended to hold code to paper over OS variation.
   - The msys2 subsystem supplied many of the GNU tools on Windors that emacs uses on 'nix platorms.
 - In a computer/user cases the scripts/ will likely need to be initialized with base-directories.
+  - This is the basis of cluster membership.
 ** Thanks
 - David Wilson at systemcrafters.net
 
-** Retrospect
-*** Pressing
-[2024-04-28]
-- I want to add code hacking elements to a new laptop MMIV for travel.
-- I think it is time to merge testing changes back into main for production on DESKER.
-*** Multiple Uses
-- Task Tracking - org-agenda
-  - gtd agenda focus
-  - care giving - Somya, Uncle jim
-  - life tracking
-  - bookeeping - Uncle Jim
-- Lisp Hacking - slime/sly
-  - git, editing, compiling focus
-  - Maintaining self compiled sbcl
-  - Building the sbcl compile tool
-  - clog experiments
-  - Windows compatibilty
-  - msys2 use cases
-- Note Publishing - org-publish
-  - Creating a body of knowledge based on small notes
-- Recievership
-  - All tasks need to be balanced
-  - cruft and experimental code that crept in main need to be cut.
+** Latest  work
+To facilitate emacs.d configuration reuse across several computers I reply on chemacs2 and a cluster member for each computer/user combo.
+
+- Added a multi-init-cluster organization
+  - Detailed configuration is on a computer-user-symbol basis.
+  - All cluster member config from the same repo.
+  - Each computer-user-symbol case is carried by all cluster members.
+
+- Emacs.org -> init.el
+  - Is designed carefull for my reuse cases.
+  - Each use case defines configuration requirment of Emacs.org
+  - init.el is produced by tangling Emacs.org
