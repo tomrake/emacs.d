@@ -12,7 +12,7 @@
 ;;;; the user-emacs-directory and chemacs-profile-names are defined in ~/.emacs-profiles.el
 (message "chemacs-profile-name   : %s" chemacs-profile-name)
 (message "system-name            : %s" system-name)
-(message "chemacs-user-login-name: %s" user-login-name)
+(message "user-login-name        : %s" user-login-name)
 (if chemacs-profile-name
     (progn
       (defvar local-config-name (concat system-name "-" user-login-name "-" chemacs-profile-name "-user-startup")

@@ -19,6 +19,9 @@
 * start the multi-init-cluster for our case.
 chemacs2 startup
 [[~/.emacs-profiles.el]]
+
+If you are cloning my process you will need this code to run very soon in your init.el.
+Until you create the file named by the local-config-pathname: message. 
 #+begin_src emacs-lisp
   ;;;; This code will error for any non-multi-init-cluster profiles.
   ;;;; load the user-custom-startup file.
@@ -28,7 +31,7 @@ chemacs2 startup
   ;;;; the user-emacs-directory and chemacs-profile-names are defined in ~/.emacs-profiles.el
   (message "chemacs-profile-name   : %s" chemacs-profile-name)
   (message "system-name            : %s" system-name)
-  (message "chemacs-user-login-name: %s" user-login-name)
+  (message "user-login-name        : %s" user-login-name)
   (if chemacs-profile-name
       (progn
 	(defvar local-config-name (concat system-name "-" user-login-name "-" chemacs-profile-name "-user-startup")
@@ -116,7 +119,7 @@ Set a init loading flag, check and report if the flag is not clear in the after 
   (add-hook 'after-init-hook 'twr/check-init-load)
 #+end_src
 * Auto-tangle Emacs.org
-This is a modifed concept from systemcrafters.
+This is a modifed from systemcrafters.
 #+begin_src emacs-lisp :tangle nil
   (message (concat "Init buffer: :" (buffer-file-name)))
   (unless (string-equal (buffer-file-name)

@@ -7,24 +7,21 @@
   - Document
   - Regular cruft needs to be cut.
 
-** Rough Design description
-- init.el is written from Emacs.org on save. Or M-x org-babel-tangle when init.el get hung up.
-- the scripts/ directory is intended to hold code to paper over OS variation.
-  - The msys2 subsystem supplied many of the GNU tools on Windors that emacs uses on 'nix platorms.
-- In a computer/user cases the scripts/ will likely need to be initialized with base-directories.
-  - This is the basis of cluster membership.
 ** Thanks
 - David Wilson at systemcrafters.net
 
-** Latest  work
-To facilitate emacs.d configuration reuse across several computers I reply on chemacs2 and a cluster member for each computer/user combo.
+** My emacs requirements
+- several computers
+- sereral accounts
+- common function and setup.
+  
+** The emacs init cluster design
+**** Chemacs2
+- [[https://github.com/plexus/chemacs2][Chemacs]] is used to have separate emacs configuration. The ~/.emacs-profiles.el defines various chemacs profiles.
+  - ~/.emacs.d is from chemcs2 so starting emacs using the --with-profile options will start emacs with the local-configuration.
+**** local-configuration selection
+- The chemacs-profile-name, system-name and  user-loging-name are combined to generate an unique local-configuration.
+- Emacs.org/init.el contains core functions and functions to be initialized by a local-configuration.
+**** clustering of configurations
+- All the unique local-configurations are stored in the cluster repo.
 
-- Added a multi-init-cluster organization
-  - Detailed configuration is on a computer-user-symbol basis.
-  - All cluster member config from the same repo.
-  - Each computer-user-symbol case is carried by all cluster members.
-
-- Emacs.org -> init.el
-  - Is designed carefull for my reuse cases.
-  - Each use case defines configuration requirment of Emacs.org
-  - init.el is produced by tangling Emacs.org
