@@ -124,14 +124,14 @@
 (set-terminal-coding-system 'utf-8-unix)
 
 ;;;; Reporting Startup Time
-  (defun efs/display-startup-time ()
-    (message "Emacs loaded in %s with %d garbage collections."
-	     (format "%.2f seconds"
-		     (float-time
-		     (time-subtract after-init-time before-init-time)))
-	     gcs-done))
+(defun efs/display-startup-time ()
+  (message "Emacs loaded in %s with %d garbage collections."
+	   (format "%.2f seconds"
+		   (float-time
+		    (time-subtract after-init-time before-init-time)))
+	   gcs-done))
 
-  (add-hook 'emacs-startup-hook #'efs/display-startup-time)
+(add-hook 'emacs-startup-hook #'efs/display-startup-time)
 
 ;;;; define emacs customization file and load it.
 (setq custom-file (expand-file-name "emacs-custom.el" user-emacs-directory))
@@ -196,12 +196,12 @@
 (use-package which-key
   :ensure t)
 
-;; Enable vertico
+;;;; Enable vertico
 (use-package vertico
   :ensure t
   :init
-  (vertico-mode)
-  )
+  (vertico-mode))
+
 (use-package savehist
   :init
   (savehist-mode))
@@ -229,23 +229,16 @@
 
 (require 'gnu-tools)
 
+;;;; Magit 
 (use-package magit
   :defer 2
   :ensure t
   :pin melpa
-  :config
-  ;; (if (getenv "MSYSTEM")
-  ;; (setq magit-git-executable "C:/devel/msys64/usr/bin/git.exe"
-  ;; 	with-editor-emacsclient-executable "C:/devel/msys64/ucrt64/bin/emacsclientw.exe")
+  :bind
+   (("C-x g" . magit-status)
+    ("C-x M-d" . magit-dispatch-popup)))
 
-  ;; (setq magit-git-executable "C:/Program Files/Git/git-bash.exe"
-  ;; 	with-editor-emacsclient-executable "C:/Program Files/Emacs/emacs-28.2/bin/emacsclient.exe")
-  ;; )
-   :bind
-   (
-   ("C-x g" . magit-status)
-   ("C-x M-d" . magit-dispatch-popup)))
-
+;;;; SSH Agency
 (use-package ssh-agency
 :ensure t
 :init
@@ -291,16 +284,20 @@
 	  (habit . traffic-light)))
   (load-theme 'modus-vivendi t))
 
+;;;; rainbow-delimiter
 (use-package rainbow-delimiters)
 
+;;;; powershell
 (defun powershell()
   (interactive)
   (let ((explicit-shell-file-name "powershell.exe")
 	(explicit-powershell.exe-args '()))
     (shell (generate-new-buffer-name "*powershell*"))))
 
-(setq explicit-shell-file-name "c:/devel/msys64/usr/bin/bash")
+;;;; Set the explicit shell name to msys2 version. 
+  (setq explicit-shell-file-name "c:/devel/msys64/usr/bin/bash")
 
+;;;; eshell
 (setenv  "PATH" (concat
 		 "C:/devel/msys64/ucrt64/bin" ";"
 		 "C:/devel/msys64/bin" ";"
@@ -557,34 +554,37 @@
       (setq visual-fill-column-width 110
 	    visual-fill-column-center-text t)))
 
-(require 'ob-shell)
-(defadvice org-babel-sh-evaluate (around set-shell activate)
-  "Add header argument :shcmd that determines the shell to be called."
-  (defvar org-babel-sh-command)
-  (let* ((org-babel-sh-command (or (cdr (assoc :shcmd params)) org-babel-sh-command)))
-    ad-do-it))
+;;;; Add Windows cmdproxy  
+  (require 'ob-shell)
+  (defadvice org-babel-sh-evaluate (around set-shell activate)
+    "Add header argument :shcmd that determines the shell to be called."
+    (defvar org-babel-sh-command)
+    (let* ((org-babel-sh-command (or (cdr (assoc :shcmd params)) org-babel-sh-command)))
+      ad-do-it))
 
-(org-add-link-type
- "image-url"
- (lambda (path)
-   (let ((img (expand-file-name
-           (concat (md5 path) "." (file-name-extension path))
-           temporary-file-directory)))
-     (if (file-exists-p img)
-     (find-file img)
-       (url-copy-file path img)
-       (find-file img)))))
+;;;; Add image link type to org.
+  (org-add-link-type
+   "image-url"
+   (lambda (path)
+     (let ((img (expand-file-name
+	     (concat (md5 path) "." (file-name-extension path))
+	     temporary-file-directory)))
+       (if (file-exists-p img)
+       (find-file img)
+	 (url-copy-file path img)
+	 (find-file img)))))
 
-(org-babel-do-load-languages
- 'org-babel-load-languages
- '((lisp . t)
-   (emacs-lisp . t)
-   (shell . t)
-   (dot . t)
-   ))
+;;;; Configure Babel Languages
+   (org-babel-do-load-languages
+    'org-babel-load-languages
+    '((lisp . t)
+      (emacs-lisp . t)
+      (shell . t)
+      (dot . t)))
 
 (setq org-modules '(org-habit))
 
+;;;; Add Magic F5 key to copy ID link in an org file.
 (defun my/copy-idlink-to-clipboard() "Copy an ID link with the
 headline to killring, if no ID is there then create a new unique
 ID.  This function works only in org-mode or org-agenda buffers. 
@@ -601,9 +601,8 @@ text and copying to the killring."
          (setq mytmpid (funcall 'org-id-get-create))
      (setq mytmplink (format "[[id:%s][%s]]" mytmpid mytmphead))
      (kill-new mytmplink)
-     (message "Copied %s to killring (clipboard)" mytmplink)
-       ))
- 
+     (message "Copied %s to killring (clipboard)" mytmplink)))
+  
 (global-set-key (kbd "<f5>") 'my/copy-idlink-to-clipboard)
 
 (setq org-habit-graph-column 50)
@@ -633,59 +632,59 @@ text and copying to the killring."
 			   (,(gtd-file "Tickler.org") :maxlevel . 3)
 			   (,(gtd-file "Appointments.org") :maxlevel . 1)))
 
-(defun transform-square-brackets-to-round-ones(string-to-transform)
-  "Transforms [ into ( and ] into ), other chars left unchanged."
-  (concat 
-   (mapcar #'(lambda (c) (if (equal c ?\[) ?\( (if (equal c ?\]) ?\) c))) string-to-transform)))
+;;;; Set the Capture Templates
+   (defun transform-square-brackets-to-round-ones(string-to-transform)
+     "Transforms [ into ( and ] into ), other chars left unchanged."
+     (concat 
+      (mapcar #'(lambda (c) (if (equal c ?\[) ?\( (if (equal c ?\]) ?\) c))) string-to-transform)))
 
 
-    ;; ;;; See: http://cachestocaches.com/2016/9/my-workflow-org-agenda/
-(setq gtd-capture-templates
-      `(
-    ;; Logs for Projects
-	("l" "Project Logging")
-	("ls" "sbcl-compile project"
-	entry (file+datetree "c:/Users/zzzap/Documents/Code/source-projects/ACTIVE/sbcl-compile/project-log.org" "Project Log")
-	"** %U - %^{Activity} :NOTE:")
-    ;; Todo
-       ("t" "Inbox Entry" entry (file+headline ,(gtd-file "Inbox.org") "Tasks")
-	"* TODO %^{Brief Description} %^g\n  OPENED: %U")
-    ;; Tickler
-       ("T" "Tickler Entry" entry (file+headline ,(gtd-file "Tickler.org") "TICKLERS")
-	"* TODO %^{Brief Description} %^g\n  OPENED: %U")
-    ;; Journal Capture
-       ("j" "Journal" entry (file+datetree ,(gtd-file "Journal.org") )
-	  "* %?\nEntered on %U\n  %i\n  %a")
-    ;; Medical Appointments  (m) Medical template
-       ("m" "Medical Appointments")
-       ("mo" "(o) Office Appointent" entry (file+headline ,(gtd-file "Appointments.org") "APPOINTMENTS")
-	(file ,(concat user-emacs-directory "Office-Appointment.txt")) :empty-lines 1 :time-prompt t)
-       ("mt" "(t) Testing Appointent" entry (file+headline ,(gtd-file "Appointments.org") "APPOINTMENTS")
-	(file ,(concat user-emacs-directory "Testing-Appointment.txt")) :empty-lines 1 :time-prompt t)
-    ;; Health Data Capture
-       ("h" "Health Data Capture (h)")
+ ;;;; See: http://cachestocaches.com/2016/9/my-workflow-org-agenda/
+   (setq gtd-capture-templates
+	 `(
+       ;; Logs for Projects
+	   ("l" "Project Logging")
+	   ("ls" "sbcl-compile project"
+	   entry (file+datetree "c:/Users/zzzap/Documents/Code/source-projects/ACTIVE/sbcl-compile/project-log.org" "Project Log")
+	   "** %U - %^{Activity} :NOTE:")
+       ;; Todo
+	  ("t" "Inbox Entry" entry (file+headline ,(gtd-file "Inbox.org") "Tasks")
+	   "* TODO %^{Brief Description} %^g\n  OPENED: %U")
+       ;; Tickler
+	  ("T" "Tickler Entry" entry (file+headline ,(gtd-file "Tickler.org") "TICKLERS")
+	   "* TODO %^{Brief Description} %^g\n  OPENED: %U")
+       ;; Journal Capture
+	  ("j" "Journal" entry (file+datetree ,(gtd-file "Journal.org") )
+	     "* %?\nEntered on %U\n  %i\n  %a")
+       ;; Medical Appointments  (m) Medical template
+	  ("m" "Medical Appointments")
+	  ("mo" "(o) Office Appointent" entry (file+headline ,(gtd-file "Appointments.org") "APPOINTMENTS")
+	   (file ,(concat user-emacs-directory "Office-Appointment.txt")) :empty-lines 1 :time-prompt t)
+	  ("mt" "(t) Testing Appointent" entry (file+headline ,(gtd-file "Appointments.org") "APPOINTMENTS")
+	   (file ,(concat user-emacs-directory "Testing-Appointment.txt")) :empty-lines 1 :time-prompt t)
+       ;; Health Data Capture
+	  ("h" "Health Data Capture (h)")
 
-       ("hb" "Blood Pressure (b)" table-line (file+headline ,(med-file "Medical-Data.org") "Blood Pressure")
-	 "|%^{Person|TOM|JOANNE}|%U|%^{Systtolic}|%^{Diastolic}|%^{Pulse}|")
+	  ("hb" "Blood Pressure (b)" table-line (file+headline ,(med-file "Medical-Data.org") "Blood Pressure")
+	    "|%^{Person|TOM|JOANNE}|%U|%^{Systtolic}|%^{Diastolic}|%^{Pulse}|")
 
-       ("ht" "Temperature (t)" table-line (file+headline ,(med-file "Medical-Data.org") "Temperature")
-	"|%^{Person|TOM|JOANNE}|%U|%^{Temperature}|")
+	  ("ht" "Temperature (t)" table-line (file+headline ,(med-file "Medical-Data.org") "Temperature")
+	   "|%^{Person|TOM|JOANNE}|%U|%^{Temperature}|")
 
-       ("hw" "Weight (w)" table-line (file+headline ,(med-file "Medical-Data.org") "Weight")
-	"|%^{Person|TOM|JOANNE}|%U|%^{Weight}|")
-    ;; Car Related
-       ("a" "Automotive (a)")
+	  ("hw" "Weight (w)" table-line (file+headline ,(med-file "Medical-Data.org") "Weight")
+	   "|%^{Person|TOM|JOANNE}|%U|%^{Weight}|")
+       ;; Car Related
+	  ("a" "Automotive (a)")
 
-       ("ag" "Gas Receipt (g}" table-line (file+headline ,(car-file "Auto-Receipt.org") "Gas Receipts")
-       "|%^u|%^{mileage}|%^{gallons}|%^{total}|")
-    ;; org-protocol 
-       ("p" "Protocol" entry (file+headline ,(gtd-file "notes.org") "Inbox")
-  "* %^{Title}\nSource: %u, %c\n #+BEGIN_QUOTE\n%i\n#+END_QUOTE\n\n\n%?")
+	  ("ag" "Gas Receipt (g}" table-line (file+headline ,(car-file "Auto-Receipt.org") "Gas Receipts")
+	  "|%^u|%^{mileage}|%^{gallons}|%^{total}|")
+       ;; org-protocol 
+	  ("p" "Protocol" entry (file+headline ,(gtd-file "notes.org") "Inbox")
+     "* %^{Title}\nSource: %u, %c\n #+BEGIN_QUOTE\n%i\n#+END_QUOTE\n\n\n%?")
 
-       ("L" "Protocol Link" entry (file+headline ,(gtd-file  "notes.org") "Inbox")
-"* %? [[%:link][%:description]] %(progn (setq kk/delete-frame-after-capture 2) \"\")\nCaptured On: %U"
-:empty-lines 1)
-       ))
+	  ("L" "Protocol Link" entry (file+headline ,(gtd-file  "notes.org") "Inbox")
+   "* %? [[%:link][%:description]] %(progn (setq kk/delete-frame-after-capture 2) \"\")\nCaptured On: %U"
+   :empty-lines 1)))
 
 (setq org-agenda-start-with-log-mode t)
 (setq org-log-done 'time)
@@ -839,7 +838,7 @@ text and copying to the killring."
 ;; And throw the switch
 (make-gtd-switch)
 
-)
+) ;; This is close of a huge :config of (use-package org
 
 (require 'ox-publish)
 
@@ -886,13 +885,14 @@ text and copying to the killring."
 (use-package simple-httpd
   :ensure t)
 
-(setq ps-lpr-command "C:/Program Files/gs/gs9.56.1/bin/gswin64c.exe")
-(setq ps-lpr-switches '("-q" "-dNOPAUSE" "-dBATCH" "-sDEVICE=mswinpr2" "-sOutputFile=\"%printer%Canon\ TS6000\ series\""))
-(setq ps-printer-name t)
-(setf ps-font-family 'Courier)
-(setf ps-font-size 10.0)
-(setf ps-line-number t)
-(setf ps-line-number-font-size 10)
+;;;; PS Print with GHOSTSCRIPT
+  (setq ps-lpr-command "C:/Program Files/gs/gs9.56.1/bin/gswin64c.exe")
+  (setq ps-lpr-switches '("-q" "-dNOPAUSE" "-dBATCH" "-sDEVICE=mswinpr2" "-sOutputFile=\"%printer%Canon\ TS6000\ series\""))
+  (setq ps-printer-name t)
+  (setf ps-font-family 'Courier)
+  (setf ps-font-size 10.0)
+  (setf ps-line-number t)
+  (setf ps-line-number-font-size 10)
 
 (setq backup-directory-alist `(("." . ,(expand-file-name "tmp/backups/" user-emacs-directory))))
 

@@ -185,14 +185,14 @@ Print Debug markers in *messages*
 
 #+begin_src emacs-lisp
   ;;;; Reporting Startup Time
-    (defun efs/display-startup-time ()
-      (message "Emacs loaded in %s with %d garbage collections."
-	       (format "%.2f seconds"
-		       (float-time
-		       (time-subtract after-init-time before-init-time)))
-	       gcs-done))
+  (defun efs/display-startup-time ()
+    (message "Emacs loaded in %s with %d garbage collections."
+	     (format "%.2f seconds"
+		     (float-time
+		      (time-subtract after-init-time before-init-time)))
+	     gcs-done))
 
-    (add-hook 'emacs-startup-hook #'efs/display-startup-time)
+  (add-hook 'emacs-startup-hook #'efs/display-startup-time)
 #+end_src
 * The emacs customization file.
  Define were emacs cusomization is saved and restored.
@@ -315,12 +315,12 @@ I have the following issues
     - completion-table-dynamic ???
 Read up on [[https://www.gnu.org/software/emacs/manual/html_node/elisp/Completion.html]]
 #+begin_src emacs-lisp
-  ;; Enable vertico
+  ;;;; Enable vertico
   (use-package vertico
     :ensure t
     :init
-    (vertico-mode)
-    )
+    (vertico-mode))
+
   (use-package savehist
     :init
     (savehist-mode))
@@ -388,25 +388,18 @@ Certain tools need java set that location here.
 #+end_src
 * Magit
 #+BEGIN_SRC emacs-lisp
+  ;;;; Magit 
   (use-package magit
     :defer 2
     :ensure t
     :pin melpa
-    :config
-    ;; (if (getenv "MSYSTEM")
-    ;; (setq magit-git-executable "C:/devel/msys64/usr/bin/git.exe"
-    ;; 	with-editor-emacsclient-executable "C:/devel/msys64/ucrt64/bin/emacsclientw.exe")
-
-    ;; (setq magit-git-executable "C:/Program Files/Git/git-bash.exe"
-    ;; 	with-editor-emacsclient-executable "C:/Program Files/Emacs/emacs-28.2/bin/emacsclient.exe")
-    ;; )
-     :bind
-     (
-     ("C-x g" . magit-status)
-     ("C-x M-d" . magit-dispatch-popup)))
+    :bind
+     (("C-x g" . magit-status)
+      ("C-x M-d" . magit-dispatch-popup)))
  #+END_SRC
 * SSH Agency
 #+BEGIN_SRC emacs-lisp
+  ;;;; SSH Agency
   (use-package ssh-agency
   :ensure t
   :init
@@ -459,11 +452,13 @@ Main Page: [[https://protesilaos.com/emacs/modus-themes]]
 #+END_SRC
 
 * Rainbow Delimeters
-#+BEGIN_SRC emacs-lisp tangle:no
+#+BEGIN_SRC emacs-lisp
+  ;;;; rainbow-delimiter
   (use-package rainbow-delimiters)
 #+END_SRC
 * Powershell
 #+begin_src emacs-lisp
+  ;;;; powershell
   (defun powershell()
     (interactive)
     (let ((explicit-shell-file-name "powershell.exe")
@@ -476,32 +471,13 @@ Main Page: [[https://protesilaos.com/emacs/modus-themes]]
 
   shell/git-bash works but has prompt problems.
 [2023-05-19] Stop tangle of this code.
-#+BEGIN_SRC emacs-lisp :tangle no
-      (use-package friendly-shell
-	:ensure t
-	:config   
-	  (defun shell/git-bash (&optional path)
-	     (interactive)
-	     (friendly-shell :path path
-			     :interpreter "C:/Program Files/Git/bin/bash.exe"
-			     ;;:interpreter-args '("-l")
-			     )))
-
-
-      (use-package friendly-remote-shell
-	:ensure t
-	:config
-	   (defun shell/cisco (&optional path)
-	     (interactive)
-	     (with-shell-interpreter-connection-local-vars
-	       (friendly-remote-shell :path path))))
-
-#+END_SRC
 #+begin_src emacs-lisp
-(setq explicit-shell-file-name "c:/devel/msys64/usr/bin/bash")
+;;;; Set the explicit shell name to msys2 version. 
+  (setq explicit-shell-file-name "c:/devel/msys64/usr/bin/bash")
 #+end_src
 * Eshell
 #+begin_src emacs-lisp
+  ;;;; eshell
   (setenv  "PATH" (concat
 		   "C:/devel/msys64/ucrt64/bin" ";"
 		   "C:/devel/msys64/bin" ";"
@@ -892,6 +868,7 @@ dir
 \#+END_SRC
 #+END_EXAMPLE
 #+BEGIN_SRC emacs-lisp
+;;;; Add Windows cmdproxy  
   (require 'ob-shell)
   (defadvice org-babel-sh-evaluate (around set-shell activate)
     "Add header argument :shcmd that determines the shell to be called."
@@ -902,29 +879,30 @@ dir
 ** Add web image links
 Copied from: [[https://emacs.stackexchange.com/questions/26613/is-it-possible-to-insert-images-from-the-web-with-its-url]]
 #+begin_src emacs-lisp
-(org-add-link-type
- "image-url"
- (lambda (path)
-   (let ((img (expand-file-name
-           (concat (md5 path) "." (file-name-extension path))
-           temporary-file-directory)))
-     (if (file-exists-p img)
-     (find-file img)
-       (url-copy-file path img)
-       (find-file img)))))
+;;;; Add image link type to org.
+  (org-add-link-type
+   "image-url"
+   (lambda (path)
+     (let ((img (expand-file-name
+	     (concat (md5 path) "." (file-name-extension path))
+	     temporary-file-directory)))
+       (if (file-exists-p img)
+       (find-file img)
+	 (url-copy-file path img)
+	 (find-file img)))))
 #+end_src
 
 Then use it like this:
 [[image-url:https://d1ra4hr810e003.cloudfront.net/media/27FB7F0C-9885-42A6-9E0C19C35242B5AC/0/D968A2D0-35B8-41C6-A94A0C5C5FCA0725/F0E9E3EC-8F99-4ED8-A40DADEAF7A011A5/dbe669e9-40be-51c9-a9a0-001b0e022be7/thul-IMG_2100.jpg]]
 ** Configure BABEL languages
  #+BEGIN_SRC emacs-lisp
+;;;; Configure Babel Languages
    (org-babel-do-load-languages
     'org-babel-load-languages
     '((lisp . t)
       (emacs-lisp . t)
       (shell . t)
-      (dot . t)
-      ))
+      (dot . t)))
  #+END_SRC
 
 ** org modules needed
@@ -933,7 +911,7 @@ Then use it like this:
  #+END_SRC
 ** Magic F5 Key
 #+begin_src emacs-lisp
-
+;;;; Add Magic F5 key to copy ID link in an org file.
 (defun my/copy-idlink-to-clipboard() "Copy an ID link with the
 headline to killring, if no ID is there then create a new unique
 ID.  This function works only in org-mode or org-agenda buffers. 
@@ -950,9 +928,8 @@ text and copying to the killring."
          (setq mytmpid (funcall 'org-id-get-create))
      (setq mytmplink (format "[[id:%s][%s]]" mytmpid mytmphead))
      (kill-new mytmplink)
-     (message "Copied %s to killring (clipboard)" mytmplink)
-       ))
- 
+     (message "Copied %s to killring (clipboard)" mytmplink)))
+  
 (global-set-key (kbd "<f5>") 'my/copy-idlink-to-clipboard)
 #+end_src
 ** THE BIG GTD AGENDA CONFIGURATION
@@ -1004,14 +981,14 @@ Define TODO types and colors
 
 ** Capture Templates
  #+BEGIN_SRC emacs-lisp
-
+;;;; Set the Capture Templates
    (defun transform-square-brackets-to-round-ones(string-to-transform)
      "Transforms [ into ( and ] into ), other chars left unchanged."
      (concat 
       (mapcar #'(lambda (c) (if (equal c ?\[) ?\( (if (equal c ?\]) ?\) c))) string-to-transform)))
 
 
-       ;; ;;; See: http://cachestocaches.com/2016/9/my-workflow-org-agenda/
+ ;;;; See: http://cachestocaches.com/2016/9/my-workflow-org-agenda/
    (setq gtd-capture-templates
 	 `(
        ;; Logs for Projects
@@ -1056,8 +1033,7 @@ Define TODO types and colors
 
 	  ("L" "Protocol Link" entry (file+headline ,(gtd-file  "notes.org") "Inbox")
    "* %? [[%:link][%:description]] %(progn (setq kk/delete-frame-after-capture 2) \"\")\nCaptured On: %U"
-   :empty-lines 1)
-	  ))
+   :empty-lines 1)))
  #+END_SRC
 ** Control Agenda logging
 
@@ -1255,7 +1231,7 @@ Add macro to construction block agenda components of TODO items.
 ** >>The close of the (use-package org config
 
 #+begin_src emacs-lisp
-  )
+  ) ;; This is close of a huge :config of (use-package org
 #+end_src
 
 This is a single ) to close it.
@@ -1314,16 +1290,18 @@ Use simple-httpd to preview a site from emacs.
 #+end_src
 * PS Print with GHOSTSCRIPT
 #+BEGIN_SRC emacs-lisp
-   (setq ps-lpr-command "C:/Program Files/gs/gs9.56.1/bin/gswin64c.exe")
-   (setq ps-lpr-switches '("-q" "-dNOPAUSE" "-dBATCH" "-sDEVICE=mswinpr2" "-sOutputFile=\"%printer%Canon\ TS6000\ series\""))
-   (setq ps-printer-name t)
-   (setf ps-font-family 'Courier)
-   (setf ps-font-size 10.0)
-   (setf ps-line-number t)
-   (setf ps-line-number-font-size 10)
+;;;; PS Print with GHOSTSCRIPT
+  (setq ps-lpr-command "C:/Program Files/gs/gs9.56.1/bin/gswin64c.exe")
+  (setq ps-lpr-switches '("-q" "-dNOPAUSE" "-dBATCH" "-sDEVICE=mswinpr2" "-sOutputFile=\"%printer%Canon\ TS6000\ series\""))
+  (setq ps-printer-name t)
+  (setf ps-font-family 'Courier)
+  (setf ps-font-size 10.0)
+  (setf ps-line-number t)
+  (setf ps-line-number-font-size 10)
 #+END_SRC
 
 * Emacs Backup Files
+;;;; Emacs Backup Files
 #+begin_src emacs-lisp
 (setq backup-directory-alist `(("." . ,(expand-file-name "tmp/backups/" user-emacs-directory))))
 #+end_src
