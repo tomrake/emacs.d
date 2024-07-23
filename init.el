@@ -2,7 +2,7 @@
 ;;       in Emacs and init.el will be generated automatically!
 
 ;;;; Emacs Debug On Error
-   (setq debug-on-error t )
+   (setq debug-on-error nil )
 
 ;;;; This code will error for any non-multi-init-cluster profiles.
 ;;;; load the user-custom-startup file.
@@ -177,9 +177,10 @@
 
 ;;;; Have a clean statup screen
 ; (setq inhibit-startup-screen t)
- (setq visible-bell 1)
+(setq visible-bell 1)
  ;;;; Turn off tool bar
- (tool-bar-mode 0)
+(tool-bar-mode 0)
+(setq use-file-dialog nil)
 
 (setq w32-use-visible-system-caret nil)
 

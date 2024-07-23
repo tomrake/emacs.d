@@ -13,7 +13,7 @@
    [TBD] Is there already a command line switch for this?
   #+BEGIN_SRC emacs-lisp
 	;;;; Emacs Debug On Error
-	   (setq debug-on-error t )
+	   (setq debug-on-error nil )
   #+END_SRC
 
 * start the multi-init-cluster for our case.
@@ -277,13 +277,14 @@ Fix initial window position.
 * Basic Look and feel
 I don't like the a messy startup screen.
 
- #+BEGIN_SRC emacs-lisp
-   ;;;; Have a clean statup screen
+#+BEGIN_SRC emacs-lisp
+  ;;;; Have a clean statup screen
   ; (setq inhibit-startup-screen t)
-   (setq visible-bell 1)
+  (setq visible-bell 1)
    ;;;; Turn off tool bar
-   (tool-bar-mode 0)
- #+END_SRC
+  (tool-bar-mode 0)
+  (setq use-file-dialog nil)
+#+END_SRC
 * Fix Windows 10 cursor problem
  #+BEGIN_SRC emacs-lisp
  (setq w32-use-visible-system-caret nil)
