@@ -17,7 +17,7 @@
 
 (defvar local-config-slime-location "c:/Users/zzzap/Documents/Code/source-projects/ACTIVE/slime"
   "The location of the slime for common lisp.")
-(defvar global-config-base-path
+(defvar multi-user-org-path
   "c:/Users/Public/Documents/org/"
   "All org stuff that need multiuser access are located relative this path.")
 

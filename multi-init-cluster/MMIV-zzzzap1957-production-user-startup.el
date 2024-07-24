@@ -9,7 +9,7 @@
     by release version and a compiled name..
   I also add lisp version with a compiled name of 'production' or which contain a file '.production.'")
 
-(defvar global-config-base-path
+(defvar multi-user-org-path
   "c:/Users/Public/Documents/org/"
   "All org stuff that need multiuser access are located relative this path.")
 

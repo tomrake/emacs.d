@@ -47,14 +47,6 @@ Until you create the file named by the local-config-pathname: message.
 
 #+end_src
 
-* Computer wide org configuration
-A location for org files in commom for all users of this computer.
-#+begin_src emacs-lisp
-  (when global-config-base-path
-    (defun global-org-path (r-path)
-      (format "%s%s" global-config-base-path r-path)))
-
-#+end_src
 * Anaphoric - it macros that do-the-right-thing
 Express various configuration contingent of certain conditions being met.
 Code is executed based on certain tests based on COMPUTER-SUBCASE-user-start symbol values.
@@ -959,6 +951,10 @@ Define TODO types and colors
 #+END_SRC
 ** global org paths
 #+begin_src emacs-lisp
+  (when multi-user-org-path
+    (defun global-org-path (r-path)
+      (format "%s%s" multi-user-org-path r-path)))
+  
   (defun gtd-file (name)
     "Where to find a gtd file."
     (global-org-path (concat "gtd/" name)))

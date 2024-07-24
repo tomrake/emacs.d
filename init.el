@@ -26,10 +26,6 @@
     (error "Bad chemacs config.")))
 (message "---------- Done with multi-init-cluster startup -------")
 
-(when global-config-base-path
-  (defun global-org-path (r-path)
-    (format "%s%s" global-config-base-path r-path)))
-
 (defmacro checksym-defined (name &rest body)
   "Anaphoric - it macro, where the body can us *it* when symbol name is defined."
   (let ((_sym (gensym)))
@@ -615,6 +611,10 @@ text and copying to the killring."
 			       ("WAITING" ."yellow1")
 			       ("CANCELLED"."green")
 			       ("DONE" . "green")));
+
+(when multi-user-org-path
+  (defun global-org-path (r-path)
+    (format "%s%s" multi-user-org-path r-path)))
 
 (defun gtd-file (name)
   "Where to find a gtd file."
