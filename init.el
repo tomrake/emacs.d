@@ -613,20 +613,21 @@ text and copying to the killring."
 			       ("DONE" . "green")));
 
 (when multi-user-org-path
-  (defun global-org-path (r-path)
+  (defun multi-user-org-file-path (r-path)
+    "Locate multi-user-org-file-paths."
     (format "%s%s" multi-user-org-path r-path)))
 
 (defun gtd-file (name)
   "Where to find a gtd file."
-  (global-org-path (concat "gtd/" name)))
+  (multi-user-org-file-path (concat "gtd/" name)))
 
 (defun med-file (name)
   "Where to find a medical file."
-  (global-org-path (concat "medical/" name)))
+  (multi-user-org-file-path (concat "medical/" name)))
 
 (defun car-file (name)
   "Where to find a car data file."
-   (global-org-path (concat "car/" name)))
+   (multi-user-org-file-path (concat "car/" name)))
 
 (setq gtd-refile-targets `((,(gtd-file "gtd.org") :maxlevel . 3)
 			   (,(gtd-file "Someday.org") :maxlevel . 3)
