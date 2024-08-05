@@ -109,7 +109,18 @@
 ;; Make frame transparency overridable
 (defvar efs/frame-transparency '(90 . 90))
 
-(setq initial-buffer-choice (concat user-emacs-directory "startup-buffer.org"))
+(defun find-first-existing-file (files)
+  (if (listp files)
+      (if (null files)
+	nil
+	(let ((file (car files)))
+	  (if (and file (file-exists-p file))
+	    file
+	    (find-first-existing-file (cdr files)))))
+    (error "files should be a list but is %s" files)))
+  (setq initial-buffer-choice
+	(find-first-existing-file (list "~/startup-buffer.org"
+					 (concat user-emacs-directory "startup-buffer.org"))))
 
 ;; UTF-8 as default encoding
 (set-language-environment "UTF-8")
