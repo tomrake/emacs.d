@@ -27,7 +27,7 @@
 (message "---------- Done with multi-init-cluster startup -------")
 
 (defmacro checksym-defined (name &rest body)
-  "Anaphoric - it macro, where the body can us *it* when symbol name is defined."
+  "Anaphoric - it macro, where the body can uss *it* when symbol name is defined."
   (let ((_sym (gensym)))
     `(let ((,_sym (intern-soft ,name)))
        (when ,_sym
@@ -35,7 +35,7 @@
 	   ,@body)))))
 
 (defmacro checksym-not-nil (name &rest body)
-  "Anaphoric - it macro, where the body can us *it* when symbol name is defined."
+  "Anaphoric - it macro, where the body can uss *it* when symbol name is defined."
   "Execute the body when the symbol is not nil"
   (let ((_sym (gensym)))
     `(let ((,_sym (intern-soft ,name)))
@@ -44,7 +44,7 @@
 	   ,@body)))))
 
 (defmacro checksym-not-empty-string (name &rest body)
-  "Anaphoric - it macro, where the body can us *it* when symbol name is a string that is not empty."
+  "Anaphoric - it macro, where the body can uss *it* when symbol name is a string that is not empty."
   (let ((_sym (gensym)))
     `(let ((,_sym (intern-soft ,name)))
        (when ,_sym
@@ -56,7 +56,7 @@
 
 
 (defmacro checksym-existing-file (name &rest body)
-  "Anaphoric - it macro, where the body can us *it* when symbol name is a the name of an existing file."
+  "Anaphoric - it macro, where the body can uss *it* when symbol name is a the name of an existing file."
   (let ((_sym (gensym)))
     `(let ((,_sym (intern-soft ,name)))
        (when ,_sym
@@ -203,7 +203,7 @@
   :init
   (savehist-mode))
 
-(when config-obsidian-specify-path 
+(checksym-not-empty-string config-obsidian-specify-path 
   (use-package obsidian
     :ensure t
     :demand t
