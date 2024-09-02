@@ -2,10 +2,12 @@
 #+TITLE: The Emacs configuration of Tom Rake  
 #+PROPERTY: header-args:emacs-lisp :tangle ./init.el :mkdirp yes
 #+OPTIONS: toc:3
+
 * Add Generated from Emacs.org warning.
 #+begin_src emacs-lisp
   ;; NOTE: init.el is now generated from Emacs.org.  Please edit that file
   ;;       in Emacs and init.el will be generated automatically!
+  ;; Added Obsidian with opinionated settings.
 #+end_src
 
 * Emacs debug-on-error
