@@ -23,5 +23,5 @@
   "c:/Users/Public/Documents/org/"
   "All org stuff that need multiuser access are located relative this path.")
 
-(defvar config-obsidian-specify-path "c:/Users/Buba/Documents/Obsidian Vault"
+(defvar config-obsidian-specify-path "c:/Users/Buba/Obsidian Vault"
   "Define the location of the Obsidian Vault.")
