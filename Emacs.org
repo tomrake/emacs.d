@@ -2,10 +2,12 @@
 #+TITLE: The Emacs configuration of Tom Rake  
 #+PROPERTY: header-args:emacs-lisp :tangle ./init.el :mkdirp yes
 #+OPTIONS: toc:3
+
 * Add Generated from Emacs.org warning.
 #+begin_src emacs-lisp
   ;; NOTE: init.el is now generated from Emacs.org.  Please edit that file
   ;;       in Emacs and init.el will be generated automatically!
+  ;; Added Obsidian with opinionated settings.
 #+end_src
 
 * Emacs debug-on-error
@@ -52,7 +54,7 @@ Express various configuration contingent of certain conditions being met.
 Code is executed based on certain tests based on COMPUTER-SUBCASE-user-start symbol values.
 #+begin_src emacs-lisp
   (defmacro checksym-defined (name &rest body)
-    "Anaphoric - it macro, where the body can us *it* when symbol name is defined."
+    "Anaphoric - it macro, where the body can uss *it* when symbol name is defined."
     (let ((_sym (gensym)))
       `(let ((,_sym (intern-soft ,name)))
 	 (when ,_sym
@@ -60,7 +62,7 @@ Code is executed based on certain tests based on COMPUTER-SUBCASE-user-start sym
 	     ,@body)))))
 
   (defmacro checksym-not-nil (name &rest body)
-    "Anaphoric - it macro, where the body can us *it* when symbol name is defined."
+    "Anaphoric - it macro, where the body can uss *it* when symbol name is defined."
     "Execute the body when the symbol is not nil"
     (let ((_sym (gensym)))
       `(let ((,_sym (intern-soft ,name)))
@@ -69,7 +71,7 @@ Code is executed based on certain tests based on COMPUTER-SUBCASE-user-start sym
 	     ,@body)))))
 
   (defmacro checksym-not-empty-string (name &rest body)
-    "Anaphoric - it macro, where the body can us *it* when symbol name is a string that is not empty."
+    "Anaphoric - it macro, where the body can uss *it* when symbol name is a string that is not empty."
     (let ((_sym (gensym)))
       `(let ((,_sym (intern-soft ,name)))
 	 (when ,_sym
@@ -81,7 +83,7 @@ Code is executed based on certain tests based on COMPUTER-SUBCASE-user-start sym
 
 
   (defmacro checksym-existing-file (name &rest body)
-    "Anaphoric - it macro, where the body can us *it* when symbol name is a the name of an existing file."
+    "Anaphoric - it macro, where the body can uss *it* when symbol name is a the name of an existing file."
     (let ((_sym (gensym)))
       `(let ((,_sym (intern-soft ,name)))
 	 (when ,_sym
@@ -354,6 +356,31 @@ Read up on [[https://www.gnu.org/software/emacs/manual/html_node/elisp/Completio
     (require 'org-roam-protocol))
 #+END_SRC
 
+* Obsidian
+See  the source repo at [[https://github.com/licht1stein/obsidian.el]]
+To use this package you must define 
+#+begin_src emacs-lisp
+  (defun obsidian-opinonated-directories (base)
+    (obsidian-specify-path base)
+    (setf obsidian-inbox-directory "Inbox")
+    (setf obsidian-daily-notes-directory "Daily Notes")
+    (setf obsidian-template-directory "Templates"))
+
+  (use-package obsidian
+    :ensure t
+    :demand t
+    :config
+    ;(obsidian-specify-path config-obsidian-specify-path)
+    (obsidian-opinonated-directories config-obsidian-specify-path)
+    (global-obsidian-mode t)
+    :bind (:map obsidian-mode-map
+		;; Replace C-c C-o with Obsidian.el's implementation. It's ok to use another key binding.
+		("C-c C-o" . obsidian-follow-link-at-point)
+		;; Jump to backlinks
+		("C-c C-b" . obsidian-backlink-jump)
+		;; If you prefer you can use `obsidian-insert-link'
+		("C-c C-l" . obsidian-insert-wikilink)))
+#+end_src
 * Ispell configured with Aspell
 aspell configuration is in [[~/.aspell.conf]]
 Fixed on 7/2/2022 moving to DESKER

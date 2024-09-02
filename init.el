@@ -1,5 +1,6 @@
 ;; NOTE: init.el is now generated from Emacs.org.  Please edit that file
 ;;       in Emacs and init.el will be generated automatically!
+;; Added Obsidian with opinionated settings.
 
 ;;;; Emacs Debug On Error
    (setq debug-on-error nil )
@@ -27,7 +28,7 @@
 (message "---------- Done with multi-init-cluster startup -------")
 
 (defmacro checksym-defined (name &rest body)
-  "Anaphoric - it macro, where the body can us *it* when symbol name is defined."
+  "Anaphoric - it macro, where the body can uss *it* when symbol name is defined."
   (let ((_sym (gensym)))
     `(let ((,_sym (intern-soft ,name)))
        (when ,_sym
@@ -35,7 +36,7 @@
 	   ,@body)))))
 
 (defmacro checksym-not-nil (name &rest body)
-  "Anaphoric - it macro, where the body can us *it* when symbol name is defined."
+  "Anaphoric - it macro, where the body can uss *it* when symbol name is defined."
   "Execute the body when the symbol is not nil"
   (let ((_sym (gensym)))
     `(let ((,_sym (intern-soft ,name)))
@@ -44,7 +45,7 @@
 	   ,@body)))))
 
 (defmacro checksym-not-empty-string (name &rest body)
-  "Anaphoric - it macro, where the body can us *it* when symbol name is a string that is not empty."
+  "Anaphoric - it macro, where the body can uss *it* when symbol name is a string that is not empty."
   (let ((_sym (gensym)))
     `(let ((,_sym (intern-soft ,name)))
        (when ,_sym
@@ -56,7 +57,7 @@
 
 
 (defmacro checksym-existing-file (name &rest body)
-  "Anaphoric - it macro, where the body can us *it* when symbol name is a the name of an existing file."
+  "Anaphoric - it macro, where the body can uss *it* when symbol name is a the name of an existing file."
   (let ((_sym (gensym)))
     `(let ((,_sym (intern-soft ,name)))
        (when ,_sym
@@ -213,6 +214,27 @@
 (use-package savehist
   :init
   (savehist-mode))
+
+(defun obsidian-opinonated-directories (base)
+  (obsidian-specify-path base)
+  (setf obsidian-inbox-directory "Inbox")
+  (setf obsidian-daily-notes-directory "Daily Notes")
+  (setf obsidian-template-directory "Templates"))
+
+(use-package obsidian
+  :ensure t
+  :demand t
+  :config
+  ;(obsidian-specify-path config-obsidian-specify-path)
+  (obsidian-opinonated-directories config-obsidian-specify-path)
+  (global-obsidian-mode t)
+  :bind (:map obsidian-mode-map
+	      ;; Replace C-c C-o with Obsidian.el's implementation. It's ok to use another key binding.
+	      ("C-c C-o" . obsidian-follow-link-at-point)
+	      ;; Jump to backlinks
+	      ("C-c C-b" . obsidian-backlink-jump)
+	      ;; If you prefer you can use `obsidian-insert-link'
+	      ("C-c C-l" . obsidian-insert-wikilink)))
 
 (setq ispell-program-name "aspell")
 
