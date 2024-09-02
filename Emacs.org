@@ -164,7 +164,20 @@ Print Debug markers in *messages*
 
 * Initial Buffer Choice
 #+begin_src emacs-lisp
-(setq initial-buffer-choice (concat user-emacs-directory "startup-buffer.org"))
+  (defun find-first-existing-file (files)
+    (if (listp files)
+	(if (null files)
+	  nil
+	  (let ((file (car files)))
+	    (if (and file (file-exists-p file))
+	      file
+	      (find-first-existing-file (cdr files)))))
+      (error "files should be a list but is %s" files)))
+  
+  (setq initial-buffer-choice
+	(find-first-existing-file (list "~/startup-buffer.org"
+					(concat user-emacs-directory "startup-buffer.org"))))
+
 #+end_src
 * Default Coding System
 #+begin_src emacs-lisp
