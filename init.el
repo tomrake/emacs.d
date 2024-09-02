@@ -1,6 +1,6 @@
 ;; NOTE: init.el is now generated from Emacs.org.  Please edit that file
 ;;       in Emacs and init.el will be generated automatically!
-;; Added Obsidian with opinionated settings.
+;; Trying straight package manager
 
 ;;;; Emacs Debug On Error
    (setq debug-on-error nil )
@@ -94,8 +94,6 @@
       (org-babel-tangle))))
 (add-hook 'org-mode-hook (lambda () (add-hook 'after-save-hook #'efs/org-babel-tangle-config)))
 
-(message "Debug START")
-
 (add-to-list 'load-path (expand-file-name "scripts/" user-emacs-directory))
 
 (defvar use-slime t "Set true to use slime for superior lisp")
@@ -145,26 +143,30 @@
 (setq custom-file (expand-file-name "emacs-custom.el" user-emacs-directory))
 (load custom-file)
 
-;;;; Initialize package sources
-(require 'package)
-;(setq package-check-signature nil)
-(setq package-gnupghome-dir "~/.gnupg/")
-(setq package-archives '(("melpa" . "https://melpa.org/packages/")
-			 ("org" . "https://orgmode.org/elpa/")
-			 ("elpa" . "https://elpa.gnu.org/packages/")))
+(defvar bootstrap-version)
+(let ((bootstrap-file
+       (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
+      (bootstrap-version 5))
+  (unless (file-exists-p bootstrap-file)
+    (with-current-buffer
+	(url-retrieve-synchronously
+	 "https://raw.githubusercontent.com/raxod502/straight.el/develop/install.el"
+	 'silent 'inhibit-cookies)
+      (goto-char (point-max))
+      (eval-print-last-sexp)))
+  (load bootstrap-file nil 'nomessage))
+  (straight-use-package 'use-package)
 
-(package-initialize)
-(unless package-archive-contents
-  (package-refresh-contents))
-(package-install 'htmlize)
 ;;;; Initialize use-package on non-Linux platforms
-(unless (package-installed-p 'use-package)
-  (package-install 'use-package))
-;;;; use-package
-(require 'use-package)
-(setq use-package-always-ensure t)
-(setq use-package-verbose t)
-(setq use-package-always-defer t)
+  (unless (package-installed-p 'use-package)
+    (package-install 'use-package))
+  ;;;; use-package
+  (require 'use-package)
+  (setq straight-use-package-by-default t)
+  (setq use-package-verbose t)
+  (setq use-package-always-defer t)
+
+(straight-use-package 'htmlize)
 
 ;;;; Macro to load user customizations from .emacs.d
 (defmacro local-custom-file (file description)
@@ -203,11 +205,11 @@
   (ido-mode t))
 
 (use-package which-key
-  :ensure t)
+  :straight t)
 
 ;;;; Enable vertico
 (use-package vertico
-  :ensure t
+  :straight t
   :init
   (vertico-mode))
 
@@ -222,7 +224,7 @@
   (setf obsidian-template-directory "Templates"))
 
 (use-package obsidian
-  :ensure t
+  :straight t
   :demand t
   :config
   ;(obsidian-specify-path config-obsidian-specify-path)
@@ -244,7 +246,7 @@
   "The java-executable to use for java.")
 
 (use-package langtool
-  :ensure t
+  :straight t
   :config
     (setq langtool-java-bin java-executable)
     (setq langtool-language-tool-jar  "c:/Users/Public/Documents/LanguageTool-5.9/languagetool-commandline.jar")
@@ -261,16 +263,16 @@
 
 ;;;; Magit 
 (use-package magit
-  :defer 2
-  :ensure t
-  :pin melpa
+  ;:defer 2
+  :straight t
+  ;:pin melpa
   :bind
    (("C-x g" . magit-status)
     ("C-x M-d" . magit-dispatch-popup)))
 
 ;;;; SSH Agency
 (use-package ssh-agency
-:ensure t
+:straight t
 :init
 (setenv "GIT_ASKPASS" "git-gui--askpass")
 (setenv "SSH_ASKPASS" "git-gui--askpass")
@@ -281,7 +283,7 @@
     (load (expand-file-name "~/.roswell/helper.el"))))
 
 (use-package modus-themes
-  :ensure t
+  :straight t
   :config
   (set-face-attribute 'default nil :height 150)
       ;; Subtle red background, red foreground, invisible border
@@ -334,7 +336,7 @@
 		 (getenv "PATH")))
 
 (use-package shx
-  :ensure t)
+  :straight t)
 
 (use-package tramp
   :config
@@ -347,7 +349,7 @@
 	(add-to-list 'exec-path putty-directory))))
 
 (use-package paredit
-  :ensure t
+  :straight t
   :hook (lisp-mode . enable-paredit-mode))
 
 (message "Debug <<<<<<<<< START COMMONLISP STUFF")
@@ -462,6 +464,8 @@
 
 (message "Debug SLIME END MARK")
 
+(message "Debug START")
+
 (setq auto-mode-alist
       (append '((".*\\.asd\\'" . lisp-mode))
 	      auto-mode-alist))
@@ -491,8 +495,10 @@
       (append '((".*\\.yml\\'" . yaml-mode))
 	      auto-mode-alist))
 
+(message "Debug TEST")
+
 (use-package org
-  :pin elpa
+  ;:pin elpa
   :catch
   (lambda (keyword err)
          (message (error-message-string err)))
@@ -576,10 +582,10 @@
 (advice-add 'org-capture-refile :after 'kk/delete-frame-if-neccessary)
 
 (use-package org-present
-  :ensure t
+  :straight t
   :config
     (use-package visual-fill-column
-      :ensure t
+      :straight t
       :config
       (setq visual-fill-column-width 110
 	    visual-fill-column-center-text t)))
@@ -918,7 +924,7 @@ text and copying to the killring."
 	("blog" :components ("blog-src"))))
 
 (use-package simple-httpd
-  :ensure t)
+  :straight t)
 
 ;;;; PS Print with GHOSTSCRIPT
   (setq ps-lpr-command "C:/Program Files/gs/gs9.56.1/bin/gswin64c.exe")
@@ -928,6 +934,8 @@ text and copying to the killring."
   (setf ps-font-size 10.0)
   (setf ps-line-number t)
   (setf ps-line-number-font-size 10)
+
+(message "Debug MARK")
 
 (setq backup-directory-alist `(("." . ,(expand-file-name "tmp/backups/" user-emacs-directory))))
 
@@ -947,12 +955,12 @@ text and copying to the killring."
 	 :hook (eshell-first-time-mode . efs/configure-eshell))
 
 (use-package eshell-git-prompt
-  :ensure t
+  :straight t
   :config
     (eshell-git-prompt-use-theme 'powerline))
 
 (use-package dired
-  :ensure nil
+  :straight nil
   :config
     (add-hook 'dired-mode-hook 'all-the-icons-dired-mode))
 
@@ -980,7 +988,7 @@ text and copying to the killring."
     (global-set-key [(meta f5)] 'dired-single-toggle-buffer-name))
 
 (use-package all-the-icons-dired
-      :ensure t
+      :straight t
       :pin melpa
       :config
       (add-hook 'dired-mode-hook 'all-the-icons-dired-mode))
@@ -1000,7 +1008,7 @@ text and copying to the killring."
 
 ;;;; mastodon
   (use-package mastodon
-    :ensure t)
+    :straight t)
   (setq mastodon-active-user "tomrake")
   (setq mastodon-instance-url "https://mastodon.social")
 

@@ -7,7 +7,7 @@
 #+begin_src emacs-lisp
   ;; NOTE: init.el is now generated from Emacs.org.  Please edit that file
   ;;       in Emacs and init.el will be generated automatically!
-  ;; Added Obsidian with opinionated settings.
+  ;; Trying straight package manager
 #+end_src
 
 * Emacs debug-on-error
@@ -134,12 +134,6 @@ This is a modifed from systemcrafters.
 	(org-babel-tangle))))
   (add-hook 'org-mode-hook (lambda () (add-hook 'after-save-hook #'efs/org-babel-tangle-config)))
 #+end_src
-* Report Debug START                                               :noexport:
-Print Debug markers in *messages*
-#+BEGIN_SRC emacs-lisp :eval never-export
-(message "Debug START")
-#+END_SRC
-
 * Some of our routines are in scripts/
 #+begin_src emacs-lisp
   (add-to-list 'load-path (expand-file-name "scripts/" user-emacs-directory))
@@ -209,29 +203,53 @@ Print Debug markers in *messages*
    (setq custom-file (expand-file-name "emacs-custom.el" user-emacs-directory))
    (load custom-file)
  #+END_SRC
-* Package Archives and use-package
+* Straight Package manager
 #+begin_src emacs-lisp
-  ;;;; Initialize package sources
-  (require 'package)
-  ;(setq package-check-signature nil)
-  (setq package-gnupghome-dir "~/.gnupg/")
-  (setq package-archives '(("melpa" . "https://melpa.org/packages/")
-			   ("org" . "https://orgmode.org/elpa/")
-			   ("elpa" . "https://elpa.gnu.org/packages/")))
+  (defvar bootstrap-version)
+  (let ((bootstrap-file
+	 (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
+	(bootstrap-version 5))
+    (unless (file-exists-p bootstrap-file)
+      (with-current-buffer
+	  (url-retrieve-synchronously
+	   "https://raw.githubusercontent.com/raxod502/straight.el/develop/install.el"
+	   'silent 'inhibit-cookies)
+	(goto-char (point-max))
+	(eval-print-last-sexp)))
+    (load bootstrap-file nil 'nomessage))
+    (straight-use-package 'use-package) 
+#+end_src
+* Package and package archives
+#+begin_src emacs-lisp :tangle nil
+    ;;;; Initialize package sources
+    (require 'package)
+    ;(setq package-check-signature nil)
+    (setq package-gnupghome-dir "~/.gnupg/")
+    (setq package-archives '(("melpa" . "https://melpa.org/packages/")
+			     ("org" . "https://orgmode.org/elpa/")
+			     ("elpa" . "https://elpa.gnu.org/packages/")))
 
-  (package-initialize)
-  (unless package-archive-contents
-    (package-refresh-contents))
-  (package-install 'htmlize)
+    (package-initialize)
+    (unless package-archive-contents
+      (package-refresh-contents))
+
+
+  #+end_src
+* load use-package
+  #+begin_src emacs-lisp
   ;;;; Initialize use-package on non-Linux platforms
-  (unless (package-installed-p 'use-package)
-    (package-install 'use-package))
-  ;;;; use-package
-  (require 'use-package)
-  (setq use-package-always-ensure t)
-  (setq use-package-verbose t)
-  (setq use-package-always-defer t)
+    (unless (package-installed-p 'use-package)
+      (package-install 'use-package))
+    ;;;; use-package
+    (require 'use-package)
+    (setq straight-use-package-by-default t)
+    (setq use-package-verbose t)
+    (setq use-package-always-defer t)
 
+#+end_src
+* Directly install htmlize
+#+begin_src emacs-lisp
+    (straight-use-package 'htmlize)
 #+end_src
 * Allow loading of a file from .emacs.d/
 ***  [TBD] Once the init.el generation is working
@@ -312,7 +330,7 @@ I don't like the a messy startup screen.
 * Which-Key
 #+begin_src emacs-lisp
   (use-package which-key
-    :ensure t)
+    :straight t)
 #+end_src
 * Vertico
 This is recommended setup from  [[https://github.com/minad/vertico]]
@@ -326,7 +344,7 @@ Read up on [[https://www.gnu.org/software/emacs/manual/html_node/elisp/Completio
 #+begin_src emacs-lisp
   ;;;; Enable vertico
   (use-package vertico
-    :ensure t
+    :straight t
     :init
     (vertico-mode))
 
@@ -338,7 +356,7 @@ Read up on [[https://www.gnu.org/software/emacs/manual/html_node/elisp/Completio
   I am setting up org-roam
 #+BEGIN_SRC emacs-lisp :tangle no
   (use-package org-roam
-    :ensure t
+    :straight t
     :init
     (setq org-roam-v2-ack t)
     :custom
@@ -367,7 +385,7 @@ To use this package you must define
     (setf obsidian-template-directory "Templates"))
 
   (use-package obsidian
-    :ensure t
+    :straight t
     :demand t
     :config
     ;(obsidian-specify-path config-obsidian-specify-path)
@@ -401,7 +419,7 @@ Certain tools need java set that location here.
 * Language Tool
 #+begin_src emacs-lisp
   (use-package langtool
-    :ensure t
+    :straight t
     :config
       (setq langtool-java-bin java-executable)
       (setq langtool-language-tool-jar  "c:/Users/Public/Documents/LanguageTool-5.9/languagetool-commandline.jar")
@@ -424,9 +442,9 @@ Certain tools need java set that location here.
 #+BEGIN_SRC emacs-lisp
   ;;;; Magit 
   (use-package magit
-    :defer 2
-    :ensure t
-    :pin melpa
+    ;:defer 2
+    :straight t
+    ;:pin melpa
     :bind
      (("C-x g" . magit-status)
       ("C-x M-d" . magit-dispatch-popup)))
@@ -435,7 +453,7 @@ Certain tools need java set that location here.
 #+BEGIN_SRC emacs-lisp
   ;;;; SSH Agency
   (use-package ssh-agency
-  :ensure t
+  :straight t
   :init
   (setenv "GIT_ASKPASS" "git-gui--askpass")
   (setenv "SSH_ASKPASS" "git-gui--askpass")
@@ -451,7 +469,7 @@ Certain tools need java set that location here.
 Main Page: [[https://protesilaos.com/emacs/modus-themes]]
 #+BEGIN_SRC emacs-lisp
     (use-package modus-themes
-      :ensure t
+      :straight t
       :config
       (set-face-attribute 'default nil :height 150)
 	  ;; Subtle red background, red foreground, invisible border
@@ -490,6 +508,7 @@ Main Page: [[https://protesilaos.com/emacs/modus-themes]]
   ;;;; rainbow-delimiter
   (use-package rainbow-delimiters)
 #+END_SRC
+
 * Powershell
 #+begin_src emacs-lisp
   ;;;; powershell
@@ -521,7 +540,7 @@ Main Page: [[https://protesilaos.com/emacs/modus-themes]]
 [TBD] If this is org shell extenstion then put this in org-mode section.
 #+BEGIN_SRC emacs-lisp
 (use-package shx
-  :ensure t)
+  :straight t)
 #+END_SRC
 * Tramp
 Make plink the default tramp method if running on Windows when plink.exe exists.
@@ -539,7 +558,7 @@ Make plink the default tramp method if running on Windows when plink.exe exists.
 * Paredit mode
   #+BEGIN_SRC emacs-lisp
     (use-package paredit
-      :ensure t
+      :straight t
       :hook (lisp-mode . enable-paredit-mode))
     #+END_SRC
 * Report Debug START COMMONLISP STUFF                              :noexport:
@@ -711,6 +730,12 @@ Print Debug markers in *messages*
 #+BEGIN_SRC emacs-lisp :eval never-export
 (message "Debug SLIME END MARK")
 #+END_SRC
+* Report Debug START                                               :noexport:
+Print Debug markers in *messages*
+#+BEGIN_SRC emacs-lisp :eval never-export
+(message "Debug START")
+#+END_SRC
+
 * Enable lisp-mode .lisp and .asd files
   #+BEGIN_SRC emacs-lisp
   (setq auto-mode-alist
@@ -751,6 +776,13 @@ Print Debug markers in *messages*
 	      auto-mode-alist))
 #+END_SRC
 
+* Report Debug TEST                                                :noexport:
+Print Debug markers in *messages*
+#+BEGIN_SRC emacs-lisp  :eval never-export
+(message "Debug TEST")
+#+END_SRC
+ 
+
 * Org Mode
 This is a large use-package config statement for org.
 
@@ -758,7 +790,7 @@ This is a large use-package config statement for org.
 
 #+begin_src emacs-lisp
   (use-package org
-    :pin elpa
+    ;:pin elpa
     :catch
     (lambda (keyword err)
            (message (error-message-string err)))
@@ -877,10 +909,10 @@ A mode to show org files as a presentation.
 - M-x org-present-quit  - to turn off mode.
 #+BEGIN_SRC emacs-lisp
   (use-package org-present
-    :ensure t
+    :straight t
     :config
       (use-package visual-fill-column
-	:ensure t
+	:straight t
 	:config
 	(setq visual-fill-column-width 110
 	      visual-fill-column-center-text t)))
@@ -1325,7 +1357,7 @@ Tom Rake's Notes
 Use simple-httpd to preview a site from emacs.
 #+begin_src emacs-lisp
   (use-package simple-httpd
-    :ensure t)
+    :straight t)
 #+end_src
 * PS Print with GHOSTSCRIPT
 #+BEGIN_SRC emacs-lisp
@@ -1338,6 +1370,13 @@ Use simple-httpd to preview a site from emacs.
   (setf ps-line-number t)
   (setf ps-line-number-font-size 10)
 #+END_SRC
+
+* Report Debug MARK                                                :noexport:
+Print Debug markers in *messages*
+#+BEGIN_SRC emacs-lisp  :eval never-export
+(message "Debug MARK")
+#+END_SRC
+ 
 
 * Emacs Backup Files
 ;;;; Emacs Backup Files
@@ -1363,7 +1402,7 @@ Use simple-httpd to preview a site from emacs.
 	   :hook (eshell-first-time-mode . efs/configure-eshell))
 
   (use-package eshell-git-prompt
-    :ensure t
+    :straight t
     :config
       (eshell-git-prompt-use-theme 'powerline))
 #+end_src
@@ -1372,7 +1411,7 @@ Use simple-httpd to preview a site from emacs.
 ** dired hook
 #+begin_src emacs-lisp
   (use-package dired
-    :ensure nil
+    :straight nil
     :config
       (add-hook 'dired-mode-hook 'all-the-icons-dired-mode))
 
@@ -1405,7 +1444,7 @@ Use simple-httpd to preview a site from emacs.
 ** All the icons
 #+BEGIN_SRC emacs-lisp
   (use-package all-the-icons-dired
-	:ensure t
+	:straight t
 	:pin melpa
 	:config
 	(add-hook 'dired-mode-hook 'all-the-icons-dired-mode))
@@ -1446,7 +1485,7 @@ Use simple-httpd to preview a site from emacs.
 #+begin_src emacs-lisp
 ;;;; mastodon
   (use-package mastodon
-    :ensure t)
+    :straight t)
   (setq mastodon-active-user "tomrake")
   (setq mastodon-instance-url "https://mastodon.social")
 #+end_src
