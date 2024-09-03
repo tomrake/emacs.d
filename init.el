@@ -464,8 +464,6 @@
 
 (message "Debug SLIME END MARK")
 
-(message "Debug START")
-
 (setq auto-mode-alist
       (append '((".*\\.asd\\'" . lisp-mode))
 	      auto-mode-alist))
@@ -495,7 +493,210 @@
       (append '((".*\\.yml\\'" . yaml-mode))
 	      auto-mode-alist))
 
+(use-package simple-httpd
+  :straight t)
+
+;;;; PS Print with GHOSTSCRIPT
+  (setq ps-lpr-command "C:/Program Files/gs/gs9.56.1/bin/gswin64c.exe")
+  (setq ps-lpr-switches '("-q" "-dNOPAUSE" "-dBATCH" "-sDEVICE=mswinpr2" "-sOutputFile=\"%printer%Canon\ TS6000\ series\""))
+  (setq ps-printer-name t)
+  (setf ps-font-family 'Courier)
+  (setf ps-font-size 10.0)
+  (setf ps-line-number t)
+  (setf ps-line-number-font-size 10)
+
+(setq backup-directory-alist `(("." . ,(expand-file-name "tmp/backups/" user-emacs-directory))))
+
+(defun efs/configure-eshell ()
+	 ;; Save command history when commands are entered
+	 (add-hook 'eshell-pre-command-hook 'eshell-save-some-history)
+
+	 ;; Truncate buffer for performance
+	 (add-to-list 'eshell-output-filter-functions 'eshell-truncate-buffer)
+
+	 (setq eshell-history-size         10000
+	       eshell-buffer-maximum-lines 10000
+	       eshell-hist-ignoredups t
+	       eshell-scroll-to-bottom-on-input t))
+
+(use-package eshell
+	 :hook (eshell-first-time-mode . efs/configure-eshell))
+
+(use-package eshell-git-prompt
+  :straight t
+  :config
+    (eshell-git-prompt-use-theme 'powerline))
+
+(message "Debug START")
+
+(use-package dired
+  :straight t
+  :config
+    (add-hook 'dired-mode-hook 'all-the-icons-dired-mode))
+
+(use-package dired-single
+  :straight t
+  :after
+    dired
+  :config
+    (defun twr/dired-init ()
+      (define-key dired-mode-map [remap dired-find-file]
+	'dired-single-buffer)
+      (define-key dired-mode-map [remap dired-mouse-find-file-other-window]
+	'dired-single-buffer-mouse)
+      (define-key dired-mode-map [remap dired-up-directory]
+	'dired-single-up-directory))
+    (twr/dired-init)
+    (setq dired-single-use-magic-buffer t)
+    ;; F5 is my special key
+    (global-set-key [(f5)] 'dired-single-magic-buffer)
+    (global-set-key [(control f5)] (function
+      (lambda nil (interactive)
+	(dired-single-magic-buffer default-directory))))
+    (global-set-key [(shift f5)] (function
+      (lambda nil (interactive)
+	(message "Current directory is: %s" default-directory))))
+    (global-set-key [(meta f5)] 'dired-single-toggle-buffer-name))
+
+(use-package all-the-icons-dired
+      :straight t
+      :after dired
+      ;:pin melpa
+      :config
+      (add-hook 'dired-mode-hook 'all-the-icons-dired-mode))
+
+(defun mydired-sort ()
+	"Sort dired listings with directories first."
+	(save-excursion
+	  (let (buffer-read-only)
+	    (forward-line 2) ;; beyond dir. header 
+	    (sort-regexp-fields t "^.*$" "[ ]*." (point) (point-max)))
+	  (set-buffer-modified-p nil)))
+
+(defadvice dired-readin
+	(after dired-after-updating-hook first () activate)
+	"Sort dired listings with directories first before adding marks."
+	(mydired-sort))
+
 (message "Debug TEST")
+
+;;;; mastodon
+  (use-package mastodon
+    :straight t)
+  (setq mastodon-active-user "tomrake")
+  (setq mastodon-instance-url "https://mastodon.social")
+
+(when (require 'openwith nil 'noerror)
+
+     (setq openwith-associatsions
+	 (list (list (openwith-make-extension-regexp '("mpg" "mpeg" "mp3" "mp4"
+					      "avi" "wmv" "wav" "mov" "flv"
+					      "ogm" "ogg" "mkv")) "vlc.exe")
+	       (list (openwith-make-extension-regexp '("JPEG" "JPG"))
+		     "c:/Program Files (x86)/JPEGView/JPEGView.exe" '(file))))
+;;    (message "OPENWITH CONFIG")
+;;    (message openwith-associatsions)
+    (openwith-mode 1))
+
+(require 'recentf)
+(recentf-mode 1)
+(setq recentf-max-menu-items 25)
+(global-set-key "\C-x\ \C-r" 'recentf-open-files)
+
+(setq ppl-holiday-table ;; '(2023					;year
+ ;;   (1 1)					;new years day
+ ;;   (2 20)				;presidents day
+ ;;   (4 7)					; Good Friday
+ ;;   (5 29)				; Memorial Day
+ ;;   (7 4)					; Independence Day
+ ;;   (9 4)					; Labor Day
+ ;;   (11 24)				; Thanksgiving
+ ;;   (11 25)				; Next Day
+ ;;   (12 24)				; Christmas Eve
+ ;;   (12 25))
+ '(2024					;year
+  (1 1)					;new years day
+ (2 19)				;presidents day
+ (3 29)					; Good Friday
+ (5 27)				; Memorial Day
+ (7 4)					; Independence Day
+ (9 2)					; Labor Day
+ (11 28)				; Thanksgiving
+ (11 29)				; Next Day
+ (12 24)				; Christmas Eve
+ (12 25)))                              ; Christmas
+
+
+  (defun is-holiday (dt table)
+    "Check if a date is a holiday"
+    (if table (or (and (= (nth 4 dt) (nth 0 (car table)))
+		       (= (nth 3 dt) (nth 1 (car table))))
+		  (is-holiday dt (cdr table)))))
+
+  (defun is-ppl-holiday (dt)
+    "Check if a date is a PPL holiday"
+    (if (/= (car ppl-holiday-table) (nth 5 dt)) 
+	(error "Update Date table") 
+	(is-holiday dt (cdr ppl-holiday-table))))
+
+  (defun ppl-summer (dt)
+    "Check if a date is PPL summer rate"
+    (< 5 (nth 4 dt) 12))
+
+(defun ppl-high-rate (&optional dt)
+  "Check if a date and time are at PPL high rate"
+  (unless dt (setq dt (decode-time)))
+       (cond ((not (< 0 (nth 6 dt) 6))  nil)
+	     ((is-ppl-holiday dt)  nil)
+	     ((ppl-summer dt)  (<= 14 (nth 2 dt) 17))
+	      (t  ( <= 16 (nth 2 dt) 19))))
+
+(use-package yaml-mode)
+
+(defun json-to-single-line (beg end)
+  "Collapse prettified json in region between BEG and END to a single line"
+  (interactive "r")
+  (if (use-region-p)
+      (save-excursion
+        (save-restriction
+          (narrow-to-region beg end)
+          (goto-char (point-min))
+          (while (re-search-forward "[[:space:]\n]+" nil t)
+            (replace-match " "))))
+    (print "This function operates on a region")))
+
+;;;; Various user settings is a local configuration.
+(local-custom-file "local-settings.org" "Final user settings")
+
+(require 'filename2clipboard)
+
+(message "Debug MARK")
+
+(message "Debug Before ORG")
+
+(use-package org-bullets
+  :after org
+  :hook (org-mode . org-bullets-mode)
+  :custom
+  (org-bullets-bullet-list '("◉" "○" "●" "○" "●" "○" "●")))
+
+(use-package org-present
+  :straight t
+  :after org)
+
+(use-package visual-fill-column
+	:straight t
+	:after org-present
+	:config
+	(setq visual-fill-column-width 110
+	      visual-fill-column-center-text t))
+
+(use-package org-indent
+  :after org)
+
+
+
+(message "Debug TEST In ORG")
 
 (use-package org
   ;:pin elpa
@@ -514,12 +715,6 @@
 ;; 		  (unless (file-directory-p org-user-dir)
 ;; 		    (make-directory  org-user-dir)))
 
-(use-package org-bullets
-  :after org
-  :hook (org-mode . org-bullets-mode)
-  :custom
-  (org-bullets-bullet-list '("◉" "○" "●" "○" "●" "○" "●")))
-
 ;; Replace list hyphen with dot
 (font-lock-add-keywords 'org-mode
 			'(("^ *\\([-]\\) "
@@ -534,9 +729,6 @@
 		(org-level-7 . 1.1)
 		(org-level-8 . 1.1)))
     (set-face-attribute (car face) nil :font "Cantarell" :weight 'regular :height (cdr face)))
-
-;; Make sure org-indent face is available
-(require 'org-indent)
 
 ;; Ensure that anything that should be fixed-pitch in Org files appears that way
 (set-face-attribute 'org-block nil :foreground nil :inherit 'fixed-pitch)
@@ -580,15 +772,6 @@
 (advice-add 'org-capture-finalize :after 'kk/delete-frame-if-neccessary)
 (advice-add 'org-capture-kill :after 'kk/delete-frame-if-neccessary)
 (advice-add 'org-capture-refile :after 'kk/delete-frame-if-neccessary)
-
-(use-package org-present
-  :straight t
-  :config
-    (use-package visual-fill-column
-      :straight t
-      :config
-      (setq visual-fill-column-width 110
-	    visual-fill-column-center-text t)))
 
 ;;;; Add Windows cmdproxy  
   (require 'ob-shell)
@@ -922,179 +1105,6 @@ text and copying to the killring."
 	 :html-extension "html"
 	 :body-only t)
 	("blog" :components ("blog-src"))))
-
-(use-package simple-httpd
-  :straight t)
-
-;;;; PS Print with GHOSTSCRIPT
-  (setq ps-lpr-command "C:/Program Files/gs/gs9.56.1/bin/gswin64c.exe")
-  (setq ps-lpr-switches '("-q" "-dNOPAUSE" "-dBATCH" "-sDEVICE=mswinpr2" "-sOutputFile=\"%printer%Canon\ TS6000\ series\""))
-  (setq ps-printer-name t)
-  (setf ps-font-family 'Courier)
-  (setf ps-font-size 10.0)
-  (setf ps-line-number t)
-  (setf ps-line-number-font-size 10)
-
-(message "Debug MARK")
-
-(setq backup-directory-alist `(("." . ,(expand-file-name "tmp/backups/" user-emacs-directory))))
-
-(defun efs/configure-eshell ()
-	 ;; Save command history when commands are entered
-	 (add-hook 'eshell-pre-command-hook 'eshell-save-some-history)
-
-	 ;; Truncate buffer for performance
-	 (add-to-list 'eshell-output-filter-functions 'eshell-truncate-buffer)
-
-	 (setq eshell-history-size         10000
-	       eshell-buffer-maximum-lines 10000
-	       eshell-hist-ignoredups t
-	       eshell-scroll-to-bottom-on-input t))
-
-(use-package eshell
-	 :hook (eshell-first-time-mode . efs/configure-eshell))
-
-(use-package eshell-git-prompt
-  :straight t
-  :config
-    (eshell-git-prompt-use-theme 'powerline))
-
-(use-package dired
-  :straight nil
-  :config
-    (add-hook 'dired-mode-hook 'all-the-icons-dired-mode))
-
-(use-package dired-single
-  :after
-    dired
-  :config
-    (defun twr/dired-init ()
-      (define-key dired-mode-map [remap dired-find-file]
-	'dired-single-buffer)
-      (define-key dired-mode-map [remap dired-mouse-find-file-other-window]
-	'dired-single-buffer-mouse)
-      (define-key dired-mode-map [remap dired-up-directory]
-	'dired-single-up-directory))
-    (twr/dired-init)
-    (setq dired-single-use-magic-buffer t)
-    ;; F5 is my special key
-    (global-set-key [(f5)] 'dired-single-magic-buffer)
-    (global-set-key [(control f5)] (function
-      (lambda nil (interactive)
-	(dired-single-magic-buffer default-directory))))
-    (global-set-key [(shift f5)] (function
-      (lambda nil (interactive)
-	(message "Current directory is: %s" default-directory))))
-    (global-set-key [(meta f5)] 'dired-single-toggle-buffer-name))
-
-(use-package all-the-icons-dired
-      :straight t
-      :pin melpa
-      :config
-      (add-hook 'dired-mode-hook 'all-the-icons-dired-mode))
-
-(defun mydired-sort ()
-	"Sort dired listings with directories first."
-	(save-excursion
-	  (let (buffer-read-only)
-	    (forward-line 2) ;; beyond dir. header 
-	    (sort-regexp-fields t "^.*$" "[ ]*." (point) (point-max)))
-	  (set-buffer-modified-p nil)))
-
-(defadvice dired-readin
-	(after dired-after-updating-hook first () activate)
-	"Sort dired listings with directories first before adding marks."
-	(mydired-sort))
-
-;;;; mastodon
-  (use-package mastodon
-    :straight t)
-  (setq mastodon-active-user "tomrake")
-  (setq mastodon-instance-url "https://mastodon.social")
-
-(when (require 'openwith nil 'noerror)
-
-     (setq openwith-associatsions
-	 (list (list (openwith-make-extension-regexp '("mpg" "mpeg" "mp3" "mp4"
-					      "avi" "wmv" "wav" "mov" "flv"
-					      "ogm" "ogg" "mkv")) "vlc.exe")
-	       (list (openwith-make-extension-regexp '("JPEG" "JPG"))
-		     "c:/Program Files (x86)/JPEGView/JPEGView.exe" '(file))))
-;;    (message "OPENWITH CONFIG")
-;;    (message openwith-associatsions)
-    (openwith-mode 1))
-
-(require 'recentf)
-(recentf-mode 1)
-(setq recentf-max-menu-items 25)
-(global-set-key "\C-x\ \C-r" 'recentf-open-files)
-
-(setq ppl-holiday-table ;; '(2023					;year
- ;;   (1 1)					;new years day
- ;;   (2 20)				;presidents day
- ;;   (4 7)					; Good Friday
- ;;   (5 29)				; Memorial Day
- ;;   (7 4)					; Independence Day
- ;;   (9 4)					; Labor Day
- ;;   (11 24)				; Thanksgiving
- ;;   (11 25)				; Next Day
- ;;   (12 24)				; Christmas Eve
- ;;   (12 25))
- '(2024					;year
-  (1 1)					;new years day
- (2 19)				;presidents day
- (3 29)					; Good Friday
- (5 27)				; Memorial Day
- (7 4)					; Independence Day
- (9 2)					; Labor Day
- (11 28)				; Thanksgiving
- (11 29)				; Next Day
- (12 24)				; Christmas Eve
- (12 25)))                              ; Christmas
-
-
-  (defun is-holiday (dt table)
-    "Check if a date is a holiday"
-    (if table (or (and (= (nth 4 dt) (nth 0 (car table)))
-		       (= (nth 3 dt) (nth 1 (car table))))
-		  (is-holiday dt (cdr table)))))
-
-  (defun is-ppl-holiday (dt)
-    "Check if a date is a PPL holiday"
-    (if (/= (car ppl-holiday-table) (nth 5 dt)) 
-	(error "Update Date table") 
-	(is-holiday dt (cdr ppl-holiday-table))))
-
-  (defun ppl-summer (dt)
-    "Check if a date is PPL summer rate"
-    (< 5 (nth 4 dt) 12))
-
-(defun ppl-high-rate (&optional dt)
-  "Check if a date and time are at PPL high rate"
-  (unless dt (setq dt (decode-time)))
-       (cond ((not (< 0 (nth 6 dt) 6))  nil)
-	     ((is-ppl-holiday dt)  nil)
-	     ((ppl-summer dt)  (<= 14 (nth 2 dt) 17))
-	      (t  ( <= 16 (nth 2 dt) 19))))
-
-(use-package yaml-mode)
-
-(defun json-to-single-line (beg end)
-  "Collapse prettified json in region between BEG and END to a single line"
-  (interactive "r")
-  (if (use-region-p)
-      (save-excursion
-        (save-restriction
-          (narrow-to-region beg end)
-          (goto-char (point-min))
-          (while (re-search-forward "[[:space:]\n]+" nil t)
-            (replace-match " "))))
-    (print "This function operates on a region")))
-
-;;;; Various user settings is a local configuration.
-(local-custom-file "local-settings.org" "Final user settings")
-
-(require 'filename2clipboard)
 
 (setq gc-cons-threshold (* 2 1000 1000))
 

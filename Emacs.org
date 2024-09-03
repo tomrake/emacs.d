@@ -730,12 +730,6 @@ Print Debug markers in *messages*
 #+BEGIN_SRC emacs-lisp :eval never-export
 (message "Debug SLIME END MARK")
 #+END_SRC
-* Report Debug START                                               :noexport:
-Print Debug markers in *messages*
-#+BEGIN_SRC emacs-lisp :eval never-export
-(message "Debug START")
-#+END_SRC
-
 * Enable lisp-mode .lisp and .asd files
   #+BEGIN_SRC emacs-lisp
   (setq auto-mode-alist
@@ -776,6 +770,135 @@ Print Debug markers in *messages*
 	      auto-mode-alist))
 #+END_SRC
 
+* simple httpd
+Use simple-httpd to preview a site from emacs.
+#+begin_src emacs-lisp
+  (use-package simple-httpd
+    :straight t)
+#+end_src
+* PS Print with GHOSTSCRIPT
+#+BEGIN_SRC emacs-lisp
+;;;; PS Print with GHOSTSCRIPT
+  (setq ps-lpr-command "C:/Program Files/gs/gs9.56.1/bin/gswin64c.exe")
+  (setq ps-lpr-switches '("-q" "-dNOPAUSE" "-dBATCH" "-sDEVICE=mswinpr2" "-sOutputFile=\"%printer%Canon\ TS6000\ series\""))
+  (setq ps-printer-name t)
+  (setf ps-font-family 'Courier)
+  (setf ps-font-size 10.0)
+  (setf ps-line-number t)
+  (setf ps-line-number-font-size 10)
+#+END_SRC
+
+* Emacs Backup Files
+;;;; Emacs Backup Files
+#+begin_src emacs-lisp
+(setq backup-directory-alist `(("." . ,(expand-file-name "tmp/backups/" user-emacs-directory))))
+#+end_src
+
+* Eshell
+#+begin_src emacs-lisp
+  (defun efs/configure-eshell ()
+	   ;; Save command history when commands are entered
+	   (add-hook 'eshell-pre-command-hook 'eshell-save-some-history)
+
+	   ;; Truncate buffer for performance
+	   (add-to-list 'eshell-output-filter-functions 'eshell-truncate-buffer)
+
+	   (setq eshell-history-size         10000
+		 eshell-buffer-maximum-lines 10000
+		 eshell-hist-ignoredups t
+		 eshell-scroll-to-bottom-on-input t))
+
+  (use-package eshell
+	   :hook (eshell-first-time-mode . efs/configure-eshell))
+
+  (use-package eshell-git-prompt
+    :straight t
+    :config
+      (eshell-git-prompt-use-theme 'powerline))
+#+end_src
+* Report Debug START                                               :noexport:
+Print Debug markers in *messages*
+#+BEGIN_SRC emacs-lisp :eval never-export
+(message "Debug START")
+#+END_SRC
+
+* Dired
+  - dired is configured as a file manager.
+** dired hook
+#+begin_src emacs-lisp
+  (use-package dired
+    :straight t
+    :config
+      (add-hook 'dired-mode-hook 'all-the-icons-dired-mode))
+
+#+end_src
+** Single Dired buffer
+#+begin_src emacs-lisp
+  (use-package dired-single
+    :straight t
+    :after
+      dired
+    :config
+      (defun twr/dired-init ()
+	(define-key dired-mode-map [remap dired-find-file]
+	  'dired-single-buffer)
+	(define-key dired-mode-map [remap dired-mouse-find-file-other-window]
+	  'dired-single-buffer-mouse)
+	(define-key dired-mode-map [remap dired-up-directory]
+	  'dired-single-up-directory))
+      (twr/dired-init)
+      (setq dired-single-use-magic-buffer t)
+      ;; F5 is my special key
+      (global-set-key [(f5)] 'dired-single-magic-buffer)
+      (global-set-key [(control f5)] (function
+	(lambda nil (interactive)
+	  (dired-single-magic-buffer default-directory))))
+      (global-set-key [(shift f5)] (function
+	(lambda nil (interactive)
+	  (message "Current directory is: %s" default-directory))))
+      (global-set-key [(meta f5)] 'dired-single-toggle-buffer-name))
+#+end_src
+** All the icons
+#+BEGIN_SRC emacs-lisp
+  (use-package all-the-icons-dired
+	:straight t
+	:after dired
+	;:pin melpa
+	:config
+	(add-hook 'dired-mode-hook 'all-the-icons-dired-mode))
+#+end_src
+** File Sort Order
+#+begin_src emacs-lisp
+  (defun mydired-sort ()
+	  "Sort dired listings with directories first."
+	  (save-excursion
+	    (let (buffer-read-only)
+	      (forward-line 2) ;; beyond dir. header 
+	      (sort-regexp-fields t "^.*$" "[ ]*." (point) (point-max)))
+	    (set-buffer-modified-p nil)))
+
+  (defadvice dired-readin
+	  (after dired-after-updating-hook first () activate)
+	  "Sort dired listings with directories first before adding marks."
+	  (mydired-sort))
+#+END_SRC
+** diredc - NOT TANGLED
+#+begin_src emacs-lisp :tangle no
+  (use-package diredc)
+#+end_src
+** Peep Dired - NOT TANGLED
+#+begin_src emacs-lisp :tangle no
+  (use-package peep-dired
+  :config
+  ; kill buffers when diabling the mode
+  (setq peep-dired-cleanup-on-disable t)
+  ; kill buffers when you move to another
+  (setq peep-direct-cleanup-on eagerly t)
+  ; set mode for peeped buffers
+  (setq peep-dired-enable-on-directories t)
+  ; file  types not to open
+  (setq peep-dired-ignored-extensions '("mkv" "iso" "mp4"))
+#+end_src
 * Report Debug TEST                                                :noexport:
 Print Debug markers in *messages*
 #+BEGIN_SRC emacs-lisp  :eval never-export
@@ -783,8 +906,196 @@ Print Debug markers in *messages*
 #+END_SRC
  
 
+* Mastodon
+#+begin_src emacs-lisp
+;;;; mastodon
+  (use-package mastodon
+    :straight t)
+  (setq mastodon-active-user "tomrake")
+  (setq mastodon-instance-url "https://mastodon.social")
+#+end_src
+* Openwith
+NOTE:
+On Windows 11, this only opens the file by the Windows extension
+So configure it there.
+#+begin_src emacs-lisp
+  (when (require 'openwith nil 'noerror)
+
+     (setq openwith-associatsions
+	 (list (list (openwith-make-extension-regexp '("mpg" "mpeg" "mp3" "mp4"
+					      "avi" "wmv" "wav" "mov" "flv"
+					      "ogm" "ogg" "mkv")) "vlc.exe")
+	       (list (openwith-make-extension-regexp '("JPEG" "JPG"))
+		     "c:/Program Files (x86)/JPEGView/JPEGView.exe" '(file))))
+;;    (message "OPENWITH CONFIG")
+;;    (message openwith-associatsions)
+    (openwith-mode 1))
+#+end_src
+* Recentf 
+#+begin_src emacs-lisp
+(require 'recentf)
+(recentf-mode 1)
+(setq recentf-max-menu-items 25)
+(global-set-key "\C-x\ \C-r" 'recentf-open-files)
+#+end_src
+* PDF-TOOLS
+org-noter hangs on msys2 launch
+I am not tangleing this to see of msys2 launch is sucessful.
+I remove noter loading, tangle again.
+#+begin_src emacs-lisp :tangle no
+  (use-package pdf-tools
+     :config
+     ;(pdf-tools-install))
+
+  (use-package org-pdftools
+    :hook (org-mode . org-pdftools-setup-link))
+#+end_src
+* PPL Time of Day
+#+begin_src emacs-lisp
+   (setq ppl-holiday-table ;; '(2023					;year
+   ;;   (1 1)					;new years day
+   ;;   (2 20)				;presidents day
+   ;;   (4 7)					; Good Friday
+   ;;   (5 29)				; Memorial Day
+   ;;   (7 4)					; Independence Day
+   ;;   (9 4)					; Labor Day
+   ;;   (11 24)				; Thanksgiving
+   ;;   (11 25)				; Next Day
+   ;;   (12 24)				; Christmas Eve
+   ;;   (12 25))
+   '(2024					;year
+    (1 1)					;new years day
+   (2 19)				;presidents day
+   (3 29)					; Good Friday
+   (5 27)				; Memorial Day
+   (7 4)					; Independence Day
+   (9 2)					; Labor Day
+   (11 28)				; Thanksgiving
+   (11 29)				; Next Day
+   (12 24)				; Christmas Eve
+   (12 25)))                              ; Christmas
+
+
+    (defun is-holiday (dt table)
+      "Check if a date is a holiday"
+      (if table (or (and (= (nth 4 dt) (nth 0 (car table)))
+			 (= (nth 3 dt) (nth 1 (car table))))
+		    (is-holiday dt (cdr table)))))
+
+    (defun is-ppl-holiday (dt)
+      "Check if a date is a PPL holiday"
+      (if (/= (car ppl-holiday-table) (nth 5 dt)) 
+	  (error "Update Date table") 
+	  (is-holiday dt (cdr ppl-holiday-table))))
+
+    (defun ppl-summer (dt)
+      "Check if a date is PPL summer rate"
+      (< 5 (nth 4 dt) 12))
+
+  (defun ppl-high-rate (&optional dt)
+    "Check if a date and time are at PPL high rate"
+    (unless dt (setq dt (decode-time)))
+	 (cond ((not (< 0 (nth 6 dt) 6))  nil)
+	       ((is-ppl-holiday dt)  nil)
+	       ((ppl-summer dt)  (<= 14 (nth 2 dt) 17))
+		(t  ( <= 16 (nth 2 dt) 19))))
+
+#+end_src
+* YAML Mode
+Add yaml mode
+#+begin_src emacs-lisp
+(use-package yaml-mode)
+#+end_src
+* JSON to Single line
+This was found on https://stackoverflow.com/questions/39861580/emacs-program-to-collapse-json-to-single-line and is Justin Schell response.
+
+I am using to add icons to the icons.json file derived from feathericons.
+#+begin_src emacs-lisp
+(defun json-to-single-line (beg end)
+  "Collapse prettified json in region between BEG and END to a single line"
+  (interactive "r")
+  (if (use-region-p)
+      (save-excursion
+        (save-restriction
+          (narrow-to-region beg end)
+          (goto-char (point-min))
+          (while (re-search-forward "[[:space:]\n]+" nil t)
+            (replace-match " "))))
+    (print "This function operates on a region")))
+#+end_src
+* load per user settings
+ #+BEGIN_SRC emacs-lisp
+   ;;;; Various user settings is a local configuration.
+   (local-custom-file "local-settings.org" "Final user settings")
+ #+END_SRC
+
+ 
+* Sourcing of Scripts
+#+BEGIN_SRC emacs-lisp
+(require 'filename2clipboard)
+#+END_SRC
+* Report Debug MARK                                                :noexport:
+Print Debug markers in *messages*
+#+BEGIN_SRC emacs-lisp  :eval never-export
+(message "Debug MARK")
+#+END_SRC
+ 
+* Report Debug Before ORG                                          :noexport:
+Print Debug markers in *messages*
+#+BEGIN_SRC emacs-lisp  :eval never-export
+(message "Debug Before ORG")
+#+END_SRC
+ 
+
+
 * Org Mode
+Following are a few :after org use-packages
+** org-bullets
+#+begin_src emacs-lisp
+  (use-package org-bullets
+    :after org
+    :hook (org-mode . org-bullets-mode)
+    :custom
+    (org-bullets-bullet-list '("◉" "○" "●" "○" "●" "○" "●")))
+#+end_src
+** org-present
+A mode to show org files as a presentation.
+
+- M-x org-present       - to enter mode
+- M-x org-present-quit  - to turn off mode.
+#+begin_src emacs-lisp
+  (use-package org-present
+    :straight t
+    :after org)
+   
+#+end_src
+** visual-fill-column
+#+begin_src emacs-lisp
+  (use-package visual-fill-column
+	  :straight t
+	  :after org-present
+	  :config
+	  (setq visual-fill-column-width 110
+		visual-fill-column-center-text t))
+#+end_src
+** org-indent
+#+begin_src emacs-lisp
+  (use-package org-indent
+    :after org)
+#+end_src
+** org after
+#+begin_src emacs-lisp
+
+#+end_src
+
 This is a large use-package config statement for org.
+
+** Report Debug TEST In Org                                        :noexport:
+Print Debug markers in *messages*
+#+BEGIN_SRC emacs-lisp  :eval never-export
+(message "Debug TEST In ORG")
+#+END_SRC
+ 
 
 ** << The Open  ( use-package for org
 
@@ -818,11 +1129,7 @@ There need to be an org directory to place certain org files.
   #+END_SRC
 ** The exact form of org files largely from this file Emacs.org
 #+BEGIN_SRC emacs-lisp
-  (use-package org-bullets
-    :after org
-    :hook (org-mode . org-bullets-mode)
-    :custom
-    (org-bullets-bullet-list '("◉" "○" "●" "○" "●" "○" "●")))
+
 
   ;; Replace list hyphen with dot
   (font-lock-add-keywords 'org-mode
@@ -838,9 +1145,6 @@ There need to be an org directory to place certain org files.
 		  (org-level-7 . 1.1)
 		  (org-level-8 . 1.1)))
       (set-face-attribute (car face) nil :font "Cantarell" :weight 'regular :height (cdr face)))
-
-  ;; Make sure org-indent face is available
-  (require 'org-indent)
 
   ;; Ensure that anything that should be fixed-pitch in Org files appears that way
   (set-face-attribute 'org-block nil :foreground nil :inherit 'fixed-pitch)
@@ -902,21 +1206,6 @@ I have no idea why I have this. [TBD] test with and without and evaluate.
   (advice-add 'org-capture-refile :after 'kk/delete-frame-if-neccessary)
 #+END_SRC
 
-** org-present
-A mode to show org files as a presentation.
-
-- M-x org-present       - to enter mode
-- M-x org-present-quit  - to turn off mode.
-#+BEGIN_SRC emacs-lisp
-  (use-package org-present
-    :straight t
-    :config
-      (use-package visual-fill-column
-	:straight t
-	:config
-	(setq visual-fill-column-width 110
-	      visual-fill-column-center-text t)))
-#+END_SRC
 
 ** org mode add :shcmd to sh blocks
 Allow formating of various shell types.
@@ -1353,262 +1642,6 @@ Tom Rake's Notes
 	  ("blog" :components ("blog-src"))))
 #+END_SRC  
 
-* simple httpd
-Use simple-httpd to preview a site from emacs.
-#+begin_src emacs-lisp
-  (use-package simple-httpd
-    :straight t)
-#+end_src
-* PS Print with GHOSTSCRIPT
-#+BEGIN_SRC emacs-lisp
-;;;; PS Print with GHOSTSCRIPT
-  (setq ps-lpr-command "C:/Program Files/gs/gs9.56.1/bin/gswin64c.exe")
-  (setq ps-lpr-switches '("-q" "-dNOPAUSE" "-dBATCH" "-sDEVICE=mswinpr2" "-sOutputFile=\"%printer%Canon\ TS6000\ series\""))
-  (setq ps-printer-name t)
-  (setf ps-font-family 'Courier)
-  (setf ps-font-size 10.0)
-  (setf ps-line-number t)
-  (setf ps-line-number-font-size 10)
-#+END_SRC
-
-* Report Debug MARK                                                :noexport:
-Print Debug markers in *messages*
-#+BEGIN_SRC emacs-lisp  :eval never-export
-(message "Debug MARK")
-#+END_SRC
- 
-
-* Emacs Backup Files
-;;;; Emacs Backup Files
-#+begin_src emacs-lisp
-(setq backup-directory-alist `(("." . ,(expand-file-name "tmp/backups/" user-emacs-directory))))
-#+end_src
-
-* Eshell
-#+begin_src emacs-lisp
-  (defun efs/configure-eshell ()
-	   ;; Save command history when commands are entered
-	   (add-hook 'eshell-pre-command-hook 'eshell-save-some-history)
-
-	   ;; Truncate buffer for performance
-	   (add-to-list 'eshell-output-filter-functions 'eshell-truncate-buffer)
-
-	   (setq eshell-history-size         10000
-		 eshell-buffer-maximum-lines 10000
-		 eshell-hist-ignoredups t
-		 eshell-scroll-to-bottom-on-input t))
-
-  (use-package eshell
-	   :hook (eshell-first-time-mode . efs/configure-eshell))
-
-  (use-package eshell-git-prompt
-    :straight t
-    :config
-      (eshell-git-prompt-use-theme 'powerline))
-#+end_src
-* Dired
-  - dired is configured as a file manager.
-** dired hook
-#+begin_src emacs-lisp
-  (use-package dired
-    :straight nil
-    :config
-      (add-hook 'dired-mode-hook 'all-the-icons-dired-mode))
-
-#+end_src
-** Single Dired buffer
-#+begin_src emacs-lisp
-  (use-package dired-single
-    :after
-      dired
-    :config
-      (defun twr/dired-init ()
-	(define-key dired-mode-map [remap dired-find-file]
-	  'dired-single-buffer)
-	(define-key dired-mode-map [remap dired-mouse-find-file-other-window]
-	  'dired-single-buffer-mouse)
-	(define-key dired-mode-map [remap dired-up-directory]
-	  'dired-single-up-directory))
-      (twr/dired-init)
-      (setq dired-single-use-magic-buffer t)
-      ;; F5 is my special key
-      (global-set-key [(f5)] 'dired-single-magic-buffer)
-      (global-set-key [(control f5)] (function
-	(lambda nil (interactive)
-	  (dired-single-magic-buffer default-directory))))
-      (global-set-key [(shift f5)] (function
-	(lambda nil (interactive)
-	  (message "Current directory is: %s" default-directory))))
-      (global-set-key [(meta f5)] 'dired-single-toggle-buffer-name))
-#+end_src
-** All the icons
-#+BEGIN_SRC emacs-lisp
-  (use-package all-the-icons-dired
-	:straight t
-	:pin melpa
-	:config
-	(add-hook 'dired-mode-hook 'all-the-icons-dired-mode))
-#+end_src
-** File Sort Order
-#+begin_src emacs-lisp
-  (defun mydired-sort ()
-	  "Sort dired listings with directories first."
-	  (save-excursion
-	    (let (buffer-read-only)
-	      (forward-line 2) ;; beyond dir. header 
-	      (sort-regexp-fields t "^.*$" "[ ]*." (point) (point-max)))
-	    (set-buffer-modified-p nil)))
-
-  (defadvice dired-readin
-	  (after dired-after-updating-hook first () activate)
-	  "Sort dired listings with directories first before adding marks."
-	  (mydired-sort))
-#+END_SRC
-** diredc - NOT TANGLED
-#+begin_src emacs-lisp :tangle no
-  (use-package diredc)
-#+end_src
-** Peep Dired - NOT TANGLED
-#+begin_src emacs-lisp :tangle no
-  (use-package peep-dired
-  :config
-  ; kill buffers when diabling the mode
-  (setq peep-dired-cleanup-on-disable t)
-  ; kill buffers when you move to another
-  (setq peep-direct-cleanup-on eagerly t)
-  ; set mode for peeped buffers
-  (setq peep-dired-enable-on-directories t)
-  ; file  types not to open
-  (setq peep-dired-ignored-extensions '("mkv" "iso" "mp4"))
-#+end_src
-* Mastodon
-#+begin_src emacs-lisp
-;;;; mastodon
-  (use-package mastodon
-    :straight t)
-  (setq mastodon-active-user "tomrake")
-  (setq mastodon-instance-url "https://mastodon.social")
-#+end_src
-* Openwith
-NOTE:
-On Windows 11, this only opens the file by the Windows extension
-So configure it there.
-#+begin_src emacs-lisp
-  (when (require 'openwith nil 'noerror)
-
-     (setq openwith-associatsions
-	 (list (list (openwith-make-extension-regexp '("mpg" "mpeg" "mp3" "mp4"
-					      "avi" "wmv" "wav" "mov" "flv"
-					      "ogm" "ogg" "mkv")) "vlc.exe")
-	       (list (openwith-make-extension-regexp '("JPEG" "JPG"))
-		     "c:/Program Files (x86)/JPEGView/JPEGView.exe" '(file))))
-;;    (message "OPENWITH CONFIG")
-;;    (message openwith-associatsions)
-    (openwith-mode 1))
-#+end_src
-* Recentf 
-#+begin_src emacs-lisp
-(require 'recentf)
-(recentf-mode 1)
-(setq recentf-max-menu-items 25)
-(global-set-key "\C-x\ \C-r" 'recentf-open-files)
-#+end_src
-* PDF-TOOLS
-org-noter hangs on msys2 launch
-I am not tangleing this to see of msys2 launch is sucessful.
-I remove noter loading, tangle again.
-#+begin_src emacs-lisp :tangle no
-  (use-package pdf-tools
-     :config
-     ;(pdf-tools-install))
-
-  (use-package org-pdftools
-    :hook (org-mode . org-pdftools-setup-link))
-#+end_src
-* PPL Time of Day
-#+begin_src emacs-lisp
-   (setq ppl-holiday-table ;; '(2023					;year
-   ;;   (1 1)					;new years day
-   ;;   (2 20)				;presidents day
-   ;;   (4 7)					; Good Friday
-   ;;   (5 29)				; Memorial Day
-   ;;   (7 4)					; Independence Day
-   ;;   (9 4)					; Labor Day
-   ;;   (11 24)				; Thanksgiving
-   ;;   (11 25)				; Next Day
-   ;;   (12 24)				; Christmas Eve
-   ;;   (12 25))
-   '(2024					;year
-    (1 1)					;new years day
-   (2 19)				;presidents day
-   (3 29)					; Good Friday
-   (5 27)				; Memorial Day
-   (7 4)					; Independence Day
-   (9 2)					; Labor Day
-   (11 28)				; Thanksgiving
-   (11 29)				; Next Day
-   (12 24)				; Christmas Eve
-   (12 25)))                              ; Christmas
-
-
-    (defun is-holiday (dt table)
-      "Check if a date is a holiday"
-      (if table (or (and (= (nth 4 dt) (nth 0 (car table)))
-			 (= (nth 3 dt) (nth 1 (car table))))
-		    (is-holiday dt (cdr table)))))
-
-    (defun is-ppl-holiday (dt)
-      "Check if a date is a PPL holiday"
-      (if (/= (car ppl-holiday-table) (nth 5 dt)) 
-	  (error "Update Date table") 
-	  (is-holiday dt (cdr ppl-holiday-table))))
-
-    (defun ppl-summer (dt)
-      "Check if a date is PPL summer rate"
-      (< 5 (nth 4 dt) 12))
-
-  (defun ppl-high-rate (&optional dt)
-    "Check if a date and time are at PPL high rate"
-    (unless dt (setq dt (decode-time)))
-	 (cond ((not (< 0 (nth 6 dt) 6))  nil)
-	       ((is-ppl-holiday dt)  nil)
-	       ((ppl-summer dt)  (<= 14 (nth 2 dt) 17))
-		(t  ( <= 16 (nth 2 dt) 19))))
-
-#+end_src
-* YAML Mode
-Add yaml mode
-#+begin_src emacs-lisp
-(use-package yaml-mode)
-#+end_src
-* JSON to Single line
-This was found on https://stackoverflow.com/questions/39861580/emacs-program-to-collapse-json-to-single-line and is Justin Schell response.
-
-I am using to add icons to the icons.json file derived from feathericons.
-#+begin_src emacs-lisp
-(defun json-to-single-line (beg end)
-  "Collapse prettified json in region between BEG and END to a single line"
-  (interactive "r")
-  (if (use-region-p)
-      (save-excursion
-        (save-restriction
-          (narrow-to-region beg end)
-          (goto-char (point-min))
-          (while (re-search-forward "[[:space:]\n]+" nil t)
-            (replace-match " "))))
-    (print "This function operates on a region")))
-#+end_src
-* load per user settings
- #+BEGIN_SRC emacs-lisp
-   ;;;; Various user settings is a local configuration.
-   (local-custom-file "local-settings.org" "Final user settings")
- #+END_SRC
-
- 
-* Sourcing of Scripts
-#+BEGIN_SRC emacs-lisp
-(require 'filename2clipboard)
-#+END_SRC
 * Adjust for better GC
 #+begin_src emacs-lisp
 (setq gc-cons-threshold (* 2 1000 1000))  
