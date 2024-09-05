@@ -84,7 +84,7 @@
 ;; Autommatically tangle our Emacs.org config file when we save it.
 (defun efs/org-babel-tangle-config ()
   "Test if the buffer should be auto-tangled after save"
-  ;; (message "string-equal: %s %s" (buffer-file-name) (expand-file-name (concat user-emacs-directory "Emacs.org")))
+   (message "string-equal: %s %s" (buffer-file-name) (expand-file-name (concat user-emacs-directory "Emacs.org")))
   (when (string-equal (buffer-file-name)
 		      (expand-file-name (concat user-emacs-directory "Emacs.org")))
     (message "Begin efs/tangle")
@@ -530,12 +530,12 @@
 (message "Debug START")
 
 (use-package dired
-  :straight t
+  :straight nil
   :config
     (add-hook 'dired-mode-hook 'all-the-icons-dired-mode))
 
 (use-package dired-single
-  :straight t
+  :straight nil
   :after
     dired
   :config
@@ -578,7 +578,7 @@
 	"Sort dired listings with directories first before adding marks."
 	(mydired-sort))
 
-(message "Debug TEST")
+(message "Debug TEST - YES!!!")
 
 ;;;; mastodon
   (use-package mastodon
@@ -668,41 +668,8 @@
 ;;;; Various user settings is a local configuration.
 (local-custom-file "local-settings.org" "Final user settings")
 
-(require 'filename2clipboard)
-
-(message "Debug MARK")
-
-(message "Debug Before ORG")
-
-(use-package org-bullets
-  :after org
-  :hook (org-mode . org-bullets-mode)
-  :custom
-  (org-bullets-bullet-list '("◉" "○" "●" "○" "●" "○" "●")))
-
-(use-package org-present
-  :straight t
-  :after org)
-
-(use-package visual-fill-column
-	:straight t
-	:after org-present
-	:config
-	(setq visual-fill-column-width 110
-	      visual-fill-column-center-text t))
-
-(use-package org-indent
-  :after org)
-
-
-
-(message "Debug TEST In ORG")
-
 (use-package org
-  ;:pin elpa
-  :catch
-  (lambda (keyword err)
-         (message (error-message-string err)))
+  :straight (:type built-in)
   :config
 
 (message "Debug ORG START")
@@ -714,6 +681,12 @@
 ;; 		  (defvar org-user-dir it "The base of org user files.")
 ;; 		  (unless (file-directory-p org-user-dir)
 ;; 		    (make-directory  org-user-dir)))
+
+(use-package org-bullets
+  :after org
+  :hook (org-mode . org-bullets-mode)
+  :custom
+  (org-bullets-bullet-list '("◉" "○" "●" "○" "●" "○" "●")))
 
 ;; Replace list hyphen with dot
 (font-lock-add-keywords 'org-mode
@@ -729,6 +702,9 @@
 		(org-level-7 . 1.1)
 		(org-level-8 . 1.1)))
     (set-face-attribute (car face) nil :font "Cantarell" :weight 'regular :height (cdr face)))
+
+;; Make sure org-indent face is available
+(require 'org-indent)
 
 ;; Ensure that anything that should be fixed-pitch in Org files appears that way
 (set-face-attribute 'org-block nil :foreground nil :inherit 'fixed-pitch)
@@ -772,6 +748,15 @@
 (advice-add 'org-capture-finalize :after 'kk/delete-frame-if-neccessary)
 (advice-add 'org-capture-kill :after 'kk/delete-frame-if-neccessary)
 (advice-add 'org-capture-refile :after 'kk/delete-frame-if-neccessary)
+
+(use-package org-present
+  :straight t
+  :config
+    (use-package visual-fill-column
+      :straight t
+      :config
+      (setq visual-fill-column-width 110
+	    visual-fill-column-center-text t)))
 
 ;;;; Add Windows cmdproxy  
   (require 'ob-shell)
@@ -1063,6 +1048,10 @@ text and copying to the killring."
 (make-gtd-switch)
 
 ) ;; This is close of a huge :config of (use-package org
+
+(require 'filename2clipboard)
+
+(message "Debug Before ORG")
 
 (require 'ox-publish)
 

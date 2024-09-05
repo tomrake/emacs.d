@@ -124,7 +124,7 @@ This is a modifed from systemcrafters.
   ;; Autommatically tangle our Emacs.org config file when we save it.
   (defun efs/org-babel-tangle-config ()
     "Test if the buffer should be auto-tangled after save"
-    ;; (message "string-equal: %s %s" (buffer-file-name) (expand-file-name (concat user-emacs-directory "Emacs.org")))
+     (message "string-equal: %s %s" (buffer-file-name) (expand-file-name (concat user-emacs-directory "Emacs.org")))
     (when (string-equal (buffer-file-name)
 			(expand-file-name (concat user-emacs-directory "Emacs.org")))
       (message "Begin efs/tangle")
@@ -827,7 +827,7 @@ Print Debug markers in *messages*
 ** dired hook
 #+begin_src emacs-lisp
   (use-package dired
-    :straight t
+    :straight nil
     :config
       (add-hook 'dired-mode-hook 'all-the-icons-dired-mode))
 
@@ -835,7 +835,7 @@ Print Debug markers in *messages*
 ** Single Dired buffer
 #+begin_src emacs-lisp
   (use-package dired-single
-    :straight t
+    :straight nil
     :after
       dired
     :config
@@ -902,7 +902,7 @@ Print Debug markers in *messages*
 * Report Debug TEST                                                :noexport:
 Print Debug markers in *messages*
 #+BEGIN_SRC emacs-lisp  :eval never-export
-(message "Debug TEST")
+(message "Debug TEST - YES!!!")
 #+END_SRC
  
 
@@ -1030,81 +1030,14 @@ I am using to add icons to the icons.json file derived from feathericons.
  #+END_SRC
 
  
-* Sourcing of Scripts
-#+BEGIN_SRC emacs-lisp
-(require 'filename2clipboard)
-#+END_SRC
-* Report Debug MARK                                                :noexport:
-Print Debug markers in *messages*
-#+BEGIN_SRC emacs-lisp  :eval never-export
-(message "Debug MARK")
-#+END_SRC
- 
-* Report Debug Before ORG                                          :noexport:
-Print Debug markers in *messages*
-#+BEGIN_SRC emacs-lisp  :eval never-export
-(message "Debug Before ORG")
-#+END_SRC
- 
-
-
 * Org Mode
-Following are a few :after org use-packages
-** org-bullets
-#+begin_src emacs-lisp
-  (use-package org-bullets
-    :after org
-    :hook (org-mode . org-bullets-mode)
-    :custom
-    (org-bullets-bullet-list '("◉" "○" "●" "○" "●" "○" "●")))
-#+end_src
-** org-present
-A mode to show org files as a presentation.
-
-- M-x org-present       - to enter mode
-- M-x org-present-quit  - to turn off mode.
-#+begin_src emacs-lisp
-  (use-package org-present
-    :straight t
-    :after org)
-   
-#+end_src
-** visual-fill-column
-#+begin_src emacs-lisp
-  (use-package visual-fill-column
-	  :straight t
-	  :after org-present
-	  :config
-	  (setq visual-fill-column-width 110
-		visual-fill-column-center-text t))
-#+end_src
-** org-indent
-#+begin_src emacs-lisp
-  (use-package org-indent
-    :after org)
-#+end_src
-** org after
-#+begin_src emacs-lisp
-
-#+end_src
-
 This is a large use-package config statement for org.
-
-** Report Debug TEST In Org                                        :noexport:
-Print Debug markers in *messages*
-#+BEGIN_SRC emacs-lisp  :eval never-export
-(message "Debug TEST In ORG")
-#+END_SRC
- 
 
 ** << The Open  ( use-package for org
 
 #+begin_src emacs-lisp
   (use-package org
-    ;:pin elpa
-    :catch
-    (lambda (keyword err)
-           (message (error-message-string err)))
+    :straight (:type built-in)
     :config
 #+end_src
 
@@ -1129,7 +1062,11 @@ There need to be an org directory to place certain org files.
   #+END_SRC
 ** The exact form of org files largely from this file Emacs.org
 #+BEGIN_SRC emacs-lisp
-
+  (use-package org-bullets
+    :after org
+    :hook (org-mode . org-bullets-mode)
+    :custom
+    (org-bullets-bullet-list '("◉" "○" "●" "○" "●" "○" "●")))
 
   ;; Replace list hyphen with dot
   (font-lock-add-keywords 'org-mode
@@ -1145,6 +1082,9 @@ There need to be an org directory to place certain org files.
 		  (org-level-7 . 1.1)
 		  (org-level-8 . 1.1)))
       (set-face-attribute (car face) nil :font "Cantarell" :weight 'regular :height (cdr face)))
+
+  ;; Make sure org-indent face is available
+  (require 'org-indent)
 
   ;; Ensure that anything that should be fixed-pitch in Org files appears that way
   (set-face-attribute 'org-block nil :foreground nil :inherit 'fixed-pitch)
@@ -1206,6 +1146,21 @@ I have no idea why I have this. [TBD] test with and without and evaluate.
   (advice-add 'org-capture-refile :after 'kk/delete-frame-if-neccessary)
 #+END_SRC
 
+** org-present
+A mode to show org files as a presentation.
+
+- M-x org-present       - to enter mode
+- M-x org-present-quit  - to turn off mode.
+#+BEGIN_SRC emacs-lisp
+  (use-package org-present
+    :straight t
+    :config
+      (use-package visual-fill-column
+	:straight t
+	:config
+	(setq visual-fill-column-width 110
+	      visual-fill-column-center-text t)))
+#+END_SRC
 
 ** org mode add :shcmd to sh blocks
 Allow formating of various shell types.
@@ -1595,6 +1550,17 @@ Add macro to construction block agenda components of TODO items.
 #+end_src
 
 This is a single ) to close it.
+
+* Sourcing of Scripts
+#+BEGIN_SRC emacs-lisp
+(require 'filename2clipboard)
+#+END_SRC
+* Report Debug Before ORG                                          :noexport:
+Print Debug markers in *messages*
+#+BEGIN_SRC emacs-lisp  :eval never-export
+(message "Debug Before ORG")
+#+END_SRC
+ 
 
 * org-publish
 Tom Rake's Notes
