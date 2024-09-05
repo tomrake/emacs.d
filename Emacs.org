@@ -8,6 +8,7 @@
   ;; NOTE: init.el is now generated from Emacs.org.  Please edit that file
   ;;       in Emacs and init.el will be generated automatically!
   ;; Trying straight package manager
+  ;; Org mode loads!
 #+end_src
 
 * Emacs debug-on-error
@@ -198,7 +199,7 @@ This is a modifed from systemcrafters.
 #+end_src
 * The emacs customization file.
  Define were emacs cusomization is saved and restored.
- #+BEGIN_SRC emacs-lisp
+ #+BEGIN_SRC emacs-lisp :tangle nil
    ;;;; define emacs customization file and load it.
    (setq custom-file (expand-file-name "emacs-custom.el" user-emacs-directory))
    (load custom-file)
@@ -468,39 +469,41 @@ Certain tools need java set that location here.
 * Modus Theme Configuration
 Main Page: [[https://protesilaos.com/emacs/modus-themes]]
 #+BEGIN_SRC emacs-lisp
-    (use-package modus-themes
-      :straight t
-      :config
-      (set-face-attribute 'default nil :height 150)
-	  ;; Subtle red background, red foreground, invisible border
+  (use-package modus-themes
+    :straight t
+    :init
+    (setf custom-safe-themes t)
+    :config
+    (set-face-attribute 'default nil :height 150)
+	;; Subtle red background, red foreground, invisible border
 
-      (setq modus-themes-region '(bg-only))
-      (setq modus-themes-paren-match '(bold intense))
-      (setq modus-themes-lang-checkers '(background intense))
-      (setq modus-themes-italic-constructs t)
-      (setq modus-themes-bold-contructs t)
-      ;; Subtle blue background, neutral foreground, intense blue border
-      (setq modus-themes-common-palette-overrides
-	'((bg-mode-line-active bg-blue-subtle)
-	  (fg-mode-line-active fg-main)
-	  (border-mode-line-active blue-intense)))
-      (setq modus-themes-mode-line '(accented borderless))
-      ;;; Org Mode
-      (setq modus-themes-heading
-	    `((1 . (rainbow bold intense 2.3))
-	      (2 . (rainbow bold intense 1.9))
-	      (3 . (rainbow bold intense 1.7))
-	      (4 . (rainbow bold intense 1.5))
-	      (5 . (rainbow bold intense 1.3))
-	      (6 . (rainbow bold intense 1.1))
-	      (t . (rainbow bold background 1.0))))
-      (setq modus-themes-org-agenda
-	    '((header-block . (variable-pitch 1.5))
-	      (header-date . (grayscale workaholic bold-today 1.2))
-	      (event . (accented italic varied))
-	      (scheduled . uniform)
-	      (habit . traffic-light)))
-      (load-theme 'modus-vivendi t))
+    (setq modus-themes-region '(bg-only))
+    (setq modus-themes-paren-match '(bold intense))
+    (setq modus-themes-lang-checkers '(background intense))
+    (setq modus-themes-italic-constructs t)
+    (setq modus-themes-bold-contructs t)
+    ;; Subtle blue background, neutral foreground, intense blue border
+    (setq modus-themes-common-palette-overrides
+      '((bg-mode-line-active bg-blue-subtle)
+	(fg-mode-line-active fg-main)
+	(border-mode-line-active blue-intense)))
+    (setq modus-themes-mode-line '(accented borderless))
+    ;;; Org Mode
+    (setq modus-themes-heading
+	  `((1 . (rainbow bold intense 2.3))
+	    (2 . (rainbow bold intense 1.9))
+	    (3 . (rainbow bold intense 1.7))
+	    (4 . (rainbow bold intense 1.5))
+	    (5 . (rainbow bold intense 1.3))
+	    (6 . (rainbow bold intense 1.1))
+	    (t . (rainbow bold background 1.0))))
+    (setq modus-themes-org-agenda
+	  '((header-block . (variable-pitch 1.5))
+	    (header-date . (grayscale workaholic bold-today 1.2))
+	    (event . (accented italic varied))
+	    (scheduled . uniform)
+	    (habit . traffic-light)))
+    (load-theme 'modus-vivendi t t))
 #+END_SRC
 
 * Rainbow Delimeters

@@ -1,6 +1,7 @@
 ;; NOTE: init.el is now generated from Emacs.org.  Please edit that file
 ;;       in Emacs and init.el will be generated automatically!
 ;; Trying straight package manager
+;; Org mode loads!
 
 ;;;; Emacs Debug On Error
    (setq debug-on-error nil )
@@ -138,10 +139,6 @@
 	   gcs-done))
 
 (add-hook 'emacs-startup-hook #'efs/display-startup-time)
-
-;;;; define emacs customization file and load it.
-(setq custom-file (expand-file-name "emacs-custom.el" user-emacs-directory))
-(load custom-file)
 
 (defvar bootstrap-version)
 (let ((bootstrap-file
@@ -284,6 +281,8 @@
 
 (use-package modus-themes
   :straight t
+  :init
+  (setf custom-safe-themes t)
   :config
   (set-face-attribute 'default nil :height 150)
       ;; Subtle red background, red foreground, invisible border
@@ -314,7 +313,7 @@
 	  (event . (accented italic varied))
 	  (scheduled . uniform)
 	  (habit . traffic-light)))
-  (load-theme 'modus-vivendi t))
+  (load-theme 'modus-vivendi t t))
 
 ;;;; rainbow-delimiter
 (use-package rainbow-delimiters)
