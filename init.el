@@ -280,10 +280,8 @@
     (load (expand-file-name "~/.roswell/helper.el"))))
 
 (use-package modus-themes
-  :straight t
+  :ensure t
   :init
-  (setf custom-safe-themes t)
-  :config
   (set-face-attribute 'default nil :height 150)
       ;; Subtle red background, red foreground, invisible border
 
@@ -292,6 +290,7 @@
   (setq modus-themes-lang-checkers '(background intense))
   (setq modus-themes-italic-constructs t)
   (setq modus-themes-bold-contructs t)
+  (setq modus-themes-prompts  '(bold italic))
   ;; Subtle blue background, neutral foreground, intense blue border
   (setq modus-themes-common-palette-overrides
     '((bg-mode-line-active bg-blue-subtle)
@@ -313,7 +312,8 @@
 	  (event . (accented italic varied))
 	  (scheduled . uniform)
 	  (habit . traffic-light)))
-  (load-theme 'modus-vivendi t t))
+  (setf custom-safe-themes "e410458d3e769c33e0865971deb6e8422457fad02bf51f7862fa180ccc42c032")
+  (load-theme 'modus-vivendi t))
 
 ;;;; rainbow-delimiter
 (use-package rainbow-delimiters)
@@ -667,6 +667,52 @@
 ;;;; Various user settings is a local configuration.
 (local-custom-file "local-settings.org" "Final user settings")
 
+(require 'filename2clipboard)
+
+(message "Debug Before ORG")
+
+(require 'ox-publish)
+
+(defun dual-org-data (name org-part data-part common-part)
+  "Creates a name publishing project with org files and data files in the same directory."
+  `((,(concat name "-text")  ,@common-part ,@org-part)
+    (,(concat name "-data")  ,@common-part ,@data-part)
+    (,name :components (,(concat name "-text") ,(concat name "-data")))))
+
+
+(setq org-publish-project-alist
+      `(
+	,@(dual-org-data      "org-web" '(
+	 :base-extension "org"
+	 :publishing-function org-html-publish-to-html
+	 :headline-levels 4             ; Just the default for this project.
+	 :auto-preamble t
+	 :auto-sitemap t
+	 :section-numbers nil
+	 :makeindex t)
+	 '(
+	 :base-extension "css\\|js\\|png\\|jpg\\|gif\\|pdf\\|mp3\\|ogg\\|swf"
+	 :auto-sitemap nil
+	 :publishing-function org-publish-attachment)
+	 '(:base-directory "~/Documents/Code/org-web/content"
+			    :publishing-directory "c:/Users/Public/org-web"
+			   :recursive t
+			   :exclude ".*/\.git/.*|.*/.*~"
+			   ))
+	("blog-src"
+	 ;; Path to org files.
+	 :base-directory "~/Documents/Code/blog/org-source"
+	 :base-extension "org"
+
+	 ;; Path to Jekyll Posts
+	 :publishing-directory "~/Documents/Code/blog/tomrake.github.io/_drafts/"
+	 :recursive t
+	 :publishing-function org-html-publish-to-html
+	 :headline-levels 4
+	 :html-extension "html"
+	 :body-only t)
+	("blog" :components ("blog-src"))))
+
 (use-package org
   :straight (:type built-in)
   :config
@@ -899,11 +945,12 @@ text and copying to the killring."
 (setq org-log-into-drawer "LOGBOOK")
 
 (defmacro twr-todo-overview (file-list)
-  `(list '(todo "WAITING" ((org-agenda-files ,file-list)))
-    '(todo "NEXT" ((org-agenda-files ,file-list)))
-    '(todo "CANCELLED" ((org-agenda-files ,file-list)))
-    '(todo "TODO" ((org-agenda-files ,file-list)))
-    '(todo "DONE" ((org-agenda-files ,file-list)))))
+  `(list '(todo "WAITING" ((org-agenda-overriding-header "Waiting Tasks")(org-agenda-files ,file-list)
+			   ))
+    '(todo "NEXT" ((org-agenda-overriding-header "Next Tasks")(org-agenda-files ,file-list)))
+    '(todo "CANCELLED" ((org-agenda-overriding-header "Cancelled Tasks")(org-agenda-files ,file-list)))
+    '(todo "TODO" ((org-agenda-overriding-header "Todo Tasks")(org-agenda-files ,file-list)))
+    '(todo "DONE" ((org-agenda-overriding-header "Completed Tasks")(org-agenda-files ,file-list)))))
 
 (message "[TBD] %s" "Fix GTD Agenda file calculation. ")
  ;; There are current available tasks and Annual Events
@@ -1047,52 +1094,6 @@ text and copying to the killring."
 (make-gtd-switch)
 
 ) ;; This is close of a huge :config of (use-package org
-
-(require 'filename2clipboard)
-
-(message "Debug Before ORG")
-
-(require 'ox-publish)
-
-(defun dual-org-data (name org-part data-part common-part)
-  "Creates a name publishing project with org files and data files in the same directory."
-  `((,(concat name "-text")  ,@common-part ,@org-part)
-    (,(concat name "-data")  ,@common-part ,@data-part)
-    (,name :components (,(concat name "-text") ,(concat name "-data")))))
-
-
-(setq org-publish-project-alist
-      `(
-	,@(dual-org-data      "org-web" '(
-	 :base-extension "org"
-	 :publishing-function org-html-publish-to-html
-	 :headline-levels 4             ; Just the default for this project.
-	 :auto-preamble t
-	 :auto-sitemap t
-	 :section-numbers nil
-	 :makeindex t)
-	 '(
-	 :base-extension "css\\|js\\|png\\|jpg\\|gif\\|pdf\\|mp3\\|ogg\\|swf"
-	 :auto-sitemap nil
-	 :publishing-function org-publish-attachment)
-	 '(:base-directory "~/Documents/Code/org-web/content"
-			    :publishing-directory "c:/Users/Public/org-web"
-			   :recursive t
-			   :exclude ".*/\.git/.*|.*/.*~"
-			   ))
-	("blog-src"
-	 ;; Path to org files.
-	 :base-directory "~/Documents/Code/blog/org-source"
-	 :base-extension "org"
-
-	 ;; Path to Jekyll Posts
-	 :publishing-directory "~/Documents/Code/blog/tomrake.github.io/_drafts/"
-	 :recursive t
-	 :publishing-function org-html-publish-to-html
-	 :headline-levels 4
-	 :html-extension "html"
-	 :body-only t)
-	("blog" :components ("blog-src"))))
 
 (setq gc-cons-threshold (* 2 1000 1000))
 

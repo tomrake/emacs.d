@@ -2,7 +2,7 @@
 #+TITLE: The Emacs configuration of Tom Rake  
 #+PROPERTY: header-args:emacs-lisp :tangle ./init.el :mkdirp yes
 #+OPTIONS: toc:3
-
+Added debugged org and Modus Theme
 * Add Generated from Emacs.org warning.
 #+begin_src emacs-lisp
   ;; NOTE: init.el is now generated from Emacs.org.  Please edit that file
@@ -470,10 +470,8 @@ Certain tools need java set that location here.
 Main Page: [[https://protesilaos.com/emacs/modus-themes]]
 #+BEGIN_SRC emacs-lisp
   (use-package modus-themes
-    :straight t
+    :ensure t
     :init
-    (setf custom-safe-themes t)
-    :config
     (set-face-attribute 'default nil :height 150)
 	;; Subtle red background, red foreground, invisible border
 
@@ -482,6 +480,7 @@ Main Page: [[https://protesilaos.com/emacs/modus-themes]]
     (setq modus-themes-lang-checkers '(background intense))
     (setq modus-themes-italic-constructs t)
     (setq modus-themes-bold-contructs t)
+    (setq modus-themes-prompts  '(bold italic))
     ;; Subtle blue background, neutral foreground, intense blue border
     (setq modus-themes-common-palette-overrides
       '((bg-mode-line-active bg-blue-subtle)
@@ -503,7 +502,8 @@ Main Page: [[https://protesilaos.com/emacs/modus-themes]]
 	    (event . (accented italic varied))
 	    (scheduled . uniform)
 	    (habit . traffic-light)))
-    (load-theme 'modus-vivendi t t))
+    (setf custom-safe-themes "e410458d3e769c33e0865971deb6e8422457fad02bf51f7862fa180ccc42c032")
+    (load-theme 'modus-vivendi t))
 #+END_SRC
 
 * Rainbow Delimeters
@@ -1033,6 +1033,64 @@ I am using to add icons to the icons.json file derived from feathericons.
  #+END_SRC
 
  
+* Sourcing of Scripts
+#+BEGIN_SRC emacs-lisp
+(require 'filename2clipboard)
+#+END_SRC
+* Report Debug Before ORG                                          :noexport:
+Print Debug markers in *messages*
+#+BEGIN_SRC emacs-lisp  :eval never-export
+(message "Debug Before ORG")
+#+END_SRC
+ 
+
+* org-publish
+Tom Rake's Notes
+#+BEGIN_SRC emacs-lisp
+  (require 'ox-publish)
+
+  (defun dual-org-data (name org-part data-part common-part)
+    "Creates a name publishing project with org files and data files in the same directory."
+    `((,(concat name "-text")  ,@common-part ,@org-part)
+      (,(concat name "-data")  ,@common-part ,@data-part)
+      (,name :components (,(concat name "-text") ,(concat name "-data")))))
+
+
+  (setq org-publish-project-alist
+	`(
+	  ,@(dual-org-data      "org-web" '(
+	   :base-extension "org"
+	   :publishing-function org-html-publish-to-html
+	   :headline-levels 4             ; Just the default for this project.
+	   :auto-preamble t
+	   :auto-sitemap t
+	   :section-numbers nil
+	   :makeindex t)
+	   '(
+	   :base-extension "css\\|js\\|png\\|jpg\\|gif\\|pdf\\|mp3\\|ogg\\|swf"
+	   :auto-sitemap nil
+	   :publishing-function org-publish-attachment)
+	   '(:base-directory "~/Documents/Code/org-web/content"
+			      :publishing-directory "c:/Users/Public/org-web"
+			     :recursive t
+			     :exclude ".*/\.git/.*|.*/.*~"
+			     ))
+	  ("blog-src"
+	   ;; Path to org files.
+	   :base-directory "~/Documents/Code/blog/org-source"
+	   :base-extension "org"
+
+	   ;; Path to Jekyll Posts
+	   :publishing-directory "~/Documents/Code/blog/tomrake.github.io/_drafts/"
+	   :recursive t
+	   :publishing-function org-html-publish-to-html
+	   :headline-levels 4
+	   :html-extension "html"
+	   :body-only t)
+	  ("blog" :components ("blog-src"))))
+#+END_SRC  
+
+
 * Org Mode
 This is a large use-package config statement for org.
 
@@ -1376,12 +1434,13 @@ Define TODO types and colors
 Add macro to construction block agenda components of TODO items.
  
  #+begin_src emacs-lisp
-   (defmacro twr-todo-overview (file-list)
-     `(list '(todo "WAITING" ((org-agenda-files ,file-list)))
-       '(todo "NEXT" ((org-agenda-files ,file-list)))
-       '(todo "CANCELLED" ((org-agenda-files ,file-list)))
-       '(todo "TODO" ((org-agenda-files ,file-list)))
-       '(todo "DONE" ((org-agenda-files ,file-list)))))
+      (defmacro twr-todo-overview (file-list)
+	`(list '(todo "WAITING" ((org-agenda-overriding-header "Waiting Tasks")(org-agenda-files ,file-list)
+				 ))
+	  '(todo "NEXT" ((org-agenda-overriding-header "Next Tasks")(org-agenda-files ,file-list)))
+	  '(todo "CANCELLED" ((org-agenda-overriding-header "Cancelled Tasks")(org-agenda-files ,file-list)))
+	  '(todo "TODO" ((org-agenda-overriding-header "Todo Tasks")(org-agenda-files ,file-list)))
+	  '(todo "DONE" ((org-agenda-overriding-header "Completed Tasks")(org-agenda-files ,file-list)))))
  #+end_src
 
 
@@ -1553,63 +1612,6 @@ Add macro to construction block agenda components of TODO items.
 #+end_src
 
 This is a single ) to close it.
-
-* Sourcing of Scripts
-#+BEGIN_SRC emacs-lisp
-(require 'filename2clipboard)
-#+END_SRC
-* Report Debug Before ORG                                          :noexport:
-Print Debug markers in *messages*
-#+BEGIN_SRC emacs-lisp  :eval never-export
-(message "Debug Before ORG")
-#+END_SRC
- 
-
-* org-publish
-Tom Rake's Notes
-#+BEGIN_SRC emacs-lisp
-  (require 'ox-publish)
-
-  (defun dual-org-data (name org-part data-part common-part)
-    "Creates a name publishing project with org files and data files in the same directory."
-    `((,(concat name "-text")  ,@common-part ,@org-part)
-      (,(concat name "-data")  ,@common-part ,@data-part)
-      (,name :components (,(concat name "-text") ,(concat name "-data")))))
-
-
-  (setq org-publish-project-alist
-	`(
-	  ,@(dual-org-data      "org-web" '(
-	   :base-extension "org"
-	   :publishing-function org-html-publish-to-html
-	   :headline-levels 4             ; Just the default for this project.
-	   :auto-preamble t
-	   :auto-sitemap t
-	   :section-numbers nil
-	   :makeindex t)
-	   '(
-	   :base-extension "css\\|js\\|png\\|jpg\\|gif\\|pdf\\|mp3\\|ogg\\|swf"
-	   :auto-sitemap nil
-	   :publishing-function org-publish-attachment)
-	   '(:base-directory "~/Documents/Code/org-web/content"
-			      :publishing-directory "c:/Users/Public/org-web"
-			     :recursive t
-			     :exclude ".*/\.git/.*|.*/.*~"
-			     ))
-	  ("blog-src"
-	   ;; Path to org files.
-	   :base-directory "~/Documents/Code/blog/org-source"
-	   :base-extension "org"
-
-	   ;; Path to Jekyll Posts
-	   :publishing-directory "~/Documents/Code/blog/tomrake.github.io/_drafts/"
-	   :recursive t
-	   :publishing-function org-html-publish-to-html
-	   :headline-levels 4
-	   :html-extension "html"
-	   :body-only t)
-	  ("blog" :components ("blog-src"))))
-#+END_SRC  
 
 * Adjust for better GC
 #+begin_src emacs-lisp
