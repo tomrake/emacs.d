@@ -1,6 +1,7 @@
 ;; NOTE: init.el is now generated from Emacs.org.  Please edit that file
 ;;       in Emacs and init.el will be generated automatically!
-;; Added Obsidian with opinionated settings.
+;; Trying straight package manager
+;; Org mode loads!
 
 ;;;; Emacs Debug On Error
    (setq debug-on-error nil )
@@ -84,7 +85,7 @@
 ;; Autommatically tangle our Emacs.org config file when we save it.
 (defun efs/org-babel-tangle-config ()
   "Test if the buffer should be auto-tangled after save"
-  ;; (message "string-equal: %s %s" (buffer-file-name) (expand-file-name (concat user-emacs-directory "Emacs.org")))
+   (message "string-equal: %s %s" (buffer-file-name) (expand-file-name (concat user-emacs-directory "Emacs.org")))
   (when (string-equal (buffer-file-name)
 		      (expand-file-name (concat user-emacs-directory "Emacs.org")))
     (message "Begin efs/tangle")
@@ -93,8 +94,6 @@
     (let ((org-confirm-babel-evaluate nil))
       (org-babel-tangle))))
 (add-hook 'org-mode-hook (lambda () (add-hook 'after-save-hook #'efs/org-babel-tangle-config)))
-
-(message "Debug START")
 
 (add-to-list 'load-path (expand-file-name "scripts/" user-emacs-directory))
 
@@ -141,30 +140,30 @@
 
 (add-hook 'emacs-startup-hook #'efs/display-startup-time)
 
-;;;; define emacs customization file and load it.
-(setq custom-file (expand-file-name "emacs-custom.el" user-emacs-directory))
-(load custom-file)
+(defvar bootstrap-version)
+(let ((bootstrap-file
+       (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
+      (bootstrap-version 5))
+  (unless (file-exists-p bootstrap-file)
+    (with-current-buffer
+	(url-retrieve-synchronously
+	 "https://raw.githubusercontent.com/raxod502/straight.el/develop/install.el"
+	 'silent 'inhibit-cookies)
+      (goto-char (point-max))
+      (eval-print-last-sexp)))
+  (load bootstrap-file nil 'nomessage))
+  (straight-use-package 'use-package)
 
-;;;; Initialize package sources
-(require 'package)
-;(setq package-check-signature nil)
-(setq package-gnupghome-dir "~/.gnupg/")
-(setq package-archives '(("melpa" . "https://melpa.org/packages/")
-			 ("org" . "https://orgmode.org/elpa/")
-			 ("elpa" . "https://elpa.gnu.org/packages/")))
-
-(package-initialize)
-(unless package-archive-contents
-  (package-refresh-contents))
-(package-install 'htmlize)
 ;;;; Initialize use-package on non-Linux platforms
-(unless (package-installed-p 'use-package)
-  (package-install 'use-package))
-;;;; use-package
-(require 'use-package)
-(setq use-package-always-ensure t)
-(setq use-package-verbose t)
-(setq use-package-always-defer t)
+  (unless (package-installed-p 'use-package)
+    (package-install 'use-package))
+  ;;;; use-package
+  (require 'use-package)
+  (setq straight-use-package-by-default t)
+  (setq use-package-verbose t)
+  (setq use-package-always-defer t)
+
+(straight-use-package 'htmlize)
 
 ;;;; Macro to load user customizations from .emacs.d
 (defmacro local-custom-file (file description)
@@ -203,11 +202,11 @@
   (ido-mode t))
 
 (use-package which-key
-  :ensure t)
+  :straight t)
 
 ;;;; Enable vertico
 (use-package vertico
-  :ensure t
+  :straight t
   :init
   (vertico-mode))
 
@@ -222,7 +221,7 @@
   (setf obsidian-template-directory "Templates"))
 
 (use-package obsidian
-  :ensure t
+  :straight t
   :demand t
   :config
   ;(obsidian-specify-path config-obsidian-specify-path)
@@ -244,7 +243,7 @@
   "The java-executable to use for java.")
 
 (use-package langtool
-  :ensure t
+  :straight t
   :config
     (setq langtool-java-bin java-executable)
     (setq langtool-language-tool-jar  "c:/Users/Public/Documents/LanguageTool-5.9/languagetool-commandline.jar")
@@ -261,16 +260,16 @@
 
 ;;;; Magit 
 (use-package magit
-  :defer 2
-  :ensure t
-  :pin melpa
+  ;:defer 2
+  :straight t
+  ;:pin melpa
   :bind
    (("C-x g" . magit-status)
     ("C-x M-d" . magit-dispatch-popup)))
 
 ;;;; SSH Agency
 (use-package ssh-agency
-:ensure t
+:straight t
 :init
 (setenv "GIT_ASKPASS" "git-gui--askpass")
 (setenv "SSH_ASKPASS" "git-gui--askpass")
@@ -282,7 +281,7 @@
 
 (use-package modus-themes
   :ensure t
-  :config
+  :init
   (set-face-attribute 'default nil :height 150)
       ;; Subtle red background, red foreground, invisible border
 
@@ -291,6 +290,7 @@
   (setq modus-themes-lang-checkers '(background intense))
   (setq modus-themes-italic-constructs t)
   (setq modus-themes-bold-contructs t)
+  (setq modus-themes-prompts  '(bold italic))
   ;; Subtle blue background, neutral foreground, intense blue border
   (setq modus-themes-common-palette-overrides
     '((bg-mode-line-active bg-blue-subtle)
@@ -312,6 +312,7 @@
 	  (event . (accented italic varied))
 	  (scheduled . uniform)
 	  (habit . traffic-light)))
+  (setf custom-safe-themes "e410458d3e769c33e0865971deb6e8422457fad02bf51f7862fa180ccc42c032")
   (load-theme 'modus-vivendi t))
 
 ;;;; rainbow-delimiter
@@ -334,7 +335,7 @@
 		 (getenv "PATH")))
 
 (use-package shx
-  :ensure t)
+  :straight t)
 
 (use-package tramp
   :config
@@ -347,7 +348,7 @@
 	(add-to-list 'exec-path putty-directory))))
 
 (use-package paredit
-  :ensure t
+  :straight t
   :hook (lisp-mode . enable-paredit-mode))
 
 (message "Debug <<<<<<<<< START COMMONLISP STUFF")
@@ -491,11 +492,229 @@
       (append '((".*\\.yml\\'" . yaml-mode))
 	      auto-mode-alist))
 
+(use-package simple-httpd
+  :straight t)
+
+;;;; PS Print with GHOSTSCRIPT
+  (setq ps-lpr-command "C:/Program Files/gs/gs9.56.1/bin/gswin64c.exe")
+  (setq ps-lpr-switches '("-q" "-dNOPAUSE" "-dBATCH" "-sDEVICE=mswinpr2" "-sOutputFile=\"%printer%Canon\ TS6000\ series\""))
+  (setq ps-printer-name t)
+  (setf ps-font-family 'Courier)
+  (setf ps-font-size 10.0)
+  (setf ps-line-number t)
+  (setf ps-line-number-font-size 10)
+
+(setq backup-directory-alist `(("." . ,(expand-file-name "tmp/backups/" user-emacs-directory))))
+
+(defun efs/configure-eshell ()
+	 ;; Save command history when commands are entered
+	 (add-hook 'eshell-pre-command-hook 'eshell-save-some-history)
+
+	 ;; Truncate buffer for performance
+	 (add-to-list 'eshell-output-filter-functions 'eshell-truncate-buffer)
+
+	 (setq eshell-history-size         10000
+	       eshell-buffer-maximum-lines 10000
+	       eshell-hist-ignoredups t
+	       eshell-scroll-to-bottom-on-input t))
+
+(use-package eshell
+	 :hook (eshell-first-time-mode . efs/configure-eshell))
+
+(use-package eshell-git-prompt
+  :straight t
+  :config
+    (eshell-git-prompt-use-theme 'powerline))
+
+(message "Debug START")
+
+(use-package dired
+  :straight nil
+  :config
+    (add-hook 'dired-mode-hook 'all-the-icons-dired-mode))
+
+(use-package dired-single
+  :straight nil
+  :after
+    dired
+  :config
+    (defun twr/dired-init ()
+      (define-key dired-mode-map [remap dired-find-file]
+	'dired-single-buffer)
+      (define-key dired-mode-map [remap dired-mouse-find-file-other-window]
+	'dired-single-buffer-mouse)
+      (define-key dired-mode-map [remap dired-up-directory]
+	'dired-single-up-directory))
+    (twr/dired-init)
+    (setq dired-single-use-magic-buffer t)
+    ;; F5 is my special key
+    (global-set-key [(f5)] 'dired-single-magic-buffer)
+    (global-set-key [(control f5)] (function
+      (lambda nil (interactive)
+	(dired-single-magic-buffer default-directory))))
+    (global-set-key [(shift f5)] (function
+      (lambda nil (interactive)
+	(message "Current directory is: %s" default-directory))))
+    (global-set-key [(meta f5)] 'dired-single-toggle-buffer-name))
+
+(use-package all-the-icons-dired
+      :straight t
+      :after dired
+      ;:pin melpa
+      :config
+      (add-hook 'dired-mode-hook 'all-the-icons-dired-mode))
+
+(defun mydired-sort ()
+	"Sort dired listings with directories first."
+	(save-excursion
+	  (let (buffer-read-only)
+	    (forward-line 2) ;; beyond dir. header 
+	    (sort-regexp-fields t "^.*$" "[ ]*." (point) (point-max)))
+	  (set-buffer-modified-p nil)))
+
+(defadvice dired-readin
+	(after dired-after-updating-hook first () activate)
+	"Sort dired listings with directories first before adding marks."
+	(mydired-sort))
+
+(message "Debug TEST - YES!!!")
+
+;;;; mastodon
+  (use-package mastodon
+    :straight t)
+  (setq mastodon-active-user "tomrake")
+  (setq mastodon-instance-url "https://mastodon.social")
+
+(when (require 'openwith nil 'noerror)
+
+     (setq openwith-associatsions
+	 (list (list (openwith-make-extension-regexp '("mpg" "mpeg" "mp3" "mp4"
+					      "avi" "wmv" "wav" "mov" "flv"
+					      "ogm" "ogg" "mkv")) "vlc.exe")
+	       (list (openwith-make-extension-regexp '("JPEG" "JPG"))
+		     "c:/Program Files (x86)/JPEGView/JPEGView.exe" '(file))))
+;;    (message "OPENWITH CONFIG")
+;;    (message openwith-associatsions)
+    (openwith-mode 1))
+
+(require 'recentf)
+(recentf-mode 1)
+(setq recentf-max-menu-items 25)
+(global-set-key "\C-x\ \C-r" 'recentf-open-files)
+
+(setq ppl-holiday-table ;; '(2023					;year
+ ;;   (1 1)					;new years day
+ ;;   (2 20)				;presidents day
+ ;;   (4 7)					; Good Friday
+ ;;   (5 29)				; Memorial Day
+ ;;   (7 4)					; Independence Day
+ ;;   (9 4)					; Labor Day
+ ;;   (11 24)				; Thanksgiving
+ ;;   (11 25)				; Next Day
+ ;;   (12 24)				; Christmas Eve
+ ;;   (12 25))
+ '(2024					;year
+  (1 1)					;new years day
+ (2 19)				;presidents day
+ (3 29)					; Good Friday
+ (5 27)				; Memorial Day
+ (7 4)					; Independence Day
+ (9 2)					; Labor Day
+ (11 28)				; Thanksgiving
+ (11 29)				; Next Day
+ (12 24)				; Christmas Eve
+ (12 25)))                              ; Christmas
+
+
+  (defun is-holiday (dt table)
+    "Check if a date is a holiday"
+    (if table (or (and (= (nth 4 dt) (nth 0 (car table)))
+		       (= (nth 3 dt) (nth 1 (car table))))
+		  (is-holiday dt (cdr table)))))
+
+  (defun is-ppl-holiday (dt)
+    "Check if a date is a PPL holiday"
+    (if (/= (car ppl-holiday-table) (nth 5 dt)) 
+	(error "Update Date table") 
+	(is-holiday dt (cdr ppl-holiday-table))))
+
+  (defun ppl-summer (dt)
+    "Check if a date is PPL summer rate"
+    (< 5 (nth 4 dt) 12))
+
+(defun ppl-high-rate (&optional dt)
+  "Check if a date and time are at PPL high rate"
+  (unless dt (setq dt (decode-time)))
+       (cond ((not (< 0 (nth 6 dt) 6))  nil)
+	     ((is-ppl-holiday dt)  nil)
+	     ((ppl-summer dt)  (<= 14 (nth 2 dt) 17))
+	      (t  ( <= 16 (nth 2 dt) 19))))
+
+(use-package yaml-mode)
+
+(defun json-to-single-line (beg end)
+  "Collapse prettified json in region between BEG and END to a single line"
+  (interactive "r")
+  (if (use-region-p)
+      (save-excursion
+        (save-restriction
+          (narrow-to-region beg end)
+          (goto-char (point-min))
+          (while (re-search-forward "[[:space:]\n]+" nil t)
+            (replace-match " "))))
+    (print "This function operates on a region")))
+
+;;;; Various user settings is a local configuration.
+(local-custom-file "local-settings.org" "Final user settings")
+
+(require 'filename2clipboard)
+
+(message "Debug Before ORG")
+
+(require 'ox-publish)
+
+(defun dual-org-data (name org-part data-part common-part)
+  "Creates a name publishing project with org files and data files in the same directory."
+  `((,(concat name "-text")  ,@common-part ,@org-part)
+    (,(concat name "-data")  ,@common-part ,@data-part)
+    (,name :components (,(concat name "-text") ,(concat name "-data")))))
+
+
+(setq org-publish-project-alist
+      `(
+	,@(dual-org-data      "org-web" '(
+	 :base-extension "org"
+	 :publishing-function org-html-publish-to-html
+	 :headline-levels 4             ; Just the default for this project.
+	 :auto-preamble t
+	 :auto-sitemap t
+	 :section-numbers nil
+	 :makeindex t)
+	 '(
+	 :base-extension "css\\|js\\|png\\|jpg\\|gif\\|pdf\\|mp3\\|ogg\\|swf"
+	 :auto-sitemap nil
+	 :publishing-function org-publish-attachment)
+	 '(:base-directory "~/Documents/Code/org-web/content"
+			    :publishing-directory "c:/Users/Public/org-web"
+			   :recursive t
+			   :exclude ".*/\.git/.*|.*/.*~"
+			   ))
+	("blog-src"
+	 ;; Path to org files.
+	 :base-directory "~/Documents/Code/blog/org-source"
+	 :base-extension "org"
+
+	 ;; Path to Jekyll Posts
+	 :publishing-directory "~/Documents/Code/blog/tomrake.github.io/_drafts/"
+	 :recursive t
+	 :publishing-function org-html-publish-to-html
+	 :headline-levels 4
+	 :html-extension "html"
+	 :body-only t)
+	("blog" :components ("blog-src"))))
+
 (use-package org
-  :pin elpa
-  :catch
-  (lambda (keyword err)
-         (message (error-message-string err)))
+  :straight (:type built-in)
   :config
 
 (message "Debug ORG START")
@@ -576,10 +795,10 @@
 (advice-add 'org-capture-refile :after 'kk/delete-frame-if-neccessary)
 
 (use-package org-present
-  :ensure t
+  :straight t
   :config
     (use-package visual-fill-column
-      :ensure t
+      :straight t
       :config
       (setq visual-fill-column-width 110
 	    visual-fill-column-center-text t)))
@@ -726,11 +945,12 @@ text and copying to the killring."
 (setq org-log-into-drawer "LOGBOOK")
 
 (defmacro twr-todo-overview (file-list)
-  `(list '(todo "WAITING" ((org-agenda-files ,file-list)))
-    '(todo "NEXT" ((org-agenda-files ,file-list)))
-    '(todo "CANCELLED" ((org-agenda-files ,file-list)))
-    '(todo "TODO" ((org-agenda-files ,file-list)))
-    '(todo "DONE" ((org-agenda-files ,file-list)))))
+  `(list '(todo "WAITING" ((org-agenda-overriding-header "Waiting Tasks")(org-agenda-files ,file-list)
+			   ))
+    '(todo "NEXT" ((org-agenda-overriding-header "Next Tasks")(org-agenda-files ,file-list)))
+    '(todo "CANCELLED" ((org-agenda-overriding-header "Cancelled Tasks")(org-agenda-files ,file-list)))
+    '(todo "TODO" ((org-agenda-overriding-header "Todo Tasks")(org-agenda-files ,file-list)))
+    '(todo "DONE" ((org-agenda-overriding-header "Completed Tasks")(org-agenda-files ,file-list)))))
 
 (message "[TBD] %s" "Fix GTD Agenda file calculation. ")
  ;; There are current available tasks and Annual Events
@@ -874,219 +1094,6 @@ text and copying to the killring."
 (make-gtd-switch)
 
 ) ;; This is close of a huge :config of (use-package org
-
-(require 'ox-publish)
-
-(defun dual-org-data (name org-part data-part common-part)
-  "Creates a name publishing project with org files and data files in the same directory."
-  `((,(concat name "-text")  ,@common-part ,@org-part)
-    (,(concat name "-data")  ,@common-part ,@data-part)
-    (,name :components (,(concat name "-text") ,(concat name "-data")))))
-
-
-(setq org-publish-project-alist
-      `(
-	,@(dual-org-data      "org-web" '(
-	 :base-extension "org"
-	 :publishing-function org-html-publish-to-html
-	 :headline-levels 4             ; Just the default for this project.
-	 :auto-preamble t
-	 :auto-sitemap t
-	 :section-numbers nil
-	 :makeindex t)
-	 '(
-	 :base-extension "css\\|js\\|png\\|jpg\\|gif\\|pdf\\|mp3\\|ogg\\|swf"
-	 :auto-sitemap nil
-	 :publishing-function org-publish-attachment)
-	 '(:base-directory "~/Documents/Code/org-web/content"
-			    :publishing-directory "c:/Users/Public/org-web"
-			   :recursive t
-			   :exclude ".*/\.git/.*|.*/.*~"
-			   ))
-	("blog-src"
-	 ;; Path to org files.
-	 :base-directory "~/Documents/Code/blog/org-source"
-	 :base-extension "org"
-
-	 ;; Path to Jekyll Posts
-	 :publishing-directory "~/Documents/Code/blog/tomrake.github.io/_drafts/"
-	 :recursive t
-	 :publishing-function org-html-publish-to-html
-	 :headline-levels 4
-	 :html-extension "html"
-	 :body-only t)
-	("blog" :components ("blog-src"))))
-
-(use-package simple-httpd
-  :ensure t)
-
-;;;; PS Print with GHOSTSCRIPT
-  (setq ps-lpr-command "C:/Program Files/gs/gs9.56.1/bin/gswin64c.exe")
-  (setq ps-lpr-switches '("-q" "-dNOPAUSE" "-dBATCH" "-sDEVICE=mswinpr2" "-sOutputFile=\"%printer%Canon\ TS6000\ series\""))
-  (setq ps-printer-name t)
-  (setf ps-font-family 'Courier)
-  (setf ps-font-size 10.0)
-  (setf ps-line-number t)
-  (setf ps-line-number-font-size 10)
-
-(setq backup-directory-alist `(("." . ,(expand-file-name "tmp/backups/" user-emacs-directory))))
-
-(defun efs/configure-eshell ()
-	 ;; Save command history when commands are entered
-	 (add-hook 'eshell-pre-command-hook 'eshell-save-some-history)
-
-	 ;; Truncate buffer for performance
-	 (add-to-list 'eshell-output-filter-functions 'eshell-truncate-buffer)
-
-	 (setq eshell-history-size         10000
-	       eshell-buffer-maximum-lines 10000
-	       eshell-hist-ignoredups t
-	       eshell-scroll-to-bottom-on-input t))
-
-(use-package eshell
-	 :hook (eshell-first-time-mode . efs/configure-eshell))
-
-(use-package eshell-git-prompt
-  :ensure t
-  :config
-    (eshell-git-prompt-use-theme 'powerline))
-
-(use-package dired
-  :ensure nil
-  :config
-    (add-hook 'dired-mode-hook 'all-the-icons-dired-mode))
-
-(use-package dired-single
-  :after
-    dired
-  :config
-    (defun twr/dired-init ()
-      (define-key dired-mode-map [remap dired-find-file]
-	'dired-single-buffer)
-      (define-key dired-mode-map [remap dired-mouse-find-file-other-window]
-	'dired-single-buffer-mouse)
-      (define-key dired-mode-map [remap dired-up-directory]
-	'dired-single-up-directory))
-    (twr/dired-init)
-    (setq dired-single-use-magic-buffer t)
-    ;; F5 is my special key
-    (global-set-key [(f5)] 'dired-single-magic-buffer)
-    (global-set-key [(control f5)] (function
-      (lambda nil (interactive)
-	(dired-single-magic-buffer default-directory))))
-    (global-set-key [(shift f5)] (function
-      (lambda nil (interactive)
-	(message "Current directory is: %s" default-directory))))
-    (global-set-key [(meta f5)] 'dired-single-toggle-buffer-name))
-
-(use-package all-the-icons-dired
-      :ensure t
-      :pin melpa
-      :config
-      (add-hook 'dired-mode-hook 'all-the-icons-dired-mode))
-
-(defun mydired-sort ()
-	"Sort dired listings with directories first."
-	(save-excursion
-	  (let (buffer-read-only)
-	    (forward-line 2) ;; beyond dir. header 
-	    (sort-regexp-fields t "^.*$" "[ ]*." (point) (point-max)))
-	  (set-buffer-modified-p nil)))
-
-(defadvice dired-readin
-	(after dired-after-updating-hook first () activate)
-	"Sort dired listings with directories first before adding marks."
-	(mydired-sort))
-
-;;;; mastodon
-  (use-package mastodon
-    :ensure t)
-  (setq mastodon-active-user "tomrake")
-  (setq mastodon-instance-url "https://mastodon.social")
-
-(when (require 'openwith nil 'noerror)
-
-     (setq openwith-associatsions
-	 (list (list (openwith-make-extension-regexp '("mpg" "mpeg" "mp3" "mp4"
-					      "avi" "wmv" "wav" "mov" "flv"
-					      "ogm" "ogg" "mkv")) "vlc.exe")
-	       (list (openwith-make-extension-regexp '("JPEG" "JPG"))
-		     "c:/Program Files (x86)/JPEGView/JPEGView.exe" '(file))))
-;;    (message "OPENWITH CONFIG")
-;;    (message openwith-associatsions)
-    (openwith-mode 1))
-
-(require 'recentf)
-(recentf-mode 1)
-(setq recentf-max-menu-items 25)
-(global-set-key "\C-x\ \C-r" 'recentf-open-files)
-
-(setq ppl-holiday-table ;; '(2023					;year
- ;;   (1 1)					;new years day
- ;;   (2 20)				;presidents day
- ;;   (4 7)					; Good Friday
- ;;   (5 29)				; Memorial Day
- ;;   (7 4)					; Independence Day
- ;;   (9 4)					; Labor Day
- ;;   (11 24)				; Thanksgiving
- ;;   (11 25)				; Next Day
- ;;   (12 24)				; Christmas Eve
- ;;   (12 25))
- '(2024					;year
-  (1 1)					;new years day
- (2 19)				;presidents day
- (3 29)					; Good Friday
- (5 27)				; Memorial Day
- (7 4)					; Independence Day
- (9 2)					; Labor Day
- (11 28)				; Thanksgiving
- (11 29)				; Next Day
- (12 24)				; Christmas Eve
- (12 25)))                              ; Christmas
-
-
-  (defun is-holiday (dt table)
-    "Check if a date is a holiday"
-    (if table (or (and (= (nth 4 dt) (nth 0 (car table)))
-		       (= (nth 3 dt) (nth 1 (car table))))
-		  (is-holiday dt (cdr table)))))
-
-  (defun is-ppl-holiday (dt)
-    "Check if a date is a PPL holiday"
-    (if (/= (car ppl-holiday-table) (nth 5 dt)) 
-	(error "Update Date table") 
-	(is-holiday dt (cdr ppl-holiday-table))))
-
-  (defun ppl-summer (dt)
-    "Check if a date is PPL summer rate"
-    (< 5 (nth 4 dt) 12))
-
-(defun ppl-high-rate (&optional dt)
-  "Check if a date and time are at PPL high rate"
-  (unless dt (setq dt (decode-time)))
-       (cond ((not (< 0 (nth 6 dt) 6))  nil)
-	     ((is-ppl-holiday dt)  nil)
-	     ((ppl-summer dt)  (<= 14 (nth 2 dt) 17))
-	      (t  ( <= 16 (nth 2 dt) 19))))
-
-(use-package yaml-mode)
-
-(defun json-to-single-line (beg end)
-  "Collapse prettified json in region between BEG and END to a single line"
-  (interactive "r")
-  (if (use-region-p)
-      (save-excursion
-        (save-restriction
-          (narrow-to-region beg end)
-          (goto-char (point-min))
-          (while (re-search-forward "[[:space:]\n]+" nil t)
-            (replace-match " "))))
-    (print "This function operates on a region")))
-
-;;;; Various user settings is a local configuration.
-(local-custom-file "local-settings.org" "Final user settings")
-
-(require 'filename2clipboard)
 
 (setq gc-cons-threshold (* 2 1000 1000))
 
