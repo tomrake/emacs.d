@@ -141,8 +141,7 @@ This is a modifed from systemcrafters.
 #+end_src
 * SLIME v SLY switch
 #+BEGIN_SRC emacs-lisp
-  (defvar use-slime t "Set true to use slime for superior lisp")
-  (defvar use-sly nil "Set true to use sly for superior lisp")
+  (defvar common-lisp-mode-tool :slime "This can be :slime or :sly.")
 
 #+END_SRC
 * Emacs Garbage Collection Tweeking
@@ -707,8 +706,8 @@ Print Debug markers in *messages*
 (message "Debug SLIME MARK")
 #+END_SRC
 * SLIME
-Upgraded slime to 2.29.1
-This add the ansi colors to the slime REPL.
+These are issues about slime.
+Many of the things I use for slime acually require slime. This is true for slime-repl-ansi-color
 #+begin_src emacs-lisp
     (use-package slime-repl-ansi-color
     :straight t
@@ -716,11 +715,13 @@ This add the ansi colors to the slime REPL.
 #+end_src
 #+begin_src emacs-lisp
   (use-package slime
+    :if (eq common-lisp-mode-tool :slime)
     :straight t
     :config
-	(setf slime-lisp-implementations (collect-lisp-invokers)))
- 
-
+    (setf slime-lisp-implementations (collect-lisp-invokers))
+    (require 'slime-repl-ansi-color)
+    (add-hook 'slime-repl-mode-hook
+	      #'(lambda () (setf slime-repl-ansi-color-mode 1))))
 #+end_src
 
 
@@ -728,7 +729,8 @@ This add the ansi colors to the slime REPL.
 * Maybe use SLY
  #+BEGIN_SRC emacs-lisp
    (use-package sly
-     :disabled use-slime
+     :if (eq common-lisp-mode-tool :sly)
+     :defer t
      :init
        (collect-lisp-invokers)
        (setq sly-lisp-implementations my-lisp-implementations))

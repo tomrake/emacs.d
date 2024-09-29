@@ -97,8 +97,7 @@
 
 (add-to-list 'load-path (expand-file-name "scripts/" user-emacs-directory))
 
-(defvar use-slime t "Set true to use slime for superior lisp")
-(defvar use-sly nil "Set true to use sly for superior lisp")
+(defvar common-lisp-mode-tool :slime "This can be :slime or :sly.")
 
 (setq gc-cons-threshold (* 50 1000 1000))
 
@@ -447,12 +446,17 @@
 :defer t)
 
 (use-package slime
+  :if (eq common-lisp-mode-tool :slime)
   :straight t
   :config
-      (setf slime-lisp-implementations (collect-lisp-invokers)))
+  (setf slime-lisp-implementations (collect-lisp-invokers))
+  (require 'slime-repl-ansi-color)
+  (add-hook 'slime-repl-mode-hook
+	    #'(lambda () (setf slime-repl-ansi-color-mode 1))))
 
 (use-package sly
-  :disabled use-slime
+  :if (eq common-lisp-mode-tool :sly)
+  :defer t
   :init
     (collect-lisp-invokers)
     (setq sly-lisp-implementations my-lisp-implementations))
