@@ -1053,6 +1053,33 @@ I am using to add icons to the icons.json file derived from feathericons.
 #+BEGIN_SRC emacs-lisp
 (require 'filename2clipboard)
 #+END_SRC
+* ERC
+#+begin_src emacs-lisp
+  (use-package erc
+      :straight t
+      :config
+      (setq erc-fill-column 120
+	erc-fill-function 'erc-fill-static
+	erc-fill-static-center 20))
+
+  (use-package erc-hl-nicks
+    :straight t
+    :after erc
+    :config
+    (add-to-list 'erc-modules 'hl-nicks))
+
+  (use-package erc-hl-nicks
+    :straight t
+    :after erc
+    :config
+    (add-to-list 'erc-modules 'hl-nicks))
+
+  (use-package emojify
+    :straight t
+    :hook (erc-mode . emojify-mode)
+    :commands emojify-mode)
+
+#+end_src
 * Report Debug Before ORG                                          :noexport:
 Print Debug markers in *messages*
 #+BEGIN_SRC emacs-lisp  :eval never-export
@@ -1644,4 +1671,8 @@ Clear to during init flag.
 #+begin_src emacs-lisp
   (setq twr/init-loading-flag nil)
   (message "<<<<  !!!     INIT.EL FINISHED   !!!   >>>>> ")
+#+end_src
+* Load config
+#+begin_src emacs-lisp
+(load "~/.emacs-local")
 #+end_src
