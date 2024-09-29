@@ -139,12 +139,6 @@ This is a modifed from systemcrafters.
 #+begin_src emacs-lisp
   (add-to-list 'load-path (expand-file-name "scripts/" user-emacs-directory))
 #+end_src
-* SLIME v SLY switch
-#+BEGIN_SRC emacs-lisp
-  (defvar use-slime t "Set true to use slime for superior lisp")
-  (defvar use-sly nil "Set true to use sly for superior lisp")
-
-#+END_SRC
 * Emacs Garbage Collection Tweeking
 #+begin_src emacs-lisp
   (setq gc-cons-threshold (* 50 1000 1000))
@@ -461,7 +455,7 @@ Certain tools need java set that location here.
   :after (magit))
 #+END_SRC
 * Roswell
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle nil
   (if (getenv "MSYSTEM")
     (when (file-exists-p (expand-file-name "~/.roswell/helper.el"))
       (load (expand-file-name "~/.roswell/helper.el"))))
@@ -569,24 +563,33 @@ Print Debug markers in *messages*
 #+BEGIN_SRC emacs-lisp :eval never-export
 (message "Debug <<<<<<<<< START COMMONLISP STUFF")
 #+END_SRC
+* Common Lisp mode slime or sly
+#+BEGIN_SRC emacs-lisp
+  (defvar common-lisp-mode-tool :slime "This can be :slime or :sly.")
+
+#+END_SRC
 * Taging of Inferior Invokers
 Create a windows standalone startup for a lisp version.
 #+BEGIN_SRC emacs-lisp
     (defvar my-lisp-implementations nil
-      "For various implemenations there are lisp invokers for slime and sly.")
-  
+	"For various implemenations there are lisp invokers for slime and sly.")
+
     (defmacro assemble-invoker (my-tag program program-args environment)
-     "The format of a standard slime entry for a lisp implenatation."
-    `(list ,my-tag (cons ,program ,program-args) :env ,environment))
+       "The format of a standard slime entry for a lisp implenatation."
+       `(list ,my-tag (cons ,program ,program-args) :env ,environment))
+
+  ;;;; [TBD] Replace the assemble invokers with an optional program-args and enviroment 
+    (defun make-lisp-invoker (tag program &optional program-args environment)
+      `(,tag ,(cons ,program  ,program-args) ,(if environment (list :env environment))))
 
     (defmacro assemble-invoker-no-env (my-tag program program-args environment)
-     "The format of a standard slime entry for a lisp implenatation."
-    `(list ,my-tag (cons ,program ,program-args)))
+      "The format of a standard slime entry for a lisp implenatation."
+      `(list ,my-tag (cons ,program ,program-args)))
 
 
     (defun collect-this-lisp (lisp-invoker)
-      "Add an specific lisp invoker to slime list"
-      (add-to-list 'my-lisp-implementations lisp-invoker))
+	"Add an specific lisp invoker to slime list"
+	(add-to-list 'my-lisp-implementations lisp-invoker))
 #+END_SRC
 
 * SBCL  Invoker 
@@ -685,49 +688,62 @@ Print Debug markers in *messages*
 #+BEGIN_SRC emacs-lisp :eval never-export
 (message "Debug  START GATHERING INVOKERS")
 #+END_SRC
-* Gather all my LISP invokers
+* Collect Lisp Invokers
+The lisp invokers are slime/sly additions to their implemenations lists.
+The collect-lisp-invokers function returns a list of all those invokers for use by slime and sly.
+
 #+BEGIN_SRC emacs-lisp
   (defun collect-lisp-invokers ()
       "collect all lisp-invokers to my-lisp-implementations."
     (setf my-lisp-implementations nil)
     (add-abcl)
     (add-ccl)
-    (collect-sbcl))
-  ;;;; Collect all right now
-  (collect-lisp-invokers)
+    (collect-sbcl)
+    my-lisp-implementations)
+
 #+END_SRC
 * Report Debug SLIME MARK                                          :noexport:
 Print Debug markers in *messages*
 #+BEGIN_SRC emacs-lisp :eval never-export
 (message "Debug SLIME MARK")
 #+END_SRC
-* Maybe use SLIME
-Upgraded slime to 2.29.1
-This add the ansi colors to the slime REPL.
- #+BEGIN_SRC emacs-lisp 
-   (when (and use-slime (boundp 'local-config-slime-location) local-config-slime-location (file-directory-p local-config-slime-location))
-     (add-to-list 'load-path local-config-slime-location)
-     (collect-lisp-invokers)
-     (setq slime-lisp-implementations my-lisp-implementations)
-     ;; (when (file-exists-p "c:/Users/Public/Lispers/quicklisp/slime-helper.el")
-     ;;   (load "c:/Users/Public/Lispers/quicklisp/slime-helper.el"))
-     (require 'slime)
-     (require 'slime-autoloads)
+* SLIME
+These are issues about slime.
+Many of the things I use for slime acually require slime. This is true for slime-repl-ansi-color
+#+begin_src emacs-lisp
+    (use-package slime-repl-ansi-color
+    :straight t
+    :defer t)
+#+end_src
+#+begin_src emacs-lisp
+  (use-package slime
+    :if (eq common-lisp-mode-tool :slime)
+    :straight t
+    :config
+    (setf slime-lisp-implementations (collect-lisp-invokers))
+    (require 'slime-repl-ansi-color)
+    (add-hook 'slime-repl-mode-hook
+	      #'(lambda () (setf slime-repl-ansi-color-mode 1))))
+#+end_src
 
-     (setq slime-contribs '(slime-fancy slime-repl-ansi-color))
 
-     (setq slime-repl-ansi-color-mode 1)
-     (global-set-key "\C-cs" 'slime-selector))
- #+END_SRC
-
-* Maybe use SLY
- #+BEGIN_SRC emacs-lisp
+* SLY
+#+begin_src emacs-lisp
+  (use-package sly-repl-ansi-color
+  :straight t
+  :defer t)
+#+end_src
+#+BEGIN_SRC emacs-lisp
    (use-package sly
-     :disabled use-slime
+     :if (eq common-lisp-mode-tool :sly)
+     :straight t
+     :defer t
      :init
-       (collect-lisp-invokers)
-       (setq sly-lisp-implementations my-lisp-implementations))
- #+END_SRC
+     (setq sly-lisp-implementations (collect-lisp-invokers))
+     :config
+     (require 'sly-repl-ansi-color)
+     (push 'sly-repl-ansi-color sly-contribs))
+#+END_SRC
 * Report Debug SLIME END MARK                                      :noexport:
 Print Debug markers in *messages*
 #+BEGIN_SRC emacs-lisp :eval never-export

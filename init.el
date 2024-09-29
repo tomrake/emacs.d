@@ -97,9 +97,6 @@
 
 (add-to-list 'load-path (expand-file-name "scripts/" user-emacs-directory))
 
-(defvar use-slime t "Set true to use slime for superior lisp")
-(defvar use-sly nil "Set true to use sly for superior lisp")
-
 (setq gc-cons-threshold (* 50 1000 1000))
 
 ;; You will most likely need to adjust this font size for your system!
@@ -275,10 +272,6 @@
 (setenv "SSH_ASKPASS" "git-gui--askpass")
 :after (magit))
 
-(if (getenv "MSYSTEM")
-  (when (file-exists-p (expand-file-name "~/.roswell/helper.el"))
-    (load (expand-file-name "~/.roswell/helper.el"))))
-
 (use-package modus-themes
   :ensure t
   :init
@@ -353,21 +346,27 @@
 
 (message "Debug <<<<<<<<< START COMMONLISP STUFF")
 
+(defvar common-lisp-mode-tool :slime "This can be :slime or :sly.")
+
 (defvar my-lisp-implementations nil
-  "For various implemenations there are lisp invokers for slime and sly.")
+      "For various implemenations there are lisp invokers for slime and sly.")
 
-(defmacro assemble-invoker (my-tag program program-args environment)
- "The format of a standard slime entry for a lisp implenatation."
-`(list ,my-tag (cons ,program ,program-args) :env ,environment))
+  (defmacro assemble-invoker (my-tag program program-args environment)
+     "The format of a standard slime entry for a lisp implenatation."
+     `(list ,my-tag (cons ,program ,program-args) :env ,environment))
 
-(defmacro assemble-invoker-no-env (my-tag program program-args environment)
- "The format of a standard slime entry for a lisp implenatation."
-`(list ,my-tag (cons ,program ,program-args)))
+;;;; [TBD] Replace the assemble invokers with an optional program-args and enviroment 
+  (defun make-lisp-invoker (tag program &optional program-args environment)
+    `(,tag ,(cons ,program  ,program-args) ,(if environment (list :env environment))))
+
+  (defmacro assemble-invoker-no-env (my-tag program program-args environment)
+    "The format of a standard slime entry for a lisp implenatation."
+    `(list ,my-tag (cons ,program ,program-args)))
 
 
-(defun collect-this-lisp (lisp-invoker)
-  "Add an specific lisp invoker to slime list"
-  (add-to-list 'my-lisp-implementations lisp-invoker))
+  (defun collect-this-lisp (lisp-invoker)
+      "Add an specific lisp invoker to slime list"
+      (add-to-list 'my-lisp-implementations lisp-invoker))
 
 ;;;; The standard options for SBCL
 (setq sbcl-program-arguments '("--dynamic-space-size" "4000" "--noinform"))
@@ -435,31 +434,37 @@
   (setf my-lisp-implementations nil)
   (add-abcl)
   (add-ccl)
-  (collect-sbcl))
-;;;; Collect all right now
-(collect-lisp-invokers)
+  (collect-sbcl)
+  my-lisp-implementations)
 
 (message "Debug SLIME MARK")
 
-(when (and use-slime (boundp 'local-config-slime-location) local-config-slime-location (file-directory-p local-config-slime-location))
-  (add-to-list 'load-path local-config-slime-location)
-  (collect-lisp-invokers)
-  (setq slime-lisp-implementations my-lisp-implementations)
-  ;; (when (file-exists-p "c:/Users/Public/Lispers/quicklisp/slime-helper.el")
-  ;;   (load "c:/Users/Public/Lispers/quicklisp/slime-helper.el"))
-  (require 'slime)
-  (require 'slime-autoloads)
+(use-package slime-repl-ansi-color
+:straight t
+:defer t)
 
-  (setq slime-contribs '(slime-fancy slime-repl-ansi-color))
+(use-package slime
+  :if (eq common-lisp-mode-tool :slime)
+  :straight t
+  :config
+  (setf slime-lisp-implementations (collect-lisp-invokers))
+  (require 'slime-repl-ansi-color)
+  (add-hook 'slime-repl-mode-hook
+	    #'(lambda () (setf slime-repl-ansi-color-mode 1))))
 
-  (setq slime-repl-ansi-color-mode 1)
-  (global-set-key "\C-cs" 'slime-selector))
+(use-package sly-repl-ansi-color
+:straight t
+:defer t)
 
 (use-package sly
-  :disabled use-slime
+  :if (eq common-lisp-mode-tool :sly)
+  :straight t
+  :defer t
   :init
-    (collect-lisp-invokers)
-    (setq sly-lisp-implementations my-lisp-implementations))
+  (setq sly-lisp-implementations (collect-lisp-invokers))
+  :config
+  (require 'sly-repl-ansi-color)
+  (push 'sly-repl-ansi-color sly-contribs))
 
 (message "Debug SLIME END MARK")
 
