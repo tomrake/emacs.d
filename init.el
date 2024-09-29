@@ -97,7 +97,7 @@
 
 (add-to-list 'load-path (expand-file-name "scripts/" user-emacs-directory))
 
-(defvar common-lisp-mode-tool :slime "This can be :slime or :sly.")
+(defvar common-lisp-mode-tool :sly "This can be :slime or :sly.")
 
 (setq gc-cons-threshold (* 50 1000 1000))
 
@@ -436,8 +436,6 @@
   (add-ccl)
   (collect-sbcl)
   my-lisp-implementations)
-;;;; Collect all right now
-(collect-lisp-invokers)
 
 (message "Debug SLIME MARK")
 
@@ -454,12 +452,19 @@
   (add-hook 'slime-repl-mode-hook
 	    #'(lambda () (setf slime-repl-ansi-color-mode 1))))
 
+(use-package sly-repl-ansi-color
+:straight t
+:defer t)
+
 (use-package sly
   :if (eq common-lisp-mode-tool :sly)
+  :straight t
   :defer t
   :init
-    (collect-lisp-invokers)
-    (setq sly-lisp-implementations my-lisp-implementations))
+  (setq sly-lisp-implementations (collect-lisp-invokers))
+  :config
+  (require 'sly-repl-ansi-color)
+  (push 'sly-repl-ansi-color sly-contribs))
 
 (message "Debug SLIME END MARK")
 

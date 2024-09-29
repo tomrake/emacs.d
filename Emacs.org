@@ -139,9 +139,9 @@ This is a modifed from systemcrafters.
 #+begin_src emacs-lisp
   (add-to-list 'load-path (expand-file-name "scripts/" user-emacs-directory))
 #+end_src
-* SLIME v SLY switch
+* Common Lisp mode slime or sly
 #+BEGIN_SRC emacs-lisp
-  (defvar common-lisp-mode-tool :slime "This can be :slime or :sly.")
+  (defvar common-lisp-mode-tool :sly "This can be :slime or :sly.")
 
 #+END_SRC
 * Emacs Garbage Collection Tweeking
@@ -688,7 +688,10 @@ Print Debug markers in *messages*
 #+BEGIN_SRC emacs-lisp :eval never-export
 (message "Debug  START GATHERING INVOKERS")
 #+END_SRC
-* Gather all my LISP invokers
+* Collect Lisp Invokers
+The lisp invokers are slime/sly additions to their implemenations lists.
+The collect-lisp-invokers function returns a list of all those invokers for use by slime and sly.
+
 #+BEGIN_SRC emacs-lisp
   (defun collect-lisp-invokers ()
       "collect all lisp-invokers to my-lisp-implementations."
@@ -697,8 +700,7 @@ Print Debug markers in *messages*
     (add-ccl)
     (collect-sbcl)
     my-lisp-implementations)
-  ;;;; Collect all right now
-  (collect-lisp-invokers)
+
 #+END_SRC
 * Report Debug SLIME MARK                                          :noexport:
 Print Debug markers in *messages*
@@ -725,16 +727,23 @@ Many of the things I use for slime acually require slime. This is true for slime
 #+end_src
 
 
-
-* Maybe use SLY
- #+BEGIN_SRC emacs-lisp
+* SLY
+#+begin_src emacs-lisp
+  (use-package sly-repl-ansi-color
+  :straight t
+  :defer t)
+#+end_src
+#+BEGIN_SRC emacs-lisp
    (use-package sly
      :if (eq common-lisp-mode-tool :sly)
+     :straight t
      :defer t
      :init
-       (collect-lisp-invokers)
-       (setq sly-lisp-implementations my-lisp-implementations))
- #+END_SRC
+     (setq sly-lisp-implementations (collect-lisp-invokers))
+     :config
+     (require 'sly-repl-ansi-color)
+     (push 'sly-repl-ansi-color sly-contribs))
+#+END_SRC
 * Report Debug SLIME END MARK                                      :noexport:
 Print Debug markers in *messages*
 #+BEGIN_SRC emacs-lisp :eval never-export
