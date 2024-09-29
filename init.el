@@ -674,6 +674,30 @@
 
 (require 'filename2clipboard)
 
+(use-package erc
+    :straight t
+    :config
+    (setq erc-fill-column 120
+      erc-fill-function 'erc-fill-static
+      erc-fill-static-center 20))
+
+(use-package erc-hl-nicks
+  :straight t
+  :after erc
+  :config
+  (add-to-list 'erc-modules 'hl-nicks))
+
+(use-package erc-hl-nicks
+  :straight t
+  :after erc
+  :config
+  (add-to-list 'erc-modules 'hl-nicks))
+
+(use-package emojify
+  :straight t
+  :hook (erc-mode . emojify-mode)
+  :commands emojify-mode)
+
 (message "Debug Before ORG")
 
 (require 'ox-publish)
@@ -1106,3 +1130,5 @@ text and copying to the killring."
 
 (setq twr/init-loading-flag nil)
 (message "<<<<  !!!     INIT.EL FINISHED   !!!   >>>>> ")
+
+(load "~/.emacs-local")
