@@ -452,20 +452,6 @@
   (add-hook 'slime-repl-mode-hook
 	    #'(lambda () (setf slime-repl-ansi-color-mode 1))))
 
-(use-package sly-repl-ansi-color
-:straight t
-:defer t)
-
-(use-package sly
-  :if (eq common-lisp-mode-tool :sly)
-  :straight t
-  :defer t
-  :init
-  (setq sly-lisp-implementations (collect-lisp-invokers))
-  :config
-  (require 'sly-repl-ansi-color)
-  (push 'sly-repl-ansi-color sly-contribs))
-
 (message "Debug SLIME END MARK")
 
 (setq auto-mode-alist

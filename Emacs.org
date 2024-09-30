@@ -728,21 +728,23 @@ Many of the things I use for slime acually require slime. This is true for slime
 
 
 * SLY
-#+begin_src emacs-lisp
+SLY is disabled my the :tangle nil in the below items.
+#+begin_src emacs-lisp :tangle nil
   (use-package sly-repl-ansi-color
   :straight t
   :defer t)
 #+end_src
-#+BEGIN_SRC emacs-lisp
-   (use-package sly
-     :if (eq common-lisp-mode-tool :sly)
-     :straight t
-     :defer t
-     :init
-     (setq sly-lisp-implementations (collect-lisp-invokers))
-     :config
-     (require 'sly-repl-ansi-color)
-     (push 'sly-repl-ansi-color sly-contribs))
+#+BEGIN_SRC emacs-lisp :tangle nil
+  (use-package sly
+    :disabled
+    :if (eq common-lisp-mode-tool :sly)
+    :straight t
+    :defer t
+    :init
+    (setq sly-lisp-implementations (collect-lisp-invokers))
+    :config
+    (require 'sly-repl-ansi-color)
+    (push 'sly-repl-ansi-color sly-contribs))
 #+END_SRC
 * Report Debug SLIME END MARK                                      :noexport:
 Print Debug markers in *messages*
