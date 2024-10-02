@@ -12,3 +12,6 @@
 (defvar multi-user-org-path
   "c:/Users/Public/Documents/org/"
   "All org stuff that need multiuser access are located relative this path.")
+
+(defvar config-obsidian-specify-path "c:/Users/zzzzap1957/Documents/Obsidian Vault"
+  "Define the location of the Obsidian Vault.") 
