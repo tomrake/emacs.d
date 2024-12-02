@@ -614,35 +614,63 @@ I collect all sbcl version of lisp from a base directory which is structured
 
 	
 #+BEGIN_SRC emacs-lisp
-  (defun get-sbcl-versions (base-address)
-    "Get all the directories under the base-address"
-    (remove "." (remove ".." (directory-files  base-address ))))
+    (defun get-sbcl-versions (base-address)
+      "Get all the directories under the base-address"
+      (remove "." (remove ".." (directory-files  base-address ))))
 
-  (defun get-sbcl-configs (version-address)
-    (remove "." (remove ".." (directory-files version-address))))
+    (defun get-sbcl-configs (version-address)
+      (remove "." (remove ".." (directory-files version-address))))
 
-  (defun assemble-named-sbcl-version (prefix base-address version config)
-    "Create a SBCL invoker for specific compiled version."
-    (assemble-sbcl-enviroment-invoker
-     (intern (concat prefix version "-" config))
-     (concat base-address "/" version "/" config "/bin/sbcl.exe")
-     (list (concat "SBCL_HOME=" base-address "/" version "/" config "/lib/sbcl/")
-	   "CC=c:/devel/msys64/ucrt64/bin/gcc")))
+    (defun assemble-named-sbcl-version (prefix base-address version config)
+      "Create a SBCL invoker for specific compiled version."
+      (assemble-sbcl-enviroment-invoker
+       (intern (concat prefix version "-" config))
+       (concat base-address "/" version "/" config "/bin/sbcl.exe")
+       (list (concat "SBCL_HOME=" base-address "/" version "/" config "/lib/sbcl/")
+	     "CC=c:/devel/msys64/ucrt64/bin/gcc")))
 
-  (defun add-win64-sbcl (base-address)
-    "Add a SBCL invoker for all versions under the base-address"
-    (let ((versions (get-sbcl-versions base-address)))
-      (dolist (version versions)
-	(let ((configs (get-sbcl-configs (concat base-address "/" version))))
-	  (dolist (config configs)
-	    (when (and (file-exists-p (concat base-address "/" version "/" config  "/bin/sbcl.exe"))
-		       (or (string= config "production") (file-exists-p (concat base-address "/" version "/" config "/.production"))))
-	      (collect-this-lisp (assemble-named-sbcl-version "sbcl64-" base-address version config))))))))
+  (defun augment-versions (vers)
+    "Add the numeric version  pieces to each element."
+    (let ((aug-vers 
+	   (mapcar (lambda (v)
+	      (cons v (mapcar
+		       (lambda (s) (string-to-number s)) (split-string v "\\." ))))
+		   vers)))
+      aug-vers))
 
-  (defun collect-sbcl ()
-    "Add all the slime invokers for SBCL 64bit compiled versions."
-    (checksym-existing-directory "local-config-sbcl-location"
-	      (add-win64-sbcl it)))
+   (defun sort-by-nth (n aug-vers)
+     "sort the aug-vers by the nth item"
+     (sort aug-vers (lambda (a b) ( < (nth n a) (nth n b))))
+     aug-vers)
+
+    (defun filter-non-versions (l)
+      "Remove any string from the list that container other that 0-9 or ."
+      (seq-filter (lambda (a) (not (string-match "[^0-9.]" a))) l))
+
+    (defun sort-version (vers)
+
+      (mapcar (lambda (av)  (car av))
+	      (sort-by-nth 3 (sort-by-nth 2 (sort-by-nth 1 (augment-versions (filter-non-versions vers)))))))
+
+
+
+
+
+    (defun add-win64-sbcl (base-address)
+      "Add a SBCL invoker for all versions under the base-address"
+      (let ((versions (sort-version (get-sbcl-versions base-address))))
+	(message "versions: %s"versions)
+	(dolist (version versions)
+	  (let ((configs (get-sbcl-configs (concat base-address "/" version))))
+	    (dolist (config configs)
+	      (when (and (file-exists-p (concat base-address "/" version "/" config  "/bin/sbcl.exe"))
+			 (or (string= config "production") (file-exists-p (concat base-address "/" version "/" config "/.production"))))
+		(collect-this-lisp (assemble-named-sbcl-version "sbcl64-" base-address version config))))))))
+
+    (defun collect-sbcl ()
+      "Add all the slime invokers for SBCL 64bit compiled versions."
+      (checksym-existing-directory "local-config-sbcl-location"
+		(add-win64-sbcl it)))
 #+END_SRC
 * CCL Invokers
 
