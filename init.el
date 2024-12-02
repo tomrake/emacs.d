@@ -400,8 +400,7 @@
 
  (defun sort-by-nth (n aug-vers)
    "sort the aug-vers by the nth item"
-   (sort aug-vers (lambda (a b) ( < (nth n a) (nth n b))))
-   aug-vers)
+   (sort aug-vers (lambda (a b) ( < (nth n a) (nth n b)))))
 
   (defun filter-non-versions (l)
     "Remove any string from the list that container other that 0-9 or ."
@@ -410,7 +409,7 @@
   (defun sort-version (vers)
 
     (mapcar (lambda (av)  (car av))
-	    (sort-by-nth 3 (sort-by-nth 2 (sort-by-nth 1 (augment-versions (filter-non-versions vers)))))))
+	    (sort-by-nth 1 (sort-by-nth 2 (sort-by-nth 3 (augment-versions (filter-non-versions vers)))))))
 
 
 
