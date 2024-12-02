@@ -408,9 +408,9 @@
     (seq-filter (lambda (a) (not (string-match "[^0-9.]" a))) l))
 
   (defun sort-version (vers)
-    (reverse 
-      (mapcar (lambda (av)  (car av))
-	      (sort-by-nth 3 (sort-by-nth 2 (sort-by-nth 1 (augment-versions (filter-non-versions vers))))))))
+
+    (mapcar (lambda (av)  (car av))
+	    (sort-by-nth 3 (sort-by-nth 2 (sort-by-nth 1 (augment-versions (filter-non-versions vers)))))))
 
 
 
