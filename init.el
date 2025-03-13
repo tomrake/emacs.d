@@ -99,13 +99,6 @@
 
 (setq gc-cons-threshold (* 50 1000 1000))
 
-;; You will most likely need to adjust this font size for your system!
-(defvar efs/default-font-size 180)
-(defvar efs/default-variable-font-size 180)
-
-;; Make frame transparency overridable
-(defvar efs/frame-transparency '(90 . 90))
-
 (defun find-first-existing-file (files)
   (if (listp files)
       (if (null files)
@@ -176,8 +169,6 @@
 
 ;;;; Magic File modes
 (setq magic-mode-alist '(("*.org" . org)))
-
-(add-hook 'emacs-startup-hook 'toggle-frame-maximized)
 
 ;;;; Have a clean statup screen
 ; (setq inhibit-startup-screen t)
