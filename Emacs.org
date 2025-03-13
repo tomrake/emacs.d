@@ -115,12 +115,6 @@ Set a init loading flag, check and report if the flag is not clear in the after 
 #+end_src
 * Auto-tangle Emacs.org
 This is a modifed from systemcrafters.
-#+begin_src emacs-lisp :tangle nil
-  (message (concat "Init buffer: :" (buffer-file-name)))
-  (unless (string-equal (buffer-file-name)
-			(expand-file-name (concat user-emacs-directory "init.el")))
-    (error "init.el tangle check failed"))
-#+end_src
 #+begin_src emacs-lisp
   ;; Autommatically tangle our Emacs.org config file when we save it.
   (defun efs/org-babel-tangle-config ()
@@ -143,16 +137,6 @@ This is a modifed from systemcrafters.
 #+begin_src emacs-lisp
   (setq gc-cons-threshold (* 50 1000 1000))
 #+end_src
-* Font and Frame Tweeking
-#+begin_src emacs-lisp
-  ;; You will most likely need to adjust this font size for your system!
-  (defvar efs/default-font-size 180)
-  (defvar efs/default-variable-font-size 180)
-
-  ;; Make frame transparency overridable
-  (defvar efs/frame-transparency '(90 . 90))
-#+end_src
-
 * Initial Buffer Choice
 #+begin_src emacs-lisp
   (defun find-first-existing-file (files)
@@ -191,13 +175,6 @@ This is a modifed from systemcrafters.
 
   (add-hook 'emacs-startup-hook #'efs/display-startup-time)
 #+end_src
-* The emacs customization file.
- Define were emacs cusomization is saved and restored.
- #+BEGIN_SRC emacs-lisp :tangle nil
-   ;;;; define emacs customization file and load it.
-   (setq custom-file (expand-file-name "emacs-custom.el" user-emacs-directory))
-   (load custom-file)
- #+END_SRC
 * Straight Package manager
 #+begin_src emacs-lisp
   (defvar bootstrap-version)
@@ -214,22 +191,6 @@ This is a modifed from systemcrafters.
     (load bootstrap-file nil 'nomessage))
     (straight-use-package 'use-package) 
 #+end_src
-* Package and package archives
-#+begin_src emacs-lisp :tangle nil
-    ;;;; Initialize package sources
-    (require 'package)
-    ;(setq package-check-signature nil)
-    (setq package-gnupghome-dir "~/.gnupg/")
-    (setq package-archives '(("melpa" . "https://melpa.org/packages/")
-			     ("org" . "https://orgmode.org/elpa/")
-			     ("elpa" . "https://elpa.gnu.org/packages/")))
-
-    (package-initialize)
-    (unless package-archive-contents
-      (package-refresh-contents))
-
-
-  #+end_src
 * load use-package
   #+begin_src emacs-lisp
   ;;;; Initialize use-package on non-Linux platforms
@@ -272,26 +233,6 @@ This is a modifed from systemcrafters.
   ;;;; Magic File modes
   (setq magic-mode-alist '(("*.org" . org)))
 #+END_SRC
-* Initial Frame Size
-[[https://www.gnu.org/software/emacs/manual/html_node/efaq/Fullscreen-mode-on-MS_002dWindows.html]]
-#+begin_src emacs-lisp
-(add-hook 'emacs-startup-hook 'toggle-frame-maximized)
-#+end_src
-Fix initial window position.
-  #+BEGIN_SRC emacs-lisp :tangle no
-    ;;;; Set initial frame size and position
-    (defun my/set-initial-frame ()
-      (let* ((base-factor 0.70)
-	    (a-width (* (display-pixel-width) base-factor))
-	    (a-height (* (display-pixel-height) base-factor))
-	    (a-left (truncate (/ (- (display-pixel-width) a-width) 2)))
-	    (a-top (truncate (/ (- (display-pixel-height) a-height) 2))))
-	(set-frame-position (selected-frame) a-left a-top)
-	(set-frame-size (selected-frame) (truncate a-width)  (truncate a-height) t)))
-    (setq frame-resize-pixelwise t)
-    (my/set-initial-frame)
-  #+END_SRC
-
 * Basic Look and feel
 I don't like the a messy startup screen.
 
@@ -347,28 +288,6 @@ Read up on [[https://www.gnu.org/software/emacs/manual/html_node/elisp/Completio
     :init
     (savehist-mode))
 #+end_src
-* org-roam NO TANGLE
-  I am setting up org-roam
-#+BEGIN_SRC emacs-lisp :tangle no
-  (use-package org-roam
-    :straight t
-    :init
-    (setq org-roam-v2-ack t)
-    :custom
-    (org-roam-directory (file-truename "~/org/roam/"))
-    :bind (("C-c n l" . org-roam-buffer-toggle)
-	   ("C-c n f" . org-roam-node-find)
-	   ("C-c n g" . org-roam-graph)
-	   ("C-c n i" . org-roam-node-insert)
-	   ("C-c n c" . org-roam-capture)
-	   ;; Dailies
-	   ("C-c n j" . org-roam-dailies-capture-today))
-    :config
-    (org-roam-db-autosync-mode)
-    ;; If using org-roam-protocol
-    (require 'org-roam-protocol))
-#+END_SRC
-
 * Obsidian
 See  the source repo at [[https://github.com/licht1stein/obsidian.el]]
 To use this package you must define 
@@ -454,12 +373,6 @@ Certain tools need java set that location here.
   (setenv "SSH_ASKPASS" "git-gui--askpass")
   :after (magit))
 #+END_SRC
-* Roswell
-#+begin_src emacs-lisp :tangle nil
-  (if (getenv "MSYSTEM")
-    (when (file-exists-p (expand-file-name "~/.roswell/helper.el"))
-      (load (expand-file-name "~/.roswell/helper.el"))))
-#+end_src
 * Modus Theme Configuration
 Main Page: [[https://protesilaos.com/emacs/modus-themes]]
 #+BEGIN_SRC emacs-lisp
@@ -930,23 +843,6 @@ Print Debug markers in *messages*
 	  "Sort dired listings with directories first before adding marks."
 	  (mydired-sort))
 #+END_SRC
-** diredc - NOT TANGLED
-#+begin_src emacs-lisp :tangle no
-  (use-package diredc)
-#+end_src
-** Peep Dired - NOT TANGLED
-#+begin_src emacs-lisp :tangle no
-  (use-package peep-dired
-  :config
-  ; kill buffers when diabling the mode
-  (setq peep-dired-cleanup-on-disable t)
-  ; kill buffers when you move to another
-  (setq peep-direct-cleanup-on eagerly t)
-  ; set mode for peeped buffers
-  (setq peep-dired-enable-on-directories t)
-  ; file  types not to open
-  (setq peep-dired-ignored-extensions '("mkv" "iso" "mp4"))
-#+end_src
 * Report Debug TEST                                                :noexport:
 Print Debug markers in *messages*
 #+BEGIN_SRC emacs-lisp  :eval never-export
@@ -985,18 +881,6 @@ So configure it there.
 (recentf-mode 1)
 (setq recentf-max-menu-items 25)
 (global-set-key "\C-x\ \C-r" 'recentf-open-files)
-#+end_src
-* PDF-TOOLS
-org-noter hangs on msys2 launch
-I am not tangleing this to see of msys2 launch is sucessful.
-I remove noter loading, tangle again.
-#+begin_src emacs-lisp :tangle no
-  (use-package pdf-tools
-     :config
-     ;(pdf-tools-install))
-
-  (use-package org-pdftools
-    :hook (org-mode . org-pdftools-setup-link))
 #+end_src
 * PPL Time of Day
 #+begin_src emacs-lisp
