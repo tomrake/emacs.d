@@ -471,6 +471,16 @@ Make plink the default tramp method if running on Windows when plink.exe exists.
       :straight t
       :hook (lisp-mode . enable-paredit-mode))
     #+END_SRC
+* Easy-Hugo
+Use emacs-easy-hugo.
+#+begin_src emacs-lisp
+  (use-package easy-hugo
+  :straight t
+  :custom
+  (easy-hugo-basedir "C:/Users/zzzap/Documents/Code/source-projects/ACTIVE/tomrake.github.io/")
+  (easy-hugo-postdir "content/blog/")
+  )
+#+end_src
 * Report Debug START COMMONLISP STUFF                              :noexport:
 Print Debug markers in *messages*
 #+BEGIN_SRC emacs-lisp :eval never-export

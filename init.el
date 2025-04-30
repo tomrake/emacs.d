@@ -335,6 +335,13 @@
   :straight t
   :hook (lisp-mode . enable-paredit-mode))
 
+(use-package easy-hugo
+:straight t
+:custom
+(easy-hugo-basedir "C:/Users/zzzap/Documents/Code/source-projects/ACTIVE/tomrake.github.io/")
+(easy-hugo-postdir "content/blog/")
+)
+
 (message "Debug <<<<<<<<< START COMMONLISP STUFF")
 
 (defvar common-lisp-mode-tool :slime "This can be :slime or :sly.")
