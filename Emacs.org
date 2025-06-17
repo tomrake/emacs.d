@@ -194,8 +194,8 @@ This is a modifed from systemcrafters.
 * load use-package
   #+begin_src emacs-lisp
   ;;;; Initialize use-package on non-Linux platforms
-    (unless (package-installed-p 'use-package)
-      (package-install 'use-package))
+;    (unless (package-installed-p 'use-package)
+;      (package-install 'use-package))
     ;;;; use-package
     (require 'use-package)
     (setq straight-use-package-by-default t)
