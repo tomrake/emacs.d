@@ -719,6 +719,14 @@ Print Debug markers in *messages*
     (when (getenv "HyperSpec")
      (setq common-lisp-hyperspec-root (convert-standard-filename (getenv "HyperSpec"))))
   #+END_SRC
+* Racket
+#+begin_src emacs-lisp
+  (use-package racket-mode
+    :straight t
+    ;:config
+    ;(setf racket-program "C:/Program Files/Racket/Racket.exe" )
+  )
+#+end_src
 * Pascal Setup
   [TBD] I have no pascal compiler configured.
 #+BEGIN_SRC emacs-lisp
