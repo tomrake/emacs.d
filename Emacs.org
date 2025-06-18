@@ -192,10 +192,8 @@ This is a modifed from systemcrafters.
     (straight-use-package 'use-package) 
 #+end_src
 * load use-package
+use-package is included with emacs.
   #+begin_src emacs-lisp
-  ;;;; Initialize use-package on non-Linux platforms
-;    (unless (package-installed-p 'use-package)
-;      (package-install 'use-package))
     ;;;; use-package
     (require 'use-package)
     (setq straight-use-package-by-default t)
