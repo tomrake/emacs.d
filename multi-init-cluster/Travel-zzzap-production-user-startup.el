@@ -1,7 +1,7 @@
 (message "DESKER-zzzap-devel-user-startup")
 
 
-(defvar local-config-sbcl-location "C:/Users/Public/Lispers/sbcl/installed"
+(defvar local-config-sbcl-location "/home/zzzap/sbcl"
   "All locally compiled and installed SBCL lisps are installed in directory,
     by release version and a compiled name..
   I also add lisp version with a compiled name of 'production' or which contain a file '.production.'")

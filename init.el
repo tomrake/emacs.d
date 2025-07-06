@@ -17,12 +17,12 @@
 (message "user-login-name        : %s" user-login-name)
 (if chemacs-profile-name
     (progn
-	(defvar local-config-name (concat system-name "-" user-login-name "-" chemacs-profile-name "-user-startup")
-	  "The name of local-config file.")
-	(defvar local-config-pathname (concat user-emacs-directory "multi-init-cluster/" local-config-name)
-	  "The filename to load the local-config.")
-	(message "local-config-pathname  : %s" local-config-pathname)
-	(load local-config-pathname))
+      (defvar local-config-name (concat system-name "-" user-login-name "-" chemacs-profile-name "-user-startup")
+	"The name of local-config file.")
+      (defvar local-config-pathname (concat user-emacs-directory "multi-init-cluster/" local-config-name)
+	"The filename to load the local-config.")
+      (message "local-config-pathname  : %s" local-config-pathname)
+      (load local-config-pathname))
   (progn
     (message "This config should be executed by chemacs2 and chemacs-profile-name is not defined ")
     (error "Bad chemacs config.")))
@@ -32,27 +32,27 @@
   "Anaphoric - it macro, where the body can uss *it* when symbol name is defined."
   (let ((_sym (gensym)))
     `(let ((,_sym (intern-soft ,name)))
-	 (when ,_sym
-	   (let ((it (symbol-value ,_sym)))
-	     ,@body)))))
+       (when ,_sym
+	 (let ((it (symbol-value ,_sym)))
+	   ,@body)))))
 
 (defmacro checksym-not-nil (name &rest body)
   "Anaphoric - it macro, where the body can uss *it* when symbol name is defined."
   "Execute the body when the symbol is not nil"
   (let ((_sym (gensym)))
     `(let ((,_sym (intern-soft ,name)))
-	 (when (,_sym (symbol-value ,_sym))
-	   (let ((it (symbol-value ,_sym)))
-	     ,@body)))))
+       (when (,_sym (symbol-value ,_sym))
+	 (let ((it (symbol-value ,_sym)))
+	   ,@body)))))
 
 (defmacro checksym-not-empty-string (name &rest body)
   "Anaphoric - it macro, where the body can uss *it* when symbol name is a string that is not empty."
   (let ((_sym (gensym)))
     `(let ((,_sym (intern-soft ,name)))
-	 (when ,_sym
-	   (let ((it (symbol-value ,_sym)))
-	     (when (and (stringp it) (< 0 (length it)))
-	       ,@body))))))
+       (when ,_sym
+	 (let ((it (symbol-value ,_sym)))
+	   (when (and (stringp it) (< 0 (length it)))
+	     ,@body))))))
 
 
 
@@ -61,20 +61,20 @@
   "Anaphoric - it macro, where the body can uss *it* when symbol name is a the name of an existing file."
   (let ((_sym (gensym)))
     `(let ((,_sym (intern-soft ,name)))
-	 (when ,_sym
-	   (let ((it (symbol-value ,_sym)))
-	     (when (and (stringp it) (file-exists-p it))
-		 ,@body))))))
+       (when ,_sym
+	 (let ((it (symbol-value ,_sym)))
+	   (when (and (stringp it) (file-exists-p it))
+	       ,@body))))))
 
 
 (defmacro checksym-existing-directory (name &rest body)
-	"Anaphoric - it macro, where the body can us *it* when symbol name is a the name of an existing directory."
+      "Anaphoric - it macro, where the body can us *it* when symbol name is a the name of an existing directory."
   (let ((_sym (gensym)))
     `(let ((,_sym (intern-soft ,name)))
-	 (when ,_sym
-	   (let ((it (symbol-value ,_sym)))
-	     (when (and (stringp it) (file-directory-p it))
-		 ,@body))))))
+       (when ,_sym
+	 (let ((it (symbol-value ,_sym)))
+	   (when (and (stringp it) (file-directory-p it))
+	       ,@body))))))
 
 (setq twr/init-loading-flag "default")
 (defun twr/check-init-load ()
@@ -87,12 +87,12 @@
   "Test if the buffer should be auto-tangled after save"
   ; (message "string-equal: %s %s" (buffer-file-name) (expand-file-name (concat user-emacs-directory "Emacs.org")))
   (when (string-equal (buffer-file-name)
-			(expand-file-name "Emacs.org" user-emacs-directory))
+		      (expand-file-name "Emacs.org" user-emacs-directory))
     (message "tangle-Emacs.org")
 
     ;; Dynamic scoping to the rescue
     (let ((org-confirm-babel-evaluate nil))
-	(org-babel-tangle))))
+      (org-babel-tangle))))
 (add-hook 'org-mode-hook (lambda () (add-hook 'after-save-hook #'efs/org-babel-tangle-config)))
 
 (add-to-list 'load-path (expand-file-name "scripts/" user-emacs-directory))
@@ -101,16 +101,16 @@
 
 (defun find-first-existing-file (files)
   (if (listp files)
-	(if (null files)
-	  nil
-	  (let ((file (car files)))
-	    (if (and file (file-exists-p file))
-	      file
-	      (find-first-existing-file (cdr files)))))
+      (if (null files)
+	nil
+	(let ((file (car files)))
+	  (if (and file (file-exists-p file))
+	    file
+	    (find-first-existing-file (cdr files)))))
     (error "files should be a list but is %s" files)))
   (setq initial-buffer-choice
-	  (find-first-existing-file (list "~/startup-buffer.org"
-					   (concat user-emacs-directory "startup-buffer.org"))))
+	(find-first-existing-file (list "~/startup-buffer.org"
+					 (concat user-emacs-directory "startup-buffer.org"))))
 
 ;; UTF-8 as default encoding
 (set-language-environment "UTF-8")
@@ -123,24 +123,24 @@
 ;;;; Reporting Startup Time
 (defun efs/display-startup-time ()
   (message "Emacs loaded in %s with %d garbage collections."
-	     (format "%.2f seconds"
-		     (float-time
-		      (time-subtract after-init-time before-init-time)))
-	     gcs-done))
+	   (format "%.2f seconds"
+		   (float-time
+		    (time-subtract after-init-time before-init-time)))
+	   gcs-done))
 
 (add-hook 'emacs-startup-hook #'efs/display-startup-time)
 
 (defvar bootstrap-version)
 (let ((bootstrap-file
-	 (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
-	(bootstrap-version 5))
+       (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
+      (bootstrap-version 5))
   (unless (file-exists-p bootstrap-file)
     (with-current-buffer
-	  (url-retrieve-synchronously
-	   "https://raw.githubusercontent.com/raxod502/straight.el/develop/install.el"
-	   'silent 'inhibit-cookies)
-	(goto-char (point-max))
-	(eval-print-last-sexp)))
+	(url-retrieve-synchronously
+	 "https://raw.githubusercontent.com/raxod502/straight.el/develop/install.el"
+	 'silent 'inhibit-cookies)
+      (goto-char (point-max))
+      (eval-print-last-sexp)))
   (load bootstrap-file nil 'nomessage))
   (straight-use-package 'use-package)
 
@@ -158,11 +158,11 @@
      ;(require 'org)
      ;;(message (concat "Looking for " ,description " file: " ,file ))
      (let ((file-and-path (expand-file-name ,file user-emacs-directory)))
-	 (if (file-exists-p file-and-path)
-	     (progn ;;(message (concat "org-babel-load of " file-and-path))
-	            (require 'org)
-		    (org-babel-load-file file-and-path))
-	   (message (concat "Custom file is missing " file-and-path))))))
+       (if (file-exists-p file-and-path)
+	   (progn ;;(message (concat "org-babel-load of " file-and-path))
+	          (require 'org)
+		  (org-babel-load-file file-and-path))
+	 (message (concat "Custom file is missing " file-and-path))))))
 
 ;;;; Magic File modes
 (setq magic-mode-alist '(("*.org" . org)))
@@ -198,27 +198,6 @@
 (use-package savehist
   :init
   (savehist-mode))
-
-(defun obsidian-opinonated-directories (base)
-  (obsidian-specify-path base)
-  (setf obsidian-inbox-directory "Inbox")
-  (setf obsidian-daily-notes-directory "Daily Notes")
-  (setf obsidian-template-directory "Templates"))
-
-(use-package obsidian
-  :straight t
-  :demand t
-  :config
-  ;(obsidian-specify-path config-obsidian-specify-path)
-  (obsidian-opinonated-directories config-obsidian-specify-path)
-  (global-obsidian-mode t)
-  :bind (:map obsidian-mode-map
-		;; Replace C-c C-o with Obsidian.el's implementation. It's ok to use another key binding.
-		("C-c C-o" . obsidian-follow-link-at-point)
-		;; Jump to backlinks
-		("C-c C-b" . obsidian-backlink-jump)
-		;; If you prefer you can use `obsidian-insert-link'
-		("C-c C-l" . obsidian-insert-wikilink)))
 
 (setq ispell-program-name "aspell")
 
@@ -264,7 +243,7 @@
   :ensure t
   :init
   (set-face-attribute 'default nil :height 150)
-	;; Subtle red background, red foreground, invisible border
+      ;; Subtle red background, red foreground, invisible border
 
   (setq modus-themes-region '(bg-only))
   (setq modus-themes-paren-match '(bold intense))
@@ -275,24 +254,24 @@
   ;; Subtle blue background, neutral foreground, intense blue border
   (setq modus-themes-common-palette-overrides
     '((bg-mode-line-active bg-blue-subtle)
-	(fg-mode-line-active fg-main)
-	(border-mode-line-active blue-intense)))
+      (fg-mode-line-active fg-main)
+      (border-mode-line-active blue-intense)))
   (setq modus-themes-mode-line '(accented borderless))
   ;;; Org Mode
   (setq modus-themes-heading
-	  `((1 . (rainbow bold intense 2.3))
-	    (2 . (rainbow bold intense 1.9))
-	    (3 . (rainbow bold intense 1.7))
-	    (4 . (rainbow bold intense 1.5))
-	    (5 . (rainbow bold intense 1.3))
-	    (6 . (rainbow bold intense 1.1))
-	    (t . (rainbow bold background 1.0))))
+	`((1 . (rainbow bold intense 2.3))
+	  (2 . (rainbow bold intense 1.9))
+	  (3 . (rainbow bold intense 1.7))
+	  (4 . (rainbow bold intense 1.5))
+	  (5 . (rainbow bold intense 1.3))
+	  (6 . (rainbow bold intense 1.1))
+	  (t . (rainbow bold background 1.0))))
   (setq modus-themes-org-agenda
-	  '((header-block . (variable-pitch 1.5))
-	    (header-date . (grayscale workaholic bold-today 1.2))
-	    (event . (accented italic varied))
-	    (scheduled . uniform)
-	    (habit . traffic-light)))
+	'((header-block . (variable-pitch 1.5))
+	  (header-date . (grayscale workaholic bold-today 1.2))
+	  (event . (accented italic varied))
+	  (scheduled . uniform)
+	  (habit . traffic-light)))
   (setf custom-safe-themes "e410458d3e769c33e0865971deb6e8422457fad02bf51f7862fa180ccc42c032")
   (load-theme 'modus-vivendi t))
 
@@ -303,7 +282,7 @@
 (defun powershell()
   (interactive)
   (let ((explicit-shell-file-name "powershell.exe")
-	  (explicit-powershell.exe-args '()))
+	(explicit-powershell.exe-args '()))
     (shell (generate-new-buffer-name "*powershell*"))))
 
 ;;;; Set the explicit shell name to msys2 version. 
@@ -311,9 +290,9 @@
 
 ;;;; eshell
 (setenv  "PATH" (concat
-		   "C:/devel/msys64/ucrt64/bin" ";"
-		   "C:/devel/msys64/bin" ";"
-		   (getenv "PATH")))
+		 "C:/devel/msys64/ucrt64/bin" ";"
+		 "C:/devel/msys64/bin" ";"
+		 (getenv "PATH")))
 
 (use-package shx
   :straight t)
@@ -321,12 +300,12 @@
 (use-package tramp
   :config
     (when (eq  window-system 'w32)
-	(setq putty-directory "c:/Program Files/PuTTY/")
-	(setq tramp-default-method "plink")
-	(when (and (not (string-match putty-directory (getenv "PATH")))
-		   (file-directory-p putty-directory))
-	  (setenv "PATH" (concat putty-directory ";" (getenv "PATH")))
-	  (add-to-list 'exec-path putty-directory))))
+      (setq putty-directory "c:/Program Files/PuTTY/")
+      (setq tramp-default-method "plink")
+      (when (and (not (string-match putty-directory (getenv "PATH")))
+		 (file-directory-p putty-directory))
+	(setenv "PATH" (concat putty-directory ";" (getenv "PATH")))
+	(add-to-list 'exec-path putty-directory))))
 
 (use-package paredit
   :straight t
@@ -344,7 +323,7 @@
 (defvar common-lisp-mode-tool :slime "This can be :slime or :sly.")
 
 (defvar my-lisp-implementations nil
-	"For various implemenations there are lisp invokers for slime and sly.")
+      "For various implemenations there are lisp invokers for slime and sly.")
 
   (defmacro assemble-invoker (my-tag program program-args environment)
      "The format of a standard slime entry for a lisp implenatation."
@@ -360,8 +339,8 @@
 
 
   (defun collect-this-lisp (lisp-invoker)
-	"Add an specific lisp invoker to slime list"
-	(add-to-list 'my-lisp-implementations lisp-invoker))
+      "Add an specific lisp invoker to slime list"
+      (add-to-list 'my-lisp-implementations lisp-invoker))
 
 ;;;; The standard options for SBCL
 (setq sbcl-program-arguments '("--dynamic-space-size" "4000" "--noinform"))
@@ -380,17 +359,16 @@
     "Create a SBCL invoker for specific compiled version."
     (assemble-sbcl-enviroment-invoker
      (intern (concat prefix version "-" config))
-     (concat base-address "/" version "/" config "/bin/sbcl.exe")
-     (list (concat "SBCL_HOME=" base-address "/" version "/" config "/lib/sbcl/")
-	     "CC=c:/devel/msys64/ucrt64/bin/gcc")))
+     (concat base-address "/" version "/" config (sbcl-exe))
+     (list (concat "SBCL_HOME=" base-address "/" version "/" config "/lib/sbcl/"))))
 
 (defun augment-versions (vers)
   "Add the numeric version  pieces to each element."
   (let ((aug-vers 
-	   (mapcar (lambda (v)
-	      (cons v (mapcar
-		       (lambda (s) (string-to-number s)) (split-string v "\\." ))))
-		   vers)))
+	 (mapcar (lambda (v)
+	    (cons v (mapcar
+		     (lambda (s) (string-to-number s)) (split-string v "\\." ))))
+		 vers)))
     aug-vers))
 
  (defun sort-by-nth (n aug-vers)
@@ -404,32 +382,37 @@
   (defun sort-version (vers)
 
     (mapcar (lambda (av)  (car av))
-	      (sort-by-nth 1 (sort-by-nth 2 (sort-by-nth 3 (augment-versions (filter-non-versions vers)))))))
+	    (sort-by-nth 1 (sort-by-nth 2 (sort-by-nth 3 (augment-versions (filter-non-versions vers)))))))
 
 
-
+  (defun sbcl-exe ()
+    (if (string-equal system-type "windows-nt")
+	"/bin/sbcl.exe"
+	(if (string-equal system-type "gnu/linux")
+	    "/bin/sbcl"
+	    (error "Unknown system type"))))
 
 
   (defun add-win64-sbcl (base-address)
     "Add a SBCL invoker for all versions under the base-address"
     (let ((versions (sort-version (get-sbcl-versions base-address))))
-	(message "versions: %s"versions)
-	(dolist (version versions)
-	  (let ((configs (get-sbcl-configs (concat base-address "/" version))))
-	    (dolist (config configs)
-	      (when (and (file-exists-p (concat base-address "/" version "/" config  "/bin/sbcl.exe"))
-			 (or (string= config "production") (file-exists-p (concat base-address "/" version "/" config "/.production"))))
-		(collect-this-lisp (assemble-named-sbcl-version "sbcl64-" base-address version config))))))))
+      (message "versions: %s"versions)
+      (dolist (version versions)
+	(let ((configs (get-sbcl-configs (concat base-address "/" version))))
+	  (dolist (config configs)
+	    (when (and (file-exists-p (concat base-address "/" version "/" config  (sbcl-exe)))
+		       (or (string= config "production") (file-exists-p (concat base-address "/" version "/" config "/.production"))))
+	      (collect-this-lisp (assemble-named-sbcl-version "sbcl64-" base-address version config))))))))
 
   (defun collect-sbcl ()
     "Add all the slime invokers for SBCL 64bit compiled versions."
     (checksym-existing-directory "local-config-sbcl-location"
-		(add-win64-sbcl it)))
+	      (add-win64-sbcl it)))
 
 (defun ccl-invoker (my-tag path)
   "Return a lisp invoker; nil if path does not exist"
     (when (file-exists-p path)
-	`(,my-tag (,path))))
+      `(,my-tag (,path))))
 
 (defun add-ccl ()
   "Collect any CCL Lisp versions"
@@ -440,14 +423,14 @@
   "Return a lisp invoker; nil if abcl is not found,"
   (let ((abcl local-config-abcl-location))
     (when (file-exists-p abcl)
-	`(abcl  ,(list java-executable "-jar" abcl)))))
+      `(abcl  ,(list java-executable "-jar" abcl)))))
 
 (defun add-abcl ()
   "Check of abcl implmentations"
   (let ((has-java (checksym-existing-file "java-executable" it)))
     (when has-java
-	(checksym-existing-file "local-config-abcl-location"
-				(collect-this-lisp `(abcl ,(list has-java "-jar" it)))))))
+      (checksym-existing-file "local-config-abcl-location"
+			      (collect-this-lisp `(abcl ,(list has-java "-jar" it)))))))
 
 (message "Debug  START GATHERING INVOKERS")
 
@@ -472,17 +455,17 @@
   (setf slime-lisp-implementations (collect-lisp-invokers))
   (require 'slime-repl-ansi-color)
   (add-hook 'slime-repl-mode-hook
-	      #'(lambda () (setf slime-repl-ansi-color-mode 1))))
+	    #'(lambda () (setf slime-repl-ansi-color-mode 1))))
 
 (message "Debug SLIME END MARK")
 
 (setq auto-mode-alist
-	(append '((".*\\.asd\\'" . lisp-mode))
-		auto-mode-alist))
+      (append '((".*\\.asd\\'" . lisp-mode))
+	      auto-mode-alist))
 
 (setq auto-mode-alist
-	(append '((".*\\.cl\\'" . lisp-mode))
-		auto-mode-alist))
+      (append '((".*\\.cl\\'" . lisp-mode))
+	      auto-mode-alist))
 
 (when (getenv "HyperSpec")
  (setq common-lisp-hyperspec-root (convert-standard-filename (getenv "HyperSpec"))))
@@ -526,19 +509,19 @@
 (setq backup-directory-alist `(("." . ,(expand-file-name "tmp/backups/" user-emacs-directory))))
 
 (defun efs/configure-eshell ()
-	   ;; Save command history when commands are entered
-	   (add-hook 'eshell-pre-command-hook 'eshell-save-some-history)
+	 ;; Save command history when commands are entered
+	 (add-hook 'eshell-pre-command-hook 'eshell-save-some-history)
 
-	   ;; Truncate buffer for performance
-	   (add-to-list 'eshell-output-filter-functions 'eshell-truncate-buffer)
+	 ;; Truncate buffer for performance
+	 (add-to-list 'eshell-output-filter-functions 'eshell-truncate-buffer)
 
-	   (setq eshell-history-size         10000
-		 eshell-buffer-maximum-lines 10000
-		 eshell-hist-ignoredups t
-		 eshell-scroll-to-bottom-on-input t))
+	 (setq eshell-history-size         10000
+	       eshell-buffer-maximum-lines 10000
+	       eshell-hist-ignoredups t
+	       eshell-scroll-to-bottom-on-input t))
 
 (use-package eshell
-	   :hook (eshell-first-time-mode . efs/configure-eshell))
+	 :hook (eshell-first-time-mode . efs/configure-eshell))
 
 (use-package eshell-git-prompt
   :straight t
@@ -558,43 +541,43 @@
     dired
   :config
     (defun twr/dired-init ()
-	(define-key dired-mode-map [remap dired-find-file]
-	  'dired-single-buffer)
-	(define-key dired-mode-map [remap dired-mouse-find-file-other-window]
-	  'dired-single-buffer-mouse)
-	(define-key dired-mode-map [remap dired-up-directory]
-	  'dired-single-up-directory))
+      (define-key dired-mode-map [remap dired-find-file]
+	'dired-single-buffer)
+      (define-key dired-mode-map [remap dired-mouse-find-file-other-window]
+	'dired-single-buffer-mouse)
+      (define-key dired-mode-map [remap dired-up-directory]
+	'dired-single-up-directory))
     (twr/dired-init)
     (setq dired-single-use-magic-buffer t)
     ;; F5 is my special key
     (global-set-key [(f5)] 'dired-single-magic-buffer)
     (global-set-key [(control f5)] (function
-	(lambda nil (interactive)
-	  (dired-single-magic-buffer default-directory))))
+      (lambda nil (interactive)
+	(dired-single-magic-buffer default-directory))))
     (global-set-key [(shift f5)] (function
-	(lambda nil (interactive)
-	  (message "Current directory is: %s" default-directory))))
+      (lambda nil (interactive)
+	(message "Current directory is: %s" default-directory))))
     (global-set-key [(meta f5)] 'dired-single-toggle-buffer-name))
 
 (use-package all-the-icons-dired
-	:straight t
-	:after dired
-	;:pin melpa
-	:config
-	(add-hook 'dired-mode-hook 'all-the-icons-dired-mode))
+      :straight t
+      :after dired
+      ;:pin melpa
+      :config
+      (add-hook 'dired-mode-hook 'all-the-icons-dired-mode))
 
 (defun mydired-sort ()
-	  "Sort dired listings with directories first."
-	  (save-excursion
-	    (let (buffer-read-only)
-	      (forward-line 2) ;; beyond dir. header 
-	      (sort-regexp-fields t "^.*$" "[ ]*." (point) (point-max)))
-	    (set-buffer-modified-p nil)))
+	"Sort dired listings with directories first."
+	(save-excursion
+	  (let (buffer-read-only)
+	    (forward-line 2) ;; beyond dir. header 
+	    (sort-regexp-fields t "^.*$" "[ ]*." (point) (point-max)))
+	  (set-buffer-modified-p nil)))
 
 (defadvice dired-readin
-	  (after dired-after-updating-hook first () activate)
-	  "Sort dired listings with directories first before adding marks."
-	  (mydired-sort))
+	(after dired-after-updating-hook first () activate)
+	"Sort dired listings with directories first before adding marks."
+	(mydired-sort))
 
 (message "Debug TEST - YES!!!")
 
@@ -648,14 +631,14 @@
   (defun is-holiday (dt table)
     "Check if a date is a holiday"
     (if table (or (and (= (nth 4 dt) (nth 0 (car table)))
-			 (= (nth 3 dt) (nth 1 (car table))))
-		    (is-holiday dt (cdr table)))))
+		       (= (nth 3 dt) (nth 1 (car table))))
+		  (is-holiday dt (cdr table)))))
 
   (defun is-ppl-holiday (dt)
     "Check if a date is a PPL holiday"
     (if (/= (car ppl-holiday-table) (nth 5 dt)) 
-	  (error "Update Date table") 
-	  (is-holiday dt (cdr ppl-holiday-table))))
+	(error "Update Date table") 
+	(is-holiday dt (cdr ppl-holiday-table))))
 
   (defun ppl-summer (dt)
     "Check if a date is PPL summer rate"
@@ -664,10 +647,10 @@
 (defun ppl-high-rate (&optional dt)
   "Check if a date and time are at PPL high rate"
   (unless dt (setq dt (decode-time)))
-	 (cond ((not (< 0 (nth 6 dt) 6))  nil)
-	       ((is-ppl-holiday dt)  nil)
-	       ((ppl-summer dt)  (<= 14 (nth 2 dt) 17))
-		(t  ( <= 16 (nth 2 dt) 19))))
+       (cond ((not (< 0 (nth 6 dt) 6))  nil)
+	     ((is-ppl-holiday dt)  nil)
+	     ((ppl-summer dt)  (<= 14 (nth 2 dt) 17))
+	      (t  ( <= 16 (nth 2 dt) 19))))
 
 (use-package yaml-mode)
 
@@ -692,8 +675,8 @@
     :straight t
     :config
     (setq erc-fill-column 120
-	erc-fill-function 'erc-fill-static
-	erc-fill-static-center 20))
+      erc-fill-function 'erc-fill-static
+      erc-fill-static-center 20))
 
 (use-package erc-hl-nicks
   :straight t
@@ -724,37 +707,37 @@
 
 
 (setq org-publish-project-alist
-	`(
-	  ,@(dual-org-data      "org-web" '(
-	   :base-extension "org"
-	   :publishing-function org-html-publish-to-html
-	   :headline-levels 4             ; Just the default for this project.
-	   :auto-preamble t
-	   :auto-sitemap t
-	   :section-numbers nil
-	   :makeindex t)
-	   '(
-	   :base-extension "css\\|js\\|png\\|jpg\\|gif\\|pdf\\|mp3\\|ogg\\|swf"
-	   :auto-sitemap nil
-	   :publishing-function org-publish-attachment)
-	   '(:base-directory "~/Documents/Code/org-web/content"
-			      :publishing-directory "c:/Users/Public/org-web"
-			     :recursive t
-			     :exclude ".*/\.git/.*|.*/.*~"
-			     ))
-	  ("blog-src"
-	   ;; Path to org files.
-	   :base-directory "~/Documents/Code/blog/org-source"
-	   :base-extension "org"
+      `(
+	,@(dual-org-data      "org-web" '(
+	 :base-extension "org"
+	 :publishing-function org-html-publish-to-html
+	 :headline-levels 4             ; Just the default for this project.
+	 :auto-preamble t
+	 :auto-sitemap t
+	 :section-numbers nil
+	 :makeindex t)
+	 '(
+	 :base-extension "css\\|js\\|png\\|jpg\\|gif\\|pdf\\|mp3\\|ogg\\|swf"
+	 :auto-sitemap nil
+	 :publishing-function org-publish-attachment)
+	 '(:base-directory "~/Documents/Code/org-web/content"
+			    :publishing-directory "c:/Users/Public/org-web"
+			   :recursive t
+			   :exclude ".*/\.git/.*|.*/.*~"
+			   ))
+	("blog-src"
+	 ;; Path to org files.
+	 :base-directory "~/Documents/Code/blog/org-source"
+	 :base-extension "org"
 
-	   ;; Path to Jekyll Posts
-	   :publishing-directory "~/Documents/Code/blog/tomrake.github.io/_drafts/"
-	   :recursive t
-	   :publishing-function org-html-publish-to-html
-	   :headline-levels 4
-	   :html-extension "html"
-	   :body-only t)
-	  ("blog" :components ("blog-src"))))
+	 ;; Path to Jekyll Posts
+	 :publishing-directory "~/Documents/Code/blog/tomrake.github.io/_drafts/"
+	 :recursive t
+	 :publishing-function org-html-publish-to-html
+	 :headline-levels 4
+	 :html-extension "html"
+	 :body-only t)
+	("blog" :components ("blog-src"))))
 
 (load (expand-file-name "org-init" user-emacs-directory))
 
