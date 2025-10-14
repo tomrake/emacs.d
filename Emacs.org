@@ -730,6 +730,16 @@ Print Debug markers in *messages*
     ;(setf racket-program "C:/Program Files/Racket/Racket.exe" )
   )
 #+end_src
+* Zotxt-emacs
+#+begin_src emacs-lisp
+  (use-package deferred
+    :straight t)
+  (use-package request
+    :straight t)
+  (use-package zotxt
+  :straight t
+  :after (request deferred))
+#+end_src
 * Pascal Setup
   [TBD] I have no pascal compiler configured.
 #+BEGIN_SRC emacs-lisp
@@ -1013,6 +1023,90 @@ I am using to add icons to the icons.json file derived from feathericons.
     :hook (erc-mode . emojify-mode)
     :commands emojify-mode)
 
+#+end_src
+* vterm
+#+begin_src emacs-lisp
+  (use-package vterm
+    :straight t
+    :commands vterm
+    :config
+    (setq term-prompt-regexp "^[^#$%>\n]*[#$%>] *")
+    ;;(setq vterm-shell "zsh")
+    (setq vterm-max-scrollback 10000))
+#+end_src
+* Flycheck
+  #+begin_src emacs-lisp
+	(use-package flycheck
+	  :straight t
+	  :config
+	  (add-hook 'c++-mode-hook 'flycheck-mode)
+	  (add-hook 'c-mode-hook 'flycheck-mode)
+	  (add-hook 'flycheck-mode-hook #'flycheck-irony-setup))
+					    ;
+	  ;; (global-flycheck-mode +1)
+	  ;; (add-hook 'after-init-hook #'global-flycheck-mode)
+	(use-package flycheck-rtags
+	  :after (flycheck rtags)
+	  :config
+	  (defun my-flycheck-rtags-setup ()
+	    (flycheck-select-checker 'rtags)
+	    (setq-local flycheck-highlighting-mode nil) ;; RTags creates more accurate overlays.
+	    (setq-local flycheck-check-syntax-automatically nil))
+	  ;; c-mode-common-hook is also called by c++-mode
+	  (add-hook 'c-mode-common-hook #'my-flycheck-rtags-setup))
+
+  #+end_src
+* rtags
+#+begin_src emacs-lisp
+  (use-package rtags
+  :straight t
+  )
+#+end_src
+* company
+#+begin_src emacs-lisp
+  (use-package company
+  :straight t
+  :config
+  (add-to-list company-backends 'company-rtags))
+#+end_src
+* cmake-ide
+#+begin_src emacs-lisp
+  (use-package cmake-ide
+    :straight t
+    :after (rtags company-rtags)
+    :config
+    (setq rtags-completetions-enabled t)
+    (setq rtags-autostart-diagnostics t)
+    (rtags-enable-standard-keybinding)
+    (cmake-ide-setup))
+#+end_src
+*  Irony
+#+begin_src emacs-lisp
+    (use-package irony
+    :straight t
+    :config
+    (add-hook 'c++-mode-hook 'irony-mode)
+    (add-hook 'c-mode-hook 'irony-mode)
+    (add-hook 'objc-mode-hook 'irony-mode)
+
+    (defun my-irony-mode-hook ()
+      (define-key irony-mode-map [remap completion-at-point]
+	'irony-completion-at-point-async)
+      (define-key irony-mode-map [remap complete-symbol]
+	'irony-completion-at-point-async))
+
+    (add-hook 'irony-mode-hook 'my-irony-mode-hook)
+    (add-hook 'irony-mode-hook 'irony-cdb-autosetup-compile-options))
+
+  (use-package company-irony
+      :straight t
+      :after (company irony)
+      :config
+      (add-hook 'irony-mode-hook 'company-irony-setup-begin-commands)
+      (setq company-backends (delete 'company-semantic company-backends))
+      (eval-after-load 'company
+	'(add-to-list
+	  'company-backends 'company-irony)))
 #+end_src
 * Report Debug Before ORG                                          :noexport:
 Print Debug markers in *messages*

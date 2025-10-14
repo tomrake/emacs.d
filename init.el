@@ -476,6 +476,14 @@
   ;(setf racket-program "C:/Program Files/Racket/Racket.exe" )
 )
 
+(use-package deferred
+  :straight t)
+(use-package request
+  :straight t)
+(use-package zotxt
+:straight t
+:after (request deferred))
+
 (add-hook 'pascal-mode-hook
 	  (lambda ()
 	    (set (make-local-variable 'compile-command)
@@ -694,6 +702,77 @@
   :straight t
   :hook (erc-mode . emojify-mode)
   :commands emojify-mode)
+
+(use-package vterm
+  :straight t
+  :commands vterm
+  :config
+  (setq term-prompt-regexp "^[^#$%>\n]*[#$%>] *")
+  ;;(setq vterm-shell "zsh")
+  (setq vterm-max-scrollback 10000))
+
+(use-package flycheck
+  :straight t
+  :config
+  (add-hook 'c++-mode-hook 'flycheck-mode)
+  (add-hook 'c-mode-hook 'flycheck-mode)
+  (add-hook 'flycheck-mode-hook #'flycheck-irony-setup))
+				    ;
+  ;; (global-flycheck-mode +1)
+  ;; (add-hook 'after-init-hook #'global-flycheck-mode)
+(use-package flycheck-rtags
+  :after (flycheck rtags)
+  :config
+  (defun my-flycheck-rtags-setup ()
+    (flycheck-select-checker 'rtags)
+    (setq-local flycheck-highlighting-mode nil) ;; RTags creates more accurate overlays.
+    (setq-local flycheck-check-syntax-automatically nil))
+  ;; c-mode-common-hook is also called by c++-mode
+  (add-hook 'c-mode-common-hook #'my-flycheck-rtags-setup))
+
+(use-package rtags
+:straight t
+)
+
+(use-package company
+:straight t
+:config
+(add-to-list company-backends 'company-rtags))
+
+(use-package cmake-ide
+  :straight t
+  :after (rtags company-rtags)
+  :config
+  (setq rtags-completetions-enabled t)
+  (setq rtags-autostart-diagnostics t)
+  (rtags-enable-standard-keybinding)
+  (cmake-ide-setup))
+
+(use-package irony
+  :straight t
+  :config
+  (add-hook 'c++-mode-hook 'irony-mode)
+  (add-hook 'c-mode-hook 'irony-mode)
+  (add-hook 'objc-mode-hook 'irony-mode)
+
+  (defun my-irony-mode-hook ()
+    (define-key irony-mode-map [remap completion-at-point]
+      'irony-completion-at-point-async)
+    (define-key irony-mode-map [remap complete-symbol]
+      'irony-completion-at-point-async))
+
+  (add-hook 'irony-mode-hook 'my-irony-mode-hook)
+  (add-hook 'irony-mode-hook 'irony-cdb-autosetup-compile-options))
+
+(use-package company-irony
+    :straight t
+    :after (company irony)
+    :config
+    (add-hook 'irony-mode-hook 'company-irony-setup-begin-commands)
+    (setq company-backends (delete 'company-semantic company-backends))
+    (eval-after-load 'company
+      '(add-to-list
+	'company-backends 'company-irony)))
 
 (message "Debug Before ORG")
 
