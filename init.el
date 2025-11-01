@@ -506,13 +506,14 @@
   :straight t)
 
 ;;;; PS Print with GHOSTSCRIPT
-  (setq ps-lpr-command "C:/Program Files/gs/gs9.56.1/bin/gswin64c.exe")
-  (setq ps-lpr-switches '("-q" "-dNOPAUSE" "-dBATCH" "-sDEVICE=mswinpr2" "-sOutputFile=\"%printer%Canon\ TS6000\ series\""))
-  (setq ps-printer-name t)
-  (setf ps-font-family 'Courier)
-  (setf ps-font-size 10.0)
-  (setf ps-line-number t)
-  (setf ps-line-number-font-size 10)
+(when (eq system-type 'windows-nt)
+	  (setq ps-lpr-command "C:/Program Files/gs/gs9.56.1/bin/gswin64c.exe")
+	  (setq ps-lpr-switches '("-q" "-dNOPAUSE" "-dBATCH" "-sDEVICE=mswinpr2" "-sOutputFile=\"%printer%Canon\ TS6000\ series\""))
+	  (setq ps-printer-name t))
+(setf ps-font-family 'Courier)
+(setf ps-font-size 10.0)
+(setf ps-line-number t)
+(setf ps-line-number-font-size 10)
 
 (setq backup-directory-alist `(("." . ,(expand-file-name "tmp/backups/" user-emacs-directory))))
 
@@ -540,8 +541,13 @@
 
 (use-package dired
   :straight nil
-  :config
-    (add-hook 'dired-mode-hook 'all-the-icons-dired-mode))
+  :after all-the-icons-dired)
+
+(use-package all-the-icons-dired
+  :straight t
+  :after all-the-icons)
+
+ (add-hook 'dired-mode-hook 'all-the-icons-dired-mode)
 
 (use-package dired-single
   :straight nil
@@ -566,13 +572,6 @@
       (lambda nil (interactive)
 	(message "Current directory is: %s" default-directory))))
     (global-set-key [(meta f5)] 'dired-single-toggle-buffer-name))
-
-(use-package all-the-icons-dired
-      :straight t
-      :after dired
-      ;:pin melpa
-      :config
-      (add-hook 'dired-mode-hook 'all-the-icons-dired-mode))
 
 (defun mydired-sort ()
 	"Sort dired listings with directories first."
@@ -730,9 +729,38 @@
   ;; c-mode-common-hook is also called by c++-mode
   (add-hook 'c-mode-common-hook #'my-flycheck-rtags-setup))
 
-(use-package rtags
+(use-package helm
 :straight t
 )
+
+(use-package rtags
+    :straight t
+    :after helm
+   :hook (c++-mode . rtags-start-process-unless-running)
+  :config (setq rtags-completions-enabled t
+		rtags-path "/home/zzzap/Documents/Emacs-Configs/production/emacs.d/straight/repos/rtags/src/rtags.el"
+		rtags-rc-binary-name "/usr/local/bin/rc"
+		rtags-use-helm t
+		rtags-rdm-binary-name "/usr/local/bin/rdm")
+  :bind (("C-c E" . rtags-find-symbol)
+	 ("C-c e" . rtags-find-symbol-at-point)
+	 ("C-c O" . rtags-find-references)
+	 ("C-c o" . rtags-find-references-at-point)
+	 ("C-c s" . rtags-find-file)
+	 ("C-c v" . rtags-find-virtuals-at-point)
+	 ("C-c F" . rtags-fixit)
+	 ("C-c f" . rtags-location-stack-forward)
+	 ("C-c b" . rtags-location-stack-back)
+	 ("C-c n" . rtags-next-match)
+	 ("C-c p" . rtags-previous-match)
+	 ("C-c P" . rtags-preprocess-file)
+	 ("C-c R" . rtags-rename-symbol)
+	 ("C-c x" . rtags-show-rtags-buffer)
+	 ("C-c T" . rtags-print-symbol-info)
+	 ("C-c t" . rtags-symbol-type)
+	 ("C-c I" . rtags-include-file)
+	 ("C-c i" . rtags-get-include-file-for-symbol)))
+(setq rtags-display-result-backend 'helm)
 
 (use-package company
 :straight t
@@ -740,13 +768,15 @@
 (add-to-list company-backends 'company-rtags))
 
 (use-package cmake-ide
-  :straight t
-  :after (rtags company-rtags)
-  :config
-  (setq rtags-completetions-enabled t)
-  (setq rtags-autostart-diagnostics t)
-  (rtags-enable-standard-keybinding)
-  (cmake-ide-setup))
+   :straight t
+   :after (rtags company-rtags)
+   :config
+;   (setq rtags-completetions-enabled t)
+;   (setq rtags-autostart-diagnostics t)
+;   (rtags-enable-standard-keybinding)
+   (cmake-ide-setup)
+   (add-hook 'c-mode-hook . rtags-start-process-unless-running)
+   (add-hook 'c++-mode . rtags-start-process-unless-running))
 
 (use-package irony
   :straight t
