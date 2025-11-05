@@ -1031,8 +1031,9 @@ I am using to add icons to the icons.json file derived from feathericons.
     ;;(setq vterm-shell "zsh")
     (setq vterm-max-scrollback 10000))
 #+end_src
-* Flycheck
-  #+begin_src emacs-lisp
+* Deactivated code related to cmake-ide
+** Flycheck                                                        :noexport:
+#+begin_src emacs-lisp :tangle no
 	(use-package flycheck
 	  :straight t
 	  :config
@@ -1053,14 +1054,14 @@ I am using to add icons to the icons.json file derived from feathericons.
 	  (add-hook 'c-mode-common-hook #'my-flycheck-rtags-setup))
 
   #+end_src
-*helm
-#+begin_src emacs-lisp
+** helm                                                            :noexport:
+#+begin_src emacs-lisp  :tangle no
   (use-package helm
   :straight t
   )
 #+end_src
-* rtags
-#+begin_src emacs-lisp
+** rtags                                                           :noexport: 
+#+begin_src emacs-lisp  :tangle no
   (use-package rtags
     :straight t
     :after helm
@@ -1090,15 +1091,15 @@ I am using to add icons to the icons.json file derived from feathericons.
 	 ("C-c i" . rtags-get-include-file-for-symbol)))
 (setq rtags-display-result-backend 'helm)
 #+end_src
-* company
-#+begin_src emacs-lisp
+** company                                                         :noexport:
+#+begin_src emacs-lisp  :tangle no
   (use-package company
   :straight t
   :config
   (add-to-list company-backends 'company-rtags))
-#+end_src
-* cmake-ide
-#+begin_src emacs-lisp
+  #+end_src
+** cmake-ide                                                       :noexport:
+#+begin_src emacs-lisp  :tangle no
    (use-package cmake-ide
      :straight t
      :after (rtags company-rtags)
@@ -1109,9 +1110,9 @@ I am using to add icons to the icons.json file derived from feathericons.
      (cmake-ide-setup)
      (add-hook 'c-mode-hook . rtags-start-process-unless-running)
      (add-hook 'c++-mode . rtags-start-process-unless-running))
-#+end_src
-*  Irony
-#+begin_src emacs-lisp
+     #+end_src
+**  Irony                                                          :noexport:
+#+begin_src emacs-lisp :tangle no
     (use-package irony
     :straight t
     :config
@@ -1137,7 +1138,7 @@ I am using to add icons to the icons.json file derived from feathericons.
       (eval-after-load 'company
 	'(add-to-list
 	  'company-backends 'company-irony)))
-#+end_src
+#+end_src 
 * Report Debug Before ORG                                          :noexport:
 Print Debug markers in *messages*
 #+BEGIN_SRC emacs-lisp  :eval never-export
