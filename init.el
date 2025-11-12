@@ -712,13 +712,6 @@
 
 (message "Debug Before ORG")
 
-(require 'ob-sh)
-(defadvice org-babel-sh-evaluate (around set-shell activate)
-  "Add header argument :shcmd that determines the shell to be called."
-  (let* ((org-babel-sh-command (or (cdr (assoc :shcmd params)) org-babel-sh-command)))
-    ad-do-it
-    ))
-
 (require 'ox-publish)
 
 (defun dual-org-data (name org-part data-part common-part)
@@ -762,6 +755,16 @@
 	  ("blog" :components ("blog-src"))))
 
 (load (expand-file-name "org-init" user-emacs-directory))
+
+(use-package org-mode
+  :straight nil
+  :config
+(require 'ob-sh)
+(defadvice org-babel-sh-evaluate (around set-shell activate)
+  "Add header argument :shcmd that determines the shell to be called."
+  (let* ((org-babel-sh-command (or (cdr (assoc :shcmd params)) org-babel-sh-command)))
+    ad-do-it
+    )))
 
 (setq gc-cons-threshold (* 2 1000 1000))
 

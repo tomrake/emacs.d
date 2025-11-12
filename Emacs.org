@@ -1145,15 +1145,6 @@ Print Debug markers in *messages*
 (message "Debug Before ORG")
 #+END_SRC
  
-* shcmd option
-#+begin_src emacs-lisp
-(require 'ob-sh)
-(defadvice org-babel-sh-evaluate (around set-shell activate)
-  "Add header argument :shcmd that determines the shell to be called."
-  (let* ((org-babel-sh-command (or (cdr (assoc :shcmd params)) org-babel-sh-command)))
-    ad-do-it
-    ))
-#+end_src
 * org-publish
 Tom Rake's Notes
 #+BEGIN_SRC emacs-lisp
@@ -1204,6 +1195,18 @@ Tom Rake's Notes
 #+BEGIN_SRC emacs-lisp
 (load (expand-file-name "org-init" user-emacs-directory))
 #+END_SRC
+* shcmd option
+#+begin_src emacs-lisp
+  (use-package org-mode
+    :straight nil
+    :config
+  (require 'ob-sh)
+  (defadvice org-babel-sh-evaluate (around set-shell activate)
+    "Add header argument :shcmd that determines the shell to be called."
+    (let* ((org-babel-sh-command (or (cdr (assoc :shcmd params)) org-babel-sh-command)))
+      ad-do-it
+      )))
+#+end_src
 * Adjust for better GC
 #+begin_src emacs-lisp
 (setq gc-cons-threshold (* 2 1000 1000))  
