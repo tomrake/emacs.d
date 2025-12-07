@@ -722,6 +722,16 @@ Print Debug markers in *messages*
     (when (getenv "HyperSpec")
      (setq common-lisp-hyperspec-root (convert-standard-filename (getenv "HyperSpec"))))
   #+END_SRC
+* dap-mode
+#+begin_src emacs-lisp
+  (straight-use-package 'dap-mode)
+
+  (use-package
+   :straight t
+   :config
+   (dap-auto-configure-mode))
+  
+#+end_src
 * Racket
 #+begin_src emacs-lisp
   (use-package racket-mode
@@ -768,8 +778,7 @@ Use simple-httpd to preview a site from emacs.
   (use-package simple-httpd
     :straight t)
 #+end_src
-* PS Print with
-GHOSTSCRIPT
+* PS Print with GHOSTSCRIPT
 #+BEGIN_SRC emacs-lisp
 	  ;;;; PS Print with GHOSTSCRIPT
   (when (eq system-type 'windows-nt)
@@ -780,6 +789,16 @@ GHOSTSCRIPT
   (setf ps-font-size 10.0)
   (setf ps-line-number t)
   (setf ps-line-number-font-size 10)
+
+  (defun ps-portrait-one-column()
+    (interactive)
+    (setq ps-landscape-mode nil)
+    (setq ps-number-of-columns 1))
+
+  (defun ps-landscape-one-column()
+    (interactive)
+    (setq ps-landscape-mode t)
+    (setq ps-number-of-columns 1))
 #+END_SRC
 
 * Emacs Backup Files
