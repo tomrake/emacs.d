@@ -1,3 +1,14 @@
+(defcustom pico-uart "*pico-uart*"
+  "The buffer name for the pico uart connection."
+  :type 'string
+  :group 'pico-emacs)
+
+(defcustom pico-uart-connection-string "minicom -b 115200 -o -D /dev/ttyACM0\n"
+  "The buffer name for the pico uart connection."
+  :type 'string
+  :group 'pico-emacs)
+
+
 (defun pico-sentinel (process event)
    (princ
      (format "Process: %s had the event '%s'" process event)))
@@ -41,3 +52,13 @@
 
     (format "file %s cannot be found." elf))) 
 
+
+(defun open-pico-uart-terminal()
+  "open a connection to the pico uart."
+  (interactive)
+  (vterm pico-uart)
+  (find-buffer-visiting pico-uart)
+  (seq-do
+   #'(lambda (ch)
+       (vterm-send-key (char-to-string ch)))
+   pico-uart-connection-string))  

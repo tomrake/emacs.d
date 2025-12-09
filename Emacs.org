@@ -1050,6 +1050,10 @@ I am using to add icons to the icons.json file derived from feathericons.
     ;;(setq vterm-shell "zsh")
     (setq vterm-max-scrollback 10000))
 #+end_src
+* pico
+#+begin_src emacs-lisp
+(load "pico-emacs")
+#+end_src
 * Deactivated code related to cmake-ide
 ** Flycheck                                                        :noexport:
 #+begin_src emacs-lisp :tangle no
