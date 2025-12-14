@@ -706,13 +706,17 @@ Print Debug markers in *messages*
 #+END_SRC
 * Enable lisp-mode .lisp and .asd files
   #+BEGIN_SRC emacs-lisp
-  (setq auto-mode-alist
-	(append '((".*\\.asd\\'" . lisp-mode))
-		auto-mode-alist))
+    (setq auto-mode-alist
+    	(append '((".*\\.asd\\'" . lisp-mode))
+    		auto-mode-alist))
 
-  (setq auto-mode-alist
-	(append '((".*\\.cl\\'" . lisp-mode))
-		auto-mode-alist))
+    (setq auto-mode-alist
+    	(append '((".*\\.cl\\'" . lisp-mode))
+    		auto-mode-alist))
+
+    (setq auto-mode-alist
+          (append '((".*\\.rkt\\'" . racket-mode))
+    	      auto-mode-alist))
   #+END_SRC
 
 * Common Lisp HyperSpec
@@ -733,7 +737,7 @@ Print Debug markers in *messages*
   
 #+end_src
 * Racket
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp   
   (use-package racket-mode
     :straight t
     ;:config

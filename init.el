@@ -467,6 +467,10 @@
 	(append '((".*\\.cl\\'" . lisp-mode))
 		auto-mode-alist))
 
+(setq auto-mode-alist
+      (append '((".*\\.rkt\\'" . racket-mode))
+	      auto-mode-alist))
+
 (when (getenv "HyperSpec")
  (setq common-lisp-hyperspec-root (convert-standard-filename (getenv "HyperSpec"))))
 
