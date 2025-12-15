@@ -4,6 +4,14 @@
 #+OPTIONS: toc:3
 
 Added debugged org and Modus Theme
+* Debug init
+#+begin_src emacs-lisp
+(when init-file-debug
+  (setq use-package-verbose t
+        use-package-expand-minimally nil
+        use-package-compute-statistics t
+        debug-on-error t))
+#+end_src
 * Add Generated from Emacs.org warning.
 #+begin_src emacs-lisp
   ;; NOTE: init.el is now generated from Emacs.org.  Please edit that file
@@ -180,17 +188,18 @@ This is a modifed from systemcrafters.
 #+begin_src emacs-lisp
   (defvar bootstrap-version)
   (let ((bootstrap-file
-	 (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
-	(bootstrap-version 5))
+  	 (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
+  	(bootstrap-version 5))
     (unless (file-exists-p bootstrap-file)
       (with-current-buffer
-	  (url-retrieve-synchronously
-	   "https://raw.githubusercontent.com/raxod502/straight.el/develop/install.el"
-	   'silent 'inhibit-cookies)
-	(goto-char (point-max))
-	(eval-print-last-sexp)))
+  	  (url-retrieve-synchronously
+  	   "https://raw.githubusercontent.com/raxod502/straight.el/develop/install.el"
+  	   'silent 'inhibit-cookies)
+  	(goto-char (point-max))
+  	(eval-print-last-sexp)))
     (load bootstrap-file nil 'nomessage))
-    (straight-use-package 'use-package) 
+    (straight-use-package 'use-package)
+  (straight-use-package 'org)
 #+end_src
 * load use-package
 use-package is included with emacs.
@@ -730,11 +739,18 @@ Print Debug markers in *messages*
 #+begin_src emacs-lisp
   (straight-use-package 'dap-mode)
 
-  (use-package
+  (use-package dap-mode
    :straight t
    :config
    (dap-auto-configure-mode))
   
+#+end_src
+* Tree-Sitter
+#+begin_src emacs-lisp
+  (use-package tree-sitter
+  :straight t)
+  (use-package tree-sitter-langs
+    :straight t)
 #+end_src
 * Racket
 #+begin_src emacs-lisp   
@@ -1222,8 +1238,10 @@ Tom Rake's Notes
 #+BEGIN_SRC emacs-lisp
 (load (expand-file-name "org-init" user-emacs-directory))
 #+END_SRC
-* shcmd option
-#+begin_src emacs-lisp
+* shcmd option :noexport:
+This is done in the separate Org-Config.org
+#+begin_src emacs-lisp :tangle no
+  (error "Duplicate shcdmo code!")
   (use-package org-mode
     :straight nil
     :config

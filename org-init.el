@@ -11,7 +11,7 @@
 	(org-babel-tangle))))
 (add-hook 'org-mode-hook (lambda () (add-hook 'after-save-hook #'efs/org-babel-tangle-org-config)))
 
-(use-package org
+(use-package org-mode
   :straight (:type built-in)
   :config
 
@@ -26,6 +26,7 @@
 ;; 		    (make-directory  org-user-dir)))
 
 (use-package org-bullets
+  :straight t
   :after org
   :hook (org-mode . org-bullets-mode)
   :custom
