@@ -10,7 +10,7 @@
 ;; Org mode loads!
 
 ;;;; Emacs Debug On Error
-   (setq debug-on-error nil )
+   (setq debug-on-error nil)
 
 ;;;; This code will error for any non-multi-init-cluster profiles.
 ;;;; load the user-custom-startup file.
@@ -227,7 +227,8 @@
 
 (require 'quoting-tools)
 
-(require 'gnu-tools)
+(when (equal system-type "windows-nt")
+  (require 'gnu-tools))
 
 ;;;; Magit 
 (use-package magit
@@ -292,21 +293,24 @@
 	  (explicit-powershell.exe-args '()))
     (shell (generate-new-buffer-name "*powershell*"))))
 
-;;;; Set the explicit shell name to msys2 version. 
-  (setq explicit-shell-file-name "c:/devel/msys64/usr/bin/bash")
+;;;; Set the explicit shell name to msys2 version.
+(when (or (equal system-type "windows-nt"))
+  (setq explicit-shell-file-name "c:/devel/msys64/usr/bin/bash"))
 
 ;;;; eshell
 (setenv  "PATH" (concat
-		   "C:/devel/msys64/ucrt64/bin" ";"
-		   "C:/devel/msys64/bin" ";"
-		   (getenv "PATH")))
+		 (when (or (equal system-type "windows-nt"))
+		   (list 
+		    "C:/devel/msys64/ucrt64/bin" ";"
+		    "C:/devel/msys64/bin" ";")
+		   (getenv "PATH"))))
 
 (use-package shx
   :straight t)
 
 (use-package tramp
   :config
-    (when (eq  window-system 'w32)
+    (when (equal  system-type "windows-nt")
 	(setq putty-directory "c:/Program Files/PuTTY/")
 	(setq tramp-default-method "plink")
 	(when (and (not (string-match putty-directory (getenv "PATH")))
@@ -488,10 +492,11 @@
  :config
  (dap-auto-configure-mode))
 
-(use-package tree-sitter
-:straight t)
-(use-package tree-sitter-langs
-  :straight t)
+(use-package treesit-auto
+  :straight t
+  :config
+    (treesit-auto-add-to-auto-mode-alist 'all)
+  (global-treesit-auto-mode))
 
 (use-package racket-mode
   :straight t

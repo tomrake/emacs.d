@@ -25,7 +25,7 @@ Added debugged org and Modus Theme
    [TBD] Is there already a command line switch for this?
   #+BEGIN_SRC emacs-lisp
 	;;;; Emacs Debug On Error
-	   (setq debug-on-error nil )
+	   (setq debug-on-error nil)
   #+END_SRC
 
 * start the multi-init-cluster for our case.
@@ -358,7 +358,8 @@ Certain tools need java set that location here.
 #+END_SRC
 * Ensure gnu-tools
 #+begin_src emacs-lisp
-(require 'gnu-tools)
+  (when (equal system-type "windows-nt")
+    (require 'gnu-tools))
 #+end_src
 * Magit
 #+BEGIN_SRC emacs-lisp
@@ -443,16 +444,19 @@ Main Page: [[https://protesilaos.com/emacs/modus-themes]]
   shell/git-bash works but has prompt problems.
 [2023-05-19] Stop tangle of this code.
 #+begin_src emacs-lisp
-;;;; Set the explicit shell name to msys2 version. 
-  (setq explicit-shell-file-name "c:/devel/msys64/usr/bin/bash")
+  ;;;; Set the explicit shell name to msys2 version.
+  (when (or (equal system-type "windows-nt"))
+    (setq explicit-shell-file-name "c:/devel/msys64/usr/bin/bash"))
 #+end_src
 * Eshell
 #+begin_src emacs-lisp
   ;;;; eshell
   (setenv  "PATH" (concat
-		   "C:/devel/msys64/ucrt64/bin" ";"
-		   "C:/devel/msys64/bin" ";"
-		   (getenv "PATH")))
+  		 (when (or (equal system-type "windows-nt"))
+  		   (list 
+  		    "C:/devel/msys64/ucrt64/bin" ";"
+  		    "C:/devel/msys64/bin" ";")
+  		   (getenv "PATH"))))
 #+end_src
 * Add shell extensions
 [TBD] If this is org shell extenstion then put this in org-mode section.
@@ -465,7 +469,7 @@ Make plink the default tramp method if running on Windows when plink.exe exists.
 #+BEGIN_SRC emacs-lisp
   (use-package tramp
     :config
-      (when (eq  window-system 'w32)
+      (when (equal  system-type "windows-nt")
 	(setq putty-directory "c:/Program Files/PuTTY/")
 	(setq tramp-default-method "plink")
 	(when (and (not (string-match putty-directory (getenv "PATH")))
@@ -745,12 +749,13 @@ Print Debug markers in *messages*
    (dap-auto-configure-mode))
   
 #+end_src
-* Tree-Sitter
+* tree-sitter
 #+begin_src emacs-lisp
-  (use-package tree-sitter
-  :straight t)
-  (use-package tree-sitter-langs
-    :straight t)
+  (use-package treesit-auto
+    :straight t
+    :config
+      (treesit-auto-add-to-auto-mode-alist 'all)
+    (global-treesit-auto-mode))
 #+end_src
 * Racket
 #+begin_src emacs-lisp   
