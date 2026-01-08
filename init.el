@@ -463,7 +463,11 @@
   :if (eq common-lisp-mode-tool :slime)
   :straight t
   :config
-  (setf slime-lisp-implementations (collect-lisp-invokers))
+  (setq simple-slime "/home/zzzap/.local/bin/sbcl")
+  (if simple-slime
+      (setq inferior-lisp-program simple-slime)
+      (setf slime-lisp-implementations (collect-slime-invokers)))
+   
   (require 'slime-repl-ansi-color)
   (add-hook 'slime-repl-mode-hook
 	      #'(lambda () (setf slime-repl-ansi-color-mode 1))))
@@ -751,48 +755,6 @@
 (load "pico-emacs")
 
 (message "Debug Before ORG")
-
-(require 'ox-publish)
-
-(defun dual-org-data (name org-part data-part common-part)
-  "Creates a name publishing project with org files and data files in the same directory."
-  `((,(concat name "-text")  ,@common-part ,@org-part)
-    (,(concat name "-data")  ,@common-part ,@data-part)
-    (,name :components (,(concat name "-text") ,(concat name "-data")))))
-
-
-(setq org-publish-project-alist
-	`(
-	  ,@(dual-org-data      "org-web" '(
-	   :base-extension "org"
-	   :publishing-function org-html-publish-to-html
-	   :headline-levels 4             ; Just the default for this project.
-	   :auto-preamble t
-	   :auto-sitemap t
-	   :section-numbers nil
-	   :makeindex t)
-	   '(
-	   :base-extension "css\\|js\\|png\\|jpg\\|gif\\|pdf\\|mp3\\|ogg\\|swf"
-	   :auto-sitemap nil
-	   :publishing-function org-publish-attachment)
-	   '(:base-directory "~/Documents/Code/org-web/content"
-			      :publishing-directory "c:/Users/Public/org-web"
-			     :recursive t
-			     :exclude ".*/\.git/.*|.*/.*~"
-			     ))
-	  ("blog-src"
-	   ;; Path to org files.
-	   :base-directory "~/Documents/Code/blog/org-source"
-	   :base-extension "org"
-
-	   ;; Path to Jekyll Posts
-	   :publishing-directory "~/Documents/Code/blog/tomrake.github.io/_drafts/"
-	   :recursive t
-	   :publishing-function org-html-publish-to-html
-	   :headline-levels 4
-	   :html-extension "html"
-	   :body-only t)
-	  ("blog" :components ("blog-src"))))
 
 (load (expand-file-name "org-init" user-emacs-directory))
 
