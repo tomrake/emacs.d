@@ -28,8 +28,6 @@ This is a large use-package config statement for org.
     :config
 #+end_src
 
-Note that all items between the open and the close are added to the config.
-
 * Report Debug Org START                                           :noexport:
 Print Debug markers in *messages*
 #+BEGIN_SRC emacs-lisp :eval never-export

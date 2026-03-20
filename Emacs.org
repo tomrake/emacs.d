@@ -186,20 +186,24 @@ This is a modifed from systemcrafters.
 #+end_src
 * Straight Package manager
 #+begin_src emacs-lisp
-  (defvar bootstrap-version)
+    (defvar bootstrap-version)
   (let ((bootstrap-file
-  	 (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
-  	(bootstrap-version 5))
+         (expand-file-name
+          "straight/repos/straight.el/bootstrap.el"
+          (or (bound-and-true-p straight-base-dir)
+              user-emacs-directory)))
+        (bootstrap-version 7))
     (unless (file-exists-p bootstrap-file)
       (with-current-buffer
-  	  (url-retrieve-synchronously
-  	   "https://raw.githubusercontent.com/raxod502/straight.el/develop/install.el"
-  	   'silent 'inhibit-cookies)
-  	(goto-char (point-max))
-  	(eval-print-last-sexp)))
+          (url-retrieve-synchronously
+           "https://raw.githubusercontent.com/radian-software/straight.el/develop/install.el"
+           'silent 'inhibit-cookies)
+        (goto-char (point-max))
+        (eval-print-last-sexp)))
     (load bootstrap-file nil 'nomessage))
     (straight-use-package 'use-package)
-  (straight-use-package 'org)
+;    (straight-use-package 'org)
+    (straight-use-package 'emms)
 #+end_src
 * load use-package
 use-package is included with emacs.
@@ -450,10 +454,11 @@ Main Page: [[https://protesilaos.com/emacs/modus-themes]]
 #+end_src
 * Eshell
 #+begin_src emacs-lisp
-  ;;;; eshell
-  (setenv  "PATH" (concat
-  		 (when (or (equal system-type "windows-nt"))
-  		   (list 
+  
+  ;;;; eshell this really  msys2 path stuff.
+  (when (or (equal system-type "windows-nt"))
+    (setenv  "PATH" (concat
+  		   (list
   		    "C:/devel/msys64/ucrt64/bin" ";"
   		    "C:/devel/msys64/bin" ";")
   		   (getenv "PATH"))))
@@ -470,12 +475,14 @@ Make plink the default tramp method if running on Windows when plink.exe exists.
   (use-package tramp
     :config
       (when (equal  system-type "windows-nt")
-	(setq putty-directory "c:/Program Files/PuTTY/")
-	(setq tramp-default-method "plink")
-	(when (and (not (string-match putty-directory (getenv "PATH")))
-		   (file-directory-p putty-directory))
-	  (setenv "PATH" (concat putty-directory ";" (getenv "PATH")))
-	  (add-to-list 'exec-path putty-directory))))
+  	(setq putty-directory "c:/Program Files/PuTTY/")
+  	(setq tramp-default-method "plink")
+  	(when (and (not (string-match putty-directory (getenv "PATH")))
+  		   (file-directory-p putty-directory))
+  	  (setenv "PATH" (concat putty-directory ";" (getenv "PATH")))
+  	  (add-to-list 'exec-path putty-directory)))
+      (when (equal system-type "gnu/linux")
+        (message "Tramp GNU/Linux Config")))
 #+END_SRC
 * Paredit mode
   #+BEGIN_SRC emacs-lisp
@@ -1069,6 +1076,18 @@ I am using to add icons to the icons.json file derived from feathericons.
     :commands emojify-mode)
 
 #+end_src
+* EMMS
+I may need to recompile emacs again to fix this.
+#+begin_src emacs-lisp
+  (use-package emms
+    :straight t
+    :if (eq system-type 'gnu/linux)
+    :config
+    (emms-all)
+    (setq emms-player-list '(emms-player-vlc)
+  	emms-info-functions '(emms-info-native)))
+#+end_src
+
 * vterm
 #+begin_src emacs-lisp
   (use-package vterm
@@ -1201,6 +1220,23 @@ Print Debug markers in *messages*
 #+BEGIN_SRC emacs-lisp
 (load (expand-file-name "org-init" user-emacs-directory))
 #+END_SRC
+* OpenOffice export
+#+begin_src emacs-lisp :tangle no
+        (use-package ox-odt
+        :straight (org-mode-ox-odt
+                   :host github
+                   :repo "kjambunathan/org-mode-ox-odt"
+                   :files ("lisp/ox-odt.el"
+                           "lisp/ox-ods.el"
+                           "lisp/odt.el"
+                           "etc"
+                           "docs"
+                           "contrib/odt/LibreOffice")))
+#+end_src
+
+Note that all items between the open and the close are added to the config.
+
+
 * shcmd option :noexport:
 This is done in the separate Org-Config.org
 #+begin_src emacs-lisp :tangle no
