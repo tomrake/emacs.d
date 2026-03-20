@@ -202,7 +202,7 @@ This is a modifed from systemcrafters.
         (eval-print-last-sexp)))
     (load bootstrap-file nil 'nomessage))
     (straight-use-package 'use-package)
-    (straight-use-package 'org)
+;    (straight-use-package 'org)
     (straight-use-package 'emms)
 #+end_src
 * load use-package
