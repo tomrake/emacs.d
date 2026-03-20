@@ -138,18 +138,22 @@
 
 (defvar bootstrap-version)
 (let ((bootstrap-file
-	 (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
-	(bootstrap-version 5))
+       (expand-file-name
+        "straight/repos/straight.el/bootstrap.el"
+        (or (bound-and-true-p straight-base-dir)
+            user-emacs-directory)))
+      (bootstrap-version 7))
   (unless (file-exists-p bootstrap-file)
     (with-current-buffer
-	  (url-retrieve-synchronously
-	   "https://raw.githubusercontent.com/raxod502/straight.el/develop/install.el"
-	   'silent 'inhibit-cookies)
-	(goto-char (point-max))
-	(eval-print-last-sexp)))
+        (url-retrieve-synchronously
+         "https://raw.githubusercontent.com/radian-software/straight.el/develop/install.el"
+         'silent 'inhibit-cookies)
+      (goto-char (point-max))
+      (eval-print-last-sexp)))
   (load bootstrap-file nil 'nomessage))
   (straight-use-package 'use-package)
-(straight-use-package 'org)
+  (straight-use-package 'org)
+  (straight-use-package 'emms)
 
 ;;;; use-package
 (require 'use-package)
@@ -297,10 +301,10 @@
 (when (or (equal system-type "windows-nt"))
   (setq explicit-shell-file-name "c:/devel/msys64/usr/bin/bash"))
 
-;;;; eshell
-(setenv  "PATH" (concat
-		 (when (or (equal system-type "windows-nt"))
-		   (list 
+;;;; eshell this really  msys2 path stuff.
+(when (or (equal system-type "windows-nt"))
+  (setenv  "PATH" (concat
+		   (list
 		    "C:/devel/msys64/ucrt64/bin" ";"
 		    "C:/devel/msys64/bin" ";")
 		   (getenv "PATH"))))
@@ -316,7 +320,9 @@
 	(when (and (not (string-match putty-directory (getenv "PATH")))
 		   (file-directory-p putty-directory))
 	  (setenv "PATH" (concat putty-directory ";" (getenv "PATH")))
-	  (add-to-list 'exec-path putty-directory))))
+	  (add-to-list 'exec-path putty-directory)))
+    (when (equal system-type "gnu/linux")
+      (message "Tramp GNU/Linux Config")))
 
 (use-package paredit
   :straight t
@@ -743,6 +749,14 @@
   :straight t
   :hook (erc-mode . emojify-mode)
   :commands emojify-mode)
+
+(use-package emms
+  :straight t
+  :if (eq system-type 'gnu/linux)
+  :config
+  (emms-all)
+  (setq emms-player-list '(emms-player-vlc)
+	emms-info-functions '(emms-info-native)))
 
 (use-package vterm
   :straight t
