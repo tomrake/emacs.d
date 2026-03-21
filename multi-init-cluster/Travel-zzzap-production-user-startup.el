@@ -19,7 +19,7 @@
   "The location of the slime for common lisp.")
 
 
-(defvar multi-user-org-path nil
+(defvar multi-user-org-path "~/synced/org-documents/"
 
   "All org stuff that need multiuser access are located relative this path.")
 
