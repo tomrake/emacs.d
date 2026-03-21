@@ -11,7 +11,7 @@
 	(org-babel-tangle))))
 (add-hook 'org-mode-hook (lambda () (add-hook 'after-save-hook #'efs/org-babel-tangle-org-config)))
 
-(use-package org-mode
+(use-package org
   :straight (:type built-in)
   :config
 
