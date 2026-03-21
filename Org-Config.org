@@ -21,7 +21,13 @@ This is a modifed from systemcrafters.
 This is a large use-package config statement for org.
 
 * << The Open  ( use-package for org
-
+#+begin_src emacs-lisp
+  (setq twr/org-loading-flag "default")
+  (defun twr/check-org-load ()
+    (when twr/org-loading-flag
+      (message (concat "ORG DID NOT FINISH LOADING!!!!!! " twr/org-loading-flag))))
+  (add-hook 'after-init-hook 'twr/check-org-load)
+#+end_src
 #+begin_src emacs-lisp
   (use-package org
     :straight t
@@ -538,4 +544,10 @@ Add macro to construction block agenda components of TODO items.
 #+end_src
 
 This is a single ) to close it.
+* Test for org loading completion
+Clear to during init flag.
+#+begin_src emacs-lisp
+  (setq twr/org-loading-flag nil)
+  (message "<<<<  !!!    org-init.el  FINISHED   !!!   >>>>> ")
+#+end_src
 
