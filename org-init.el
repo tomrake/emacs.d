@@ -12,7 +12,7 @@
 (add-hook 'org-mode-hook (lambda () (add-hook 'after-save-hook #'efs/org-babel-tangle-org-config)))
 
 (use-package org
-  :straight (:type built-in)
+  :straight t
   :config
 
 (message "Debug ORG START")

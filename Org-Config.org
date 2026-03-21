@@ -24,7 +24,7 @@ This is a large use-package config statement for org.
 
 #+begin_src emacs-lisp
   (use-package org
-    :straight (:type built-in)
+    :straight t
     :config
 #+end_src
 
