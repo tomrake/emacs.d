@@ -11,6 +11,12 @@
 	(org-babel-tangle))))
 (add-hook 'org-mode-hook (lambda () (add-hook 'after-save-hook #'efs/org-babel-tangle-org-config)))
 
+(setq twr/org-loading-flag "default")
+(defun twr/check-org-load ()
+  (when twr/org-loading-flag
+    (message (concat "ORG DID NOT FINISH LOADING!!!!!! " twr/org-loading-flag))))
+(add-hook 'after-init-hook 'twr/check-org-load)
+
 (use-package org
   :straight t
   :config
@@ -393,3 +399,6 @@ text and copying to the killring."
 (make-gtd-switch)
 
 ) ;; This is close of a huge :config of (use-package org
+
+(setq twr/org-loading-flag nil)
+(message "<<<<  !!!    org-init.el  FINISHED   !!!   >>>>> ")
