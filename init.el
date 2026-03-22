@@ -469,14 +469,22 @@
   :if (eq common-lisp-mode-tool :slime)
   :straight t
   :config
-  (setq simple-slime "/home/zzzap/.local/bin/sbcl")
-  (if simple-slime
-      (setq inferior-lisp-program simple-slime)
-      (setf slime-lisp-implementations (collect-slime-invokers)))
+  (when (equal system-type 'gnu/linux)
+    (message "Linux Slime")
+    (setq simple-slime "/home/zzzap/.local/bin/sbcl")
+    (if simple-slime
+	(setq inferior-lisp-program simple-slime)
+      (setf slime-lisp-implementations (collect-lisp-invokers)))
    
-  (require 'slime-repl-ansi-color)
-  (add-hook 'slime-repl-mode-hook
+    (require 'slime-repl-ansi-color)
+    (add-hook 'slime-repl-mode-hook
 	      #'(lambda () (setf slime-repl-ansi-color-mode 1))))
+  (when (equal system-type 'windows-nt)
+    (message "Windows Slime.")
+    (setf slime-lisp-implementations (collect-lisp-invokers))
+    (require 'slime-repl-ansi-color)
+    (add-hook 'slime-repl-mode-hook
+    	      #'(lambda () (setf slime-repl-ansi-color-mode 1)))))
 
 (message "Debug SLIME END MARK")
 
