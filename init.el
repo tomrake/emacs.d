@@ -471,10 +471,13 @@
   :config
   (when (equal system-type 'gnu/linux)
     (message "Linux Slime")
-    (setq simple-slime "/home/zzzap/.local/bin/sbcl")
-    (if simple-slime
-	(setq inferior-lisp-program simple-slime)
-      (setf slime-lisp-implementations (collect-lisp-invokers)))
+    (defvar slime-lisp-location nil)
+    (when (file-exists-p local-config-sbcl-location)
+	(setq slime-lisp-location local-config-sbcl-location))
+    (unless slime-lisp-location
+      (setq slime-lisp-location "sbcl"))
+    (setq inferior-lisp-program slime-lisp-location)
+
    
     (require 'slime-repl-ansi-color)
     (add-hook 'slime-repl-mode-hook
