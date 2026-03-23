@@ -3,55 +3,56 @@
 #+PROPERTY: header-args:emacs-lisp :tangle ./init.el :mkdirp yes
 #+OPTIONS: toc:3
 
-Added debugged org and Modus Theme
-* Debug init
-#+begin_src emacs-lisp
-(when init-file-debug
-  (setq use-package-verbose t
-        use-package-expand-minimally nil
-        use-package-compute-statistics t
-        debug-on-error t))
-#+end_src
-* Add Generated from Emacs.org warning.
+This files Emacs.org generates the emacs startup file init.el
+by tangling all the emacs_lisp code blocks.
+
+* Generated Warning at the top of init.el
+Add a warning to the begining of init.el
 #+begin_src emacs-lisp
   ;; NOTE: init.el is now generated from Emacs.org.  Please edit that file
   ;;       in Emacs and init.el will be generated automatically!
-  ;; Trying straight package manager
-  ;; Org mode loads!
 #+end_src
 
-* Emacs debug-on-error
-   [TBD] Should this be set from an enviroment variable.
-   [TBD] Is there already a command line switch for this?
-  #+BEGIN_SRC emacs-lisp
-	;;;; Emacs Debug On Error
-	   (setq debug-on-error nil)
-  #+END_SRC
-
-* start the multi-init-cluster for our case.
-chemacs2 startup
-[[~/.emacs-profiles.el]]
-
-If you are cloning my process you will need this code to run very soon in your init.el.
-Until you create the file named by the local-config-pathname: message. 
+* Debug init
 #+begin_src emacs-lisp
-  ;;;; This code will error for any non-multi-init-cluster profiles.
-  ;;;; load the user-custom-startup file.
-  ;;;; The local-config is
-  ;;;; loaded from the file <user-emacs-directory>/multi-init-cluster/<system-name>-<user-login-name>-<chemacs-profile-name>-user-startup.el
-  ;;;; That file must exist.
+  ;;;; Emacs and init debuging flags
+  (setq debug-on-error nil)
+  (setq init-file-debug nil)
+
+   ;;;; Control debugging during init
+   (when init-file-debug
+       (setq use-package-verbose t
+             use-package-expand-minimally nil
+             use-package-compute-statistics t
+             debug-on-error t))
+#+end_src
+* The multiinitcluster
+Each init.el in the multiinitcluster initializes the location of various applications under emacs.
+An application could be an common-lisp implementation like sbcl or ccl.
+Or a org-mode application such at GTD.
+
+[[https://github.com/plexus/chemacs2][Chemacs2]] allows seprate emacs.d directores to exists which are boot main ~/.emacs.d directory.
+Emacs is then started with a --profile=*profile-name*, the chemacs2 profiles are configured in [[~/.emacs-profiles.el]].
+
+A cluster member is referenced by the *system-name*, the *user-login-name* and a chemacs2 *profile-name*.
+
+#+begin_src emacs-lisp
+  ;;;; Wider emacs applications may need to locate custom resources.
+  ;;;; The various custom configuratiions are collected for the group.
+  ;;;; the files at <user-emacs-directory>/multi-init-cluster/<system-name>-<user-login-name>-<chemacs-profile-name>-user-startup.el
+  ;;;; Represent all member of the cluster.
   ;;;; the user-emacs-directory and chemacs-profile-names are defined in ~/.emacs-profiles.el
   (message "chemacs-profile-name   : %s" chemacs-profile-name)
   (message "system-name            : %s" system-name)
   (message "user-login-name        : %s" user-login-name)
   (if chemacs-profile-name
       (progn
-	(defvar local-config-name (concat system-name "-" user-login-name "-" chemacs-profile-name "-user-startup")
-	  "The name of local-config file.")
-	(defvar local-config-pathname (concat user-emacs-directory "multi-init-cluster/" local-config-name)
-	  "The filename to load the local-config.")
-	(message "local-config-pathname  : %s" local-config-pathname)
-	(load local-config-pathname))
+  	(defvar local-config-name (concat system-name "-" user-login-name "-" chemacs-profile-name "-user-startup")
+  	  "The name of local-config file.")
+  	(defvar local-config-pathname (concat user-emacs-directory "multi-init-cluster/" local-config-name)
+  	  "The filename to load the local-config.")
+  	(message "local-config-pathname  : %s" local-config-pathname)
+  	(load local-config-pathname))
     (progn
       (message "This config should be executed by chemacs2 and chemacs-profile-name is not defined ")
       (error "Bad chemacs config.")))
@@ -59,9 +60,14 @@ Until you create the file named by the local-config-pathname: message.
 
 #+end_src
 
-* Anaphoric - it macros that do-the-right-thing
-Express various configuration contingent of certain conditions being met.
-Code is executed based on certain tests based on COMPUTER-SUBCASE-user-start symbol values.
+* Anaphoric - *it* macros that do-the-right-thing
+For various symbol status type execute the body code.
+
+Nothing will be done in the following unless the file exists.
+
+(checksyn-existing-file "/etc/must-exist-file"
+   (do-imporatnt-stuff it))
+
 #+begin_src emacs-lisp
   (defmacro checksym-defined (name &rest body)
     "Anaphoric - it macro, where the body can uss *it* when symbol name is defined."
@@ -90,8 +96,6 @@ Code is executed based on certain tests based on COMPUTER-SUBCASE-user-start sym
 	       ,@body))))))
 
 
-
-
   (defmacro checksym-existing-file (name &rest body)
     "Anaphoric - it macro, where the body can uss *it* when symbol name is a the name of an existing file."
     (let ((_sym (gensym)))
@@ -113,8 +117,8 @@ Code is executed based on certain tests based on COMPUTER-SUBCASE-user-start sym
 
 #+end_src
 
-* Track init.el completion
-Set a init loading flag, check and report if the flag is not clear in the after init-hook.
+* Does init.el finish?
+Setting a flag and clearing it allows testing of init.el completion.
 #+begin_src emacs-lisp
   (setq twr/init-loading-flag "default")
   (defun twr/check-init-load ()
@@ -122,8 +126,9 @@ Set a init loading flag, check and report if the flag is not clear in the after 
       (message (concat "INIT DID NOT FINISH!!!!!! " twr/init-loading-flag))))
   (add-hook 'after-init-hook 'twr/check-init-load)
 #+end_src
-* Auto-tangle Emacs.org
-This is a modifed from systemcrafters.
+* init.el is autocreated
+All the emacs-lisp code blocks in Emacs.org are tangled to build init.el. 
+Based on an example from systemcrafters, init.el is created after each save of Emacs.org.
 #+begin_src emacs-lisp
   ;; Autommatically tangle our Emacs.org config file when we save it.
   (defun efs/org-babel-tangle-config ()
@@ -138,15 +143,19 @@ This is a modifed from systemcrafters.
 	(org-babel-tangle))))
   (add-hook 'org-mode-hook (lambda () (add-hook 'after-save-hook #'efs/org-babel-tangle-config)))
 #+end_src
-* Some of our routines are in scripts/
+* scripts
+A number of utilities exacted from Emacs.org have been placed in emacs.d/scripts,
+ensure those files are in our load path.
 #+begin_src emacs-lisp
   (add-to-list 'load-path (expand-file-name "scripts/" user-emacs-directory))
 #+end_src
-* Emacs Garbage Collection Tweeking
+* Garbage Collection Tweeking
+SystemCrafters designed method to tweek garbage collection during and after startup.
 #+begin_src emacs-lisp
   (setq gc-cons-threshold (* 50 1000 1000))
 #+end_src
-* Initial Buffer Choice
+* Startup Buffer Choice
+I prefer to have the ~/startup-buffer.org opened on emacs launch.
 #+begin_src emacs-lisp
   (defun find-first-existing-file (files)
     (if (listp files)
@@ -162,6 +171,8 @@ This is a modifed from systemcrafters.
 					   (concat user-emacs-directory "startup-buffer.org"))))
 #+end_src
 * Default Coding System
+Setup various language, coding-systems, this was to fix a number of problems a long time ago.
+
 #+begin_src emacs-lisp
   ;; UTF-8 as default encoding
   (set-language-environment "UTF-8")
@@ -172,41 +183,47 @@ This is a modifed from systemcrafters.
   (set-terminal-coding-system 'utf-8-unix)  
 #+end_src
 * Report Startup Time
-
+Monitor and report emacs startup time.
 #+begin_src emacs-lisp
-  ;;;; Reporting Startup Time
+    ;;;; Reporting Startup Time
   (defun efs/display-startup-time ()
     (message "Emacs loaded in %s with %d garbage collections."
-	     (format "%.2f seconds"
-		     (float-time
-		      (time-subtract after-init-time before-init-time)))
-	     gcs-done))
+  	     (format "%.2f seconds"
+  		     (float-time
+  		      (time-subtract after-init-time before-init-time)))
+  	     gcs-done))
 
   (add-hook 'emacs-startup-hook #'efs/display-startup-time)
 #+end_src
 * Straight Package manager
+This is the straight.el boilerplate startup code.
 #+begin_src emacs-lisp
-(defvar bootstrap-version)
-(let ((bootstrap-file
-       (expand-file-name
-        "straight/repos/straight.el/bootstrap.el"
-        (or (bound-and-true-p straight-base-dir)
-            user-emacs-directory)))
-      (bootstrap-version 7))
-  (unless (file-exists-p bootstrap-file)
-    (with-current-buffer
-        (url-retrieve-synchronously
-         "https://raw.githubusercontent.com/radian-software/straight.el/develop/install.el"
-         'silent 'inhibit-cookies)
-      (goto-char (point-max))
-      (eval-print-last-sexp)))
-  (load bootstrap-file nil 'nomessage))
+  ;;;; straight boilerplate startup code.
+    (defvar bootstrap-version)
+      (let ((bootstrap-file
+             (expand-file-name
+              "straight/repos/straight.el/bootstrap.el"
+              (or (bound-and-true-p straight-base-dir)
+                  user-emacs-directory)))
+            (bootstrap-version 7))
+        (unless (file-exists-p bootstrap-file)
+          (with-current-buffer
+              (url-retrieve-synchronously
+               "https://raw.githubusercontent.com/radian-software/straight.el/develop/install.el"
+               'silent 'inhibit-cookies)
+            (goto-char (point-max))
+            (eval-print-last-sexp)))
+        (load bootstrap-file nil 'nomessage))
 
-    (straight-use-package 'use-package)
-    (straight-use-package '(org :type built-in))
+  ;;;; Various straight customizations.
+      (straight-use-package 'use-package)
+      (straight-use-package '(org :type built-in))
+      (straight-use-package 'htmlize)
 #+end_src
-* load use-package
-use-package is included with emacs.
+* use-package
+Use-package is the central component I use to weave my init.el.
+Emacs comes with use-package.
+So I merely need to require it.
   #+begin_src emacs-lisp
     ;;;; use-package
     (require 'use-package)
@@ -215,16 +232,9 @@ use-package is included with emacs.
     (setq use-package-always-defer t)
 
 #+end_src
-* Directly install htmlize
-#+begin_src emacs-lisp
-    (straight-use-package 'htmlize)
-#+end_src
-* Allow loading of a file from .emacs.d/
-***  [TBD] Once the init.el generation is working
-    - autosaving other .emacs.d/ configuration files could be done
-      the following macro will need to be reconsidered.
-      
-** User custom setting from .emacs.d files.
+* Conversion of .org files in emacs.d/
+org files in emacs.d can be tangled to .el files and then loaded.
+This is an older mechanism and may not be currently used.
 
 #+BEGIN_SRC emacs-lisp
   ;;;; Macro to load user customizations from .emacs.d
@@ -241,24 +251,28 @@ use-package is included with emacs.
 
 #+END_SRC
 * Magic Modes
+Magic modes turn files with a given extension to use a specific emacs mode.
+
 #+BEGIN_SRC emacs-lisp
   ;;;; Magic File modes
   (setq magic-mode-alist '(("*.org" . org)))
 #+END_SRC
 * Basic Look and feel
-I don't like the a messy startup screen.
+Change how emacs generally works startup screen, bell, toolbar and file dialogs.
 
 #+BEGIN_SRC emacs-lisp
   ;;;; Have a clean statup screen
-  ; (setq inhibit-startup-screen t)
+  (setq inhibit-startup-screen t)
   (setq visible-bell 1)
    ;;;; Turn off tool bar
   (tool-bar-mode 0)
   (setq use-file-dialog nil)
 #+END_SRC
 * Fix Windows 10 cursor problem
+This is for an old  cursor workaround.
  #+BEGIN_SRC emacs-lisp
- (setq w32-use-visible-system-caret nil)
+   (when (equal system-type 'windows-nt)
+     (setq w32-use-visible-system-caret nil))
  #+END_SRC
 
 * Buffer Auto reverting

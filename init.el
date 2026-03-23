@@ -1,22 +1,21 @@
-(when init-file-debug
-  (setq use-package-verbose t
-        use-package-expand-minimally nil
-        use-package-compute-statistics t
-        debug-on-error t))
-
 ;; NOTE: init.el is now generated from Emacs.org.  Please edit that file
 ;;       in Emacs and init.el will be generated automatically!
-;; Trying straight package manager
-;; Org mode loads!
 
-;;;; Emacs Debug On Error
-   (setq debug-on-error nil)
+;;;; Emacs and init debuging flags
+(setq debug-on-error nil)
+(setq init-file-debug nil)
 
-;;;; This code will error for any non-multi-init-cluster profiles.
-;;;; load the user-custom-startup file.
-;;;; The local-config is
-;;;; loaded from the file <user-emacs-directory>/multi-init-cluster/<system-name>-<user-login-name>-<chemacs-profile-name>-user-startup.el
-;;;; That file must exist.
+ ;;;; Control debugging during init
+ (when init-file-debug
+     (setq use-package-verbose t
+           use-package-expand-minimally nil
+           use-package-compute-statistics t
+           debug-on-error t))
+
+;;;; Wider emacs applications may need to locate custom resources.
+;;;; The various custom configuratiions are collected for the group.
+;;;; the files at <user-emacs-directory>/multi-init-cluster/<system-name>-<user-login-name>-<chemacs-profile-name>-user-startup.el
+;;;; Represent all member of the cluster.
 ;;;; the user-emacs-directory and chemacs-profile-names are defined in ~/.emacs-profiles.el
 (message "chemacs-profile-name   : %s" chemacs-profile-name)
 (message "system-name            : %s" system-name)
@@ -59,8 +58,6 @@
 	   (let ((it (symbol-value ,_sym)))
 	     (when (and (stringp it) (< 0 (length it)))
 	       ,@body))))))
-
-
 
 
 (defmacro checksym-existing-file (name &rest body)
@@ -136,32 +133,33 @@
 
 (add-hook 'emacs-startup-hook #'efs/display-startup-time)
 
-(defvar bootstrap-version)
-(let ((bootstrap-file
-       (expand-file-name
-        "straight/repos/straight.el/bootstrap.el"
-        (or (bound-and-true-p straight-base-dir)
-            user-emacs-directory)))
-      (bootstrap-version 7))
-  (unless (file-exists-p bootstrap-file)
-    (with-current-buffer
-        (url-retrieve-synchronously
-         "https://raw.githubusercontent.com/radian-software/straight.el/develop/install.el"
-         'silent 'inhibit-cookies)
-      (goto-char (point-max))
-      (eval-print-last-sexp)))
-  (load bootstrap-file nil 'nomessage))
+;;;; straight boilerplate startup code.
+  (defvar bootstrap-version)
+    (let ((bootstrap-file
+           (expand-file-name
+            "straight/repos/straight.el/bootstrap.el"
+            (or (bound-and-true-p straight-base-dir)
+                user-emacs-directory)))
+          (bootstrap-version 7))
+      (unless (file-exists-p bootstrap-file)
+        (with-current-buffer
+            (url-retrieve-synchronously
+             "https://raw.githubusercontent.com/radian-software/straight.el/develop/install.el"
+             'silent 'inhibit-cookies)
+          (goto-char (point-max))
+          (eval-print-last-sexp)))
+      (load bootstrap-file nil 'nomessage))
 
+;;;; Various straight customizations.
     (straight-use-package 'use-package)
     (straight-use-package '(org :type built-in))
+    (straight-use-package 'htmlize)
 
 ;;;; use-package
 (require 'use-package)
 (setq straight-use-package-by-default t)
 (setq use-package-verbose t)
 (setq use-package-always-defer t)
-
-(straight-use-package 'htmlize)
 
 ;;;; Macro to load user customizations from .emacs.d
 (defmacro local-custom-file (file description)
@@ -179,13 +177,14 @@
 (setq magic-mode-alist '(("*.org" . org)))
 
 ;;;; Have a clean statup screen
-; (setq inhibit-startup-screen t)
+(setq inhibit-startup-screen t)
 (setq visible-bell 1)
  ;;;; Turn off tool bar
 (tool-bar-mode 0)
 (setq use-file-dialog nil)
 
-(setq w32-use-visible-system-caret nil)
+(when (equal system-type 'windows-nt)
+  (setq w32-use-visible-system-caret nil))
 
 ;;;; auto revert mode
 (global-auto-revert-mode 1)
