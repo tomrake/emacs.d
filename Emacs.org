@@ -232,6 +232,7 @@ So I merely need to require it.
     (setq use-package-always-defer t)
 
 #+end_src
+
 * Conversion of .org files in emacs.d/
 org files in emacs.d can be tangled to .el files and then loaded.
 This is an older mechanism and may not be currently used.
