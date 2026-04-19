@@ -216,17 +216,36 @@
 (defvar java-executable (executable-find "java")
   "The java-executable to use for java.")
 
-(use-package langtool
-  :straight t
-  :config
-    (setq langtool-java-bin java-executable)
-    (setq langtool-language-tool-jar  "c:/Users/Public/Documents/LanguageTool-5.9/languagetool-commandline.jar")
-  :bind
-    (( "\C-x4w" . langtool-check)
-     ("\C-x4W" . langtool-check-done)
-     ("\C-x4l" . langtool-switch-default-language)
-     ("\C-x44" . langtool-show-message-at-point)
-     ("\C-x4c" . langtool-correct-buffer)))
+(use-package lsp-ltex-plus
+  ;; For Emacs 29+, use the built-in :vc fetcher:
+  ;; :vc (:url "https://github.com/alberti42/emacs-ltex-plus")
+
+  ;; If you prefer straight.el, replace the :vc line above with this:
+  :straight (lsp-ltex-plus :type git :host github :repo "alberti42/emacs-ltex-plus")
+
+  :defer t
+
+  :custom
+  (lsp-ltex-plus-ltex-ls-path "/home/zzzap/Development/Emacs-Configs/production/emacs.d/ltex-plus/ltex-ls-plus-18.6.1")
+  (lsp-ltex-plus-language "en-GB")
+  (lsp-ltex-plus-ls-plus-executable "/home/zzzap/Development/Emacs-Configs/production/emacs.d/ltex-plus/ltex-ls-plus-18.6.1/bin/ltex-ls-plus")
+  ;; To use the online service, set the URI.
+  ;; If you prefer the remote server (slower, but more precise), uncomment the next line (it defaults to nil).
+  ;; (lsp-ltex-plus-lt-server-uri "https://api.languagetoolplus.com")
+  ;; Uncomment the next line to also check grammar in the comments of programming
+  ;; languages (Python, C, Rust, …) in addition to markup formats (LaTeX, Markdown, Org, …).
+  (lsp-ltex-plus-check-programming-languages t)
+  
+  ;; Uncomment to apply the "Kind-First" protocol patch to lsp-mode.
+  ;; Strongly recommended, especially if you use a remote LanguageTool server;
+  ;; the network latency makes JSON-RPC ID collisions between client and server
+  ;; requests almost inevitable, which can permanently stall the connection.
+  ;; The patch is a general lsp-mode fix and benefits every LSP client, not
+  ;; only ltex-ls-plus. Details: https://github.com/alberti42/emacs-ltex-plus#lsp-mode-protocol-patch
+  (lsp-ltex-plus-apply-kind-first-patch t)
+
+  :init
+  (lsp-ltex-plus-enable-for-modes))
 
 (require 'quoting-tools)
 
@@ -668,54 +687,6 @@
 (recentf-mode 1)
 (setq recentf-max-menu-items 25)
 (global-set-key "\C-x\ \C-r" 'recentf-open-files)
-
-(setq ppl-holiday-table ;; '(2023					;year
- ;;   (1 1)					;new years day
- ;;   (2 20)				;presidents day
- ;;   (4 7)					; Good Friday
- ;;   (5 29)				; Memorial Day
- ;;   (7 4)					; Independence Day
- ;;   (9 4)					; Labor Day
- ;;   (11 24)				; Thanksgiving
- ;;   (11 25)				; Next Day
- ;;   (12 24)				; Christmas Eve
- ;;   (12 25))
- '(2024					;year
-  (1 1)					;new years day
- (2 19)				;presidents day
- (3 29)					; Good Friday
- (5 27)				; Memorial Day
- (7 4)					; Independence Day
- (9 2)					; Labor Day
- (11 28)				; Thanksgiving
- (11 29)				; Next Day
- (12 24)				; Christmas Eve
- (12 25)))                              ; Christmas
-
-
-  (defun is-holiday (dt table)
-    "Check if a date is a holiday"
-    (if table (or (and (= (nth 4 dt) (nth 0 (car table)))
-			 (= (nth 3 dt) (nth 1 (car table))))
-		    (is-holiday dt (cdr table)))))
-
-  (defun is-ppl-holiday (dt)
-    "Check if a date is a PPL holiday"
-    (if (/= (car ppl-holiday-table) (nth 5 dt)) 
-	  (error "Update Date table") 
-	  (is-holiday dt (cdr ppl-holiday-table))))
-
-  (defun ppl-summer (dt)
-    "Check if a date is PPL summer rate"
-    (< 5 (nth 4 dt) 12))
-
-(defun ppl-high-rate (&optional dt)
-  "Check if a date and time are at PPL high rate"
-  (unless dt (setq dt (decode-time)))
-	 (cond ((not (< 0 (nth 6 dt) 6))  nil)
-	       ((is-ppl-holiday dt)  nil)
-	       ((ppl-summer dt)  (<= 14 (nth 2 dt) 17))
-		(t  ( <= 16 (nth 2 dt) 19))))
 
 (use-package yaml-mode)
 

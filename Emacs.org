@@ -3,11 +3,11 @@
 #+PROPERTY: header-args:emacs-lisp :tangle ./init.el :mkdirp yes
 #+OPTIONS: toc:3
 
-This files Emacs.org generates the emacs startup file init.el
+This files Emacs.org generates the Emacs startup file init.el
 by tangling all the emacs_lisp code blocks.
 
 * Generated Warning at the top of init.el
-Add a warning to the begining of init.el
+Add a warning to the beginning of init.el
 #+begin_src emacs-lisp
   ;; NOTE: init.el is now generated from Emacs.org.  Please edit that file
   ;;       in Emacs and init.el will be generated automatically!
@@ -27,11 +27,11 @@ Add a warning to the begining of init.el
              debug-on-error t))
 #+end_src
 * The multiinitcluster
-Each init.el in the multiinitcluster initializes the location of various applications under emacs.
+Each init.el in the multiinitcluster initializes the location of various applications under Emacs.
 An application could be an common-lisp implementation like sbcl or ccl.
 Or a org-mode application such at GTD.
 
-[[https://github.com/plexus/chemacs2][Chemacs2]] allows seprate emacs.d directores to exists which are boot main ~/.emacs.d directory.
+[[https://github.com/plexus/chemacs2][Chemacs2]] allows separate emacs.d directories to exists which are boot main ~/.emacs.d directory.
 Emacs is then started with a --profile=*profile-name*, the chemacs2 profiles are configured in [[~/.emacs-profiles.el]].
 
 A cluster member is referenced by the *system-name*, the *user-login-name* and a chemacs2 *profile-name*.
@@ -357,8 +357,54 @@ Certain tools need java set that location here.
     (defvar java-executable (executable-find "java")
       "The java-executable to use for java.")
 #+end_src
-* Language Tool
+* lsp-ls-plus
+
+From: [[https://www.reddit.com/r/emacs/comments/1sp1wly/launching_a_new_grammarspell_checking_tool_for/]] How to get quickly started.
+- commented out :vc line
+- removed comment from :straignt line
+
+Error :custom was empty
+
+- removed comment from the three :custom lines
+
+Error: [lsp-ltex-plus] Aborting: ltex-ls-plus not found on PATH.  See installation instructions at https://github.com/alberti42/emacs-ltex-plus/#server-installation or set ‘lsp-ltex-plus-ls-plus-executable’ to the absolute path of the binary.
+
+THIS IS THE END OF How to get quickly started. 
 #+begin_src emacs-lisp
+  (use-package lsp-ltex-plus
+    ;; For Emacs 29+, use the built-in :vc fetcher:
+    ;; :vc (:url "https://github.com/alberti42/emacs-ltex-plus")
+
+    ;; If you prefer straight.el, replace the :vc line above with this:
+    :straight (lsp-ltex-plus :type git :host github :repo "alberti42/emacs-ltex-plus")
+
+    :defer t
+
+    :custom
+    (lsp-ltex-plus-ltex-ls-path "/home/zzzap/Development/Emacs-Configs/production/emacs.d/ltex-plus/ltex-ls-plus-18.6.1")
+    (lsp-ltex-plus-language "en-GB")
+    (lsp-ltex-plus-ls-plus-executable "/home/zzzap/Development/Emacs-Configs/production/emacs.d/ltex-plus/ltex-ls-plus-18.6.1/bin/ltex-ls-plus")
+    ;; To use the online service, set the URI.
+    ;; If you prefer the remote server (slower, but more precise), uncomment the next line (it defaults to nil).
+    ;; (lsp-ltex-plus-lt-server-uri "https://api.languagetoolplus.com")
+    ;; Uncomment the next line to also check grammar in the comments of programming
+    ;; languages (Python, C, Rust, …) in addition to markup formats (LaTeX, Markdown, Org, …).
+    (lsp-ltex-plus-check-programming-languages t)
+    
+    ;; Uncomment to apply the "Kind-First" protocol patch to lsp-mode.
+    ;; Strongly recommended, especially if you use a remote LanguageTool server;
+    ;; the network latency makes JSON-RPC ID collisions between client and server
+    ;; requests almost inevitable, which can permanently stall the connection.
+    ;; The patch is a general lsp-mode fix and benefits every LSP client, not
+    ;; only ltex-ls-plus. Details: https://github.com/alberti42/emacs-ltex-plus#lsp-mode-protocol-patch
+    (lsp-ltex-plus-apply-kind-first-patch t)
+
+    :init
+    (lsp-ltex-plus-enable-for-modes))
+#+end_src
+* Language Tool
+This old Language Tool is missconfiged.
+#+begin_src emacs-lisp :tangle no
   (use-package langtool
     :straight t
     :config
@@ -992,7 +1038,8 @@ So configure it there.
 (global-set-key "\C-x\ \C-r" 'recentf-open-files)
 #+end_src
 * PPL Time of Day
-#+begin_src emacs-lisp
+This is no longer relevent.
+#+begin_src emacs-lisp :tangle no
    (setq ppl-holiday-table ;; '(2023					;year
    ;;   (1 1)					;new years day
    ;;   (2 20)				;presidents day
