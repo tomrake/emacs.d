@@ -6,6 +6,7 @@
 This files Emacs.org generates the Emacs startup file init.el
 by tangling all the emacs_lisp code blocks.
 
+
 * Generated Warning at the top of init.el
 Add a warning to the beginning of init.el
 #+begin_src emacs-lisp
@@ -28,8 +29,8 @@ Add a warning to the beginning of init.el
 #+end_src
 * The multiinitcluster
 Each init.el in the multiinitcluster initializes the location of various applications under Emacs.
-An application could be an common-lisp implementation like sbcl or ccl.
-Or a org-mode application such at GTD.
+An application could be a common-lisp implementation like sbcl or ccl.
+Or an org-mode application such at GTD.
 
 [[https://github.com/plexus/chemacs2][Chemacs2]] allows separate emacs.d directories to exists which are boot main ~/.emacs.d directory.
 Emacs is then started with a --profile=*profile-name*, the chemacs2 profiles are configured in [[~/.emacs-profiles.el]].
@@ -357,6 +358,18 @@ Certain tools need java set that location here.
     (defvar java-executable (executable-find "java")
       "The java-executable to use for java.")
 #+end_src
+* lsp mode
+#+begin_src emacs_lisp
+(use-package lsp-mode
+  :init
+  ;; set prefix for lsp-command-keymap (few alternatives - "C-l", "C-c l")
+  (setq lsp-keymap-prefix "C-c l")
+  :hook (;; replace XXX-mode with concrete major-mode(e. g. python-mode)
+         (XXX-mode . lsp)
+         ;; if you want which-key integration
+         (lsp-mode . lsp-enable-which-key-integration))
+  :commands lsp)
+#+end_src
 * lsp-ls-plus
 
 From: [[https://www.reddit.com/r/emacs/comments/1sp1wly/launching_a_new_grammarspell_checking_tool_for/]] How to get quickly started.
@@ -401,21 +414,6 @@ THIS IS THE END OF How to get quickly started.
 
     :init
     (lsp-ltex-plus-enable-for-modes))
-#+end_src
-* Language Tool
-This old Language Tool is missconfiged.
-#+begin_src emacs-lisp :tangle no
-  (use-package langtool
-    :straight t
-    :config
-      (setq langtool-java-bin java-executable)
-      (setq langtool-language-tool-jar  "c:/Users/Public/Documents/LanguageTool-5.9/languagetool-commandline.jar")
-    :bind
-      (( "\C-x4w" . langtool-check)
-       ("\C-x4W" . langtool-check-done)
-       ("\C-x4l" . langtool-switch-default-language)
-       ("\C-x44" . langtool-show-message-at-point)
-       ("\C-x4c" . langtool-correct-buffer)))
 #+end_src
 * Joining items as strings with and without quoting
 #+BEGIN_SRC emacs-lisp
@@ -1037,58 +1035,6 @@ So configure it there.
 (setq recentf-max-menu-items 25)
 (global-set-key "\C-x\ \C-r" 'recentf-open-files)
 #+end_src
-* PPL Time of Day
-This is no longer relevent.
-#+begin_src emacs-lisp :tangle no
-   (setq ppl-holiday-table ;; '(2023					;year
-   ;;   (1 1)					;new years day
-   ;;   (2 20)				;presidents day
-   ;;   (4 7)					; Good Friday
-   ;;   (5 29)				; Memorial Day
-   ;;   (7 4)					; Independence Day
-   ;;   (9 4)					; Labor Day
-   ;;   (11 24)				; Thanksgiving
-   ;;   (11 25)				; Next Day
-   ;;   (12 24)				; Christmas Eve
-   ;;   (12 25))
-   '(2024					;year
-    (1 1)					;new years day
-   (2 19)				;presidents day
-   (3 29)					; Good Friday
-   (5 27)				; Memorial Day
-   (7 4)					; Independence Day
-   (9 2)					; Labor Day
-   (11 28)				; Thanksgiving
-   (11 29)				; Next Day
-   (12 24)				; Christmas Eve
-   (12 25)))                              ; Christmas
-
-
-    (defun is-holiday (dt table)
-      "Check if a date is a holiday"
-      (if table (or (and (= (nth 4 dt) (nth 0 (car table)))
-			 (= (nth 3 dt) (nth 1 (car table))))
-		    (is-holiday dt (cdr table)))))
-
-    (defun is-ppl-holiday (dt)
-      "Check if a date is a PPL holiday"
-      (if (/= (car ppl-holiday-table) (nth 5 dt)) 
-	  (error "Update Date table") 
-	  (is-holiday dt (cdr ppl-holiday-table))))
-
-    (defun ppl-summer (dt)
-      "Check if a date is PPL summer rate"
-      (< 5 (nth 4 dt) 12))
-
-  (defun ppl-high-rate (&optional dt)
-    "Check if a date and time are at PPL high rate"
-    (unless dt (setq dt (decode-time)))
-	 (cond ((not (< 0 (nth 6 dt) 6))  nil)
-	       ((is-ppl-holiday dt)  nil)
-	       ((ppl-summer dt)  (<= 14 (nth 2 dt) 17))
-		(t  ( <= 16 (nth 2 dt) 19))))
-
-#+end_src
 * YAML Mode
 Add yaml mode
 #+begin_src emacs-lisp
@@ -1344,3 +1290,4 @@ Clear to during init flag.
 #+begin_src emacs-lisp
 (load "~/.emacs-local")
 #+end_src
+
