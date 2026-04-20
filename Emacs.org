@@ -382,7 +382,13 @@ Error :custom was empty
 
 Error: [lsp-ltex-plus] Aborting: ltex-ls-plus not found on PATH.  See installation instructions at https://github.com/alberti42/emacs-ltex-plus/#server-installation or set ‘lsp-ltex-plus-ls-plus-executable’ to the absolute path of the binary.
 
-THIS IS THE END OF How to get quickly started. 
+THIS IS THE END OF How to get quickly started.
+
+I installed ltex-ls in emacs.d
+I added lsp mode section.
+I configured the lsp-ltex-ls-plus-executable and added various :config items.
+
+I now want to univeralize this to a windows version.
 #+begin_src emacs-lisp
   (use-package lsp-ltex-plus
     ;; For Emacs 29+, use the built-in :vc fetcher:
@@ -395,7 +401,7 @@ THIS IS THE END OF How to get quickly started.
 
     :custom
     (lsp-ltex-plus-ltex-ls-path "/home/zzzap/Development/Emacs-Configs/production/emacs.d/ltex-plus/ltex-ls-plus-18.6.1")
-    (lsp-ltex-plus-language "en-GB")
+    (lsp-ltex-plus-language "en-US")
     (lsp-ltex-plus-ls-plus-executable "/home/zzzap/Development/Emacs-Configs/production/emacs.d/ltex-plus/ltex-ls-plus-18.6.1/bin/ltex-ls-plus")
     ;; To use the online service, set the URI.
     ;; If you prefer the remote server (slower, but more precise), uncomment the next line (it defaults to nil).

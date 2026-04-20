@@ -227,7 +227,7 @@
 
   :custom
   (lsp-ltex-plus-ltex-ls-path "/home/zzzap/Development/Emacs-Configs/production/emacs.d/ltex-plus/ltex-ls-plus-18.6.1")
-  (lsp-ltex-plus-language "en-GB")
+  (lsp-ltex-plus-language "en-US")
   (lsp-ltex-plus-ls-plus-executable "/home/zzzap/Development/Emacs-Configs/production/emacs.d/ltex-plus/ltex-ls-plus-18.6.1/bin/ltex-ls-plus")
   ;; To use the online service, set the URI.
   ;; If you prefer the remote server (slower, but more precise), uncomment the next line (it defaults to nil).
