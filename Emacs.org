@@ -390,7 +390,10 @@ I configured the lsp-ltex-ls-plus-executable and added various :config items.
 
 I now want to univeralize this to a windows version.
 #+begin_src emacs-lisp
+  (defvar ltex-ls-plus-base   (concat user-emacs-directory "ltex-plus/ltex-ls-plus-18.6.1/"))
+  (defvar ltex-ls-plus-bin   (concat ltex-ls-plus-base "bin/ltex-ls-plus"))
   (use-package lsp-ltex-plus
+    :if (file-exists-p ltex-ls-plus-bin)
     ;; For Emacs 29+, use the built-in :vc fetcher:
     ;; :vc (:url "https://github.com/alberti42/emacs-ltex-plus")
 
@@ -400,9 +403,9 @@ I now want to univeralize this to a windows version.
     :defer t
 
     :custom
-    (lsp-ltex-plus-ltex-ls-path "/home/zzzap/Development/Emacs-Configs/production/emacs.d/ltex-plus/ltex-ls-plus-18.6.1")
+    (lsp-ltex-plus-ltex-ls-path ltex-ls-plus-base)
     (lsp-ltex-plus-language "en-US")
-    (lsp-ltex-plus-ls-plus-executable "/home/zzzap/Development/Emacs-Configs/production/emacs.d/ltex-plus/ltex-ls-plus-18.6.1/bin/ltex-ls-plus")
+    (lsp-ltex-plus-ls-plus-executable ltex-ls-plus-bin)
     ;; To use the online service, set the URI.
     ;; If you prefer the remote server (slower, but more precise), uncomment the next line (it defaults to nil).
     ;; (lsp-ltex-plus-lt-server-uri "https://api.languagetoolplus.com")
@@ -426,6 +429,7 @@ I now want to univeralize this to a windows version.
 (require 'quoting-tools)
 #+END_SRC
 * Ensure gnu-tools
+gunk
 #+begin_src emacs-lisp
   (when (equal system-type "windows-nt")
     (require 'gnu-tools))

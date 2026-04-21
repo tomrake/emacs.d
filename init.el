@@ -216,7 +216,10 @@
 (defvar java-executable (executable-find "java")
   "The java-executable to use for java.")
 
+(defvar ltex-ls-plus-base   (concat user-emacs-directory "ltex-plus/ltex-ls-plus-18.6.1/"))
+(defvar ltex-ls-plus-bin   (concat ltex-ls-plus-base "bin/ltex-ls-plus"))
 (use-package lsp-ltex-plus
+  :if (file-exists-p ltex-ls-plus-bin)
   ;; For Emacs 29+, use the built-in :vc fetcher:
   ;; :vc (:url "https://github.com/alberti42/emacs-ltex-plus")
 
@@ -226,9 +229,9 @@
   :defer t
 
   :custom
-  (lsp-ltex-plus-ltex-ls-path "/home/zzzap/Development/Emacs-Configs/production/emacs.d/ltex-plus/ltex-ls-plus-18.6.1")
+  (lsp-ltex-plus-ltex-ls-path ltex-ls-plus-base)
   (lsp-ltex-plus-language "en-US")
-  (lsp-ltex-plus-ls-plus-executable "/home/zzzap/Development/Emacs-Configs/production/emacs.d/ltex-plus/ltex-ls-plus-18.6.1/bin/ltex-ls-plus")
+  (lsp-ltex-plus-ls-plus-executable ltex-ls-plus-bin)
   ;; To use the online service, set the URI.
   ;; If you prefer the remote server (slower, but more precise), uncomment the next line (it defaults to nil).
   ;; (lsp-ltex-plus-lt-server-uri "https://api.languagetoolplus.com")
