@@ -218,6 +218,10 @@
 
 (defvar ltex-ls-plus-base   (concat user-emacs-directory "ltex-plus/ltex-ls-plus-18.6.1/"))
 (defvar ltex-ls-plus-bin   (concat ltex-ls-plus-base "bin/ltex-ls-plus"))
+(when (equal system-type 'windows-nt)
+  (setenv "JAVA_HOME")
+  (setq ltex-ls-plus-bin (concat ltex-ls-plus-bin ".bat"))
+  (message (concat "ltex server: " ltex-ls-plus-bin)))
 (use-package lsp-ltex-plus
   :if (file-exists-p ltex-ls-plus-bin)
   ;; For Emacs 29+, use the built-in :vc fetcher:
