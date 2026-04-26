@@ -218,10 +218,11 @@
 
 (defvar ltex-ls-plus-base   (concat user-emacs-directory "ltex-plus/ltex-ls-plus-18.6.1/"))
 (defvar ltex-ls-plus-bin   (concat ltex-ls-plus-base "bin/ltex-ls-plus"))
-(when (equal system-type 'windows-nt)
+(when t (when (equal system-type 'windows-nt)
   (setenv "JAVA_HOME")
+  (setenv "JDK_HOME")
   (setq ltex-ls-plus-bin (concat ltex-ls-plus-bin ".bat"))
-  (message (concat "ltex server: " ltex-ls-plus-bin)))
+  (message (concat "ltex server: " ltex-ls-plus-bin))))
 (use-package lsp-ltex-plus
   :if (file-exists-p ltex-ls-plus-bin)
   ;; For Emacs 29+, use the built-in :vc fetcher:
@@ -241,7 +242,9 @@
   ;; (lsp-ltex-plus-lt-server-uri "https://api.languagetoolplus.com")
   ;; Uncomment the next line to also check grammar in the comments of programming
   ;; languages (Python, C, Rust, …) in addition to markup formats (LaTeX, Markdown, Org, …).
-  (lsp-ltex-plus-check-programming-languages t)
+
+  ;; [2026-04-26] BUGFIX:  This is set to nil because there is a slime/ltex-ls-plus conflict 
+  (lsp-ltex-plus-check-programming-languages nil)
   
   ;; Uncomment to apply the "Kind-First" protocol patch to lsp-mode.
   ;; Strongly recommended, especially if you use a remote LanguageTool server;
