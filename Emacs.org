@@ -412,6 +412,7 @@ I now want to univeralize this to a windows version.
     (lsp-ltex-plus-ltex-ls-path ltex-ls-plus-base)
     (lsp-ltex-plus-language "en-US")
     (lsp-ltex-plus-ls-plus-executable ltex-ls-plus-bin)
+    (flymake-show-diagnostics-at-end-of-line t)
     ;; To use the online service, set the URI.
     ;; If you prefer the remote server (slower, but more precise), uncomment the next line (it defaults to nil).
     ;; (lsp-ltex-plus-lt-server-uri "https://api.languagetoolplus.com")
