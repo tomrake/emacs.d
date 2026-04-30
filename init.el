@@ -258,6 +258,9 @@
   :init
   (lsp-ltex-plus-enable-for-modes))
 
+(use-package yasnippet
+	    :straight t)
+
 (require 'quoting-tools)
 
 (when (equal system-type "windows-nt")

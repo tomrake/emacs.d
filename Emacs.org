@@ -362,6 +362,7 @@ Certain tools need java set that location here.
 * lsp mode
 #+begin_src emacs_lisp
 (use-package lsp-mode
+  :after (yasnippet)
   :init
   ;; set prefix for lsp-command-keymap (few alternatives - "C-l", "C-c l")
   (setq lsp-keymap-prefix "C-c l")
@@ -432,6 +433,11 @@ I now want to univeralize this to a windows version.
 
     :init
     (lsp-ltex-plus-enable-for-modes))
+#+end_src
+* yasnippet
+#+begin_src emacs-lisp
+  (use-package yasnippet
+  	    :straight t)
 #+end_src
 * Joining items as strings with and without quoting
 #+BEGIN_SRC emacs-lisp
