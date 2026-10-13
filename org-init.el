@@ -1,3 +1,4 @@
+;; -*- lexical-binding: nil -*-
 ;; Autommatically tangle our Emacs.org config file when we save it.
 (defun efs/org-babel-tangle-org-config ()
   "Test if the buffer should be auto-tangled after save"

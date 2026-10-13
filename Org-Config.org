@@ -3,17 +3,18 @@
 * Auto-tangle Emacs.org
 This is a modifed from systemcrafters.
 #+begin_src emacs-lisp
+  ;; -*- lexical-binding: nil -*-
   ;; Autommatically tangle our Emacs.org config file when we save it.
   (defun efs/org-babel-tangle-org-config ()
     "Test if the buffer should be auto-tangled after save"
     ; (message "string-equal: %s %s" (buffer-file-name) (expand-file-name (concat user-emacs-directory "Emacs.org")))
     (when (string-equal (buffer-file-name)
-			(expand-file-name "Org-Config.org" user-emacs-directory))
+  			(expand-file-name "Org-Config.org" user-emacs-directory))
       (message "Tangle-Org-Config.org")
 
       ;; Dynamic scoping to the rescue
       (let ((org-confirm-babel-evaluate nil))
-	(org-babel-tangle))))
+  	(org-babel-tangle))))
   (add-hook 'org-mode-hook (lambda () (add-hook 'after-save-hook #'efs/org-babel-tangle-org-config)))
 #+end_src
 

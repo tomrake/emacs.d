@@ -1,3 +1,4 @@
+;; -*- lexical-binding: nil -*-
 (message "DESKER-Buba-devel-user-startup")
 
 

@@ -1,3 +1,4 @@
+;; -*- lexical-binding: nil -*-
 (message "...msys-ucrt")
 (setq my-msys2-base "c:\devel\msys64")
   (setq msystem (getenv "MSYSTEM"))

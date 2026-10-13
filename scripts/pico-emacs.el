@@ -1,3 +1,4 @@
+;; -*- lexical-binding: nil -*-
 ;;; pico-emacs.el --- Tools for Raspberry Pi / Pico coding
 
 ;; 

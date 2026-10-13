@@ -1,3 +1,4 @@
+;; -*- lexical-binding: nil -*-
 (defun double-quote-string(s)
   "Double quote a string."
      (concat "\"" s "\""))

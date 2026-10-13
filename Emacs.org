@@ -11,6 +11,7 @@ by tangling all the emacs_lisp code blocks.
 * Generated Warning at the top of init.el
 Add a warning to the beginning of init.el
 #+begin_src emacs-lisp
+  ;; -*- lexical-binding: nil -*-
   ;; NOTE: init.el is now generated from Emacs.org.  Please edit that file
   ;;       in Emacs and init.el will be generated automatically!
 #+end_src

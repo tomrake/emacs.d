@@ -1,3 +1,4 @@
+;; -*- lexical-binding: nil -*-
 (defun my-put-file-name-on-clipboard ()
   "Put the current file name on the clipboard"
   (interactive)

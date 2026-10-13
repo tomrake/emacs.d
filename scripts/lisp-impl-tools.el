@@ -1,3 +1,4 @@
+;; -*- lexical-binding: nil -*-
 ;;;; With lisp-impl-tools each inferior lisp candidate can be defined as per the slime manual.
 ;;;; lisp-impl-tools maintains a list of all the specifications along with metadata.
 
